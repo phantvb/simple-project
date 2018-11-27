@@ -23,6 +23,7 @@ export default new Router({
       path:'/layout',
       name:'layout',
       component:layout,
+      hidden:true,
       children:[
         {
           path:'userCenter',
