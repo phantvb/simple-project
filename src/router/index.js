@@ -1,8 +1,10 @@
-import Vue from 'vue'
-import Router from 'vue-router'
-import login from '@/components/login/login'
-import layout from '@/components/view/index'
-import userCenter from '@/components/view/userCenter/userCenter'
+import Vue from 'vue';
+import Router from 'vue-router';
+import login from '@/components/login/login';
+import layout from '@/components/view/index';
+import userCenter from '@/components/view/userCenter/userCenter';
+import accountManage from '@/components/view/systemSetup/accountManage';
+import systemLog from '@/components/view/systemSetup/systemLog';
 
 Vue.use(Router)
 
@@ -10,7 +12,7 @@ export default new Router({
   routes: [
     {
       path:'/',
-      redirect:'/login',
+      redirect:'/layout',
       hidden:true
     },
     {
@@ -29,7 +31,25 @@ export default new Router({
           path:'userCenter',
           name:'用户中心',
           component:userCenter
-        }
+        },
+      ],
+
+    },
+    {
+      path:'/systemSetup',
+      name:'系统设置',
+      component:layout,
+      children:[
+        {
+          path:'accountManage',
+          name:'账号管理',
+          component:accountManage
+        },
+        {
+          path:'systemLog',
+          name:'系统日志',
+          component:systemLog
+        },
       ]
     },
   ]

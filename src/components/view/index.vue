@@ -1,47 +1,51 @@
 <template>
+  <el-container>
+    <el-header style="padding:0px;">
+      <div class="header"></div>
+    </el-header>
     <el-container>
-        <el-header style="padding:0px;">
-            <div class="header"></div>
-        </el-header>
-        <el-container>
-            <el-aside width="200px">
-            <el-menu default-active="1-4-1" class="el-menu-vertical" @open="handleOpen" @close="handleClose" :collapse="isCollapse">
-                <SidebarItem :data='router' :base-path="router.path"></SidebarItem>
-            </el-menu>
-            </el-aside>
-            <el-main class="main">
-                <router-view/>
-            </el-main>
-        </el-container>
+      <!--左侧导航栏-->
+      <el-aside width="210px">
+        <el-menu default-active="1-4-1" class="el-menu-vertical" @open="handleOpen" @close="handleClose"
+                 :collapse="isCollapse">
+          <SidebarItem :data='router' :base-path="router.path"></SidebarItem>
+        </el-menu>
+      </el-aside>
+      <!--右侧空白页-->
+      <el-main>
+        <router-view/>
+      </el-main>
     </el-container>
+  </el-container>
 </template>
 <style>
   .el-menu-vertical:not(.el-menu--collapse) {
-    width: 200px;
+    width: 210px;
     min-height: 100vh;
   }
 </style>
 <style scoped>
-    .header{
-        height: 100%;
-        background-color: #333;
-        background-image: url('../../assets/logo.png');
-        background-repeat: no-repeat;
-    }
-    .main{
-        background-color:#f3f4f5;
-    }
+  .header {
+    height: 100%;
+    background-color: #111A2B;
+    background-image: url('../../assets/logo.png');
+    background-repeat: no-repeat;
+  }
+  body{
+    background-color: #f3f4f5;
+  }
 </style>
 <script>
-import SidebarItem from './component/Sidebar/SidebarItem.vue'
-export default {
-    name:'layout',
+  import SidebarItem from './component/Sidebar/SidebarItem.vue'
+
+  export default {
+    name: 'layout',
     data() {
       return {
         isCollapse: false
       };
     },
-    components:{SidebarItem},
+    components: {SidebarItem},
     methods: {
       handleOpen(key, keyPath) {
         console.log(key, keyPath);
@@ -50,11 +54,11 @@ export default {
         console.log(key, keyPath);
       }
     },
-    computed:{
-        router(){
-            return this.$router.options.routes;
-        }
+    computed: {
+      router() {
+        return this.$router.options.routes;
+      }
     }
-}
+  }
 </script>
 

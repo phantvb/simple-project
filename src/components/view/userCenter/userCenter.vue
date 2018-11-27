@@ -1,5 +1,6 @@
 <template>
     <div id="userCenter">
+<<<<<<< HEAD
         <header>
             用户中心
         </header>
@@ -40,11 +41,12 @@
         </section>
         <message :show="mesEdit" @close="editMes(false)"></message>
         <portrait :show="portraitEdit" @close="editPortrait(false)"></portrait>
+=======
+        123
+>>>>>>> front_voice_20181127_llj
     </div>
 </template>
-<style lang='scss' scoped>
-@import './userCenter.scss';
-</style>
+
 <script>
 import message from './dialog/message.vue'
 import portrait from './dialog/portrait.vue'
@@ -74,3 +76,6 @@ export default {
 }
 </script>
 
+<style scoped>
+  @import './userCenter.scss';
+</style>
