@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import login from '@/components/login/index'
+import login from '@/components/login/login'
 import layout from '@/components/view/index'
-import userCenter from '@/components/view/userCenter/index'
+import userCenter from '@/components/view/userCenter/userCenter'
 
 Vue.use(Router)
 
