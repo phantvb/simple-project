@@ -30,7 +30,7 @@
     }
 </style>
 <script>
-import SidebarItem from './SidebarItem.vue'
+import SidebarItem from './component/Sidebar/SidebarItem.vue'
 export default {
     name:'layout',
     data() {
