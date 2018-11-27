@@ -9,7 +9,7 @@
                 <SidebarItem :data='router' :base-path="router.path"></SidebarItem>
             </el-menu>
             </el-aside>
-            <el-main>
+            <el-main class="main">
                 <router-view/>
             </el-main>
         </el-container>
@@ -27,6 +27,9 @@
         background-color: #333;
         background-image: url('../../assets/logo.png');
         background-repeat: no-repeat;
+    }
+    .main{
+        background-color:#f3f4f5;
     }
 </style>
 <script>
