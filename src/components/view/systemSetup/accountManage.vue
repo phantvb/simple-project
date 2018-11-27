@@ -1,6 +1,6 @@
 <template>
   <div id="accountManage">
-    账号管理
+
   </div>
 </template>
 

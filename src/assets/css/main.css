@@ -1,0 +1,15 @@
+/*菜单栏样式*/
+#app .el-menu{
+  background-color: #172138;
+}
+#app .el-menu .el-menu-item,#app .el-menu .el-submenu__title{
+  color: #ffffff;
+}
+/*右侧内容区域*/
+#app .el-container{
+  background-color: #eeeeee;
+}
+#app .el-main{
+  margin:20px;
+  background-color: #ffffff;
+}
