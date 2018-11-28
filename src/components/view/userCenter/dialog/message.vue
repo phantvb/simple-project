@@ -21,9 +21,13 @@
                 <div class="title">
                     用户资料
                 </div>
-                <el-form-item label="用户名称" :label-width="formLabelWidth">
-                    <el-input v-model="form.name" autocomplete="off" size="mini"></el-input>
-                </el-form-item>
+                <ul>
+                    <li class="l2">
+                        <el-form-item label="用户名称" :label-width="formLabelWidth">
+                            <el-input v-model="form.name" autocomplete="off" size="mini"></el-input>
+                        </el-form-item>
+                    </li>
+                </ul>
                 <ul>
                     <li class="l2">
                         <el-form-item label="性别" :label-width="formLabelWidth">
