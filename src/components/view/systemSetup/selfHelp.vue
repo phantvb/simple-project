@@ -1,15 +1,15 @@
 <template>
-  <div id="systemLog">
-    系统日志
+  <div id="selfHelp">
+    selfHelp
   </div>
 </template>
 
 <script>
   export default {
-    name:'systemLog'
+    name:'SelfHelp'
   }
 </script>
 
 <style lang="scss" scoped>
-  @import './systemLog.scss';
+  @import './selfHelp.scss';
 </style>
