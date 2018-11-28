@@ -1,6 +1,6 @@
 <template>
     <div class="menu">
-        <el-submenu v-if="item.children&&!item.hidden" v-for="(item,index) in data" :key="index" :index="index+''">
+        <el-submenu v-if="item.children&&!item.hidden" v-for="(item,i) in data" :key="i" :index="resolvePath(item.path)">
             <template slot="title">
                 <i class="el-icon-location"></i>
                 <span slot="title">{{item.name}}</span>
@@ -12,13 +12,13 @@
                 :base-path="resolvePath(item.path)"/>
             </template>
         </el-submenu>
-        <app-link v-if="!item.children&&!item.hidden" v-for="(item,index) in data" :key="index" :index="index+''" :to="resolvePath(item.path)">
-            <el-menu-item>
+        <app-link v-if="!item.children&&!item.hidden" v-for="(item,i) in data" :key="i" :to="resolvePath(item.path)">
+            <el-menu-item :index="resolvePath(item.path)">
                 <i class="el-icon-menu"></i>
                 <span slot="title">{{item.name}}</span>
             </el-menu-item>
         </app-link>
-        <div v-if="item.hidden" v-for="(item,index) in data" :key="index">
+        <div v-if="item.hidden" v-for="(item,i) in data" :key="i">
             <template v-if="item.hidden&&item.children">
                 <sidebar-item
                 :data="item.children"

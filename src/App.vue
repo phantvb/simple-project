@@ -21,3 +21,7 @@ export default {
   margin: 0px;
 }
 </style>
+<style lang="scss">
+@import '@/assets/css/base.scss';
+</style>
+

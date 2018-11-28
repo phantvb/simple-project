@@ -32,7 +32,7 @@
     background-repeat: no-repeat;
   }
   body{
-    background-color: #eeeeee;
+    background-color: #f3f4f5;
   }
 </style>
 <script>
