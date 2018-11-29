@@ -5,6 +5,7 @@ import layout from '@/components/view/index';
 import userCenter from '@/components/view/userCenter/userCenter';
 import accountManage from '@/components/view/systemSetup/accountManage';
 import systemLog from '@/components/view/systemSetup/systemLog';
+import fourBusinessManage from '@/components/view/businessAccepted/400businessManage';
 
 Vue.use(Router)
 
@@ -49,6 +50,18 @@ export default new Router({
           path:'systemLog',
           name:'系统日志',
           component:systemLog
+        },
+      ]
+    },
+    {
+      path:'/businessAccepted',
+      name:'业务受理',
+      component:layout,
+      children:[
+        {
+          path:'400businessManage',
+          name:'400业务管理',
+          component:fourBusinessManage
         },
       ]
     },
