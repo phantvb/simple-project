@@ -5,6 +5,8 @@ import layout from '@/components/view/index';
 import userCenter from '@/components/view/userCenter/userCenter';
 import accountManage from '@/components/view/systemSetup/accountManage';
 import systemLog from '@/components/view/systemSetup/systemLog';
+import roleManage from '@/components/view/systemSetup/roleManage';
+import businessInform from '@/components/view/businessSetup/businessInform';
 import fourBusinessManage from '@/components/view/businessAccepted/400businessManage';
 
 Vue.use(Router)
@@ -33,6 +35,11 @@ export default new Router({
           name:'用户中心',
           component:userCenter
         },
+        {
+          path:'businessInform',
+          name:'企业管理',
+          component:businessInform
+        },
       ],
 
     },
@@ -51,6 +58,11 @@ export default new Router({
           name:'系统日志',
           component:systemLog
         },
+        {
+          path:'roleManage',
+          name:'角色管理',
+          component:roleManage
+        }
       ]
     },
     {
