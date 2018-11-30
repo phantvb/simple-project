@@ -13,6 +13,18 @@
   margin:20px;
   background-color: #ffffff;
 }
+#businessInform .el-input-group__append, .el-input-group__prepend{
+  padding: 0 10px!important;
+}
+#company_dialog .el-dialog{
+  width: 75%;
+}
+#step_2 .data .el-upload--picture-card,#step_2 .data .el-upload-list__item-actions,#step_2 .data .el-upload-list__item{
+  width: 120px;
+}
+#step_2 .person_data .el-upload--picture-card,#step_2 .person_data .el-upload-list__item-actions,#step_2 .person_data .el-upload-list__item{
+  height: 120px;
+}
 /*账号管理*/
 .numForm .el-form .el-form-item{
   width:30%;

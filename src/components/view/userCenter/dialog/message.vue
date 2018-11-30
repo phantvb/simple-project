@@ -131,7 +131,17 @@ export default {
     },
     methods:{
         close(){
+            this.init();
             this.$emit('close');
+        },
+        init(){
+            for(let key in this.form){
+                if(key=='sex'){
+                    this.form[key]=1;
+                }else{
+                    this.form[key]='';
+                }
+            }
         }
     }
 }

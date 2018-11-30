@@ -10,7 +10,10 @@ import 'element-ui/lib/theme-chalk/index.css';
 
 Vue.use(ElementUI);
 
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
+Vue.prototype.$global={
+  pageSize:[10, 20, 30, 50]
+}
 
 /* eslint-disable no-new */
 new Vue({
