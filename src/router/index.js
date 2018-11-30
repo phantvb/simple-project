@@ -7,6 +7,7 @@ import accountManage from '@/components/view/systemSetup/accountManage';
 import systemLog from '@/components/view/systemSetup/systemLog';
 import roleManage from '@/components/view/systemSetup/roleManage';
 import businessInform from '@/components/view/businessSetup/businessInform';
+import fourBusinessManage from '@/components/view/businessAccepted/400businessManage';
 
 Vue.use(Router)
 
@@ -63,6 +64,18 @@ export default new Router({
           component:roleManage
         }
       ]
-    }
+    },
+    {
+      path:'/businessAccepted',
+      name:'业务受理',
+      component:layout,
+      children:[
+        {
+          path:'400businessManage',
+          name:'400业务管理',
+          component:fourBusinessManage
+        },
+      ]
+    },
   ]
 })

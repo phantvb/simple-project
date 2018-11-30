@@ -13,6 +13,7 @@
   margin:20px;
   background-color: #ffffff;
 }
+<<<<<<< HEAD
 #businessInform .el-input-group__append, .el-input-group__prepend{
   padding: 0 10px!important;
 }
@@ -25,3 +26,85 @@
 #step_2 .person_data .el-upload--picture-card,#step_2 .person_data .el-upload-list__item-actions,#step_2 .person_data .el-upload-list__item{
   height: 120px;
 }
+=======
+/*账号管理*/
+.numForm .el-form .el-form-item{
+  width:30%;
+  float:left;
+}
+.numForm .el-form .el-form-item:last-child{
+  width:52%;
+  padding:20px 0;
+  margin-bottom: 0;
+}
+.numForm .el-form .searchBtn{
+  width:20% !important;
+  padding: 0 !important;
+}
+.numForm .el-form .searchBtn .el-form-item__content{
+  float:left;
+  margin-left:20px !important;
+}
+.el-pagination{
+  float:right;
+}
+
+/*全局弹窗头部背景*/
+.el-dialog__header{
+  overflow: hidden;
+  background-color: #F6F7FB;
+  padding: 10px 20px !important;
+}
+.el-dialog__header .el-dialog__title{
+  float: left;
+  font-size:14px;
+}
+ .addUserDialog .el-dialog__body{
+   padding:10px 20px !important;
+ }
+.addUserDialog .el-form{
+  overflow: hidden;
+}
+.accountMessage .el-form-item{
+  width:40%;
+  float:left;
+}
+.accountMessage .homeLocation{
+  width:100%;
+}
+.accountMessage .addUserRemark{
+  width:80%;
+}
+.accountMessage .homeLocation .el-form-item__content{
+  margin-left:0px;
+}
+.accountMessage .homeLocation .el-select {
+  width:24%;
+  margin-right:15px;
+  float:left;
+}
+/*系统日志*/
+.logForm .searchBtn .el-form-item__content{
+  margin-left:20px !important;
+  text-align: left;
+}
+.logForm .el-range-editor--mini.el-input__inner{
+  width:100%;
+}
+.LogSelect .el-form-item{
+  width:50%;
+  float:left;
+}
+/*400业务管理*/
+.entireForm .searchBtn .el-form-item__content{
+  margin-left:20px !important;
+  text-align: left;
+}
+.entireForm .el-range-editor--mini.el-input__inner{
+  width:100%;
+}
+.entireForm .el-form-item{
+  width:40%;
+  float:left;
+}
+>>>>>>> cf9e1fc469b42f825f3a23aa555813933e4f402e

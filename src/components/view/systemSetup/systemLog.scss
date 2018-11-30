@@ -1,0 +1,24 @@
+.logForm{
+  background-color:#F5F5F5;
+  padding:15px;
+  overflow: hidden;
+  margin-bottom:20px;
+  .searchInput{
+    overflow: hidden;
+  }
+}
+.logForm .el-form .el-form-item{
+  width:40%;
+  float:left;
+  margin-left:15px;
+}
+.LogTable{
+  overflow: hidden;
+  border-top: 1px dashed #cccccc;
+  padding:20px;
+  .LogSelect{
+    overflow: hidden;
+    //border:1px solid #172138;
+  }
+}
+
