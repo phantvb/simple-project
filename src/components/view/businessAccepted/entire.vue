@@ -48,6 +48,7 @@
               :value="item.value">
             </el-option>
           </el-select>
+          <el-button type="primary" plain size="mini">导出</el-button>
         </div>
       </div>
 
@@ -83,6 +84,19 @@
         <el-table-column
           prop="status"
           label="操作">
+          <template slot-scope="scope">
+            <el-button size="mini" type="text">详情</el-button>
+            <!--<router-link :to="{path:'/addEvent/'+3+'/'+scope.row.contactEvtId}">-->
+            <el-button size="mini" type="text">撤回</el-button>
+            <el-button size="mini" type="text">变更</el-button>
+            <el-button size="mini" type="text">注销</el-button>
+            <el-button size="mini" type="text">通过审核</el-button>
+            <el-button size="mini" type="text">驳回</el-button>
+            <el-button size="mini" type="text">编辑</el-button>
+            <!--</router-link>-->
+            <el-button size="mini" type="text">送审</el-button>
+            <el-button size="mini" type="text">删除</el-button>
+          </template>
         </el-table-column>
       </el-table>
     </div>
@@ -107,6 +121,7 @@
         form:{
           firmName:'',
           phoneNum:'',
+          time:'',
         },
         tableData: [{
           type: '业务受理',
@@ -133,7 +148,24 @@
           date:'2018-11-28',
           status:'等待送核'
         }],
+        statusOptions: [
+          {
+            value: '1',
+            label: '等待审核'
+          }, {
+            value: '2',
+            label: '待审核'
+          }, {
+            value: '3',
+            label: '审核通过'
+          },
+          {
+            value: '4',
+            label: '被驳回'
+          }
+        ],
         currentPage: 4,   //分页
+        accountStatus:'',
       };
     },
     components: {},
@@ -150,5 +182,5 @@
   }
 </script>
 <style lang="scss" scoped>
-  @import './entire.scss';
+  @import './400businessManage.scss';
 </style>
