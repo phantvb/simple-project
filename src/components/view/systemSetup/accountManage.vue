@@ -177,6 +177,12 @@
           prop="address"
           label="操作"
         >
+          <template slot-scope="scope">
+            <!--<router-link :to="{path:'/addEvent/'+3+'/'+scope.row.contactEvtId}">-->
+            <el-button size="mini" type="text">详情</el-button>
+            <!--</router-link>-->
+            <el-button size="mini" type="text">删除</el-button>
+          </template>
         </el-table-column>
 
       </el-table>
@@ -261,7 +267,7 @@
             label: '停用'
           }
         ],
-        accountStatus: '',
+        accountStatus: '',  //下拉框类型
         tableData3: [{
           account: '20160503',
           role: '管理员',
