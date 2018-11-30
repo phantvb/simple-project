@@ -35,17 +35,19 @@
                 安全设置
             </div>
             <div class="part">
-                <el-button type="text" class="button" @click="editPass">修改密码</el-button>
+                <el-button type="text" class="button" @click="editPass(true)">修改密码</el-button>
             </div>
         </section>
         <message :show="mesEdit" @close="editMes(false)"></message>
         <portrait :show="portraitEdit" @close="editPortrait(false)"></portrait>
+        <password :show="passEdit" @close="editPass(false)"></password>
     </div>
 </template>
 
 <script>
 import message from './dialog/message.vue'
 import portrait from './dialog/portrait.vue'
+import password from './dialog/password.vue'
 export default {
     name:'userCenter',
     data(){
@@ -56,7 +58,7 @@ export default {
         }
     },
     components:{
-        message,portrait
+        message,portrait,password
     },
     methods:{
         editMes(bol){
@@ -65,8 +67,8 @@ export default {
         editPortrait(bol){
             this.portraitEdit=bol;
         },
-        editPass(){
-            this.passEdit=true;
+        editPass(bol){
+            this.passEdit=bol;
         }
     }
 }

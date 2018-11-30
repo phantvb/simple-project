@@ -57,15 +57,10 @@ img{
 </style>
 <script>
 export default {
-    name:'message',
+    name:'portrait',
     data(){
         return {
             active:"1",
-            options:{
-                province:null,
-                city:null,
-                area:null
-            },
             dialogVisible:false,
         }
     },

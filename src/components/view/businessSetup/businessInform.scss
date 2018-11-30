@@ -1,0 +1,26 @@
+$padding:15px;
+.search ul{
+    overflow: hidden;
+    padding: $padding;
+    margin:0;
+    li{
+        margin-right: $padding;
+        list-style: none;
+        float: left;
+    }
+}
+.block{
+    padding: $padding;
+    .demonstration{
+        color: #999;
+        font-size: 12px;
+    }
+}
+section.title{
+    margin-top: $padding;
+    padding: $padding 0;
+    border-top:1px solid #eee;
+    &>div{
+        float: right
+    }
+}
