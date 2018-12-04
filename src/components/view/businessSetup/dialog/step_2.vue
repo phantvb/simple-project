@@ -25,7 +25,7 @@
                                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                             </el-upload>
                         </li>
-                        <li class="l2">
+                        <li class="l2 example">
                             <p class="grey fmini" style="margin-top:0px;">参考示例：</p>
                             <img class="examplew" src="../../../../assets/example_1.png" alt="">
                         </li>
@@ -47,52 +47,55 @@
                             <ul>
                                 <li class="l2">
                                     <el-upload
+                                        class="avatar-uploader exampleh"
                                         action="https://jsonplaceholder.typicode.com/posts/"
-                                        :auto-upload="false"
-                                        :limit="1"
-                                        list-type="picture-card"
-                                        :on-preview="handlePictureCardPreview"
-                                        :on-remove="handleRemove">
-                                        <i class="el-icon-plus"></i>
+                                        :show-file-list="false"
+                                        :on-success="handleAvatarSuccess"
+                                        :on-error="handleAvatarSuccess"
+                                        :before-upload="beforeAvatarUpload">
+                                        <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                     </el-upload>
                                 </li>
                                 <li class="l2">
                                     <el-upload
+                                        class="avatar-uploader exampleh"
                                         action="https://jsonplaceholder.typicode.com/posts/"
-                                        :auto-upload="false"
-                                        :limit="1"
-                                        list-type="picture-card"
-                                        :on-preview="handlePictureCardPreview"
-                                        :on-remove="handleRemove">
-                                        <i class="el-icon-plus"></i>
+                                        :show-file-list="false"
+                                        :on-success="handleAvatarSuccess"
+                                        :on-error="handleAvatarSuccess"
+                                        :before-upload="beforeAvatarUpload">
+                                        <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                     </el-upload>
                                 </li>
                             </ul>
                             <ul>
                                 <li class="l2">
                                     <el-upload
+                                        class="avatar-uploader exampleh"
                                         action="https://jsonplaceholder.typicode.com/posts/"
-                                        :auto-upload="false"
-                                        :limit="1"
-                                        list-type="picture-card"
-                                        :on-preview="handlePictureCardPreview"
-                                        :on-remove="handleRemove">
-                                        <i class="el-icon-plus"></i>
+                                        :show-file-list="false"
+                                        :on-success="handleAvatarSuccess"
+                                        :on-error="handleAvatarSuccess"
+                                        :before-upload="beforeAvatarUpload">
+                                        <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                     </el-upload>
                                 </li>
                             </ul>
                         </li>
                         <li class="l2">
                             <ul>
-                                <li class="l2">
+                                <li class="l2 example">
                                     <img class="exampleh" src="../../../../assets/example_2.png" alt="">
                                 </li>
-                                <li class="l2">
+                                <li class="l2 example">
                                     <img class="exampleh" src="../../../../assets/example_3.png" alt="">
                                 </li>
                             </ul>
                             <ul>
-                                <li class="l2">
+                                <li class="l2 example">
                                     <img class="exampleh" src="../../../../assets/example_4.png" alt="">
                                 </li>
                             </ul>
@@ -131,14 +134,14 @@
     width: 120px;
     height: 148px;
   }
-  .examplew .avatar-uploader-icon{
-    width: 120px;
-    height: 148px;
-    line-height: 148px;
+  .exampleh .avatar-uploader-icon{
+    width: 148px;
+    height: 120px;
+    line-height: 120px;
   }
-  .examplew .avatar{
-    width: 120px;
-    height: 148px;
+  .exampleh .avatar{
+    width: 148px;
+    height: 120px;
   }
   .avatar-uploader-icon {
     font-size: 28px;

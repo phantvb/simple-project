@@ -1,0 +1,20 @@
+$labelW:100px;
+$padding:15px;
+footer{
+    padding-top: $padding;
+    border-top: 1px solid #eee;
+}
+#favourable{
+    .form_item{
+        overflow: hidden;
+        line-height: 28px;
+        margin-bottom: $padding;
+        .form_title{
+            width: $labelW;
+            float: left;
+        }
+        .form_con{
+            margin-left: $labelW;
+        }
+    }
+}

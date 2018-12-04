@@ -1,9 +1,9 @@
 <template>
   <el-container>
-    <el-header style="padding:0px;">
+    <el-header style="padding:0px;float:left;">
       <div class="header"></div>
     </el-header>
-    <el-container>
+    <el-container class="page-component__scroll">
       <!--左侧导航栏-->
       <el-aside width="210px">
         <el-menu default-active="1-4-1" class="el-menu-vertical" @open="handleOpen" @close="handleClose"
@@ -12,8 +12,8 @@
         </el-menu>
       </el-aside>
       <!--右侧空白页-->
-      <el-main>
-        <router-view/>
+      <el-main class="page-component__scroll body">
+        <router-view class="content" />
       </el-main>
     </el-container>
   </el-container>
@@ -25,6 +25,12 @@
   }
 </style>
 <style scoped>
+  .page-component__scroll {
+      height: calc(-60px + 100vh);
+  }
+  .content{
+    background-color: #fff;
+  }
   .header {
     height: 100%;
     background-color: #111A2B;

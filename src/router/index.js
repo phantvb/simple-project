@@ -7,6 +7,10 @@ import accountManage from '@/components/view/systemSetup/accountManage';
 import systemLog from '@/components/view/systemSetup/systemLog';
 import roleManage from '@/components/view/systemSetup/roleManage';
 import businessInform from '@/components/view/businessSetup/businessInform';
+import businessDetail from '@/components/view/businessSetup/businessDetail';
+import accountingManage from '@/components/view/accountingManage/accountingManage';
+import billManage from '@/components/view/accountingManage/billManage';
+import chargeManage from '@/components/view/accountingManage/chargeManage';
 import fourBusinessManage from '@/components/view/businessAccepted/400businessManage';
 
 Vue.use(Router)
@@ -41,7 +45,42 @@ export default new Router({
           component:businessInform
         },
       ],
-
+    },
+    {
+      path:'/businessInform',
+      name:'layout',
+      component:layout,
+      hidden:true,
+      children:[
+        {
+          path:'businessDetail',
+          name:'企业审核详情',
+          hidden:true,
+          component:businessDetail
+        }
+      ],
+    },
+    {
+      path:'/accountingManage',
+      name:'账务管理',
+      component:layout,
+      children:[
+        {
+          path:'accountingManage',
+          name:'账务管理',
+          component:accountingManage
+        },
+        {
+          path:'billManage',
+          name:'账单管理',
+          component:billManage
+        },
+        {
+          path:'chargeManage',
+          name:'充值管理',
+          component:chargeManage
+        }
+      ],
     },
     {
       path:'/systemSetup',
