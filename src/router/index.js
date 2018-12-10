@@ -15,7 +15,8 @@ import fourBusinessManage from '@/components/view/businessAccepted/400businessMa
 import comboSet from '@/components/view/operateManage/ComboSet';
 import noticeManage from '@/components/view/operateManage/noticeManage';
 import lineCostSetting from '@/components/view/operateManage/lineCostSetting';
-import messageCenter from '@/components/view/messageCenter/messageCenter'
+import messageCenter from '@/components/view/messageCenter/messageCenter';
+import numPoolManage from '@/components/view/operateManage/numPoolManage';
 
 Vue.use(Router)
 
@@ -144,6 +145,11 @@ export default new Router({
           path: 'lineCostSetting',
           name: '线路成本设置',
           component: lineCostSetting
+        },
+        {
+          path:'numPoolManage',
+          name:'号码池管理',
+          component:numPoolManage
         }
       ]
     }

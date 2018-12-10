@@ -16,7 +16,7 @@
           <div style="clear: both;"></div>
           <div style="margin-top: 15px;">
             <el-collapse v-model="activeNames" @change="handleChange">
-              <el-collapse-item title="自主直销" name="1">
+              <el-collapse-item title="自助直销" name="1">
                 <div>
                   <el-row>
                     <el-col :span="4" v-for="(o, index) in 4" :key="o" :offset="1">
@@ -66,7 +66,7 @@
           <div style="clear: both;"></div>
           <div style="margin-top: 15px;">
             <el-collapse v-model="activeNames" @change="handleChange">
-              <el-collapse-item title="自主直销" name="3">
+              <el-collapse-item title="自助直销" name="3">
                 <div>
                   <el-row>
                     <el-col :span="4" v-for="(o, index) in 4" :key="o" :offset="1">
@@ -110,7 +110,7 @@
           <div style="clear: both;"></div>
           <div style="margin-top: 15px;">
             <el-collapse v-model="activeNames" @change="handleChange">
-              <el-collapse-item title="自主直销" name="5">
+              <el-collapse-item title="自助直销" name="5">
                 <div>
                   <el-row>
                     <el-col :span="4" v-for="(o, index) in 4" :key="o" :offset="1">
@@ -147,7 +147,7 @@
           <div style="clear: both;"></div>
           <div style="margin-top: 15px;">
             <el-collapse v-model="activeNames" @change="handleChange">
-              <el-collapse-item title="自主直销" name="7">
+              <el-collapse-item title="自助直销" name="7">
                 <div>
                   <el-row>
                     <el-col :span="4" v-for="(o, index) in 4" :key="o" :offset="1">
@@ -224,7 +224,7 @@
 
             <el-form-item label="渠道：">
               <el-checkbox-group v-model="addFeesForm.checkList">
-                <el-checkbox label="自主直销" class="el-checkbox"></el-checkbox>
+                <el-checkbox label="自助直销" class="el-checkbox"></el-checkbox>
                 <el-checkbox label="渠道"></el-checkbox>
               </el-checkbox-group>
             </el-form-item>
@@ -269,7 +269,7 @@
 
             <el-form-item label="渠道：">
               <el-checkbox-group v-model="AddComboForm.checkList">
-                <el-checkbox label="自主直销" class="el-checkbox"></el-checkbox>
+                <el-checkbox label="自助直销" class="el-checkbox"></el-checkbox>
                 <el-checkbox label="渠道"></el-checkbox>
               </el-checkbox-group>
             </el-form-item>
@@ -313,7 +313,7 @@
 
             <el-form-item label="渠道：">
               <el-checkbox-group v-model="addDiscountForm.checkList">
-                <el-checkbox label="自主直销" class="el-checkbox"></el-checkbox>
+                <el-checkbox label="自助直销" class="el-checkbox"></el-checkbox>
                 <el-checkbox label="渠道"></el-checkbox>
               </el-checkbox-group>
             </el-form-item>
@@ -347,7 +347,7 @@
 
             <el-form-item label="渠道：">
               <el-checkbox-group v-model="addTimePacketForm.checkList">
-                <el-checkbox label="自主直销" class="el-checkbox"></el-checkbox>
+                <el-checkbox label="自助直销" class="el-checkbox"></el-checkbox>
                 <el-checkbox label="渠道"></el-checkbox>
               </el-checkbox-group>
             </el-form-item>
@@ -384,7 +384,7 @@
           duration: '',
           exceeding: '',
           content: '',
-          checkList: ['自主直销', '渠道']
+          checkList: ['自助直销', '渠道']
         },
         AddComboForm: {
           name: '',
@@ -392,7 +392,7 @@
           unit: '',
           content: '',
           radio: '1',
-          checkList: ['自主直销', '渠道']
+          checkList: ['自助直销', '渠道']
         },
         addDiscountForm: {
           rechargeFee: '',
@@ -402,12 +402,12 @@
             label: '满送'
           }],
           value: '',
-          checkList: ['自主直销', '渠道']
+          checkList: ['自助直销', '渠道']
         },
         addTimePacketForm: {
           rechargeFee: '100',
           time: '100',
-          checkList: ['自主直销', '渠道']
+          checkList: ['自助直销', '渠道']
         }
       }
     },

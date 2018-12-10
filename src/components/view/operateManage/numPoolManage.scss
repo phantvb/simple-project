@@ -1,0 +1,12 @@
+$padding: 15px;
+$blue: #409EFF;
+
+#numPoolManage {
+  padding: $padding;
+}
+
+header {
+  padding: 0px $padding $padding;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+}
