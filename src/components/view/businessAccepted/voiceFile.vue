@@ -19,5 +19,5 @@
   }
 </script>
 <style lang="scss" scoped>
-  @import './voiceFile.scss';
+  @import './400businessManage.scss';
 </style>
