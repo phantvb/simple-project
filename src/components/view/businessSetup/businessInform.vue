@@ -169,10 +169,8 @@ export default {
         
         var arr=[12312,213312,111];
         
-        this.$ajax.post('/user/apiLogin',{'username':'jeq','password':'123456'}).then(res=>{
-            this.$ajax.post('/tariffPackage/testArray',{'strings':arr}).then(ires=>{
-                
-            })
+        this.$ajax.post('/vos/user/login',{'username':'jeq','password':'123456','code':'1233'}).then(res=>{
+
         })
         
     },

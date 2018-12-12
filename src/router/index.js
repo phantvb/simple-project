@@ -11,6 +11,11 @@ import businessDetail from '@/components/view/businessSetup/businessDetail';
 import accountingManage from '@/components/view/accountingManage/accountingManage';
 import billManage from '@/components/view/accountingManage/billManage';
 import chargeManage from '@/components/view/accountingManage/chargeManage';
+import numManage from '@/components/view/numManage/numManage';
+import blacklistManage from '@/components/view/numManage/blacklistManage';
+import ObjCodeManage from '@/components/view/numManage/ObjCodeManage';
+import ticketManage from '@/components/view/numManage/ticketManage';
+import voiceFileManage from '@/components/view/numManage/voiceFileManage';
 import fourBusinessManage from '@/components/view/businessAccepted/400businessManage';
 
 Vue.use(Router)
@@ -79,6 +84,38 @@ export default new Router({
           path:'chargeManage',
           name:'充值管理',
           component:chargeManage
+        }
+      ],
+    },
+    {
+      path:'/numManage',
+      name:'号码管理',
+      component:layout,
+      children:[
+        {
+          path:'numManage',
+          name:'号码管理',
+          component:numManage
+        },
+        {
+          path:'ticketManage',
+          name:'话单管理',
+          component:ticketManage
+        },
+        {
+          path:'voiceFileManage',
+          name:'语音文件管理',
+          component:voiceFileManage
+        },
+        {
+          path:'blacklistManage',
+          name:'黑名单管理',
+          component:blacklistManage
+        },
+        {
+          path:'ObjCodeManage',
+          name:'目的码管理',
+          component:ObjCodeManage
         }
       ],
     },

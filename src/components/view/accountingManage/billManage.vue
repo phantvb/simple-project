@@ -10,13 +10,13 @@
             <div class="search">
                 <ul>
                     <li>
-                        <el-input v-model="form.name" placeholder="请输入内容" size="mini" style="width:200px;">
-                            <template slot="prepend" style="width:80px;">400号码：</template>
+                        <el-input v-model="form.name" placeholder="请输入内容" size="mini">
+                            <template slot="prepend" style="width:80px;">400号码</template>
                         </el-input>
                     </li>
                     <li>
                         <el-input v-model="form.person" placeholder="请输入内容" size="mini">
-                            <template slot="prepend">企业名称：</template>
+                            <template slot="prepend">企业名称</template>
                         </el-input>
                     </li>
                     <li>
@@ -54,6 +54,10 @@
             :data="tableData"
             style="width: 100%;margin-bottom:15px;">
                 <el-table-column
+                    type="selection"
+                    width="55">
+                </el-table-column>
+                <el-table-column
                     prop="type"
                     label="月份"
                     min-width="80">
@@ -61,12 +65,12 @@
                 <el-table-column
                     prop="name"
                     label="企业名称"
-                    min-width="200">
+                    min-width="100">
                 </el-table-column>
                 <el-table-column
                     prop="number"
                     label="400号码"
-                    min-width="150">
+                    min-width="100">
                 </el-table-column>
                 <el-table-column
                     prop="person"
@@ -76,7 +80,7 @@
                 <el-table-column
                     prop="date"
                     label="套餐内计费"
-                    min-width="80">
+                    min-width="120">
                 </el-table-column>
                 <el-table-column
                     prop="status"
@@ -86,12 +90,12 @@
                 <el-table-column
                     prop="status"
                     label="时长包计费"
-                    min-width="80">
+                    min-width="120">
                 </el-table-column>
                 <el-table-column
                     prop="status"
                     label="增值业务费用"
-                    min-width="80">
+                    min-width="150">
                 </el-table-column>
                 <el-table-column
                     prop="status"
@@ -103,10 +107,7 @@
                     label="操作"
                     min-width="200">
                     <template slot-scope="scope">
-                        <el-button size="mini" type="text">添加优惠</el-button>
-                        <el-button size="mini" type="text">确认到账</el-button>
-                        <el-button size="mini" type="text">修改</el-button>
-                        <el-button size="mini" type="text">删除</el-button>
+                        <el-button size="mini" type="text" @click="showBillDetail(true)">详情</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -115,6 +116,10 @@
             :data="tableData"
             style="width: 100%;margin-bottom:15px;">
                 <el-table-column
+                    type="selection"
+                    width="55">
+                </el-table-column>
+                <el-table-column
                     prop="type"
                     label="月份"
                     min-width="80">
@@ -122,37 +127,37 @@
                 <el-table-column
                     prop="name"
                     label="总时长（秒）"
-                    min-width="200">
+                    min-width="100">
                 </el-table-column>
                 <el-table-column
                     prop="number"
                     label="总分钟数"
-                    min-width="150">
+                    min-width="100">
                 </el-table-column>
                 <el-table-column
                     prop="date"
                     label="套餐内计费"
-                    min-width="80">
-                </el-table-column>
-                <el-table-column
-                    prop="status"
-                    label="超额计费"
                     min-width="120">
                 </el-table-column>
                 <el-table-column
                     prop="status"
+                    label="超额计费"
+                    min-width="100">
+                </el-table-column>
+                <el-table-column
+                    prop="status"
                     label="时长包计费"
-                    min-width="80">
+                    min-width="120">
                 </el-table-column>
                 <el-table-column
                     prop="status"
                     label="费用合计"
-                    min-width="80">
+                    min-width="100">
                 </el-table-column>
                 <el-table-column
                     prop="status"
                     label="线路成本"
-                    min-width="80">
+                    min-width="100">
                 </el-table-column>
             </el-table>
             <el-pagination
@@ -165,19 +170,24 @@
                 :total="page.total">
             </el-pagination>
         </el-tabs>
+        <billDetail :show="billDetail" @close="showBillDetail(false)"></billDetail>
     </div>
 </template>
 <style lang="scss" scoped>
 @import './common.scss';
 </style>
 <script>
+import billDetail from './component/billDetail.vue'
 export default {
     name:'billManage',
+    components:{
+        billDetail
+    },
     data(){
         return {
             active:'1',
             billType:0,
-            addCompanys:false,
+            billDetail:false,
             form:{
                 name:'',
                 person:'',
@@ -218,6 +228,9 @@ export default {
         },
         billTypeSel(type){
             this.billType=type;
+        },
+        showBillDetail(bol,data){
+            this.billDetail=bol;
         }
     }
 }

@@ -56,6 +56,16 @@
 #businessInform .el-input-group__append, .el-input-group__prepend{
   padding: 0 10px!important;
 }
+#billDetail .el-table td,#billDetail .el-table th{
+  padding: 0;
+}
+#billDetail .el-table__empty-block{
+  min-height: 28px;
+}
+#billDetail .lightblue td,#billDetail .lightblue th{
+  background-color: #ecf5ff;
+}
+
 #company_dialog .el-dialog{
   width: 75%;
 }

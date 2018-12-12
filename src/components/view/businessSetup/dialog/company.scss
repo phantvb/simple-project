@@ -1,19 +1,7 @@
-$blue:#409EFF;
-$grey:#999;
-$padding:15px;
+
 .title{
-    position: relative;
     margin: $padding;
-    padding: 0px $padding;
-    &::before{
-        content: '';
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 2px;
-        height: 100%;
-        background-color: $blue;
-    }
+    @include title-atten;
 }
 .block{
     padding: $padding;
@@ -22,19 +10,9 @@ $padding:15px;
     }
 }
 ul{
-    overflow: hidden;
-    padding: 0;
-    margin: 0;
+    @include ul-col;
     li{
-        list-style: none;
-        float: left;
         margin-bottom: $padding;
-    }
-    li.l2{
-        width: 50%;
-    }
-    li.l3{
-        width: 33%;
     }
     p{
         display: inline-block;
