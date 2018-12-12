@@ -13,18 +13,18 @@
             <div class="search">
                 <ul>
                     <li>
+                        <span class="demonstration">企业名称：</span>
                         <el-input v-model="form.name" placeholder="请输入内容" size="mini" style="width:200px;">
-                            <template slot="prepend" style="width:80px;">企业名称：</template>
                         </el-input>
                     </li>
                     <li>
+                        <span class="demonstration">法人：</span>
                         <el-input v-model="form.person" placeholder="请输入内容" size="mini">
-                            <template slot="prepend">法人：</template>
                         </el-input>
                     </li>
                     <li>
+                        <span class="demonstration">证件编号：</span>
                         <el-input v-model="form.number" placeholder="请输入内容" size="mini">
-                            <template slot="prepend">证件编号：</template>
                         </el-input>
                     </li>
                 </ul>

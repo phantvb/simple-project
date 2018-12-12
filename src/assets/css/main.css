@@ -177,3 +177,6 @@
 .acceptMsg .identity .el-select .el-input{
   width:100%;
 }
+#accountingManage .search .el-input,#billManage .search .el-input,#chargeManage .search .el-input,#businessInform .search .el-input,#numManage .search .el-input,#ticketManage .search .el-input,#numManage .search .el-input{
+  width:auto;
+}

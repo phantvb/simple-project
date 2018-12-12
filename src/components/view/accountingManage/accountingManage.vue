@@ -6,13 +6,13 @@
             <div class="search">
                 <ul>
                     <li>
+                        <span class="demonstration">400号码：</span>
                         <el-input v-model="form.name" placeholder="请输入内容" size="mini">
-                            <template slot="prepend" style="width:80px;">400号码</template>
                         </el-input>
                     </li>
                     <li>
+                        <span class="demonstration">企业名称：</span>
                         <el-input v-model="form.person" placeholder="请输入内容" size="mini">
-                            <template slot="prepend">企业名称</template>
                         </el-input>
                     </li>
                     <li>

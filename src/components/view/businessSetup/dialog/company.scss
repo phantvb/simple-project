@@ -13,6 +13,8 @@ ul{
     @include ul-col;
     li{
         margin-bottom: $padding;
+        box-sizing: border-box;
+        padding-right: $padding;
     }
     p{
         display: inline-block;
