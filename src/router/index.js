@@ -133,10 +133,6 @@ export default new Router({
       path:'/systemSetup',
       name:'系统设置',
       component:layout,
-      children:[
-      path: '/systemSetup',
-      name: '系统设置',
-      component: layout,
       children: [
         {
           path: 'accountManage',

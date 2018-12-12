@@ -80,9 +80,9 @@
           password: this.loginForm.pass,
           imageCode: this.loginForm.code
         }).then(resp => {
+          console.log(resp)
           _this.loading = false;
           if (resp.code === 200) {
-            window.open(console.log(resp));
             _this.$router.push('/layout');
           }
         });
