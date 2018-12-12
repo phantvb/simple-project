@@ -1,6 +1,6 @@
 <template>
     <div id="billDetail">
-        <el-dialog title="添加优惠" class="left" :visible.sync="dialogVisible" @close="close" v-if="dialogVisible">
+        <el-dialog title="号码月账单详情" class="left" :visible.sync="dialogVisible" @close="close" v-if="dialogVisible">
             <div class="title">
                 基本信息
             </div>

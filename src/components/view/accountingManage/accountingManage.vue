@@ -137,7 +137,7 @@
                     min-width="200">
                     <template slot-scope="scope">
                         <el-button size="mini" type="text" @click="addfavourable(true)">添加优惠</el-button>
-                        <el-button size="mini" type="text">确认到账</el-button>
+                        <el-button size="mini" type="text" @click="addtransfer(true)">确认到账</el-button>
                         <el-button size="mini" type="text">修改</el-button>
                         <el-button size="mini" type="text">删除</el-button>
                     </template>
@@ -154,6 +154,7 @@
             </el-pagination>
         </el-tabs>
         <favourable :show="favourable" @close="addfavourable(false)"></favourable>
+        <transfer :show="transfer" @close="addtransfer(false)"></transfer>
     </div>
 </template>
 <style lang="scss" scoped>
@@ -161,15 +162,17 @@
 </style>
 <script>
 import favourable from './component/favourable.vue'
+import transfer from './component/transfer.vue'
 export default {
     name:'accountingManage',
     components:{
-        favourable
+        favourable,transfer
     },
     data(){
         return {
             active:'1',
             favourable:false,
+            transfer:false,
             form:{
                 name:'',
                 person:'',
@@ -204,6 +207,9 @@ export default {
     methods:{
         addfavourable(bol){
             this.favourable=bol;
+        },
+        addtransfer(bol){
+            this.transfer=bol;
         },
         handleSizeChange(){
 

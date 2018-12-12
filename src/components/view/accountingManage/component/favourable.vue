@@ -75,7 +75,7 @@ export default {
     },
     data(){
         return {
-            dialogVisible:false,
+            dialogVisible:true,
             type: '1',
             favourable:'',
             options: [{
