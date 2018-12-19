@@ -11,8 +11,16 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
+      // '/data': {
+      //   target: 'http://172.20.10.3:5480',
+      //   //changeOrigin:true,
+      //   pathRewrite: {
+      //     '^/data': '/'
+      //   }
+      // },
       '/data': {
-        target: 'http://172.20.10.3:5480',
+        // target: 'http://172.20.10.3:5480',
+        target: 'http://192.168.0.154:5480',
         //changeOrigin:true,
         pathRewrite: {
           '^/data': '/'
@@ -28,7 +36,7 @@ module.exports = {
     notifyOnErrors: true,
     poll: false, // https://webpack.js.org/configuration/dev-server/#devserver-watchoptions-
 
-    
+
     /**
      * Source Maps
      */

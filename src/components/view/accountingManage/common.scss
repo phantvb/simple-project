@@ -1,6 +1,4 @@
-$padding:15px;
 $plain:#999;
-$blue:#409EFF;
 .search ul{
     overflow: hidden;
     padding: $padding $padding 0;
@@ -14,15 +12,11 @@ $blue:#409EFF;
 .block{
     padding: $padding;
 }
-.demonstration{
-    color: #999;
-    font-size: 12px;
-}
 .lineTop{
     margin-top: $padding;
     border-top:1px solid #ececec;
 }
-#accountingManage{
+#accountingManage,#chargeManage,#bollotManage{
     padding: $padding;
 }
 #billManage{

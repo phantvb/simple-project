@@ -1,5 +1,4 @@
-$padding:15px;
-$blue:#409EFF;
+
 header{
     padding:0px $padding $padding;
     border-bottom:1px solid #eee;
@@ -28,17 +27,7 @@ header{
     }
 }
 .title{
-    position: relative;
-    padding: 0px $padding;
-    &::before{
-        content: '';
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 2px;
-        height: 100%;
-        background-color: $blue;
-    }
+    @include title-atten;
 }
 .edit{
     float: right;
@@ -50,10 +39,6 @@ header{
 
 .block{
     padding: $padding;
-    .demonstration{
-        color: #999;
-        font-size: 12px;
-    }
 }
 #businessDetail{
     overflow: hidden;

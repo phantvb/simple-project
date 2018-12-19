@@ -37,7 +37,7 @@
         <div style="float:right">
           <el-form ref="LogSelectForm" :model="LogSelectForm" label-width="100px">
             <el-form-item label="操作类型：">
-              <el-select v-model="accountStatus" placeholder="请选择" size="mini">
+              <el-select v-model="operateType" placeholder="请选择" size="mini">
                 <el-option
                   v-for="item in operateTypeList"
                   :key="item.value"
@@ -48,7 +48,7 @@
             </el-form-item>
 
             <el-form-item label="操作角色：">
-              <el-select v-model="accountStatus" placeholder="请选择" size="mini">
+              <el-select v-model="operateRole" placeholder="请选择" size="mini">
                 <el-option
                   v-for="item in operateRoleList"
                   :key="item.value"
@@ -181,6 +181,8 @@
           remark:'账号hz.hanj审核企业的资料'
         }],
         currentPage:4,
+        operateType:'', //操作类型
+        operateRole:'', //操作角色
       }
     },
     methods:{

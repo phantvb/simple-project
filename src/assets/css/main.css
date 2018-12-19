@@ -56,6 +56,16 @@
 #businessInform .el-input-group__append, .el-input-group__prepend{
   padding: 0 10px!important;
 }
+.lightblueTable .el-table td,.lightblueTable .el-table th{
+  padding: 2px 0;
+}
+.lightblueTable .el-table__empty-block{
+  min-height: 28px;
+}
+.lightblueTable .lightblue td,.lightblueTable .lightblue th{
+  background-color: #ecf5ff;
+}
+
 #company_dialog .el-dialog{
   width: 75%;
 }
@@ -134,14 +144,39 @@
   float:left;
 }
 /*400业务管理*/
-.entireForm .searchBtn .el-form-item__content{
+.entireForm .searchBtn .el-form-item__content,.handlingForm .searchBtn .el-form-item__content{
   margin-left:20px !important;
   text-align: left;
 }
-.entireForm .el-range-editor--mini.el-input__inner{
+.entireForm .el-range-editor--mini.el-input__inner,.handlingForm .el-range-editor--mini.el-input__inner{
   width:100%;
 }
-.entireForm .el-form-item{
+.entireForm .el-form-item,.handlingForm .el-form-item{
   width:40%;
   float:left;
+}
+.handlingForm .searchBtn{
+  width:20%;
+  float:left;
+}
+.acceptMsg .firmName{
+  width:80%;
+}
+.acceptMsg .identity{
+  width:80%;
+}
+.acceptMsg .identity .el-select{
+  width:20%;
+  float:left;
+  margin-right:1%;
+}
+.acceptMsg .identity .el-input{
+  width:79%;
+  float:left;
+}
+.acceptMsg .identity .el-select .el-input{
+  width:100%;
+}
+.managerFormTitle .search .el-input{
+  width:auto;
 }

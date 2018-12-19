@@ -61,7 +61,7 @@
     </div>
 </template>
 <style lang="scss" scoped>
-@import './common.scss'
+@import './common.scss';
 </style>
 
 <script>
@@ -75,7 +75,7 @@ export default {
     },
     data(){
         return {
-            dialogVisible:true,
+            dialogVisible:false,
             type: '1',
             favourable:'',
             options: [{

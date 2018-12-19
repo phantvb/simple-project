@@ -1,18 +1,18 @@
 <template>
-    <div id="accountingManage">
+    <div id="accountingManage" class="managerFormTitle">
         <el-tabs v-model="active">
             <el-tab-pane label="自助直销" name="1"></el-tab-pane>
             <el-tab-pane label="渠道" name="2"></el-tab-pane>
             <div class="search">
                 <ul>
                     <li>
-                        <el-input v-model="form.name" placeholder="请输入内容" size="mini" style="width:200px;">
-                            <template slot="prepend" style="width:80px;">400号码：</template>
+                        <span class="demonstration">400号码：</span>
+                        <el-input v-model="form.name" placeholder="请输入内容" size="mini">
                         </el-input>
                     </li>
                     <li>
+                        <span class="demonstration">企业名称：</span>
                         <el-input v-model="form.person" placeholder="请输入内容" size="mini">
-                            <template slot="prepend">企业名称：</template>
                         </el-input>
                     </li>
                     <li>
@@ -137,7 +137,7 @@
                     min-width="200">
                     <template slot-scope="scope">
                         <el-button size="mini" type="text" @click="addfavourable(true)">添加优惠</el-button>
-                        <el-button size="mini" type="text">确认到账</el-button>
+                        <el-button size="mini" type="text" @click="addtransfer(true)">确认到账</el-button>
                         <el-button size="mini" type="text">修改</el-button>
                         <el-button size="mini" type="text">删除</el-button>
                     </template>
@@ -154,6 +154,7 @@
             </el-pagination>
         </el-tabs>
         <favourable :show="favourable" @close="addfavourable(false)"></favourable>
+        <transfer :show="transfer" @close="addtransfer(false)"></transfer>
     </div>
 </template>
 <style lang="scss" scoped>
@@ -161,15 +162,17 @@
 </style>
 <script>
 import favourable from './component/favourable.vue'
+import transfer from './component/transfer.vue'
 export default {
     name:'accountingManage',
     components:{
-        favourable
+        favourable,transfer
     },
     data(){
         return {
             active:'1',
             favourable:false,
+            transfer:false,
             form:{
                 name:'',
                 person:'',
@@ -204,6 +207,9 @@ export default {
     methods:{
         addfavourable(bol){
             this.favourable=bol;
+        },
+        addtransfer(bol){
+            this.transfer=bol;
         },
         handleSizeChange(){
 

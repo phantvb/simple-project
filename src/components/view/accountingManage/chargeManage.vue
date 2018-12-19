@@ -1,34 +1,23 @@
 <template>
-    <div id="accountingManage">
+    <div id="chargeManage" class="managerFormTitle">
         <el-tabs v-model="active">
             <el-tab-pane label="自助直销" name="1"></el-tab-pane>
             <el-tab-pane label="渠道" name="2"></el-tab-pane>
             <div class="search">
                 <ul>
                     <li>
-                        <el-input v-model="form.name" placeholder="请输入内容" size="mini" style="width:200px;">
-                            <template slot="prepend" style="width:80px;">400号码：</template>
+                        <span class="demonstration">400号码：</span>
+                        <el-input v-model="form.name" placeholder="请输入内容" size="mini" style="min-width:200px;">
                         </el-input>
                     </li>
                     <li>
+                        <span class="demonstration">企业名称：</span>
                         <el-input v-model="form.person" placeholder="请输入内容" size="mini">
-                            <template slot="prepend">企业名称：</template>
                         </el-input>
-                    </li>
-                    <li>
-                        <span class="demonstration">套餐：</span>
-                        <el-select v-model="form.number" placeholder="请选择" size="mini">
-                            <el-option
-                            v-for="item in options"
-                            :key="item.value"
-                            :label="item.label"
-                            :value="item.value">
-                            </el-option>
-                        </el-select>
                     </li>
                 </ul>
                 <div class="block left">
-                    <span class="demonstration">起止时间：</span>
+                    <span class="demonstration">充值时间：</span>
                     <el-date-picker
                     style="margin-right:15px;"
                     v-model="form.date"
@@ -42,27 +31,31 @@
                     <el-button type="primary" plain size="mini" style="width:80px;">重置</el-button>
                 </div>
             </div>
-            <section class="right block">
-                <el-button type="primary" plain size="mini">导出列表</el-button>
-                <el-button type="primary" plain size="mini">导出详单</el-button>
+            <section class="right block lineTop">
+                <el-button type="primary" style="float:left" size="mini" @click="showcharge(true)"><i class="el-icon-plus"></i> 新增充值</el-button>
+                <el-button type="primary" plain size="mini">导出</el-button>
             </section>
             <el-table
             :data="tableData"
             style="width: 100%;margin-bottom:15px;">
                 <el-table-column
+                    type="selection"
+                    width="55">
+                </el-table-column>
+                <el-table-column
                     prop="type"
-                    label="400号码"
-                    min-width="80">
+                    label="企业名称"
+                    min-width="120">
                 </el-table-column>
                 <el-table-column
                     prop="name"
-                    label="企业名称"
-                    min-width="200">
+                    label="400号码"
+                    min-width="100">
                 </el-table-column>
                 <el-table-column
                     prop="number"
-                    label="套餐"
-                    min-width="150">
+                    label="时长包"
+                    min-width="120">
                 </el-table-column>
                 <el-table-column
                     prop="person"
@@ -71,44 +64,18 @@
                 </el-table-column>
                 <el-table-column
                     prop="date"
-                    label="单位"
-                    min-width="80">
+                    label="充值金额"
+                    min-width="100">
                 </el-table-column>
                 <el-table-column
                     prop="status"
-                    label="金额（元）"
-                    min-width="120">
+                    label="充值时间"
+                    min-width="100">
                 </el-table-column>
                 <el-table-column
                     prop="status"
-                    label="起止时间"
-                    min-width="80">
-                </el-table-column>
-                <el-table-column
-                    prop="status"
-                    label="实收"
-                    min-width="80">
-                </el-table-column>
-                <el-table-column
-                    prop="status"
-                    label="到账时间"
-                    min-width="80">
-                </el-table-column>
-                <el-table-column
-                    prop="status"
-                    label="备注"
-                    min-width="80">
-                </el-table-column>
-                <el-table-column
-                    prop="name"
-                    label="操作"
-                    min-width="200">
-                    <template slot-scope="scope">
-                        <el-button size="mini" type="text">添加优惠</el-button>
-                        <el-button size="mini" type="text">确认到账</el-button>
-                        <el-button size="mini" type="text">修改</el-button>
-                        <el-button size="mini" type="text">删除</el-button>
-                    </template>
+                    label="操作员"
+                    min-width="100">
                 </el-table-column>
             </el-table>
             <el-pagination
@@ -121,18 +88,23 @@
                 :total="page.total">
             </el-pagination>
         </el-tabs>
+        <charge :show="addcharge" @close="showcharge(false)"></charge>
     </div>
 </template>
 <style lang="scss" scoped>
 @import './common.scss';
 </style>
 <script>
+import charge from './component/charge.vue';
 export default {
     name:'chargeManage',
+    components:{
+        charge
+    },
     data(){
         return {
             active:'1',
-            addCompanys:false,
+            addcharge:false,
             form:{
                 name:'',
                 person:'',
@@ -165,6 +137,10 @@ export default {
         }
     },
     methods:{
+        showcharge(bol){
+            console.log(bol)
+            this.addcharge=bol;
+        },
         handleSizeChange(){
 
         },

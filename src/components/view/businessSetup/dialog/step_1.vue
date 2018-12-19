@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div id="step_1">
         <el-form ref="form" :model="form" label-width="80px">
             <div class="title">
                 企业基本信息
@@ -42,33 +42,49 @@
                     </li>
                 </ul>
                 <el-form-item label="注册地址">
-                    <el-select v-model="form.region" placeholder="请选择" size="mini">
-                        <el-option label="区域一" value="shanghai"></el-option>
-                        <el-option label="区域二" value="beijing"></el-option>
-                    </el-select>
-                    <el-select v-model="form.region" placeholder="请选择" size="mini">
-                        <el-option label="区域一" value="shanghai"></el-option>
-                        <el-option label="区域二" value="beijing"></el-option>
-                    </el-select>
-                    <el-select v-model="form.region" placeholder="请选择" size="mini">
-                        <el-option label="区域一" value="shanghai"></el-option>
-                        <el-option label="区域二" value="beijing"></el-option>
-                    </el-select>
+                    <ul>
+                        <li class="l3">
+                            <el-select v-model="form.region" placeholder="请选择" size="mini">
+                                <el-option label="区域一" value="shanghai"></el-option>
+                                <el-option label="区域二" value="beijing"></el-option>
+                            </el-select>
+                        </li>
+                        <li class="l3">
+                            <el-select v-model="form.region" placeholder="请选择" size="mini">
+                                <el-option label="区域一" value="shanghai"></el-option>
+                                <el-option label="区域二" value="beijing"></el-option>
+                            </el-select>
+                        </li>
+                        <li class="l3">
+                            <el-select v-model="form.region" placeholder="请选择" size="mini">
+                                <el-option label="区域一" value="shanghai"></el-option>
+                                <el-option label="区域二" value="beijing"></el-option>
+                            </el-select>
+                        </li>
+                    </ul>
                     <el-input v-model="form.name" size="mini" placeholder="填入企业营业执照上的详细地址"></el-input>
                 </el-form-item>
                 <el-form-item label="办公地址">
-                    <el-select v-model="form.region" placeholder="请选择" size="mini">
-                        <el-option label="区域一" value="shanghai"></el-option>
-                        <el-option label="区域二" value="beijing"></el-option>
-                    </el-select>
-                    <el-select v-model="form.region" placeholder="请选择" size="mini">
-                        <el-option label="区域一" value="shanghai"></el-option>
-                        <el-option label="区域二" value="beijing"></el-option>
-                    </el-select>
-                    <el-select v-model="form.region" placeholder="请选择" size="mini">
-                        <el-option label="区域一" value="shanghai"></el-option>
-                        <el-option label="区域二" value="beijing"></el-option>
-                    </el-select>
+                    <ul>
+                        <li class="l3">
+                            <el-select v-model="form.region" placeholder="请选择" size="mini">
+                                <el-option label="区域一" value="shanghai"></el-option>
+                                <el-option label="区域二" value="beijing"></el-option>
+                            </el-select>
+                        </li>
+                        <li class="l3">
+                            <el-select v-model="form.region" placeholder="请选择" size="mini">
+                                <el-option label="区域一" value="shanghai"></el-option>
+                                <el-option label="区域二" value="beijing"></el-option>
+                            </el-select>
+                        </li>
+                        <li class="l3">
+                            <el-select v-model="form.region" placeholder="请选择" size="mini">
+                                <el-option label="区域一" value="shanghai"></el-option>
+                                <el-option label="区域二" value="beijing"></el-option>
+                            </el-select>
+                        </li>
+                    </ul>
                     <el-input v-model="form.name" size="mini" placeholder="填入企业办公所在地址"></el-input>
                 </el-form-item>
                 <el-form-item label="企业电话">
@@ -91,13 +107,19 @@
                         </el-form-item>
                     </li>
                 </ul>
-                <el-form-item label="证件编号">
-                    <el-select v-model="form.region" placeholder="请选择" size="mini">
-                        <el-option label="区域一" value="shanghai"></el-option>
-                        <el-option label="区域二" value="beijing"></el-option>
-                    </el-select>
-                    <el-input v-model="form.name" size="mini" placeholder="根据证件类型，填写相应的证件号码"></el-input>
-                </el-form-item>
+                <el-form-item label="法人证件">
+                    <ul>
+                        <li class="l3">
+                            <el-select v-model="form.region" placeholder="请选择" size="mini">
+                                <el-option label="区域一" value="shanghai"></el-option>
+                                <el-option label="区域二" value="beijing"></el-option>
+                            </el-select>
+                        </li>
+                        <li style="width:66%;">
+                            <el-input v-model="form.name" size="mini" placeholder="根据证件类型，填写相应的证件号码"></el-input>
+                        </li>
+                    </ul>
+                    </el-form-item>
             </div>
         </el-form>
         <footer class="right">
