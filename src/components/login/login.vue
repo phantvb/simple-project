@@ -70,44 +70,6 @@
           // ]
         }
       }
-<<<<<<< HEAD
-    };
-    var validatePass = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入密码'));
-      }
-    };
-    return {
-      loginForm: {
-        name: '',
-        pass: '',
-        code: ''
-      },
-      rules: {
-        name: [
-          { validator: checkName, trigger: 'blur' }
-        ],
-        pass: [
-          { validator: validatePass, trigger: 'blur' }
-        ],
-        // code: [
-        //   { validator: checkName, trigger: 'blur' }
-        // ]
-      }
-    }
-  },
-  // mounted(){
-  //   this.$ajax.post('/test',{user:'112'})
-  // },
-  methods:{
-    submitForm(formName) {
-        this.$refs[formName].validate((valid) => {
-          if (valid) {
-            alert('submit!');
-          } else {
-            console.log('error submit!!');
-            return false;
-=======
     },
     methods: {
       submitForm() {
@@ -122,7 +84,6 @@
           _this.loading = false;
           if (resp.code === 200) {
             _this.$router.push('/layout');
->>>>>>> ff14b4a0819e3a35e1cee3e88a2d5ffa502d8344
           }
         });
       },

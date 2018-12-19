@@ -92,7 +92,6 @@ export default new Router({
           component: billManage
         },
         {
-<<<<<<< HEAD
           path:'chargeManage',
           name:'充值管理',
           component:chargeManage
@@ -101,11 +100,6 @@ export default new Router({
           path:'bollotManage',
           name:'开票管理',
           component:bollotManage
-=======
-          path: 'chargeManage',
-          name: '充值管理',
-          component: chargeManage
->>>>>>> ff14b4a0819e3a35e1cee3e88a2d5ffa502d8344
         }
       ],
     },

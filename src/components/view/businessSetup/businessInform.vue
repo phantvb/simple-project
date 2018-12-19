@@ -126,31 +126,9 @@
         }
       }
     },
-<<<<<<< HEAD
     mounted() {
 
       var arr = [12312, 213312, 111];
-=======
-    mounted(){
-
-        var arr=[12312,213312,111];
-        
-        // this.$ajax.post('/vos/user/login',{'username':'jeq','password':'123456','code':'1233'}).then(res=>{
-
-
-        // this.$ajax.post('/user/apiLogin',{'username':'jeq','password':'123456'}).then(res=>{
-        //     this.$ajax.post('/tariffPackage/testArray',{'strings':arr}).then(ires=>{
-
-        //     })
-        // })
-
-    },
-    methods:{
-        addCompany(bol){
-            this.addCompanys=bol;
-        },
-        handleSizeChange(){
->>>>>>> ff14b4a0819e3a35e1cee3e88a2d5ffa502d8344
 
       this.$ajax.post('/vos/user/login', {
         'username': 'jeq',
