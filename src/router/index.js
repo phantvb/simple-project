@@ -18,6 +18,7 @@ import ObjCodeManage from '@/components/view/numManage/ObjCodeManage';
 import ticketManage from '@/components/view/numManage/ticketManage';
 import voiceFileManage from '@/components/view/numManage/voiceFileManage';
 import fourBusinessManage from '@/components/view/businessAccepted/400businessManage';
+import objCodeDetail from '@/components/view/businessAccepted/objCodeDetail';
 import comboSet from '@/components/view/operateManage/ComboSet';
 import noticeManage from '@/components/view/operateManage/noticeManage';
 import lineCostSetting from '@/components/view/operateManage/lineCostSetting';
@@ -27,6 +28,78 @@ import numPoolManage from '@/components/view/operateManage/numPoolManage';
 Vue.use(Router)
 
 export default new Router({
+  routes: [
+    {
+      path:'/',
+      redirect:'/layout',
+      hidden:true
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: login,
+      hidden:true
+    },
+    {
+      path:'/layout',
+      name:'layout',
+      component:layout,
+      hidden:true,
+      children:[
+        {
+          path:'userCenter',
+          name:'用户中心',
+          component:userCenter
+        },
+        {
+          path:'businessInform',
+          name:'企业管理',
+          component:businessInform
+        },
+      ],
+
+    },
+    {
+      path:'/systemSetup',
+      name:'系统设置',
+      component:layout,
+      children:[
+        {
+          path:'accountManage',
+          name:'账号管理',
+          component:accountManage
+        },
+        {
+          path:'systemLog',
+          name:'系统日志',
+          component:systemLog
+        },
+        {
+          path:'roleManage',
+          name:'角色管理',
+          component:roleManage
+        }
+      ]
+    },
+    {
+      path:'/businessAccepted',
+      name:'业务受理',
+      component:layout,
+      children:[
+        {
+          path:'400businessManage',
+          name:'400业务管理',
+          component:fourBusinessManage,
+        },
+        {
+          path:'/objCodeDetail',
+          name:'目的码详情',
+          component:objCodeDetail,
+          hidden:true,
+        }
+      ]
+    },
+  ]
 	routes: [{
 			path: '/',
 			redirect: '/layout',

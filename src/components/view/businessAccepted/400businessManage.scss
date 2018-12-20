@@ -1,52 +1,53 @@
-.entireForm,
-.handlingForm {
-	background-color: #F5F5F5;
-	padding: 15px;
-	overflow: hidden;
-	margin-bottom: 20px;
-
-	.searchInput {
-		overflow: hidden;
-	}
+.entireForm,.handlingForm{
+  background-color:#F5F5F5;
+  padding:15px;
+  overflow: hidden;
+  margin-bottom:20px;
+  .searchInput{
+    overflow: hidden;
+  }
 }
-
-.entireTable {
-	border-bottom: 1px dashed #cccccc;
-	overflow: hidden;
-	padding: 20px;
-	margin-bottom: 20px;
-
-	.BtnSelect {
-		overflow: hidden;
-		padding: 10px 0;
-		margin-bottom: 20px;
-
-		.accountBtn {
-			float: left;
-		}
-
-		.accountSelect {
-			float: right;
-		}
-	}
+.entireTable{
+  border-top: 1px dashed #cccccc;
+  overflow: hidden;
+  padding:20px;
+  margin-bottom: 20px;
+  .BtnSelect{
+    overflow: hidden;
+    padding:10px 0;
+    margin-bottom:20px;
+    .accountBtn{
+      float:left;
+    }
+    .accountSelect{
+      float:right;
+    }
+  }
 }
-
-.addAcceptDialog .steps {
-	padding-bottom: 30px;
-	margin-bottom: 20px;
-	border-bottom: 1px dashed #cccccc;
+.addAcceptDialog .steps{
+  padding-bottom:30px;
+  margin-bottom:20px;
+  border-bottom: 1px dashed #cccccc;
 }
-
-.acceptMsg {
-	overflow: hidden;
-	margin-bottom: 30px;
-
-	p {
-		padding: 0 10px;
-		border-left: 3px solid #108CEE;
-		text-align: left;
-		font-weight: bold;
-	}
-
-	.firmName {}
+.acceptMsg,.objCodeMsg,.detail{
+  overflow: hidden;
+  margin-bottom:30px;
+  p{
+    padding:0 10px;
+    border-left:3px solid #108CEE;
+    text-align: left;
+    font-weight: bold;
+  }
+}
+.objCodeDialog .uploadTips p{
+  font-size: 12px;
+  font-weight: normal;
+  color: #999999;
+  border-left:none;
+  padding:0;
+  margin-block-start: 0;
+  margin-block-end: 0;
+}
+.leftDetail{
+  width:70%;
 }
