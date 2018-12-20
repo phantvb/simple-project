@@ -56,15 +56,49 @@
 		components: { SidebarItem },
 		methods: {
 			handleOpen(key, keyPath) {
-				console.log(key, keyPath);
+				//console.log(key, keyPath);
 			},
 			handleClose(key, keyPath) {
-				console.log(key, keyPath);
+				//console.log(key, keyPath);
+			},
+			deepClone(obj, nobj) {
+				var nobj = nobj || {};
+				var toStr = Object.prototype.toString;
+				for (let key in obj) {
+					if (typeof obj[key] == 'object' && obj[key] !== null) {
+						if (toStr.call(obj[key]) == '[object Array]') {
+							nobj[key] = [];
+						} else {
+							nobj[key] = {};
+						}
+						this.deepClone(obj[key], nobj[key]);
+					} else {
+						nobj[key] = obj[key];
+					}
+				}
+				return nobj;
 			}
 		},
 		computed: {
 			router() {
-				return this.$router.options.routes;
+				var format = function (fdata) {
+					if (fdata.children) {
+						fdata.children.map((item, index) => {
+							if (item.hidden) {
+								fdata.children.splice(index, 1);
+							} else {
+								if (item.children) {
+									format(item)
+								}
+							}
+						})
+					}
+				}
+				var routerData = this.deepClone(this.$router.options.routes);
+				for (let key in routerData) {
+					format(routerData[key])
+				}
+				return routerData;
 			}
 		}
 	}

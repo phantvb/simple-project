@@ -8,18 +8,7 @@ footer {
 #favourable,
 #charge {
 	.form_item {
-		overflow: hidden;
-		line-height: 28px;
-		margin-bottom: $padding;
-
-		.form_title {
-			width: $labelW;
-			float: left;
-		}
-
-		.form_con {
-			margin-left: $labelW;
-		}
+		@include form-copy
 	}
 }
 

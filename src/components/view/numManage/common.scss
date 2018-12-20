@@ -21,8 +21,7 @@ $plain:#999;
 	border-top: 1px solid #ececec;
 }
 
-#numManage,
-#ticketManage,
-#voiceFileManage {
+.managerFormTitle {
 	padding: $padding;
+	overflow: hidden;
 }

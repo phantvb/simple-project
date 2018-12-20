@@ -1,6 +1,6 @@
 <template>
 	<div class="menu">
-		<el-submenu v-if="item.children&&!item.hidden" v-for="(item,i) in data" :key="i" :index="resolvePath(item.path)">
+		<el-submenu v-if="item.children&&item.children.length>0&&!item.hidden" v-for="(item,i) in data" :key="i" :index="resolvePath(item.path)">
 			<template slot="title">
 				<i class="el-icon-location"></i>
 				<span slot="title">{{item.name}}</span>

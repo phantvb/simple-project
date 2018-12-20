@@ -23,7 +23,7 @@
 			</div>
 			<div class="block">
 				<div style="border-bottom:1px solid #ccc;margin-bottom:15px;padding-bottom:15px;">
-					<div style="float:left;line-height:28px;">
+					<div style="float:left;line-height:28px;" class="fsm">
 						收款：
 					</div>
 					<ul>
@@ -43,7 +43,7 @@
 					</ul>
 				</div>
 				<div>
-					<div style="float:left;line-height:28px;">
+					<div style="float:left;line-height:28px;" class="fsm">
 						开票：
 					</div>
 					<ul>
@@ -75,7 +75,21 @@
 					</el-table-column>
 					<el-table-column prop="money" label="已开票金额" min-width="100">
 					</el-table-column>
-					<el-table-column prop="money" label="发票编号" min-width="100">
+					<el-table-column prop="money" label="发票编号" min-width="80">
+					</el-table-column>
+					<el-table-column prop="money" label="开票日期" min-width="80">
+					</el-table-column>
+					<el-table-column prop="money" label="快递编号" min-width="120">
+						<template slot-scope="scope">
+							<el-select v-model="money" placeholder="请选择" size="mini">
+								<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+								</el-option>
+							</el-select>
+							<el-input v-model="money" placeholder="请输入内容" size="mini">
+							</el-input>
+						</template>
+					</el-table-column>
+					<el-table-column prop="money" label="寄件人" min-width="100">
 					</el-table-column>
 				</el-table>
 			</div>
@@ -102,6 +116,22 @@
 		data() {
 			return {
 				dialogVisible: true,
+				options: [{
+					value: '',
+					label: '全部'
+				}, {
+					value: '选项2',
+					label: '等待送审'
+				}, {
+					value: '选项3',
+					label: '待审核'
+				}, {
+					value: '选项4',
+					label: '审核通过'
+				}, {
+					value: '选项5',
+					label: '被驳回'
+				}],
 				recordData: [{
 					name: '500元5000分钟',
 					num: 1,

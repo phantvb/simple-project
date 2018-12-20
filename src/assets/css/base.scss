@@ -3,59 +3,166 @@ $grey:#999;
 $padding:15px;
 $lightblue:#ecf5ff;
 $red:#F56C6C;
-.center{
-    text-align: center;
+
+.center {
+	text-align: center;
 }
-.left{
-    text-align: left;
+
+.left {
+	text-align: left;
 }
-.right{
-    text-align: right;
+
+.right {
+	text-align: right;
 }
-.grey{
-    color: $grey;
+
+.grey {
+	color: $grey;
 }
-.blue{
-    color: $blue;
+
+.blue {
+	color: $blue;
 }
-.red{
-    color: $red;
+
+.red {
+	color: $red;
 }
-.fmini{
-    font-size: 12px;
+
+@media screen and (max-width: 1440px) {
+	* {
+		font-size: 12px;
+	}
+
+	.fmini {
+		font-size: 12px;
+	}
+
+	.fsm {
+		font-size: 14px;
+	}
+
+	.fmd {
+		font-size: 16px;
+	}
+
+	.flg {
+		font-size: 18px;
+	}
+
+	.fxl {
+		font-size: 20px;
+	}
+
+	.demonstration {
+		color: #333;
+		font-size: 12px;
+	}
+
+	//elementui
+	.el-button--mini,
+	.el-button--small {
+		font-size: 12px;
+	}
 }
-.search{
-    background-color: #f5f5f5;
+
+@media screen and (min-width: 1440px) {
+	* {
+		font-size: 14px;
+	}
+
+	.fmini {
+		font-size: 14px;
+	}
+
+	.fsm {
+		font-size: 16px;
+	}
+
+	.fmd {
+		font-size: 18px;
+	}
+
+	.flg {
+		font-size: 20px;
+	}
+
+	.fxl {
+		font-size: 22px;
+	}
+
+	.demonstration {
+		color: #333;
+		font-size: 14px;
+	}
+
+	//elementui
+	.el-button--mini,
+	.el-button--small {
+		font-size: 14px;
+	}
 }
-.demonstration{
-    color: #333;
-    font-size: 12px;
+
+.search {
+	background-color: #f5f5f5;
 }
+
+
+
 @mixin title-atten {
-    position: relative;
-    padding: 0px $padding;
-    &::before{
-        content: '';
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 2px;
-        height: 100%;
-        background-color: $blue;
-    }
+	position: relative;
+	padding: 0px $padding;
+
+	@media screen and (max-width: 1440px) {
+		font-size: 14px;
+	}
+
+	@media screen and (min-width: 1440px) {
+		font-size: 16px;
+	}
+
+	&::before {
+		content: '';
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 2px;
+		height: 100%;
+		background-color: $blue;
+	}
 }
+
 @mixin ul-col {
-    overflow: hidden;
-    padding: 0;
-    margin: 0;
-    li{
-        list-style: none;
-        float: left;
-    }
-    li.l2{
-        width: 50%;
-    }
-    li.l3{
-        width: 33%;
-    }
+	overflow: hidden;
+	padding: 0;
+	margin: 0;
+
+	li {
+		list-style: none;
+		float: left;
+	}
+
+	li.l2 {
+		width: 50%;
+	}
+
+	li.l3 {
+		width: 33%;
+	}
+}
+
+$labelW:100px;
+
+@mixin form-copy {
+	overflow: hidden;
+	line-height: 28px;
+	margin-bottom: $padding;
+
+	.form_title {
+		width: $labelW;
+		float: left;
+	}
+
+	.form_con {
+		margin-left: $labelW;
+	}
 }

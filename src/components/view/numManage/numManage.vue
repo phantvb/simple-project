@@ -56,13 +56,14 @@
 					<template slot-scope="scope">
 						<el-button size="mini" type="text">停用</el-button>
 						<el-button size="mini" type="text">注销</el-button>
-						<el-button size="mini" type="text">号码设置</el-button>
+						<el-button size="mini" type="text" @click="editnumSetup(true)">号码设置</el-button>
 						<el-button size="mini" type="text">详情</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
 			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page.num" :page-sizes="$global.pageSize" :page-size="page.size" layout="total, sizes, prev, pager, next, jumper" :total="page.total">
 			</el-pagination>
+			<numSetup :show="numSetupShow" @close="editnumSetup(false)"></numSetup>
 		</el-tabs>
 	</div>
 </template>
@@ -70,8 +71,12 @@
 	@import './common.scss';
 </style>
 <script>
+	import numSetup from './component/numSetup.vue'
 	export default {
 		name: 'numManage',
+		components: {
+			numSetup
+		},
 		data() {
 			return {
 				active: '1',
@@ -82,6 +87,7 @@
 					date: null,
 					status
 				},
+				numSetupShow: false,
 				status: '',
 				options: [{
 					value: '',
@@ -108,6 +114,9 @@
 			handleCurrentChange() {
 
 			},
+			editnumSetup(bol) {
+				this.numSetupShow = bol;
+			}
 		}
 	}
 </script>
