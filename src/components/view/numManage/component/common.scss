@@ -1,0 +1,25 @@
+.numDialog {
+	.block {
+		margin: $padding;
+
+		ul {
+			@include ul-col;
+
+			p {
+				margin: 0;
+				line-height: 28px;
+				margin-bottom: 10px;
+			}
+
+			margin-bottom: 10px;
+		}
+	}
+
+	.form_item {
+		@include form-copy
+	}
+
+	.search {
+		background-color: #fff;
+	}
+}

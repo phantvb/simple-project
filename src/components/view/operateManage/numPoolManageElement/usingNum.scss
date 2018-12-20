@@ -1,0 +1,20 @@
+$padding: 15px;
+$blue: #409EFF;
+.block {
+  padding: $padding;
+}
+
+.el-form-item {
+  margin-bottom: 0;
+}
+
+.searchButton {
+  float: left;
+  width: 80px;
+  margin-bottom: 10px;
+}
+
+.resetButton {
+  float: left;
+  width: 80px;
+}

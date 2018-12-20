@@ -33,9 +33,10 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
 │   ├── api                    
 │   │   └── resourse.js        // 所有请求链接
 │   ├── assets                 // 主题 字体等静态资源
+│   │   └── base.scss          // 全局变量，全局样式
 │   ├── components             
 │   │   ├── login               // 登录模块
 │   │   ├── view                // 所有视图即模块
-│   │   │    └── component        // 所有基本组件集合
+│   │   │    └── component      // 所有基本组件集合
 │   │   └── index               // 布局
-└────── router                 // 路由
+└   └── router                  // 路由

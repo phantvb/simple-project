@@ -1,44 +1,52 @@
-.entireForm,.handlingForm{
-  background-color:#F5F5F5;
-  padding:15px;
-  overflow: hidden;
-  margin-bottom:20px;
-  .searchInput{
-    overflow: hidden;
-  }
-}
-.entireTable{
-  border-bottom: 1px dashed #cccccc;
-  overflow: hidden;
-  padding:20px;
-  margin-bottom: 20px;
-  .BtnSelect{
-    overflow: hidden;
-    padding:10px 0;
-    margin-bottom:20px;
-    .accountBtn{
-      float:left;
-    }
-    .accountSelect{
-      float:right;
-    }
-  }
-}
-.addAcceptDialog .steps{
-  padding-bottom:30px;
-  margin-bottom:20px;
-  border-bottom: 1px dashed #cccccc;
-}
-.acceptMsg{
-  overflow: hidden;
-  margin-bottom:30px;
-  p{
-    padding:0 10px;
-    border-left:3px solid #108CEE;
-    text-align: left;
-    font-weight: bold;
-  }
-  .firmName{
+.entireForm,
+.handlingForm {
+	background-color: #F5F5F5;
+	padding: 15px;
+	overflow: hidden;
+	margin-bottom: 20px;
 
-  }
+	.searchInput {
+		overflow: hidden;
+	}
+}
+
+.entireTable {
+	border-bottom: 1px dashed #cccccc;
+	overflow: hidden;
+	padding: 20px;
+	margin-bottom: 20px;
+
+	.BtnSelect {
+		overflow: hidden;
+		padding: 10px 0;
+		margin-bottom: 20px;
+
+		.accountBtn {
+			float: left;
+		}
+
+		.accountSelect {
+			float: right;
+		}
+	}
+}
+
+.addAcceptDialog .steps {
+	padding-bottom: 30px;
+	margin-bottom: 20px;
+	border-bottom: 1px dashed #cccccc;
+}
+
+.acceptMsg {
+	overflow: hidden;
+	margin-bottom: 30px;
+
+	p {
+		padding: 0 10px;
+		border-left: 3px solid #108CEE;
+		text-align: left;
+		font-weight: bold;
+	}
+
+	.firmName {}
 }
