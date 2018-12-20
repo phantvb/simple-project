@@ -1,36 +1,43 @@
+.title {
+	margin: $padding;
+	@include title-atten;
+}
 
-.title{
-    margin: $padding;
-    @include title-atten;
+.block {
+	padding: $padding;
+
+	&>div {
+		overflow: hidden;
+	}
 }
-.block{
-    padding: $padding;
-    &>div{
-        overflow: hidden;
-    }
+
+ul {
+	@include ul-col;
+
+	li {
+		margin-bottom: $padding;
+		box-sizing: border-box;
+		padding-right: $padding;
+	}
+
+	p {
+		display: inline-block;
+		margin: 0 0 $padding;
+		vertical-align: top;
+	}
 }
-ul{
-    @include ul-col;
-    li{
-        margin-bottom: $padding;
-        box-sizing: border-box;
-        padding-right: $padding;
-    }
-    p{
-        display: inline-block;
-        margin: 0 0 $padding;
-        vertical-align: top;
-    }
+
+footer {
+	padding: $padding;
+	border-top: 1px solid #eee;
 }
-footer{
-    padding: $padding;
-    border-top: 1px solid #eee;
-}
-.example{
-    .examplew{
-        width: 80px;
-    }
-    .exampleh{
-        height: 80px;
-    }
+
+.example {
+	.examplew {
+		width: 80px;
+	}
+
+	.exampleh {
+		height: 80px;
+	}
 }

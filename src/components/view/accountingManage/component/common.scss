@@ -1,46 +1,60 @@
 $labelW:100px;
-footer{
-    padding-top: $padding;
-    border-top: 1px solid #eee;
+
+footer {
+	padding-top: $padding;
+	border-top: 1px solid #eee;
 }
-#favourable,#charge{
-    .form_item{
-        overflow: hidden;
-        line-height: 28px;
-        margin-bottom: $padding;
-        .form_title{
-            width: $labelW;
-            float: left;
-        }
-        .form_con{
-            margin-left: $labelW;
-        }
-    }
+
+#favourable,
+#charge {
+	.form_item {
+		overflow: hidden;
+		line-height: 28px;
+		margin-bottom: $padding;
+
+		.form_title {
+			width: $labelW;
+			float: left;
+		}
+
+		.form_con {
+			margin-left: $labelW;
+		}
+	}
 }
-#billDetail,#transfer,#bollot{
-    .title{
-        @include title-atten;
-    }
-    .block{
-        margin:$padding;
-        ul{
-            @include ul-col;
-            p{
-                margin: 0;
-                line-height: 28px;
-            }
-        }
-    }
-    .total{
-        margin:30px $padding $padding;
-    }
+
+#billDetail,
+#transfer,
+#bollot {
+	.title {
+		@include title-atten;
+	}
+
+	.block {
+		margin: $padding;
+
+		ul {
+			@include ul-col;
+
+			p {
+				margin: 0;
+				line-height: 28px;
+			}
+		}
+	}
+
+	.total {
+		margin: 30px $padding $padding;
+	}
 }
-#transfer .total{
-    margin:30px $padding $padding;
-    overflow: hidden;
-    p{
-        float: left;
-        padding-right: 30px;
-        margin:0;
-    }
+
+#transfer .total {
+	margin: 30px $padding $padding;
+	overflow: hidden;
+
+	p {
+		float: left;
+		padding-right: 30px;
+		margin: 0;
+	}
 }
