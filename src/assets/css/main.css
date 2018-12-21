@@ -202,3 +202,10 @@
 .objCodeDialog .materials .el-form-item__content{
   line-height:23px;
 }
+/*自定义导航*/
+#customNavigation .el-tree-node .el-tree-node__content{
+    margin-bottom:5px;
+    padding:5px;
+    background-color: #EAF6FE;
+    /*color:#EAF6FE;*/
+}

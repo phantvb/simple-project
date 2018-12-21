@@ -2,14 +2,14 @@
   <div id="logoutAudit">
     <!--搜索-->
     <div class="handlingForm">
-      <el-form ref="form" :model="form" label-width="100px">
+      <el-form ref="form" :model="form" label-width="115px">
         <div class="searchInput">
           <el-form-item label="企业名称：">
             <el-input v-model="form.firmName" size="mini"></el-input>
           </el-form-item>
 
           <el-form-item label="法人：">
-            <el-input v-model="form.receiver" size="mini"></el-input>
+            <el-input v-model="form.legal" size="mini"></el-input>
           </el-form-item>
 
           <el-form-item label="企业联系电话：">
@@ -54,10 +54,6 @@
       <el-table
         :data="tableData"
         style="width: 100%">
-        <el-table-column
-          prop="type"
-          label="类型">
-        </el-table-column>
 
         <el-table-column
           prop="firmName"
@@ -67,11 +63,21 @@
 
         <el-table-column
           prop="fourPhone"
-          label="400电话">
+          label="企业联系电话">
         </el-table-column>
 
         <el-table-column
-          prop="date"
+          prop="legal"
+          label="法人">
+        </el-table-column>
+
+        <el-table-column
+          prop="responsible"
+          label="经办人">
+        </el-table-column>
+
+        <el-table-column
+          prop="data"
           label="日期">
         </el-table-column>
 
@@ -84,7 +90,7 @@
           prop="status"
           label="操作">
           <template slot-scope="scope">
-            <el-button size="mini" type="text">详情</el-button>
+            <el-button size="mini" type="text" entrance="1" @click="details(scope.row),$router.push('/logoutDetail/')">详情</el-button>
             <!--<router-link :to="{path:'/addEvent/'+3+'/'+scope.row.contactEvtId}">-->
             <el-button size="mini" type="text">撤回</el-button>
             <el-button size="mini" type="text">变更</el-button>
@@ -117,41 +123,48 @@
     name: 'logoutAudit',
     data() {
       return {
-        dialogVisible:false,
         form:{
           firmName:'',
           phoneNum:'',
           time:'',
-          receiver:'',
+          legal:'',
         },
         acceptForm:{
           firmName:'',
           identityType:'',
         },
         tableData: [{
-          type: '业务受理',
+          responsible: '谢辉',
+          legal:'华勇',
           firmName: '杭州顺网科技股份有限公司',
           fourPhone: '5876552',
           date:'2018-11-28',
-          status:'等待送核'
+          status:'等待送核',
+          data:'2018-11-28',
         }, {
-          type: '业务受理',
-          firmName: '杭州顺网科技股份有限公司',
-          fourPhone: '5876552',
-          date:'2018-11-28',
-          status:'等待送核'
+            responsible: '谢辉',
+            legal:'华勇',
+            firmName: '杭州顺网科技股份有限公司',
+            fourPhone: '5876552',
+            date:'2018-11-28',
+            status:'等待送核',
+            data:'2018-11-28',
         }, {
-          type: '业务受理',
-          firmName: '杭州顺网科技股份有限公司',
-          fourPhone: '5876552',
-          date:'2018-11-28',
-          status:'等待送核'
+            responsible: '谢辉',
+            legal:'华勇',
+            firmName: '杭州顺网科技股份有限公司',
+            fourPhone: '5876552',
+            date:'2018-11-28',
+            status:'等待送核',
+            data:'2018-11-28',
         }, {
-          type: '业务受理',
-          firmName: '杭州顺网科技股份有限公司',
-          fourPhone: '5876552',
-          date:'2018-11-28',
-          status:'等待送核'
+            responsible: '谢辉',
+            legal:'华勇',
+            firmName: '杭州顺网科技股份有限公司',
+            fourPhone: '5876552',
+            date:'2018-11-28',
+            status:'等待送核',
+            data:'2018-11-28',
         }],
         statusOptions: [
           {
@@ -195,18 +208,6 @@
       handleCurrentChange(val) {
         console.log(`当前页: ${val}`);
       },
-      //弹窗关闭按钮
-      handleClose(done) {
-        this.$confirm('确认关闭？')
-          .then(_ => {
-            done();
-          })
-          .catch(_ => {
-          });
-      },
-      change123(event) {
-        console.log("event",event);
-      },
       // rankType(item){
       //   console.log("12343",item)
       //   // this.identityTypeList.map((items)=> {
@@ -215,10 +216,10 @@
       //   //   }
       //   // })
       // },
-      //新增/编辑受理
-      acceptSave(){
-        this.dialogVisible = true;
-      }
+        //点击详情
+        details(scope){
+            console.log(scope);
+        }
     },
     components: {},
     computed: {

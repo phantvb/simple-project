@@ -304,7 +304,6 @@
       //点击详情
       details(scope){
         console.log(scope);
-        // this.$router.push({name: './objCodeDetail' ,path:'/objCodeDetail',params:{ id:scope.id}});
       }
     },
     computed: {

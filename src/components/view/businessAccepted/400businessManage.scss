@@ -29,7 +29,7 @@
   margin-bottom:20px;
   border-bottom: 1px dashed #cccccc;
 }
-.acceptMsg,.objCodeMsg,.detail{
+.acceptMsg,.objCodeMsg,.detail,.detailMsg{
   overflow: hidden;
   margin-bottom:30px;
   p{
@@ -38,6 +38,9 @@
     text-align: left;
     font-weight: bold;
   }
+}
+.detailMsg{
+  margin-bottom:0px;
 }
 .objCodeDialog .uploadTips p{
   font-size: 12px;
@@ -50,4 +53,208 @@
 }
 .leftDetail{
   width:70%;
+}
+#objCodeDetail,#logoutDetail{
+  overflow: hidden;
+  background-color: #f3f4f5;
+
+  #base {
+    float: left;
+    width: 70%;
+    padding: $padding;
+    background-color: #fff;
+    box-sizing: border-box;
+  }
+
+  #progress {
+    float: left;
+    padding: $padding;
+    margin-left: $padding;
+    width: calc(-15px + 30%);
+    height: 100%;
+    background-color: #fff;
+    box-sizing: border-box;
+
+    .block {
+      padding: $padding 0;
+
+      &>div {
+        overflow: hidden;
+      }
+
+      button.fleft {
+        float: left;
+        width: 45%;
+        height: 30px;
+      }
+
+      button.fright {
+        float: right;
+        width: 45%;
+        height: 30px;
+      }
+    }
+
+    .underline {
+      border-bottom: 1px solid #cecece;
+    }
+
+    .pass {
+      width: 100%;
+      height: 40px;
+      border: 1px solid #ccc;
+      background-color: #eee;
+      margin-bottom: $padding;
+    }
+
+    .passback {
+      border: unset;
+      background-color: rgba(234, 246, 254, 1);
+      color: $blue;
+    }
+
+    .passgo {
+      border: unset;
+      background-color: $blue;
+      color: #fff;
+    }
+
+    .step {
+      margin-bottom: $padding;
+    }
+  }
+
+  li {
+    list-style: none;
+    .el-table{
+      width:90% !important;
+    }
+  }
+
+  .basedata {
+    overflow: hidden;
+
+    li {
+      float: left;
+      margin: 0px $padding $padding;
+    }
+  }
+
+  .examplew {
+    width: 120px;
+  }
+
+  .exampleh {
+    height: 120px;
+  }
+}
+#businessDetail {
+  overflow: hidden;
+  background-color: #f3f4f5;
+
+  #base {
+    float: left;
+    width: 70%;
+    padding: $padding;
+    background-color: #fff;
+    box-sizing: border-box;
+  }
+
+  #progress {
+    float: left;
+    padding: $padding;
+    margin-left: $padding;
+    width: calc(-15px + 30%);
+    height: 100%;
+    background-color: #fff;
+    box-sizing: border-box;
+
+    .block {
+      padding: $padding 0;
+
+      &>div {
+        overflow: hidden;
+      }
+
+      button.fleft {
+        float: left;
+        width: 45%;
+        height: 30px;
+      }
+
+      button.fright {
+        float: right;
+        width: 45%;
+        height: 30px;
+      }
+    }
+
+    .underline {
+      border-bottom: 1px solid #cecece;
+    }
+
+    .pass {
+      width: 100%;
+      height: 40px;
+      border: 1px solid #ccc;
+      background-color: #eee;
+      margin-bottom: $padding;
+    }
+
+    .passback {
+      border: unset;
+      background-color: rgba(234, 246, 254, 1);
+      color: $blue;
+    }
+
+    .passgo {
+      border: unset;
+      background-color: $blue;
+      color: #fff;
+    }
+
+    .step {
+      margin-bottom: $padding;
+    }
+  }
+
+  li {
+    list-style: none;
+  }
+
+  .basedata {
+    overflow: hidden;
+
+    li {
+      float: left;
+      margin: 0px $padding $padding;
+    }
+  }
+
+  .examplew {
+    width: 120px;
+  }
+
+  .exampleh {
+    height: 120px;
+  }
+}
+.logoutDetailTab{
+  margin-top:30px;
+}
+.serviceData{
+  .fmini{
+    display: block;
+    width:135px;
+    text-align: right;
+    margin-right:20px;
+  }
+ div{
+   .fmini{
+     display: block;
+     width:135px;
+     text-align: right;
+     margin-right:20px;
+   }
+ }
 }
