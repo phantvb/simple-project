@@ -27,7 +27,7 @@ import messageCenter from '@/components/view/messageCenter/messageCenter';
 import numPoolManage from '@/components/view/operateManage/numPoolManage';
 import customNavigation from '@/components/view/customNavigation/customNavigation';
 
-Vue.use(Router)
+Vue.use(Router);
 
 export default new Router({
   routes: [
@@ -210,12 +210,11 @@ export default new Router({
                   component: messageCenter
               },
               {
-                  path: '/customNavigation',
+                  path: 'customNavigation',
                   name: '自定义导航',
                   component: customNavigation,
               }
           ],
       },
-
   ],
 })
