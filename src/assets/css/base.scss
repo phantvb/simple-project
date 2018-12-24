@@ -28,6 +28,10 @@ $red:#F56C6C;
 	color: $red;
 }
 
+.lightblue {
+	background-color: $lightblue;
+}
+
 @media screen and (max-width: 1440px) {
 	* {
 		font-size: 12px;

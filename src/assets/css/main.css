@@ -1,174 +1,218 @@
 /*菜单栏样式*/
-#app .el-menu{
-  background-color: #172138;
-}
-#app .el-menu .el-menu-item,#app .el-menu .el-submenu__title{
-  color: #ffffff;
-}
-/*右侧内容区域*/
-#app .el-container{
-  background-color: #eeeeee;
-}
-#app .el-aside::-webkit-scrollbar-track
-{
-    background-color: #F5F5F5;
-    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.22);
-}
-/*定义滚动条高宽及背景*/
-#app .el-aside::-webkit-scrollbar
-{
-    width: 3px;
-    background-color: hsla(225, 4%, 58%, 0.5);
-}
-#app .el-aside::-webkit-scrollbar
-{
-    height: 3px;
-    background-color: hsla(225, 4%, 58%, 0.5);
-}
-/*定义滚动条*/
-#app .el-aside::-webkit-scrollbar-thumb
-{
-    background-color: hsla(225, 4%, 58%, 0.5);
-    border-radius: 1px;
-}
-#app .el-main::-webkit-scrollbar-track
-{
-    background-color: #F5F5F5;
-    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.22);
-}
-/*定义滚动条高宽及背景*/
-#app .el-main::-webkit-scrollbar
-{
-    width: 3px;
-    background-color: hsla(225, 4%, 58%, 0.5);
-}
-#app .el-main::-webkit-scrollbar
-{
-    height: 3px;
-    background-color: hsla(225, 4%, 58%, 0.5);
-}
-/*定义滚动条*/
-#app .el-main::-webkit-scrollbar-thumb
-{
-    background-color: hsla(225, 4%, 58%, 0.5);
-    border-radius: 1px;
-}
-#businessInform .el-input-group__append, .el-input-group__prepend{
-  padding: 0 10px!important;
-}
-.lightblueTable .el-table td,.lightblueTable .el-table th{
-  padding: 2px 0;
-}
-.lightblueTable .el-table__empty-block{
-  min-height: 28px;
-}
-.lightblueTable .lightblue td,.lightblueTable .lightblue th{
-  background-color: #ecf5ff;
+#app .el-menu {
+	background-color: #172138;
 }
 
-#company_dialog .el-dialog{
-  width: 75%;
+#app .el-menu .el-menu-item,
+#app .el-menu .el-submenu__title {
+	color: #ffffff;
 }
-#step_2 .data .el-upload--picture-card,#step_2 .data .el-upload-list__item-actions,#step_2 .data .el-upload-list__item{
-  width: 120px;
+
+/*右侧内容区域*/
+#app .el-container {
+	background-color: #eeeeee;
 }
-#step_2 .person_data .el-upload--picture-card,#step_2 .person_data .el-upload-list__item-actions,#step_2 .person_data .el-upload-list__item{
-  height: 120px;
+
+#app .el-aside::-webkit-scrollbar-track {
+	background-color: #F5F5F5;
+	-webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.22);
 }
+
+/*定义滚动条高宽及背景*/
+#app .el-aside::-webkit-scrollbar {
+	width: 3px;
+	background-color: hsla(225, 4%, 58%, 0.5);
+}
+
+#app .el-aside::-webkit-scrollbar {
+	height: 3px;
+	background-color: hsla(225, 4%, 58%, 0.5);
+}
+
+/*定义滚动条*/
+#app .el-aside::-webkit-scrollbar-thumb {
+	background-color: hsla(225, 4%, 58%, 0.5);
+	border-radius: 1px;
+}
+
+#app .el-main::-webkit-scrollbar-track {
+	background-color: #F5F5F5;
+	-webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.22);
+}
+
+/*定义滚动条高宽及背景*/
+#app .el-main::-webkit-scrollbar {
+	width: 3px;
+	background-color: hsla(225, 4%, 58%, 0.5);
+}
+
+#app .el-main::-webkit-scrollbar {
+	height: 3px;
+	background-color: hsla(225, 4%, 58%, 0.5);
+}
+
+/*定义滚动条*/
+#app .el-main::-webkit-scrollbar-thumb {
+	background-color: hsla(225, 4%, 58%, 0.5);
+	border-radius: 1px;
+}
+
+#businessInform .el-input-group__append,
+.el-input-group__prepend {
+	padding: 0 10px !important;
+}
+
+.lightblueTable .el-table td,
+.lightblueTable .el-table th {
+	padding: 2px 0;
+}
+
+.lightblueTable .el-table__empty-block {
+	min-height: 28px;
+}
+
+.lightblueTable .lightblue td,
+.lightblueTable .lightblue th {
+	background-color: #ecf5ff;
+}
+
+#company_dialog .el-dialog {
+	width: 75%;
+}
+
+#step_2 .data .el-upload--picture-card,
+#step_2 .data .el-upload-list__item-actions,
+#step_2 .data .el-upload-list__item {
+	width: 120px;
+}
+
+#step_2 .person_data .el-upload--picture-card,
+#step_2 .person_data .el-upload-list__item-actions,
+#step_2 .person_data .el-upload-list__item {
+	height: 120px;
+}
+
 /*账号管理*/
-.numForm .el-form .el-form-item{
-  width:30%;
-  float:left;
+.numForm .el-form .el-form-item {
+	width: 30%;
+	float: left;
 }
-.numForm .el-form .el-form-item:last-child{
-  width:52%;
-  padding:20px 0;
-  margin-bottom: 0;
+
+.numForm .el-form .el-form-item:last-child {
+	width: 52%;
+	padding: 20px 0;
+	margin-bottom: 0;
 }
-.numForm .el-form .searchBtn{
-  width:20% !important;
-  padding: 0 !important;
+
+.numForm .el-form .searchBtn {
+	width: 20% !important;
+	padding: 0 !important;
 }
-.numForm .el-form .searchBtn .el-form-item__content{
-  float:left;
-  margin-left:20px !important;
+
+.numForm .el-form .searchBtn .el-form-item__content {
+	float: left;
+	margin-left: 20px !important;
 }
-.el-pagination{
-  float:right;
+
+.el-pagination {
+	float: right;
 }
 
 /*全局弹窗头部背景*/
-.el-dialog__header{
-  overflow: hidden;
-  background-color: #F6F7FB;
-  padding: 10px 20px !important;
+.el-dialog__header {
+	overflow: hidden;
+	background-color: #F6F7FB;
+	padding: 10px 20px !important;
 }
-.el-dialog__header .el-dialog__title{
-  float: left;
-  font-size:14px;
+
+.el-dialog__header .el-dialog__title {
+	float: left;
+	font-size: 14px;
 }
- .addUserDialog .el-dialog__body{
-   padding:10px 20px !important;
- }
-.addUserDialog .el-form{
-  overflow: hidden;
+
+.addUserDialog .el-dialog__body {
+	padding: 10px 20px !important;
 }
-.accountMessage .el-form-item{
-  width:40%;
-  float:left;
+
+.addUserDialog .el-form {
+	overflow: hidden;
 }
-.accountMessage .homeLocation{
-  width:100%;
+
+.accountMessage .el-form-item {
+	width: 40%;
+	float: left;
 }
-.accountMessage .addUserRemark{
-  width:80%;
+
+.accountMessage .homeLocation {
+	width: 100%;
 }
-.accountMessage .homeLocation .el-form-item__content{
-  margin-left:0px;
+
+.accountMessage .addUserRemark {
+	width: 80%;
 }
+
+.accountMessage .homeLocation .el-form-item__content {
+	margin-left: 0px;
+}
+
 .accountMessage .homeLocation .el-select {
-  width:24%;
-  margin-right:15px;
-  float:left;
+	width: 24%;
+	margin-right: 15px;
+	float: left;
 }
+
 /*系统日志*/
-.logForm .searchBtn .el-form-item__content{
-  margin-left:20px !important;
-  text-align: left;
+.logForm .searchBtn .el-form-item__content {
+	margin-left: 20px !important;
+	text-align: left;
 }
-.logForm .el-range-editor--mini.el-input__inner{
-  width:100%;
+
+.logForm .el-range-editor--mini.el-input__inner {
+	width: 100%;
 }
-.LogSelect .el-form-item{
-  width:50%;
-  float:left;
+
+.LogSelect .el-form-item {
+	width: 50%;
+	float: left;
 }
+
 /*400业务管理*/
-.entireForm .searchBtn .el-form-item__content,.handlingForm .searchBtn .el-form-item__content{
-  margin-left:20px !important;
-  text-align: left;
+.entireForm .searchBtn .el-form-item__content,
+.handlingForm .searchBtn .el-form-item__content {
+	margin-left: 20px !important;
+	text-align: left;
 }
-.entireForm .el-range-editor--mini.el-input__inner,.handlingForm .el-range-editor--mini.el-input__inner{
-  width:100%;
+
+.entireForm .el-range-editor--mini.el-input__inner,
+.handlingForm .el-range-editor--mini.el-input__inner {
+	width: 100%;
 }
-.entireForm .el-form-item,.handlingForm .el-form-item{
-  width:40%;
-  float:left;
+
+.entireForm .el-form-item,
+.handlingForm .el-form-item {
+	width: 40%;
+	float: left;
 }
-.handlingForm .searchBtn{
-  width:20%;
-  float:left;
+
+.handlingForm .searchBtn {
+	width: 20%;
+	float: left;
 }
 .acceptMsg .firmName,.objCodeMsg .firmName{
   width:80%;
 }
-.acceptMsg .identity{
-  width:80%;
+.acceptMsg .firmName {
+	width: 80%;
 }
-.acceptMsg .identity .el-select{
-  width:20%;
-  float:left;
-  margin-right:1%;
+
+.acceptMsg .identity {
+	width: 80%;
+}
+
+.acceptMsg .identity .el-select {
+	width: 20%;
+	float: left;
+	margin-right: 1%;
 }
 .objCodeMsg .identity .el-select{
   width:30%;
@@ -179,11 +223,13 @@
   width:79%;
   float:left;
 }
-.acceptMsg .identity .el-select .el-input{
-  width:100%;
+
+.acceptMsg .identity .el-select .el-input {
+	width: 100%;
 }
-.managerFormTitle .search .el-input{
-  width:auto;
+
+.managerFormTitle .search .el-input {
+	width: auto;
 }
 .objCodeSearch .el-form-item{
   margin-bottom:0 !important;
@@ -208,4 +254,8 @@
     padding:5px;
     background-color: #EAF6FE;
     /*color:#EAF6FE;*/
+}
+
+#numSetup .el-checkbox-button__inner {
+	border-left: 1px solid #dcdfe6;
 }
