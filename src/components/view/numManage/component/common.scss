@@ -18,8 +18,8 @@
 	.form_item {
 		@include form-copy
 	}
+}
 
-	.search {
-		background-color: #fff;
-	}
+#addaction {
+	margin-bottom: $padding;
 }
