@@ -198,7 +198,9 @@
 	width: 20%;
 	float: left;
 }
-
+.acceptMsg .firmName,.objCodeMsg .firmName{
+  width:80%;
+}
 .acceptMsg .firmName {
 	width: 80%;
 }
@@ -212,10 +214,14 @@
 	float: left;
 	margin-right: 1%;
 }
-
-.acceptMsg .identity .el-input {
-	width: 79%;
-	float: left;
+.objCodeMsg .identity .el-select{
+  width:30%;
+  float:left;
+  margin-right:1%;
+}
+.acceptMsg .identity .el-input{
+  width:79%;
+  float:left;
 }
 
 .acceptMsg .identity .el-select .el-input {
@@ -224,6 +230,30 @@
 
 .managerFormTitle .search .el-input {
 	width: auto;
+}
+.objCodeSearch .el-form-item{
+  margin-bottom:0 !important;
+}
+.objCodeDialog .el-dialog{
+  width:50% !important;
+  overflow: hidden;
+}
+.objCodeDialog .el-table .cell, .el-table th div, .el-table--border td:first-child .cell, .el-table--border th:first-child .cell{
+  font-size:14px;
+  font-weight: normal;
+}
+.objCodeDialog .materials{
+  margin-bottom:40px !important;
+}
+.objCodeDialog .materials .el-form-item__content{
+  line-height:23px;
+}
+/*自定义导航*/
+#customNavigation .el-tree-node .el-tree-node__content{
+    margin-bottom:5px;
+    padding:5px;
+    background-color: #EAF6FE;
+    /*color:#EAF6FE;*/
 }
 
 #numSetup .el-checkbox-button__inner {
