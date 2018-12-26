@@ -11,7 +11,7 @@
 						</el-input>
 					</li>
 					<li>
-						<span class="demonstration">起止时间：</span>
+						<span class="demonstration">时间：</span>
 						<el-date-picker style="margin-right:15px;" v-model="form.date" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" size="mini">
 						</el-date-picker>
 					</li>
@@ -66,21 +66,26 @@
 				<el-table-column prop="name" label="操作" min-width="200">
 					<template slot-scope="scope">
 						<el-button size="mini" type="text">试听</el-button>
-						<el-button size="mini" type="text">详情</el-button>
+						<el-button size="mini" type="text" @click="showTicketDetail(true)">详情</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
 			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page.num" :page-sizes="$global.pageSize" :page-size="page.size" layout="total, sizes, prev, pager, next, jumper" :total="page.total">
 			</el-pagination>
 		</el-tabs>
+		<ticketDetail :show="ticketDetailShow" @close="showTicketDetail(false)"></ticketDetail>
 	</div>
 </template>
 <style lang="scss" scoped>
 	@import './common.scss';
 </style>
 <script>
+	import ticketDetail from './component/ticketDetail.vue'
 	export default {
 		name: 'ticketManage',
+		components: {
+			ticketDetail
+		},
 		data() {
 			return {
 				active: '1',
@@ -91,6 +96,7 @@
 					date: null,
 					status
 				},
+				ticketDetailShow: false,
 				status: '',
 				options: [{
 					value: '',
@@ -111,6 +117,9 @@
 			}
 		},
 		methods: {
+			showTicketDetail(bol) {
+				this.ticketDetailShow = bol;
+			},
 			handleSizeChange() {
 
 			},
