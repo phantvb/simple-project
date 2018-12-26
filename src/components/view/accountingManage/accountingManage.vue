@@ -150,6 +150,9 @@
 				}
 			}
 		},
+		mounted() {
+
+		},
 		methods: {
 			addfavourable(bol) {
 				this.favourable = bol;
