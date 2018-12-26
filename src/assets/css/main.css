@@ -229,3 +229,7 @@
 #numSetup .el-checkbox-button__inner {
 	border-left: 1px solid #dcdfe6;
 }
+
+#numSetAction .el-card {
+	background-color: #ecf5ff;
+}

@@ -3,6 +3,7 @@ $grey:#999;
 $padding:15px;
 $lightblue:#ecf5ff;
 $red:#F56C6C;
+$grey_border:#cecece;
 
 .center {
 	text-align: center;
@@ -168,5 +169,13 @@ $labelW:100px;
 
 	.form_con {
 		margin-left: $labelW;
+
+		.padding {
+			padding: $padding;
+
+			p {
+				margin: 0;
+			}
+		}
 	}
 }

@@ -58,14 +58,19 @@
 		</el-table>
 		<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page.num" :page-sizes="$global.pageSize" :page-size="page.size" layout="total, sizes, prev, pager, next, jumper" :total="page.total">
 		</el-pagination>
+		<voiceEdit :show="voiceEditShow" @close="showvoiceEdit(false)"></voiceEdit>
 	</div>
 </template>
 <style lang="scss" scoped>
 	@import './common.scss';
 </style>
 <script>
+	import voiceEdit from './component/voiceEdit.vue'
 	export default {
 		name: 'voiceFileManage',
+		components: {
+			voiceEdit
+		},
 		data() {
 			return {
 				active: '1',
@@ -76,6 +81,7 @@
 					date: null,
 					status
 				},
+				voiceEditShow: false,
 				status: '',
 				options: [{
 					value: '',
@@ -96,6 +102,9 @@
 			}
 		},
 		methods: {
+			showvoiceEdi(bol) {
+				this.voiceEditShow = bol;
+			},
 			handleSizeChange() {
 
 			},
