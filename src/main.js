@@ -11,9 +11,26 @@ import 'element-ui/lib/theme-chalk/index.css';
 
 Vue.use(ElementUI);
 Vue.prototype.$ajax = axios;
+Vue.prototype.$clear = function (obj) {
+	var toStr = Object.prototype.toString;
+	for (let key in obj) {
+		if (typeof obj[key] == 'object' && obj[key] !== null) {
+			if (toStr.call(obj[key]) == '[object Array]') {
+				obj[key] = [];
+			} else {
+				this.clear(obj[key]);
+			}
+		} else if (typeof (obj[key] == 'number')) {
+			obj[key] = 0;
+		} else if (typeof (obj[key] == 'string')) {
+			obj[key] = '';
+		}
+	}
+	return obj;
+};
 axios.defaults.withCredentials = true;
-axios.defaults.headers.common['Content-Type'] = 'application/json;charset=UTF-8'
-axios.defaults.baseURL = '/vos'
+axios.defaults.headers.common['Content-Type'] = 'application/json;charset=UTF-8';
+axios.defaults.baseURL = '/vos';
 axios.interceptors.response.use(res => {
 	switch (res.data.code) {
 	case 401:

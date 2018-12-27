@@ -5,7 +5,7 @@
 				<ul>
 					<li class="l2">
 						<p class="fmini">
-							400号码: 4008818611
+							400号码: {{number400}}
 						</p>
 					</li>
 					<li class="l2">
@@ -79,10 +79,8 @@
 										<el-button size="mini" type="text" @click.stop="movedown(item.order)">下移</el-button>
 										&#12288;
 									</div>
-
-
 								</template>
-								<numSetAction :type="item.value" :order="item.order" :data="item" @typeChange="typeChange" :isFirst="true"></numSetAction>
+								<numSetAction :number400="number400" :type="item.businessType" :order="item.order" :data="item" @typeChange="typeChange" :isFirst="true"></numSetAction>
 							</el-collapse-item>
 						</div>
 					</el-collapse>
@@ -103,7 +101,7 @@
 	import numSetAction from './numSetAction.vue'
 	export default {
 		name: 'numSetup',
-		props: ['show'],
+		props: ['show', 'number400'],
 		components: {
 			numSetAction
 		},
@@ -111,9 +109,11 @@
 			show(newV, oldV) {
 				this.dialogVisible = newV;
 				if (!newV) {
-					this.clear(baseSet);
-					this.clear(actionSet);
+					this.$clear(numSetActionType);
 				}
+			},
+			id(newV, oldV) {
+				this.fetchDate();
 			}
 		},
 		data() {
@@ -122,12 +122,13 @@
 					person: ''
 				},
 				numSetActionType: [{
-					value: 0,
-					businessAction: false,
+					id: "",
+					businessType: 'transfer',
 					temName: '转接',
 					order: 0,
+					actionName: '一级',
 					actionSet: {
-						ruleType: 0,
+						ruleType: 'ignore',
 						ruleConfig: {
 							time: [],
 							date: ''
@@ -142,7 +143,7 @@
 					},
 					hookSet: {
 						voiceType: 0,
-						ruleType: 0,
+						ruleType: 'ignore',
 						ruleConfig: {
 							time: [],
 							date: ''
@@ -151,7 +152,7 @@
 					},
 					ivrSet: {
 						voiceType: 0,
-						ruleType: 0,
+						ruleType: 'ignore',
 						ruleConfig: {
 							time: [],
 							date: ''
@@ -161,43 +162,33 @@
 					label: '一级 1',
 					children: []
 				}],
-				dialogVisible: false,
+				dialogVisible: true,
 				type: '1',
 				numSetup: '',
 				active: '2',
 				activeName: 2,
-				options: [{ value: 0, label: '转接' }, { value: 1, label: '放音挂机' }, { value: 2, label: 'IVR' }],
+				options: [{ value: 'transfer', label: '转接' }, { value: 'playback', label: '放音挂机' }, { value: 'IVR', label: 'IVR' }]
 			}
 		},
 		methods: {
+			fetchDate() {
+				this.$ajax.get('/vos/num400config/getKeyDetail/' + this.id).then(res => {
+					console.log(res);
+				})
+			},
 			test() {
 				console.log(this.numSetActionType, this.options);
 			},
 			typeChange(type, order) {
 				this.options.map(item => {
 					if (item.value == type) {
-						this.numSetActionType[order].value = type;
+						this.numSetActionType[order].businessType = type;
 						this.numSetActionType[order].temName = item.label;
 					}
 				});
 			},
 			close() {
 				this.$emit('close');
-			},
-			clear(obj) {
-				var toStr = Object.prototype.toString;
-				for (let key in obj) {
-					if (typeof obj[key] == 'object' && obj[key] !== null) {
-						if (toStr.call(obj[key]) == '[object Array]') {
-							obj[key] = [];
-						} else {
-							this.clear(obj[key]);
-						}
-					} else {
-						obj[key] = '';
-					}
-				}
-				return obj;
 			},
 			moveup(orders) {
 				if (orders > 0) {

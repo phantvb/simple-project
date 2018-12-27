@@ -32,7 +32,7 @@
 				</div>
 			</div>
 			<section class="left block lineTop">
-				<el-button type="primary" size="mini"><i class="el-icon-plus" @click="showblackEdit(true)"></i> {{active==1?'新增企业黑名单':'新增全局黑名单'}}</el-button>
+				<el-button type="primary" size="mini" @click="showblackEdit(true)"><i class="el-icon-plus"></i> {{active==1?'新增企业黑名单':'新增全局黑名单'}}</el-button>
 				<el-button type="primary" plain size="mini">删除</el-button>
 				<div style="float:right">
 					<el-button type="primary" plain size="mini">导出</el-button>
@@ -121,7 +121,8 @@
 			}
 		},
 		methods: {
-			showvoiceEdi(bol) {
+			showblackEdit(bol) {
+				console.log(bol)
 				this.blackEditShow = bol;
 			},
 			handleSizeChange() {
