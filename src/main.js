@@ -31,8 +31,9 @@ Vue.prototype.$clear = function (obj) {
 axios.defaults.withCredentials = true;
 axios.defaults.headers.common['Content-Type'] = 'application/json;charset=UTF-8';
 axios.defaults.baseURL = '/vos';
+//axios.defaults.baseURL = 'http://47.94.168.117:7070';
 axios.interceptors.response.use(res => {
-	switch (res.data.code) {
+	switch (res.status) {
 	case 401:
 		//this.$router.push({ path: '/login'})
 		//location.href='#/login'
@@ -47,7 +48,7 @@ axios.interceptors.response.use(res => {
 		//location.href='#/login?error_type=1'
 		break
 	}
-	return res;
+	return res.data;
 })
 
 Vue.config.productionTip = false;
