@@ -5,17 +5,17 @@
 				<ul>
 					<li class="l2">
 						<p class="fmini">
-							400号码: {{number400}}
+							400号码: {{number400Data.number400}}
 						</p>
 					</li>
 					<li class="l2">
 						<p class="fmini">
-							企业名称: 杭州顺网科技股份有限公司
+							企业名称: {{number400Data.companyName}}
 						</p>
 					</li>
 					<li class="l2">
 						<p class="fmini">
-							引示号码： 4008272566
+							引示号码：{{number400Data.guideNumber}}
 						</p>
 					</li>
 				</ul>
@@ -66,7 +66,7 @@
 				</el-tab-pane>
 				<el-tab-pane label="业务动作" name="2">
 					<section class="left lineTop" id="addaction">
-						<el-button type="primary" size="mini"><i class="el-icon-plus"></i> 新增业务动作</el-button>
+						<el-button type="primary" size="mini" @click="addNumSetAction"><i class="el-icon-plus"></i> 新增业务动作</el-button>
 						<el-button type="info" plain size="mini">删除</el-button>
 					</section>
 					<el-collapse v-model="activeName" accordion>
@@ -75,12 +75,12 @@
 								<template slot="title">
 									<el-checkbox v-model="item.businessAction" :label="item.temName" :value="type"></el-checkbox>
 									<div style="text-align: right;width: 100%;">
-										<el-button size="mini" type="text" @click.stop="moveup(item.order)">上移</el-button>
+										<el-button size="mini" type="text" @click.stop="moveup(item.order,$event,index)">上移</el-button>
 										<el-button size="mini" type="text" @click.stop="movedown(item.order)">下移</el-button>
 										&#12288;
 									</div>
 								</template>
-								<numSetAction :number400="number400" :type="item.businessType" :order="item.order" :data="item" @typeChange="typeChange" :isFirst="true"></numSetAction>
+								<numSetAction :number400Data="number400Data" :type="item.businessType" :order="item.order" :data="item" @typeChange="typeChange" :isFirst="true"></numSetAction>
 							</el-collapse-item>
 						</div>
 					</el-collapse>
@@ -101,7 +101,7 @@
 	import numSetAction from './numSetAction.vue'
 	export default {
 		name: 'numSetup',
-		props: ['show', 'number400'],
+		props: ['show', 'number400Data'],
 		components: {
 			numSetAction
 		},
@@ -162,7 +162,7 @@
 					label: '一级 1',
 					children: []
 				}],
-				dialogVisible: true,
+				dialogVisible: false,
 				type: '1',
 				numSetup: '',
 				active: '2',
@@ -173,13 +173,14 @@
 		methods: {
 			fetchDate() {
 				this.$ajax.get('/vos/num400config/getKeyDetail/' + this.id).then(res => {
-					console.log(res);
-				})
+					//console.log(res);
+				});
 			},
 			test() {
 				console.log(this.numSetActionType, this.options);
 			},
 			typeChange(type, order) {
+				console.log(type, order)
 				this.options.map(item => {
 					if (item.value == type) {
 						this.numSetActionType[order].businessType = type;
@@ -190,7 +191,7 @@
 			close() {
 				this.$emit('close');
 			},
-			moveup(orders) {
+			moveup(orders, e, index) {
 				if (orders > 0) {
 					this.$refs['moveList'].insertBefore(this.$refs['moveList'].childNodes[orders], document.getElementById('moveList').childNodes[orders - 1]);
 					var n = orders;
@@ -221,6 +222,67 @@
 						item.order = n;
 					}
 				});
+			},
+			addNumSetAction() {
+				var numSetAction = '';
+				for (let i = 0; i < this.options.length; i++) {
+					var isrequire = true;
+					this.numSetActionType.map(item => {
+						if (item.businessType == this.options[i].value) {
+							isrequire = false;
+						}
+					});
+					if (isrequire) {
+						numSetAction = {
+							type: this.options[i].value,
+							temName: this.options[i].label,
+							order: this.numSetActionType.length,
+							actionName: 'lala'
+						};
+						break;
+					}
+				}
+				numSetAction ? this.numSetActionType.push({
+					id: "",
+					businessType: numSetAction.type,
+					temName: numSetAction.temName,
+					order: numSetAction.order,
+					actionName: numSetAction.actionName,
+					actionSet: {
+						ruleType: 'ignore',
+						ruleConfig: {
+							time: [],
+							date: ''
+						},
+						workTime: [''],
+						codeWork: [{
+							code: ''
+						}],
+						codeUnWork: [{
+							code: ''
+						}]
+					},
+					hookSet: {
+						voiceType: 0,
+						ruleType: 'ignore',
+						ruleConfig: {
+							time: [],
+							date: ''
+						},
+						workTime: ['']
+					},
+					ivrSet: {
+						voiceType: 0,
+						ruleType: 'ignore',
+						ruleConfig: {
+							time: [],
+							date: ''
+						},
+						workTime: ['']
+					},
+					label: '一级 1',
+					children: []
+				}) : '';
 			}
 		}
 	}

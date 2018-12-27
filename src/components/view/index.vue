@@ -54,6 +54,14 @@
 			};
 		},
 		components: { SidebarItem },
+		mounted() {
+			this.$ajax.post('/vos/user/apiLogin', {
+				username: 'jeq',
+				password: '123456'
+			}).then(res => {
+				console.log(res);
+			})
+		},
 		methods: {
 			handleOpen(key, keyPath) {
 				//console.log(key, keyPath);
