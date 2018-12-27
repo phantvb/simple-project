@@ -61,17 +61,21 @@
 		</el-table>
 		<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page.num" :page-sizes="$global.pageSize" :page-size="page.size" layout="total, sizes, prev, pager, next, jumper" :total="page.total">
 		</el-pagination>
+		<codeEdit :show="codeEditShow" @close="showcodeEdit(false)"></codeEdit>
 	</div>
 </template>
 <style lang="scss" scoped>
 	@import './common.scss';
 </style>
 <script>
+	import codeEdit from './component/codeEdit.vue'
 	export default {
 		name: 'ObjCodeManage',
+		components: {
+			codeEdit
+		},
 		data() {
 			return {
-				active: '1',
 				form: {
 					name: '',
 					person: '',
@@ -80,6 +84,7 @@
 					status
 				},
 				status: '',
+				codeEditShow: false,
 				options: [{
 					value: '',
 					label: '全部'
@@ -99,6 +104,10 @@
 			}
 		},
 		methods: {
+			showcodeEdit(bol) {
+				console.log(bol)
+				this.codeEditShow = bol;
+			},
 			handleSizeChange() {
 
 			},

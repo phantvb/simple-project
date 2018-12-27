@@ -5,7 +5,7 @@
 				<ul>
 					<li class="l2">
 						<p class="fmini">
-							400号码: 4008818611
+							400号码: {{number400}}
 						</p>
 					</li>
 					<li class="l2">
@@ -71,14 +71,24 @@
 					</section>
 					<el-collapse v-model="activeName" accordion>
 						<div id="moveList" ref="moveList">
-							<numSetAction v-for="(item,index) in numSetActionType" :key="index" :type="item.value" :activeName="index" :order="item.order" @moveup="moveup" @movedown="movedown"></numSetAction>
+							<el-collapse-item :name="index" v-for="(item,index) in numSetActionType" :key="index">
+								<template slot="title">
+									<el-checkbox v-model="item.businessAction" :label="item.temName" :value="type"></el-checkbox>
+									<div style="text-align: right;width: 100%;">
+										<el-button size="mini" type="text" @click.stop="moveup(item.order)">上移</el-button>
+										<el-button size="mini" type="text" @click.stop="movedown(item.order)">下移</el-button>
+										&#12288;
+									</div>
+								</template>
+								<numSetAction :number400="number400" :type="item.businessType" :order="item.order" :data="item" @typeChange="typeChange" :isFirst="true"></numSetAction>
+							</el-collapse-item>
 						</div>
 					</el-collapse>
 				</el-tab-pane>
 			</el-tabs>
 			<footer class="right">
 				<el-button type="primary" size="mini" plain>取消</el-button>
-				<el-button type="primary" size="mini">确定</el-button>
+				<el-button type="primary" size="mini" @click="test">确定</el-button>
 			</footer>
 		</el-dialog>
 	</div>
@@ -91,7 +101,7 @@
 	import numSetAction from './numSetAction.vue'
 	export default {
 		name: 'numSetup',
-		props: ['show'],
+		props: ['show', 'number400'],
 		components: {
 			numSetAction
 		},
@@ -99,9 +109,11 @@
 			show(newV, oldV) {
 				this.dialogVisible = newV;
 				if (!newV) {
-					this.clear(baseSet);
-					this.clear(actionSet);
+					this.$clear(numSetActionType);
 				}
+			},
+			id(newV, oldV) {
+				this.fetchDate();
 			}
 		},
 		data() {
@@ -110,74 +122,105 @@
 					person: ''
 				},
 				numSetActionType: [{
-					value: 0,
-					order: 0
-				}, {
-					value: 1,
-					order: 1
+					id: "",
+					businessType: 'transfer',
+					temName: '转接',
+					order: 0,
+					actionName: '一级',
+					actionSet: {
+						ruleType: 'ignore',
+						ruleConfig: {
+							time: [],
+							date: ''
+						},
+						workTime: [''],
+						codeWork: [{
+							code: ''
+						}],
+						codeUnWork: [{
+							code: ''
+						}]
+					},
+					hookSet: {
+						voiceType: 0,
+						ruleType: 'ignore',
+						ruleConfig: {
+							time: [],
+							date: ''
+						},
+						workTime: ['']
+					},
+					ivrSet: {
+						voiceType: 0,
+						ruleType: 'ignore',
+						ruleConfig: {
+							time: [],
+							date: ''
+						},
+						workTime: ['']
+					},
+					label: '一级 1',
+					children: []
 				}],
 				dialogVisible: true,
 				type: '1',
 				numSetup: '',
 				active: '2',
-				activeName: 1,
-				options: [{
-					value: '',
-					label: '全部'
-				}, {
-					value: '选项2',
-					label: '等待送审'
-				}, {
-					value: '选项3',
-					label: '待审核'
-				}, {
-					value: '选项4',
-					label: '审核通过'
-				}, {
-					value: '选项5',
-					label: '被驳回'
-				}],
-
+				activeName: 2,
+				options: [{ value: 'transfer', label: '转接' }, { value: 'playback', label: '放音挂机' }, { value: 'IVR', label: 'IVR' }]
 			}
 		},
 		methods: {
+			fetchDate() {
+				this.$ajax.get('/vos/num400config/getKeyDetail/' + this.id).then(res => {
+					console.log(res);
+				})
+			},
+			test() {
+				console.log(this.numSetActionType, this.options);
+			},
+			typeChange(type, order) {
+				this.options.map(item => {
+					if (item.value == type) {
+						this.numSetActionType[order].businessType = type;
+						this.numSetActionType[order].temName = item.label;
+					}
+				});
+			},
 			close() {
 				this.$emit('close');
-			},
-			clear(obj) {
-				var toStr = Object.prototype.toString;
-				for (let key in obj) {
-					if (typeof obj[key] == 'object' && obj[key] !== null) {
-						if (toStr.call(obj[key]) == '[object Array]') {
-							obj[key] = [];
-						} else {
-							this.clear(obj[key]);
-						}
-					} else {
-						obj[key] = '';
-					}
-				}
-				return obj;
 			},
 			moveup(orders) {
 				if (orders > 0) {
 					this.$refs['moveList'].insertBefore(this.$refs['moveList'].childNodes[orders], document.getElementById('moveList').childNodes[orders - 1]);
-					var n = this.numSetActionType[orders].order;
-					var o = this.numSetActionType[orders - 1].order;
-					this.numSetActionType[orders].order = o;
-					this.numSetActionType[orders - 1].order = n;
+					var n = orders;
+					var o = orders - 1;
+					this.numSetActionType.map(item => {
+						if (item.order == n) {
+							item.order = o;
+						} else if (item.order == o) {
+							item.order = n;
+						}
+					});
 				}
 			},
 			movedown(orders) {
 				if (orders < (this.numSetActionType.length - 2)) {
-					this.$refs['moveList'].insertBefore(this.$refs['moveList'].childNodes[orders], document.getElementById('moveList').childNodes[orders + 1]);
+					this.$refs['moveList'].insertBefore(this.$refs['moveList'].childNodes[orders], document.getElementById('moveList').childNodes[orders + 2]);
 				} else if (orders == (this.numSetActionType.length - 2)) {
 					this.$refs['moveList'].appendChild(this.$refs['moveList'].childNodes[orders]);
+				} else {
+					return
 				}
-				var n = this.numSetActionType[orders].order;
-				var o = this.numSetActionType[orders + 1].order;
-				this.numSetActionType[orders].order = o;
-				this.numSetActionType[orders + 1].order = n;
+				var n = orders;
+				var o = orders + 1;
+				this.numSetActionType.map(item => {
+					if (item.order == n) {
+						item.order = o;
+					} else if (item.order == o) {
+						item.order = n;
+					}
+				});
 			}
 		}
 	}

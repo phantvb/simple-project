@@ -32,7 +32,7 @@
 				</div>
 			</div>
 			<section class="left block lineTop">
-				<el-button type="primary" size="mini"><i class="el-icon-plus"></i> {{active==1?'新增企业黑名单':'新增全局黑名单'}}</el-button>
+				<el-button type="primary" size="mini" @click="showblackEdit(true)"><i class="el-icon-plus"></i> {{active==1?'新增企业黑名单':'新增全局黑名单'}}</el-button>
 				<el-button type="primary" plain size="mini">删除</el-button>
 				<div style="float:right">
 					<el-button type="primary" plain size="mini">导出</el-button>
@@ -73,6 +73,7 @@
 			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page.num" :page-sizes="$global.pageSize" :page-size="page.size" layout="total, sizes, prev, pager, next, jumper" :total="page.total">
 			</el-pagination>
 		</el-tabs>
+		<blackEdit :type="active" :show="blackEditShow" @close="showblackEdit(false)"></blackEdit>
 	</div>
 </template>
 <style lang="scss" scoped>
@@ -83,8 +84,12 @@
 	}
 </style>
 <script>
+	import blackEdit from './component/blackEdit.vue'
 	export default {
 		name: 'blacklistManage',
+		components: {
+			blackEdit
+		},
 		data() {
 			return {
 				active: '1',
@@ -95,6 +100,7 @@
 					date: null,
 					status
 				},
+				blackEditShow: false,
 				status: '',
 				options: [{
 					value: '',
@@ -115,6 +121,10 @@
 			}
 		},
 		methods: {
+			showblackEdit(bol) {
+				console.log(bol)
+				this.blackEditShow = bol;
+			},
 			handleSizeChange() {
 
 			},
