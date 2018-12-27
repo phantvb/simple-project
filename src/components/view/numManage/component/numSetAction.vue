@@ -37,24 +37,24 @@
 				<div class="form_con">
 					<el-checkbox-group v-model="data.actionSet.ruleConfig.time" size="mini">
 						<div v-for="item in dayOptions" :key="item.vlaue" style="float:left;">
-							<el-checkbox-button size="mini" :value='item.vlaue' :label="item.label"></el-checkbox-button>&#12288;
+							<el-checkbox-button size="mini" :label="item.value">{{item.label}}</el-checkbox-button>&#12288;
 						</div>
 					</el-checkbox-group>
 				</div>
 			</div>
 			<div v-if="data.actionSet.ruleType=='month'" class="form_item">
 				<div class="form_con">
-					<el-checkbox-group v-model="data.actionSet.ruleConfig.time" size="mini">
-						<div style="overflow: hidden; margin-bottom:15px;">
-							<div v-for="(item,index) in monthOptions" :key="item.vlaue" style="float:left;" v-if="index<6">
-								<el-checkbox-button size="mini" :value='item.vlaue' :label="item.label"></el-checkbox-button>&#12288;
-							</div>
+					<el-checkbox-group v-model="data.actionSet.ruleConfig.time" size="mini" @change="test">
+						<!-- <div style="overflow: hidden; margin-bottom:15px;"> -->
+						<div v-for="(item,index) in monthOptions" :key="item.vlaue" style="float:left;" v-if="index<6">
+							<el-checkbox-button size="mini" :label="item.vlaue">{{item.label}}</el-checkbox-button>&#12288;
 						</div>
-						<div style="overflow: hidden; margin-bottom:15px;">
-							<div v-for="(item,index) in monthOptions" :key="item.vlaue" style="float:left;" v-if="index>5">
-								<el-checkbox-button size="mini" :value='item.vlaue' :label="item.label"></el-checkbox-button>&#12288;
-							</div>
+						<!-- </div> -->
+						<!-- <div style="overflow: hidden; margin-bottom:15px;"> -->
+						<div v-for="(item,index) in monthOptions" :key="item.vlaue" style="float:left;" v-if="index>5">
+							<el-checkbox-button size="mini" :label="item.vlaue">{{item.label}}</el-checkbox-button>&#12288;
 						</div>
+						<!-- </div> -->
 					</el-checkbox-group>
 				</div>
 			</div>
@@ -160,7 +160,7 @@
 				<div class="form_con">
 					<el-checkbox-group v-model="data.hookSet.ruleConfig.time" size="mini">
 						<div v-for="item in dayOptions" :key="item.vlaue" style="float:left;">
-							<el-checkbox-button size="mini" :value='item.vlaue' :label="item.label"></el-checkbox-button>&#12288;
+							<el-checkbox-button size="mini" :label="item.vlaue">{{item.label}}</el-checkbox-button>&#12288;
 						</div>
 					</el-checkbox-group>
 				</div>
@@ -170,12 +170,12 @@
 					<el-checkbox-group v-model="data.hookSet.ruleConfig.time" size="mini">
 						<div style="overflow: hidden; margin-bottom:15px;">
 							<div v-for="(item,index) in monthOptions" :key="item.vlaue" style="float:left;" v-if="index<6">
-								<el-checkbox-button size="mini" :value='item.vlaue' :label="item.label"></el-checkbox-button>&#12288;
+								<el-checkbox-button size="mini" :label="item.vlaue">{{item.label}}</el-checkbox-button>&#12288;
 							</div>
 						</div>
 						<div style="overflow: hidden; margin-bottom:15px;">
 							<div v-for="(item,index) in monthOptions" :key="item.vlaue" style="float:left;" v-if="index>5">
-								<el-checkbox-button size="mini" :value='item.vlaue' :label="item.label"></el-checkbox-button>&#12288;
+								<el-checkbox-button size="mini" :label="item.vlaue">{{item.label}}</el-checkbox-button>&#12288;
 							</div>
 						</div>
 					</el-checkbox-group>
@@ -341,7 +341,7 @@
 	export default {
 		name: 'numSetAction',
 		props: [
-			'type', 'data', 'order', 'isFirst', 'number400'
+			'type', 'data', 'order', 'isFirst', 'number400Data'
 		],
 		watch: {
 			type(newV, oldV) {
@@ -389,15 +389,18 @@
 				}],
 				//ignore忽略规则 day每天 week星期 month月 specificDate特定日期
 				ruleOptions: [{ value: 'ignore', label: '忽略规则' }, { value: 'day', label: '每天' }, { value: 'week', label: '每星期' }, { value: 'month', label: '每月' }, { value: 'specificDate', label: '特定日期' }],
-				dayOptions: [{ value: 1, label: '周一' }, { value: 2, label: '周二' }, {
-					value: 3,
+				dayOptions: [{ value: '1', label: '周一' }, { value: '2', label: '周二' }, {
+					value: '3',
 					label: '周三'
-				}, { value: 4, label: '周四' }, { value: 5, label: '周五' }, { value: 6, label: '周六' }, { value: 7, label: '周日' }],
-				monthOptions: [{ value: 1, label: '一月' }, { value: 2, label: '二月' }, { value: 3, label: '三月' }, { value: 4, label: '四月' }, { value: 5, label: '五月' }, { value: 6, label: '六月' }, { value: 7, label: '七月' }, { value: 8, label: '八月' }, { value: 9, label: '九月' }, { value: 10, label: '十月' }, { value: 11, label: '十一月' }, { value: 12, label: '十二月' }],
+				}, { value: '4', label: '周四' }, { value: '5', label: '周五' }, { value: '6', label: '周六' }, { value: '7', label: '周日' }],
+				monthOptions: [{ value: '1', label: '一月' }, { value: '2', label: '二月' }, { value: '3', label: '三月' }, { value: '4', label: '四月' }, { value: '5', label: '五月' }, { value: '6', label: '六月' }, { value: '7', label: '七月' }, { value: '8', label: '八月' }, { value: '9', label: '九月' }, { value: '10', label: '十月' }, { value: '11', label: '十一月' }, { value: '12', label: '十二月' }],
 				keyOptions: [{ value: '1' }, { value: '2' }, { value: '3' }, { value: '4' }, { value: '5' }, { value: '6' }, { value: '7' }, { value: '8' }, { value: '9' }, { value: '*' }, { value: '0' }, { value: '#' }, ]
 			}
 		},
 		methods: {
+			test() {
+				console.log(this.data.actionSet.ruleConfig.time)
+			},
 			close() {
 				console.log(this.data);
 				this.updata();
@@ -418,7 +421,7 @@
 					this.data.children.push({
 						id: "",
 						keyNumber: keycode,
-						number400: this.number400,
+						number400Data: this.number400Data,
 						businessType: 'transfer',
 						temName: '转接',
 						actionName: '一级 11',
@@ -428,7 +431,7 @@
 								time: [],
 								date: ''
 							},
-							workTime: [],
+							workTime: [''],
 							codeWork: [],
 							codeUnWork: []
 						},
@@ -439,7 +442,7 @@
 								time: [],
 								date: ''
 							},
-							workTime: []
+							workTime: ['']
 						},
 						ivrSet: {
 							voiceType: 0,
@@ -448,7 +451,7 @@
 								time: [],
 								date: ''
 							},
-							workTime: []
+							workTime: ['']
 						},
 						children: []
 					});
@@ -459,54 +462,56 @@
 			},
 			updata() {
 				var postdata = {};
-				postdata.id = this.data.id;
-				postdata.keyNumber = this.data.keyNumber;
-				postdata.number400 = this.number400;
-				postdata.businessType = this.data.businessType;
-				if (this.data.businessType == 'transfer') {
-					postdata.workDestNumbers = this.data.actionSet.codeWork.join(',');
-					postdata.nonWorkDestNumbers = this.data.actionSet.codeUnWork.join(',');
-					this.data.actionSet.workTime.map((item, index) => {
+				postdata.id = this.numSetActionData.id;
+				postdata.keyNumber = this.numSetActionData.keyNumber;
+				postdata.number400 = this.number400Data.number400;
+				postdata.businessType = this.numSetActionData.businessType;
+				if (this.numSetActionData.businessType == 'transfer') {
+					postdata.workDestNumbers = this.numSetActionData.actionSet.codeWork.join(',');
+					postdata.nonWorkDestNumbers = this.numSetActionData.actionSet.codeUnWork.join(',');
+					this.numSetActionData.actionSet.workTime.map((item, index) => {
 						postdata['workTime' + (index + 1) + 'Start'] = item[0];
 						postdata['workTime' + (index + 1) + 'End'] = item[1];
 					});
-					postdata.ruleType = this.data.actionSet.ruleType;
-					if (this.data.actionSet.ruleType == 'week' || this.data.actionSet.ruleType == 'month') {
-						postdata.specificDate = this.data.actionSet.ruleConfig.time.join(',');
-					} else if (this.data.actionSet.ruleType == 'specificDate') {
-						postdata.specificDate = this.data.actionSet.ruleConfig.date;
+					postdata.ruleType = this.numSetActionData.actionSet.ruleType;
+					if (this.numSetActionData.actionSet.ruleType == 'week' || this.numSetActionData.actionSet.ruleType == 'month') {
+						postdata.specificDate = this.numSetActionData.actionSet.ruleConfig.time.join(',');
+					} else if (this.numSetActionData.actionSet.ruleType == 'specificDate') {
+						postdata.specificDate = this.numSetActionData.actionSet.ruleConfig.date;
 					}
-					//postdata.parentId=this.data.actionSet;
-				} else if (this.data.businessType == 'playback') {
-					this.data.hookSet.workTime.map((item, index) => {
+					//postdata.parentId=this.numSetActionData.actionSet;
+				} else if (this.numSetActionData.businessType == 'playback') {
+					this.numSetActionData.hookSet.workTime.map((item, index) => {
 						postdata['workTime' + (index + 1) + 'Start'] = item[0];
 						postdata['workTime' + (index + 1) + 'End'] = item[1];
 					});
-					postdata.ruleType = this.data.hookSet.ruleType;
-					if (this.data.hookSet.ruleType == 'week' || this.data.hookSet.ruleType == 'month') {
-						postdata.specificDate = this.data.hookSet.ruleConfig.time.join(',');
-					} else if (this.data.hookSet.ruleType == 'specificDate') {
-						postdata.specificDate = this.data.hookSet.ruleConfig.date;
+					postdata.ruleType = this.numSetActionData.hookSet.ruleType;
+					if (this.numSetActionData.hookSet.ruleType == 'week' || this.numSetActionData.hookSet.ruleType == 'month') {
+						postdata.specificDate = this.numSetActionData.hookSet.ruleConfig.time.join(',');
+					} else if (this.numSetActionData.hookSet.ruleType == 'specificDate') {
+						postdata.specificDate = this.numSetActionData.hookSet.ruleConfig.date;
 					}
-					postdata.voiceId = this.data.hookSet.voiceType;
-				} else if (this.data.businessType == 'IVR') {
-					postdata.actionName = this.data.actionName;
-					this.data.ivrSet.workTime.map((item, index) => {
+					postdata.voiceId = this.numSetActionData.hookSet.voiceType;
+				} else if (this.numSetActionData.businessType == 'IVR') {
+					postdata.actionName = this.numSetActionData.actionName;
+					this.numSetActionData.ivrSet.workTime.map((item, index) => {
 						postdata['workTime' + (index + 1) + 'Start'] = item[0];
 						postdata['workTime' + (index + 1) + 'End'] = item[1];
 					});
-					postdata.ruleType = this.data.ivrSet.ruleType;
-					if (this.data.ivrSet.ruleType == 'week' || this.data.ivrSet.ruleType == 'month') {
-						postdata.specificDate = this.data.ivrSet.ruleConfig.time.join(',');
-					} else if (this.data.ivrSet.ruleType == 'specificDate') {
-						postdata.specificDate = this.data.ivrSet.ruleConfig.date;
+					postdata.ruleType = this.numSetActionData.ivrSet.ruleType;
+					if (this.numSetActionData.ivrSet.ruleType == 'week' || this.numSetActionData.ivrSet.ruleType == 'month') {
+						postdata.specificDate = this.numSetActionData.ivrSet.ruleConfig.time.join(',');
+					} else if (this.numSetActionData.ivrSet.ruleType == 'specificDate') {
+						postdata.specificDate = this.numSetActionData.ivrSet.ruleConfig.date;
 					}
-					postdata.voiceId = this.data.ivrSet.voiceType;
+					postdata.voiceId = this.numSetActionData.ivrSet.voiceType;
 				} else {
-					postdata.businessType = this.data.businessType;
+					postdata.businessType = this.numSetActionData.businessType;
 				};
-				this.$ajax.post('/vos/num400config/saveKey', postdata).then(res => {
-
+				this.$ajax.post('/vos/num400config/saveKey', { num400KeyConfig: postdata }).then(res => {
+					if (res.code == 200) {
+						this.numSetActionData.id = res.data;
+					}
 				})
 			},
 			handleNodeClick(data) {
