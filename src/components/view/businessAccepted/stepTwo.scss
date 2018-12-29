@@ -1,0 +1,79 @@
+.title {
+  margin: $padding;
+  @include title-atten;
+}
+
+.block {
+  padding: $padding;
+
+  &>div {
+    overflow: hidden;
+  }
+}
+
+ul {
+  @include ul-col;
+
+  li {
+    margin-bottom: $padding;
+    box-sizing: border-box;
+    padding-right: $padding;
+
+  }
+}
+
+.stepTwotips {
+  overflow: hidden;
+  margin-left:100px;
+  p{
+    text-align: left;
+  }
+}
+footer {
+  padding: $padding;
+  border-top: 1px solid #eee;
+}
+
+.example {
+  .examplew {
+    width:120px;
+  }
+
+  .exampleh {
+    height: 120px;
+  }
+}
+.stepBtn{
+  text-align: right;
+}
+.handleInfo{
+  overflow-y: hidden;
+  margin-left:25px;
+}
+.num400{
+  text-align: left;
+  overflow: hidden;
+}
+.addNumDialog{
+  overflow: hidden;
+}
+.numMessage{
+  overflow: hidden;
+  margin-bottom:30px;
+  p{
+    padding:0 10px;
+    border-left:2px solid #108CEE;
+    text-align: left;
+    font-weight: bold;
+  }
+}
+.selectNumTable{
+  border-bottom:1px solid #cccccc;
+  overflow: hidden;
+  margin-bottom:30px;
+  padding-bottom: 30px;
+}
+.addNumform{
+  overflow: hidden;
+
+}

@@ -39,6 +39,7 @@
     font-weight: bold;
   }
 }
+
 .detailMsg{
   margin-bottom:0px;
 }
@@ -257,4 +258,57 @@
      margin-right:20px;
    }
  }
+}
+.threeSelect{
+  overflow: hidden;
+}
+.stepBtn{
+  text-align: right;
+}
+//套餐样式
+#setMeal{
+  .bigHouse{
+    border-bottom: 1px solid #F2F2F2;
+    padding: 10px 10px 50px 10px;
+  }
+  .numberDetail{
+    padding:10px;
+    .unit{
+      float:left;
+      border:1px dashed #cccccc;
+      padding:10px 20px;
+      margin:0 10px 10px 0;
+    }
+  }
+  div{
+    overflow: hidden;
+    .lowestExpense{
+      width: 173px;
+      float: left;
+      margin-right:20px;
+      p{
+        text-align: center;
+        font-weight: bold;
+        font-size: 16px;
+      }
+      .ellipse{
+        border:1px solid #2596EF;
+        width:150px;
+        padding:10px;
+        border-radius: 20px;
+        text-align: center;
+        span{
+          font-size:16px;
+          color:#2596EF;
+        }
+      }
+    }
+  }
+  .title{
+    font-weight: bold;
+    font-size:18px;
+  }
+  span{
+    color:#2596EF;
+  }
 }

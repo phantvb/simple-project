@@ -90,9 +90,7 @@
                         <el-step title="管理员" description="审批 12月08日 16:59"></el-step>
                     </el-steps>
                 </div>
-                <button class="pass"><i class="el-icon-circle-check"
-                                        style="color:#67C23A;font-size:16px;transform: translateY(1px);"></i> 审核通过
-                </button>
+                <button class="pass"><i class="el-icon-circle-check" style="color:#67C23A;font-size:16px;transform: translateY(1px);"></i> 审核通过</button>
             </div>
             <div class="block">
                 <button class="pass passback">撤回</button>

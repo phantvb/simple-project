@@ -204,8 +204,9 @@
 	width: 80%;
 }
 
-.acceptMsg .firmName {
-	width: 80%;
+.acceptMsg .stepTwoFirmName {
+	width: 50%;
+	float:left;
 }
 
 .acceptMsg .identity {
@@ -261,7 +262,35 @@
 .objCodeDialog .materials .el-form-item__content {
 	line-height: 23px;
 }
-
+.threeSelect .el-form-item,.legalInfo .el-form-item{
+	width:20%;
+	float:left;
+}
+.threeSelect .el-form-item .el-select{
+	width:100%;
+}
+.regUrl .onlyInput ,.businessAddress .onlyInput{
+	margin-left:100px;
+	width:44%;
+	margin-bottom:22px;
+}
+.handleInfo .el-form-item{
+	width:33%;
+	margin-right:20px;
+	float:left;
+}
+.handleInfo .identity{
+	width:66%;
+}
+.handleInfo .identity .el-select{
+	float: left;
+	width: 30%;
+}
+.handleInfo .identity .handleIdentityNo{
+	float: left;
+	width: 67%;
+	margin-left: 10px;
+}
 /*自定义导航*/
 #customNavigation .el-tree-node .el-tree-node__content {
 	margin-bottom: 5px;
@@ -276,4 +305,10 @@
 
 #numSetAction .el-card {
 	background-color: #ecf5ff;
+}
+.addNumform .el-input{
+	width:50%;
+}
+.addNumform .el-tabs--border-card{
+	border:1px solid #2596EF;
 }
