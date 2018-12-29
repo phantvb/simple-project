@@ -1,0 +1,66 @@
+<template>
+    <div id="messageInform">
+        <header>
+            消息中心
+        </header>
+        <div style="position: relative;margin-top: 20px">
+            <el-tabs v-model="active" type="border-card">
+                <el-tab-pane label="全部消息" name="1">
+                    <allMessages ref="allMess"></allMessages>
+                </el-tab-pane>
+                <el-tab-pane label="系统公告" name="2">
+                    <systemNotice ref="sysNotice"></systemNotice>
+                </el-tab-pane>
+                <el-tab-pane label="审核信息" name="3"></el-tab-pane>
+            </el-tabs>
+            <div class="searchMessage">
+                <el-input v-model="form.mess" placeholder="请输入信息" size="small" style="width:200px;"></el-input>
+                <el-button type="primary" size="mini" style="width:80px;margin-left: 10px" @click="search">搜索
+                </el-button>
+                <el-button type="primary" plain size="mini" style="width:80px;" @click="reset">重置</el-button>
+            </div>
+        </div>
+
+    </div>
+</template>
+
+<script>
+    import allMessages from './messageCenterElement/allMessages';
+    import systemNotice from './messageCenterElement/systemNotice';
+
+    export default {
+        components: {
+            allMessages,
+            systemNotice
+        },
+        data() {
+            return {
+                form: {
+                    mess: ''
+                },
+                active: '1'
+            }
+
+        },
+        methods: {
+            reset() {
+                this.form.mess = '';
+            },
+
+            search() {
+                // this.$emit('searchMessage',this.form.mess);
+                if (this.active == '1') {
+                    this.$refs.allMess.search(this.form.mess);
+                }
+                if (this.active == '2') {
+                    this.$refs.sysNotice.search(this.form.mess);
+                }
+
+            }
+        }
+    }
+</script>
+
+<style lang="scss" scoped>
+    @import './messageCenter.scss';
+</style>

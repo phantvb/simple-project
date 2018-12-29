@@ -1,0 +1,308 @@
+<template>
+    <div id="noticeManage">
+        <header>
+            <el-breadcrumb separator-class="el-icon-arrow-right">
+                <el-breadcrumb-item :to="{ path: '/' }">运营管理</el-breadcrumb-item>
+                <el-breadcrumb-item>公告管理</el-breadcrumb-item>
+            </el-breadcrumb>
+        </header>
+        <el-tabs>
+            <div class="search" style="margin-top: 15px">
+                <ul>
+                    <li>
+                        <el-input v-model="form.title" placeholder="请输入内容" size="mini">
+                            <template slot="prepend" style="width:80px;">标题内容：</template>
+                        </el-input>
+                    </li>
+                    <li>
+                        <el-input v-model="form.person" placeholder="请输入内容" size="mini">
+                            <template slot="prepend">发布人：</template>
+                        </el-input>
+                    </li>
+                </ul>
+                <div class="block left">
+                    <span class="demonstration">时间：</span>
+
+                    <el-date-picker
+                        style="margin-right:15px;"
+                        v-model="form.date"
+                        type="datetimerange"
+                        range-separator="至"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期"
+                        size="mini"
+                        value-format="yyyy-MM-dd HH:mm:ss">
+                    </el-date-picker>
+                    <el-button type="primary" size="mini" style="width:80px;" @click="searchNotice">搜索</el-button>
+                    <el-button type="primary" plain size="mini" style="width:80px;" @click="resetForm">重置</el-button>
+                </div>
+            </div>
+            <section class="title left">
+                <el-button type="primary" size="mini" @click="showAddNotice">新增公告</el-button>
+                <el-button type="primary" plain size="mini" @click="batchDelete">批量删除</el-button>
+            </section>
+            <div>
+                <el-table ref="multipleTable" :data="tableData"
+                          tooltip-effect="dark" style="width: 100%"
+                          @selection-change="handleSelectionChange">
+                    <el-table-column type="selection" width="55"></el-table-column>
+                    <el-table-column prop="title" label="公告标题" width="600"></el-table-column>
+                    <el-table-column prop="publishMan" label="发布人" width="400"></el-table-column>
+                    <el-table-column prop="publishTime" label="发布时间" width="300"></el-table-column>
+                    <el-table-column label="操作">
+                        <template slot-scope="scope">
+                            <el-button size="mini" type="text" @click="handleEdit(scope.$index, scope.row)">编辑详情
+                            </el-button>
+                            <el-button size="mini" type="text" @click="handleStick(scope.$index, scope.row)">置顶
+                            </el-button>
+                            <el-button size="mini" type="text" @click="handleDelete(scope.$index, scope.row)">删除
+                            </el-button>
+                        </template>
+                    </el-table-column>
+                    <el-table-column type="expand">
+                        <template slot-scope="props" @change="console.log(1111)">
+                            <el-form label-position="left" inline class="demo-table-expand">
+                                <el-form-item label="公告内容">
+                                    <span style="margin-left: 50px;">{{props.row.content}}</span>
+                                </el-form-item>
+                            </el-form>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </div>
+            <div style="margin-top: 10px">
+                <el-pagination
+                    style="float:right;"
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange"
+                    :current-page="page.currentPage"
+                    :page-sizes="$global.pageSize"
+                    :page-size="page.size"
+                    layout="total, sizes, prev, pager, next, jumper"
+                    :total="page.total">
+                </el-pagination>
+            </div>
+
+            <div>
+                <el-dialog
+                    title="新增/编辑公告"
+                    :visible.sync="dialogVisible"
+                    width="40%">
+                    <el-form>
+                        <el-form-item label="公告标题">
+                            <el-input v-model="title"></el-input>
+                        </el-form-item>
+                        <el-form-item label="公告内容"></el-form-item>
+                        <wangEditor :wangEditorContent='catchContent'></wangEditor>
+                    </el-form>
+                    <span slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="addNotice;">确 定</el-button>
+            <el-button @click="dialogVisible = false">取 消</el-button>
+          </span>
+                </el-dialog>
+            </div>
+
+        </el-tabs>
+    </div>
+</template>
+
+<script>
+    import wangEditor from './wangEditor/wangEditor';
+
+    export default {
+        components: {
+            wangEditor
+        },
+        data() {
+            return {
+                dialogVisible: false,
+                form: {
+                    title: '',
+                    person: '',
+                    date: []
+                },
+                tableData: [],
+                page: {
+                    currentPage: 1,
+                    size: 10,
+                    total: 1
+                },
+                title: '',
+                editContent: '',
+
+                content: '',
+
+                selectedItems: [],
+                ids: []
+            }
+        },
+
+        methods: {
+            catchContent(value) {
+                this.editContent = value;     // 在这里接受子组件传过来的参数，赋值给data里的参数
+            },
+
+
+            // 修改页面显示数据大小
+            handleSizeChange(val) {
+                this.page.size = val;
+                this.loadTableData();
+            },
+
+            // 修改当前显示页面
+            handleCurrentChange(val) {
+                this.page.currentPage = val;
+                this.loadTableData();
+            },
+
+            // 重置
+            resetForm() {
+                this.form.title = '';
+                this.form.person = '';
+                this.form.date = [];
+            },
+
+            // 搜索信息
+            searchNotice() {
+                if (this.form.date.length == 0) {
+                    this.form.date[0] = '';
+                    this.form.date[1] = '';
+                }
+                console.log(this.form.date[0], this.form.date[1])
+                this.$ajax.post('/vos/announcement/search', {
+                    "ann": {
+                        "title": this.form.title,
+                        "publishMan": this.form.person
+                    },
+                    "page": {
+                        "pageNo": this.page.currentPage,
+                        "pageSize": this.page.size
+                    },
+                    "beforeTime": this.form.date[0],
+                    "afterTime": this.form.date[1],
+                }).then((res) => {
+                    if (res.code == 200) {
+                        this.tableData = res.data.announcements;
+                        this.page.total = res.data.totalCount;
+                    }
+                });
+            },
+
+            showAddNotice() {
+                this.dialogVisible = true
+                this.title = '';
+                this.editContent = '';
+            },
+            addNotice() {
+                console.log(this.editContent)
+                // this.dialogVisible = false;
+            },
+
+
+            // 批量删除
+            handleSelectionChange(val) {
+                this.selectedItems = val;
+            },
+
+            batchDelete() {
+                if (confirm('确定要删除这些信息吗?')) {
+                    for (let i = 0; i < this.selectedItems.length; i++) {
+                        this.ids.push(this.selectedItems[i].id);
+                    }
+                    let IDS = this.ids.join(',');
+                    this.$ajax.post('/vos/announcement/delete', {
+                        "ids": IDS
+
+                    }).then((res) => {
+                        if (res.code == 200) {
+                            alert('删除成功！');
+                        }
+                        if (res.code == 4005) {
+                            alert('您无权操作！');
+                        }
+                        this.loadData();
+                    });
+                }
+            },
+
+            showContent(index, row) {
+                console.log(index)
+                this.getRequest('/vos/announcement/getDetail/' + row.id).then((res) => {
+                    this.content = row.content;
+                });
+            },
+
+            handleEdit(index, row) {
+                this.$ajax.get('/vos/announcement/getDetail/' + row.id).then((res) => {
+
+                    this.dialogVisible = true;
+                    this.title = row.title;
+                    this.editContent = row.content;
+                });
+            },
+
+            // 删除
+            handleDelete(index, row) {
+                if (confirm('确认删除吗?')) {
+                    this.$ajax.post('/vos/announcement/delete', {
+                        "ann": {
+                            "ids": row.id
+                        }
+                    }).then((res) => {
+                        if (res.code == 200) {
+                            this.loadTableData();
+                            alert('删除成功！');
+                        }
+                        if (res.code == 4005) {
+                            alert('您无权操作！');
+                        }
+                    });
+                }
+            },
+
+            handleStick(index, row) {
+                // 置顶
+                this.$ajax.post('/vos/announcement/moveTop', {
+                    "ann": {
+                        "id": row.id
+                    }
+                }).then((res) => {
+                    if (res.code == 200) {
+                        this.loadTableData();
+                        alert('删除成功！');
+                    }
+                    if (res.code == 4005) {
+                        alert('您无权操作！');
+                    }
+                });
+            },
+
+            loadData() {
+                // 加载el-table的数据
+                this.$ajax.post('/vos/announcement/getAll', {
+                    "ann": {
+                        "title": '',
+                        "publishMan": ''
+                    },
+                    "page": {
+                        "pageNo": this.page.currentPage,
+                        "pageSize": this.page.size
+                    }
+                }).then((res) => {
+                    if (res.code == 200) {
+                        this.tableData = res.data.announcements;
+                        this.page.total = res.data.totalCount;
+                    }
+                });
+
+            }
+        },
+        created() {
+            this.loadData();
+        }
+    }
+</script>
+
+<style lang="scss" scoped>
+    @import "./noticeManage.scss";
+</style>
