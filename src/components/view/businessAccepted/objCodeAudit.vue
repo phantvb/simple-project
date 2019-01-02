@@ -3,7 +3,7 @@
     <!--新增/编辑目的码弹窗-->
     <div class="objCodeDialog">
       <el-dialog
-        title="新增用户"
+        :title="objCodeIn==1?'新增目的码':'编辑目的码'"
         :visible.sync="dialogVisible"
         width="80%"
         :before-close="handleClose">
@@ -151,7 +151,7 @@
             <el-button size="mini" type="text">注销</el-button>
             <el-button size="mini" type="text">通过审核</el-button>
             <el-button size="mini" type="text">驳回</el-button>
-            <el-button size="mini" type="text">编辑</el-button>
+            <el-button size="mini" type="text" @click="objCodeIn=2,addObjCodeSave()">编辑</el-button>
             <!--</router-link>-->
             <el-button size="mini" type="text">送审</el-button>
             <el-button size="mini" type="text">删除</el-button>
@@ -178,6 +178,7 @@
     data() {
       return {
         dialogVisible:false, //新增、编辑目的码弹窗显示状态
+        objCodeIn:1,
         form:{
           firmName:'',
           time:'',
@@ -326,9 +327,9 @@
     border-color: #409EFF;
   }
   .avatar-uploader-icon {
+    width:128px;
     font-size: 28px;
     color: #8c939d;
-    width: 178px;
     height: 178px;
     line-height: 178px;
     text-align: center;

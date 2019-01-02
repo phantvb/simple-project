@@ -3,7 +3,7 @@
     <!--新增/编辑受理弹窗-->
     <div class="addAcceptDialog">
       <el-dialog
-        title="新增用户"
+        :title="businessIn==1?'新增受理':'编辑受理'"
         :visible.sync="dialogVisible"
         width="80%"
         :before-close="handleClose">
@@ -20,12 +20,7 @@
           <step-two v-if="active==2" @next="step"></step-two>
           <step-three v-if="active==3" @next="step"></step-three>
           <step-four v-if="active==4" @next="step"></step-four>
-
         </div>
-        <!--<span slot="footer" class="dialog-footer">-->
-            <!--<el-button @click="dialogVisible = false" size="mini">取 消</el-button>-->
-            <!--<el-button type="primary" @click="addBusinessSave()" size="mini">确 定</el-button>-->
-        <!--</span>-->
       </el-dialog>
     </div>
     <!--搜索-->
@@ -46,12 +41,12 @@
 
           <el-form-item label="时间：">
             <el-date-picker
-              size="mini"
-              v-model="form.time"
-              type="daterange"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期">
+                    size="mini"
+                    v-model="form.time"
+                    type="daterange"
+                    range-separator="至"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期">
             </el-date-picker>
           </el-form-item>
 
@@ -72,10 +67,10 @@
         <div class="accountSelect">
           <el-select v-model="accountStatus" placeholder="请选择" size="mini">
             <el-option
-              v-for="item in statusOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
+                    v-for="item in statusOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
             </el-option>
           </el-select>
           <el-button type="primary" plain size="mini">导出</el-button>
@@ -83,37 +78,37 @@
       </div>
 
       <el-table
-        :data="tableData"
-        style="width: 100%">
+              :data="tableData"
+              style="width: 100%">
         <el-table-column
-          prop="type"
-          label="类型">
+                prop="type"
+                label="类型">
         </el-table-column>
 
         <el-table-column
-          prop="firmName"
-          label="企业名称"
-          width="300">
+                prop="firmName"
+                label="企业名称"
+                width="300">
         </el-table-column>
 
         <el-table-column
-          prop="fourPhone"
-          label="400电话">
+                prop="fourPhone"
+                label="400电话">
         </el-table-column>
 
         <el-table-column
-          prop="date"
-          label="日期">
+                prop="date"
+                label="日期">
         </el-table-column>
 
         <el-table-column
-          prop="status"
-          label="状态">
+                prop="status"
+                label="状态">
         </el-table-column>
 
         <el-table-column
-          prop="status"
-          label="操作">
+                prop="status"
+                label="操作">
           <template slot-scope="scope">
             <el-button size="mini" type="text">详情</el-button>
             <!--<router-link :to="{path:'/addEvent/'+3+'/'+scope.row.contactEvtId}">-->
@@ -122,7 +117,7 @@
             <el-button size="mini" type="text">注销</el-button>
             <el-button size="mini" type="text">通过审核</el-button>
             <el-button size="mini" type="text">驳回</el-button>
-            <el-button size="mini" type="text">编辑</el-button>
+            <el-button size="mini" type="text" @click="businessIn=2,acceptSave()">编辑</el-button>
             <!--</router-link>-->
             <el-button size="mini" type="text">送审</el-button>
             <el-button size="mini" type="text">删除</el-button>
@@ -132,13 +127,13 @@
     </div>
     <!--分页-->
     <el-pagination
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :current-page="currentPage"
-      :page-sizes="[100, 200, 300, 400]"
-      :page-size="100"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="400">
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="currentPage"
+            :page-sizes="[100, 200, 300, 400]"
+            :page-size="100"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="400">
     </el-pagination>
   </div>
 </template>
@@ -160,12 +155,12 @@
     data() {
       return {
         dialogVisible:false,
-        active:3,
+        businessIn:1,
+        active:1,
         form:{
           firmName:'',
           phoneNum:'',
           time:'',
-          receiver:'',
         },
         acceptForm:{
           firmName:'',

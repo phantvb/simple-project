@@ -119,6 +119,7 @@
     name: 'entire',
     data() {
       return {
+
         form:{
           firmName:'',
           phoneNum:'',

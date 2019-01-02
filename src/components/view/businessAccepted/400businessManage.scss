@@ -55,7 +55,7 @@
 .leftDetail{
   width:70%;
 }
-#objCodeDetail,#logoutDetail{
+#objCodeDetail,#logoutDetail,#voiceDetial{
   overflow: hidden;
   background-color: #f3f4f5;
 
@@ -311,4 +311,25 @@
   span{
     color:#2596EF;
   }
+}
+.busMaterForm .model span{
+  font-size:12px;
+  color:#999999;
+}
+.cutOffRule{
+  color:#cccccc;
+  div{
+    border:1px dashed #cccccc;
+    margin-top:20px;
+  }
+
+}
+.titleWidth{
+  width: 150px;
+  display: block;
+  text-align: right;
+}
+.explain{
+  color:#999999;
+  font-size: 12px;
 }

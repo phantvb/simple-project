@@ -20,6 +20,7 @@ import voiceFileManage from '@/components/view/numManage/voiceFileManage';
 import fourBusinessManage from '@/components/view/businessAccepted/400businessManage';
 import objCodeDetail from '@/components/view/businessAccepted/objCodeDetail';
 import logoutDetail from '@/components/view/businessAccepted/logoutDetail';
+import voiceDetial from '@/components/view/businessAccepted/voiceDetial';
 import comboSet from '@/components/view/operateManage/ComboSet';
 import noticeManage from '@/components/view/operateManage/noticeManage';
 import lineCostSetting from '@/components/view/operateManage/lineCostSetting';
@@ -160,6 +161,11 @@ export default new Router({
               path:'/logoutDetail',
               name:'注销审核详情',
               component:logoutDetail,
+              hidden:true,
+          },{
+              path:'/voiceDetial',
+              name:'语音文件审核详情',
+              component:voiceDetial,
               hidden:true,
           }]
       },
