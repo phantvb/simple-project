@@ -101,6 +101,9 @@
                 }
             }
         },
+
+        props:['status'],
+
         methods: {
             // 修改页面显示数据大小
             handleSizeChange(val) {
@@ -147,6 +150,10 @@
                             }
                             if (this.tableData[i].channel == 'channel') {
                                 this.tableData[i].channel = '渠道';
+                            }
+
+                            if (this.tableData[i].status == 'Auditing') {
+                                this.tableData[i].status = '审核中';
                             }
                         }
                     }

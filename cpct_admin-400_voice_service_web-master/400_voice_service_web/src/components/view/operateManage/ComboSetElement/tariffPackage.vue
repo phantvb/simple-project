@@ -274,11 +274,17 @@
                     }
                 }).then((res) => {
                     if (res.code == 200) {
-                        alert("新增成功！");
+                        this.$message({
+                            message: '新增成功!',
+                            type: 'success'
+                        });
                         this.loadData();
                     }
                     if (res.code == 60000) {
-                        alert("数据已存在！");
+                        this.$message({
+                            message: '数据已存在!',
+                            type: 'warning'
+                        });
                     }
                 });
                 this.addFeesFromDialogVisible = false
@@ -356,7 +362,10 @@
                     }
                 }).then((res) => {
                     if (res.code == 200) {
-                        alert("编辑成功！");
+                        this.$message({
+                            message: '编辑成功!',
+                            type: 'success'
+                        });
                         this.loadData();
                     }
                 });
@@ -365,21 +374,34 @@
 
             //删除信息
             deleteInfo(id, url) {
-                if (confirm('确定要删除这条信息吗?')) {
+                this.$confirm('此操作将永久删除该条信息, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消'
+                }).then(() => {
+
                     this.$ajax.post('/vos/tariffPackage/' + url, {
                         "id": id
                     }).then((res) => {
                         if (res.code == 200) {
-                            alert("删除成功！");
+                            this.$message({
+                                message: '删除成功!',
+                                type: 'success'
+                            });
                             this.loadData();
                         }
                     });
-                }
+
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除!'
+                    });
+                });
             },
 
             //关闭确认
             handleClose(done) {
-                this.$confirm('确认关闭？')
+                this.$confirm('确认关闭?')
                     .then(_ => {
                         done();
                     })

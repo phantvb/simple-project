@@ -48,7 +48,6 @@
             },
 
             search() {
-                // this.$emit('searchMessage',this.form.mess);
                 if (this.active == '1') {
                     this.$refs.allMess.search(this.form.mess);
                 }

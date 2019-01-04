@@ -28,10 +28,8 @@
             </el-form>
         </div>
 
-        <div style="border-top: 1px solid #eee;margin-top: 15px;padding-top: 15px;">
-            <div style="float: right;">
-                <el-button type="primary" plain size="mini" @click="exportInfo">导出</el-button>
-            </div>
+        <div class="buttonDiv">
+            <el-button type="primary" plain size="mini" @click="exportInfo" style="float: right;">导出</el-button>
         </div>
 
         <div>
@@ -149,6 +147,9 @@
                             }
                             if (this.tableData[i].channel == 'channel') {
                                 this.tableData[i].channel = '渠道';
+                            }
+                            if (this.tableData[i].status == 'Used') {
+                                this.tableData[i].status = '使用中';
                             }
                         }
                     }

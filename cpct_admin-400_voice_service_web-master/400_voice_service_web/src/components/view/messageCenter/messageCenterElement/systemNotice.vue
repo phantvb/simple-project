@@ -102,7 +102,11 @@
             },
 
             batchDelete() {
-                if (confirm('确定要删除这些信息吗?')) {
+                this.$confirm('此操作将永久删除这些信息, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消'
+                }).then(() => {
+
                     for (let i = 0; i < this.selectedItems.length; i++) {
                         this.ids.push(this.selectedItems[i].id);
 
@@ -113,11 +117,20 @@
 
                     }).then((res) => {
                         if (res.code == 200) {
-                            alert('删除成功！');
+                            this.$message({
+                                message: '删除成功!',
+                                type: 'success'
+                            });
                             this.loadData();
                         }
                     });
-                }
+
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
             },
 
             loadData() {

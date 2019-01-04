@@ -64,13 +64,13 @@
                             size="mini"
                             type="text"
                             @click="handleEdit(scope.$index, scope.row)"
-                            :style="'display:'+display[scope.$index]+';'">编辑
+                            v-if="tableData[scope.$index].status=='未绑定'">编辑
                         </el-button>
                         <el-button
                             size="mini"
                             type="text"
                             @click="handleDelete(scope.$index, scope.row)"
-                            :style="'display:'+display[scope.$index]+';'">删除
+                            v-if="tableData[scope.$index].status=='未绑定'">删除
                         </el-button>
                     </template>
                 </el-table-column>
@@ -178,7 +178,6 @@
                     value: '',
                     id: ''          //  编辑时保存的id
                 },
-                display: [],
 
                 selectedItems: [],
                 ids: [],
@@ -236,35 +235,7 @@
                     }
                 }).then((res) => {
                     if (res.code == 200) {
-                        this.tableData = res.data.guideNumbers;
-                        this.page.total = res.data.totalCount;
-
-                        for (let i = 0; i < this.tableData.length; i++) {
-                            if (this.tableData[i].channel == 'self') {
-                                this.tableData[i].channel = '自助直销';
-                            }
-                            if (this.tableData[i].channel == 'channel') {
-                                this.tableData[i].channel = '渠道';
-                            }
-                            if (this.tableData[i].channel == 'self,channel') {
-                                this.tableData[i].channel = '自助直销,渠道';
-                            }
-
-                            if (this.tableData[i].status == 'Binded') {
-                                this.tableData[i].status = '已绑定';
-                                this.display[i] = 'none'
-                            }
-                            if (this.tableData[i].status == 'Unbind') {
-                                this.tableData[i].status = '未绑定';
-                                this.display[i] = 'inline-block'
-                            }
-                            if (this.tableData[i].priceType == 'per6seconds') {
-                                this.tableData[i].price = this.tableData[i].price + '/6秒';
-                            }
-                            if (this.tableData[i].priceType == 'perMinute') {
-                                this.tableData[i].price = this.tableData[i].price + '/分钟';
-                            }
-                        }
+                        this.loadTable(res.data);
                     }
                 });
             },
@@ -282,7 +253,11 @@
             },
 
             batchDelete() {
-                if (confirm('确定要删除这些信息吗?')) {
+                this.$confirm('此操作将永久删除这些信息, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消'
+                }).then(() => {
+
                     for (let i = 0; i < this.selectedItems.length; i++) {
                         this.ids.push(this.selectedItems[i].id);
                     }
@@ -292,14 +267,24 @@
 
                     }).then((res) => {
                         if (res.code == 200) {
-                            alert('删除成功！');
+                            this.$message({
+                                message: '删除成功!',
+                                type: 'success'
+                            });
                             this.loadData();
                         }
                         if (res.code == 4005) {
-                            alert('您无权操作！');
+                            this.$message.error('您无权操作!');
                         }
                     });
-                }
+
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除!'
+                    });
+                });
+
             },
 
             showAddCitationNum() {
@@ -342,11 +327,17 @@
                     }
                 }).then((res) => {
                     if (res.code == 200) {
-                        alert('新增成功！');
+                        this.$message({
+                            message: '新增成功!',
+                            type: 'success'
+                        });
                         this.loadData();
                     }
                     if (res.code == 4007) {
-                        alert('该引示号已经存在！');
+                        this.$message({
+                            message: '该引示号已经存在!',
+                            type: 'warning'
+                        });
                         this.loadData();
                     }
                 });
@@ -404,7 +395,10 @@
                     }
                 }).then((res) => {
                     if (res.code == 200) {
-                        alert("编辑成功！");
+                        this.$message({
+                            message: '编辑成功!',
+                            type: 'success'
+                        });
                         this.loadData();
                     }
                 });
@@ -412,16 +406,29 @@
             },
 
             handleDelete(index, row) {
-                if (confirm('确认删除吗?')) {
+                this.$confirm('此操作将永久删除该条信息, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消'
+                }).then(() => {
+
                     this.$ajax.post('/vos/guideNumber/delete', {
                         "ids": row.id
                     }).then((res) => {
                         if (res.code == 200) {
-                            alert('删除成功！')
+                            this.$message({
+                                message: '删除成功!',
+                                type: 'success'
+                            });
                             this.loadData();
                         }
                     });
-                }
+
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除!'
+                    });
+                });
             },
 
             importInfo() {
@@ -441,6 +448,36 @@
                     });
             },
 
+            loadTable(res){
+                this.tableData = res.guideNumbers;
+                this.page.total = res.totalCount;
+
+                for (let i = 0; i < this.tableData.length; i++) {
+                    if (this.tableData[i].channel == 'self') {
+                        this.tableData[i].channel = '自助直销';
+                    }
+                    if (this.tableData[i].channel == 'channel') {
+                        this.tableData[i].channel = '渠道';
+                    }
+                    if (this.tableData[i].channel == 'self,channel') {
+                        this.tableData[i].channel = '自助直销,渠道';
+                    }
+
+                    if (this.tableData[i].status == 'Binded') {
+                        this.tableData[i].status = '已绑定';
+                    }
+                    if (this.tableData[i].status == 'Unbind') {
+                        this.tableData[i].status = '未绑定';
+                    }
+                    if (this.tableData[i].priceType == 'per6seconds') {
+                        this.tableData[i].price = this.tableData[i].price + '/6秒';
+                    }
+                    if (this.tableData[i].priceType == 'perMinute') {
+                        this.tableData[i].price = this.tableData[i].price + '/分钟';
+                    }
+                }
+            },
+
             loadData() {
                 this.$ajax.post('/vos/guideNumber/getAll', {
                     "page": {
@@ -455,42 +492,7 @@
                     }
                 }).then((res) => {
                     if (res.code == 200) {
-                        this.tableData = res.data.guideNumbers;
-                        this.page.total = res.data.totalCount;
-
-                        for (let i = 0; i < this.tableData.length; i++) {
-                            if (this.tableData[i].channel == 'self') {
-                                this.tableData[i].channel = '自助直销';
-                            }
-                            if (this.tableData[i].channel == 'channel') {
-                                this.tableData[i].channel = '渠道';
-                            }
-                            if (this.tableData[i].channel == 'self,channel' || this.tableData[i].channel == 'channel,self') {
-                                this.tableData[i].channel = '自助直销,渠道';
-                            }
-
-                            if (this.tableData[i].line == 'hangdian') {
-                                this.tableData[i].line = '杭电';
-                            }
-                            if (this.tableData[i].line == 'xihu') {
-                                this.tableData[i].line = '西湖';
-                            }
-
-                            if (this.tableData[i].status == 'Binded') {
-                                this.tableData[i].status = '已绑定';
-                                this.display[i] = 'none'
-                            }
-                            if (this.tableData[i].status == 'Unbind') {
-                                this.tableData[i].status = '未绑定';
-                                this.display[i] = 'inline-block'
-                            }
-                            if (this.tableData[i].priceType == 'per6seconds') {
-                                this.tableData[i].price = this.tableData[i].price + '/6秒';
-                            }
-                            if (this.tableData[i].priceType == 'perMinute') {
-                                this.tableData[i].price = this.tableData[i].price + '/分钟';
-                            }
-                        }
+                        this.loadTable(res.data);
                     }
                 });
             }

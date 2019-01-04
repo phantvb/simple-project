@@ -298,17 +298,7 @@
                     }
                 }).then((res) => {
                     if (res.code == 200) {
-                        this.tableData = res.data.number400s;
-                        this.page.total = res.data.totalCount;
-
-                        for (let i = 0; i < this.tableData.length; i++) {
-                            if (this.tableData[i].channel == 'self') {
-                                this.tableData[i].channel = '自助直销';
-                            }
-                            if (this.tableData[i].channel == 'channel') {
-                                this.tableData[i].channel = '渠道';
-                            }
-                        }
+                        this.translate(res.data);
                     }
                 });
             },
@@ -427,12 +417,18 @@
                     }
                 }).then((res) => {
                     if (res.code == 5000) {
-                        alert("新增成功！");
+                        this.$message({
+                            message: '新增成功!',
+                            type: 'success'
+                        });
+                        this.loadData();
                     }
                     if (res.code == 4007) {
-                        alert("该引示号已使用！");
+                        this.$message({
+                            message: '该引示号已使用!',
+                            type: 'warning'
+                        });
                     }
-                    this.loadData();
                 });
                 this.addNumberFormDialogVisible = false;
             },
@@ -509,11 +505,14 @@
                     }
                 }).then((res) => {
                     if (res.code == 200) {
-                        alert('更新成功！');
+                        this.$message({
+                            message: '更新成功!',
+                            type: 'success'
+                        });
                         this.loadData();
                     }
                     if (res.code == 4005) {
-                        alert('您无权操作！');
+                        this.$message.error('您无权操作!');
                     }
                 });
                 this.addNumberFormDialogVisible = false;
@@ -522,7 +521,11 @@
 
             // 单个删除
             handleDelete(index, row) {
-                if (confirm('确定删除该条信息吗?')) {
+                this.$confirm('此操作将永久删除该条信息, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消'
+                }).then(() => {
+
                     this.$ajax.post('/vos/number400/delete', {
                         "number400": [
                             {
@@ -533,14 +536,23 @@
                         ]
                     }).then((res) => {
                         if (res.code == 200) {
-                            alert('删除成功！');
+                            this.$message({
+                                message: '删除成功!',
+                                type: 'success'
+                            });
                             this.loadData();
                         }
                         if (res.code == 4005) {
-                            alert('您无权操作！');
+                            this.$message.error('您无权操作!');
                         }
                     });
-                }
+
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除!'
+                    });
+                });
             },
 
             // 批量删除
@@ -549,9 +561,14 @@
             },
 
             batchDelete() {
-                if (confirm('确定要删除这些信息吗?')) {
+                this.$confirm('此操作将永久删除这些信息, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+
                     if (this.selectedItems.length == 0) {
-                        alert('您未选择！');
+                        this.$message('您未选择!');
                     }
                     else {
                         for (let i = 0; i < this.selectedItems.length; i++) {
@@ -565,15 +582,24 @@
                             "number400": this.ids
                         }).then((resp) => {
                             if (resp.code == 200) {
-                                alert('删除成功！');
+                                this.$message({
+                                    message: '删除成功!',
+                                    type: 'success'
+                                });
                                 this.loadData();
                             }
                             if (resp.code == 4005) {
-                                alert('您无权操作！');
+                                this.$message.error('您无权操作!');
                             }
                         });
                     }
-                }
+
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
             },
 
             handleClose(done) {
@@ -585,96 +611,59 @@
                     });
             },
 
-            loadData() {
-                this.$ajax.post('/vos/number400/getAll', {
-                    "page": {
-                        "pageNo": this.page.currentPage,
-                        "pageSize": this.page.size
-                    },
-                    "number400": {
-                        "number400": "",
-                        "channel": "",
-                        "status": "CanUse",
-                        "companyName": '',
-                        "guideNumber": ''
-                    }
-                }).then((res) => {
-                    if (res.code == 200) {
-                        this.tableData = res.data.number400s;
-                        this.page.total = res.data.totalCount;
+            //翻译table中显示的数据
+            translate(res) {
+                this.tableData = res.number400s;
+                this.page.total = res.totalCount;
 
 
-                        for (let i = 0; i < this.tableData.length; i++) {
-                            this.getIdsItem = res.data.number400s[i].packageIds.split(",");    //把接收到的id字符串转换成数组
-                            if (this.tableData[i].channel == 'self') {
-                                this.tableData[i].channel = '自助直销';
+                for (let i = 0; i < this.tableData.length; i++) {
+                    this.getIdsItem = res.number400s[i].packageIds.split(",");    //把接收到的id字符串转换成数组
+                    if (this.tableData[i].channel == 'self') {
+                        this.tableData[i].channel = '自助直销';
 
-                                for (let n = 0; n < this.getIdsItem.length; n++) {
-                                    for (let j = 0; j < this.aTableData1.length; j++) {
-                                        if (this.getIdsItem[n] == this.aTableData1[j].id) {
-                                            this.getIds.push(this.aTableData1[j].tariffName);
-                                        }
-                                    }
+                        for (let n = 0; n < this.getIdsItem.length; n++) {
+                            for (let j = 0; j < this.aTableData1.length; j++) {
+                                if (this.getIdsItem[n] == this.aTableData1[j].id) {
+                                    this.getIds.push(this.aTableData1[j].tariffName);
                                 }
-                                res.data.number400s[i].packageIds = this.getIds.join(",");
-                                this.getIds = [];
-                            }
-                            if (this.tableData[i].channel == 'channel') {
-                                this.tableData[i].channel = '渠道';
-                                for (let n = 0; n < this.getIdsItem.length; n++) {
-                                    for (let j = 0; j < this.aTableData2.length; j++) {
-                                        if (this.getIdsItem[n] == this.aTableData2[j].id) {
-                                            this.getIds.push(this.aTableData2[j].tariffName);
-                                        }
-                                    }
-                                }
-                                res.data.number400s[i].packageIds = this.getIds.join(",");
-                                this.getIds = [];
-                            }
-                            if (this.tableData[i].channel == 'self,channel') {
-                                this.tableData[i].channel = '自助直销,渠道';
-                                for (let n = 0; n < this.getIdsItem.length; n++) {
-                                    for (let j = 0; j < this.aTableData1.length; j++) {
-                                        if (this.getIdsItem[n] == this.aTableData1[j].id) {
-                                            this.getIds.push(this.aTableData1[j].tariffName);
-                                        }
-                                    }
-                                }
-                                for (let n = 0; n < this.getIdsItem.length; n++) {
-                                    for (let j = 0; j < this.aTableData2.length; j++) {
-                                        if (this.getIdsItem[n] == this.aTableData2[j].id) {
-                                            this.getIds.push(this.aTableData2[j].tariffName);
-                                        }
-                                    }
-                                }
-                                res.data.number400s[i].packageIds = this.getIds.join(",");
-                                this.getIds = [];
                             }
                         }
-
+                        res.number400s[i].packageIds = this.getIds.join(",");
+                        this.getIds = [];
                     }
-                });
-
-                this.$ajax.post('/vos/tariffPackage/getTariff', {
-                    "tariff": {
-                        "channel": "self"
+                    if (this.tableData[i].channel == 'channel') {
+                        this.tableData[i].channel = '渠道';
+                        for (let n = 0; n < this.getIdsItem.length; n++) {
+                            for (let j = 0; j < this.aTableData2.length; j++) {
+                                if (this.getIdsItem[n] == this.aTableData2[j].id) {
+                                    this.getIds.push(this.aTableData2[j].tariffName);
+                                }
+                            }
+                        }
+                        res.number400s[i].packageIds = this.getIds.join(",");
+                        this.getIds = [];
                     }
-                }).then((res) => {
-                    if (res.code == 200) {
-                        this.aTableData1 = res.data.tariffPackageList;
+                    if (this.tableData[i].channel == 'self,channel') {
+                        this.tableData[i].channel = '自助直销,渠道';
+                        for (let n = 0; n < this.getIdsItem.length; n++) {
+                            for (let j = 0; j < this.aTableData1.length; j++) {
+                                if (this.getIdsItem[n] == this.aTableData1[j].id) {
+                                    this.getIds.push(this.aTableData1[j].tariffName);
+                                }
+                            }
+                        }
+                        for (let n = 0; n < this.getIdsItem.length; n++) {
+                            for (let j = 0; j < this.aTableData2.length; j++) {
+                                if (this.getIdsItem[n] == this.aTableData2[j].id) {
+                                    this.getIds.push(this.aTableData2[j].tariffName);
+                                }
+                            }
+                        }
+                        res.number400s[i].packageIds = this.getIds.join(",");
+                        this.getIds = [];
                     }
-                });
-                this.$ajax.post('/vos/tariffPackage/getTariff', {
-                    "tariff": {
-                        "channel": "channel"
-                    }
-                }).then((res) => {
-                    if (res.code == 200) {
-                        this.aTableData2 = res.data.tariffPackageList;
-                    }
-                });
-
-                this.getCanUseCitationNum();
+                }
             },
 
             // 得到新增dialog里面的关联套餐的列表
@@ -700,7 +689,7 @@
             },
 
             //加载可用引示号
-            getCanUseCitationNum(){
+            getCanUseCitationNum() {
 
                 let totalCount = 0;
                 this.$ajax.post('/vos/guideNumber/getAll', {
@@ -740,7 +729,49 @@
                         });
                     }
                 });
-            }
+            },
+
+            loadData() {
+                this.$ajax.post('/vos/number400/getAll', {
+                    "page": {
+                        "pageNo": this.page.currentPage,
+                        "pageSize": this.page.size
+                    },
+                    "number400": {
+                        "number400": "",
+                        "channel": "",
+                        "status": "CanUse",
+                        "companyName": '',
+                        "guideNumber": ''
+                    }
+                }).then((res) => {
+                    if (res.code == 200) {
+                        this.translate(res.data);
+
+                    }
+                });
+
+                this.$ajax.post('/vos/tariffPackage/getTariff', {
+                    "tariff": {
+                        "channel": "self"
+                    }
+                }).then((res) => {
+                    if (res.code == 200) {
+                        this.aTableData1 = res.data.tariffPackageList;
+                    }
+                });
+                this.$ajax.post('/vos/tariffPackage/getTariff', {
+                    "tariff": {
+                        "channel": "channel"
+                    }
+                }).then((res) => {
+                    if (res.code == 200) {
+                        this.aTableData2 = res.data.tariffPackageList;
+                    }
+                });
+
+                this.getCanUseCitationNum();
+            },
         },
         created() {
             this.loadData();

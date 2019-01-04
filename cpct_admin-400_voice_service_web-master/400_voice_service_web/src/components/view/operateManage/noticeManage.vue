@@ -60,7 +60,7 @@
                         </template>
                     </el-table-column>
                     <el-table-column type="expand">
-                        <template slot-scope="props" @change="console.log(1111)">
+                        <template slot-scope="props">
                             <el-form label-position="left" inline class="demo-table-expand">
                                 <el-form-item label="公告内容">
                                     <span style="margin-left: 50px;">{{props.row.content}}</span>
@@ -168,7 +168,6 @@
                     this.form.date[0] = '';
                     this.form.date[1] = '';
                 }
-                console.log(this.form.date[0], this.form.date[1])
                 this.$ajax.post('/vos/announcement/search', {
                     "ann": {
                         "title": this.form.title,
@@ -205,7 +204,12 @@
             },
 
             batchDelete() {
-                if (confirm('确定要删除这些信息吗?')) {
+                this.$confirm('此操作将永久删除这些信息, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+
                     for (let i = 0; i < this.selectedItems.length; i++) {
                         this.ids.push(this.selectedItems[i].id);
                     }
@@ -215,21 +219,24 @@
 
                     }).then((res) => {
                         if (res.code == 200) {
-                            alert('删除成功！');
+                            this.$message({
+                                message: '删除成功!',
+                                type: 'success'
+                            });
                         }
                         if (res.code == 4005) {
-                            alert('您无权操作！');
+                            this.$message.error('您无权操作!');
                         }
                         this.loadData();
                     });
-                }
-            },
 
-            showContent(index, row) {
-                console.log(index)
-                this.getRequest('/vos/announcement/getDetail/' + row.id).then((res) => {
-                    this.content = row.content;
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
                 });
+
             },
 
             handleEdit(index, row) {
@@ -243,21 +250,35 @@
 
             // 删除
             handleDelete(index, row) {
-                if (confirm('确认删除吗?')) {
+                this.$confirm('此操作将永久删除该条信息, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+
                     this.$ajax.post('/vos/announcement/delete', {
                         "ann": {
                             "ids": row.id
                         }
                     }).then((res) => {
                         if (res.code == 200) {
-                            this.loadTableData();
-                            alert('删除成功！');
+                            this.$message({
+                                message: '删除成功',
+                                type: 'success'
+                            });
+                            this.loadData();
                         }
                         if (res.code == 4005) {
-                            alert('您无权操作！');
+                            this.$message.error('您无权操作');
                         }
                     });
-                }
+
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
             },
 
             handleStick(index, row) {
@@ -268,11 +289,14 @@
                     }
                 }).then((res) => {
                     if (res.code == 200) {
-                        this.loadTableData();
-                        alert('删除成功！');
+                        this.$message({
+                            message: '置顶成功',
+                            type: 'success'
+                        });
+                        this.loadData();
                     }
                     if (res.code == 4005) {
-                        alert('您无权操作！');
+                        this.$message.error('您无权操作');
                     }
                 });
             },
