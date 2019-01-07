@@ -1,24 +1,24 @@
 <template>
 	<div id="chargeManage" class="managerFormTitle">
 		<el-tabs v-model="active">
-			<el-tab-pane label="自助直销" name="1"></el-tab-pane>
-			<el-tab-pane label="渠道" name="2"></el-tab-pane>
+			<el-tab-pane label="自助直销" name="self"></el-tab-pane>
+			<el-tab-pane label="渠道" name="channel"></el-tab-pane>
 			<div class="search">
 				<ul>
 					<li>
 						<span class="demonstration">400号码：</span>
-						<el-input v-model="form.name" placeholder="请输入内容" size="mini" style="min-width:200px;">
+						<el-input v-model="form.number400" placeholder="请输入内容" size="mini" style="min-width:200px;">
 						</el-input>
 					</li>
 					<li>
 						<span class="demonstration">企业名称：</span>
-						<el-input v-model="form.person" placeholder="请输入内容" size="mini">
+						<el-input v-model="form.companyName" placeholder="请输入内容" size="mini">
 						</el-input>
 					</li>
 				</ul>
 				<div class="block left">
 					<span class="demonstration">充值时间：</span>
-					<el-date-picker style="margin-right:15px;" v-model="form.date" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" size="mini">
+					<el-date-picker style="margin-right:15px;" v-model="form.time" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" size="mini" format="yyyy 年 MM 月 dd 日" value-format="yyyy-MM-dd 00:00:00" @change="fetchData()">
 					</el-date-picker>
 					<el-button type="primary" size="mini" style="width:80px;">搜索</el-button>
 					<el-button type="primary" plain size="mini" style="width:80px;">重置</el-button>
@@ -31,25 +31,25 @@
 			<el-table :data="tableData" style="width: 100%;margin-bottom:15px;">
 				<el-table-column type="selection" width="55">
 				</el-table-column>
-				<el-table-column prop="type" label="企业名称" min-width="120">
+				<el-table-column prop="companyName" label="企业名称" min-width="120">
 				</el-table-column>
-				<el-table-column prop="name" label="400号码" min-width="100">
+				<el-table-column prop="number400" label="400号码" min-width="100">
 				</el-table-column>
-				<el-table-column prop="number" label="时长包" min-width="120">
+				<el-table-column prop="timePacketName" label="时长包" min-width="120">
 				</el-table-column>
-				<el-table-column prop="person" label="数量" min-width="80">
+				<el-table-column prop="amount" label="数量" min-width="80">
 				</el-table-column>
-				<el-table-column prop="date" label="充值金额" min-width="100">
+				<el-table-column prop="totalFee" label="充值金额" min-width="100">
 				</el-table-column>
-				<el-table-column prop="status" label="充值时间" min-width="100">
+				<el-table-column prop="totalTime" label="充值时间" min-width="100">
 				</el-table-column>
-				<el-table-column prop="status" label="操作员" min-width="100">
+				<el-table-column prop="operator" label="操作员" min-width="100">
 				</el-table-column>
 			</el-table>
 			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page.num" :page-sizes="$global.pageSize" :page-size="page.size" layout="total, sizes, prev, pager, next, jumper" :total="page.total">
 			</el-pagination>
 		</el-tabs>
-		<charge :show="addcharge" @close="showcharge(false)"></charge>
+		<charge :show="addcharge" :active="active" @close="showcharge(false)"></charge>
 	</div>
 </template>
 <style lang="scss" scoped>
@@ -64,31 +64,13 @@
 		},
 		data() {
 			return {
-				active: '1',
+				active: 'self',
 				addcharge: false,
 				form: {
-					name: '',
-					person: '',
-					number: '',
-					date: null,
-					status
+					number400: '',
+					companyName: '',
+					time: []
 				},
-				options: [{
-					value: '',
-					label: '全部'
-				}, {
-					value: '选项2',
-					label: '等待送审'
-				}, {
-					value: '选项3',
-					label: '待审核'
-				}, {
-					value: '选项4',
-					label: '审核通过'
-				}, {
-					value: '选项5',
-					label: '被驳回'
-				}],
 				tableData: [],
 				page: {
 					num: 1,
@@ -97,16 +79,39 @@
 				}
 			}
 		},
+		mounted() {
+			this.fetchData();
+		},
 		methods: {
 			showcharge(bol) {
-				console.log(bol)
 				this.addcharge = bol;
 			},
 			handleSizeChange() {
-
+				this.fetchData();
 			},
-			handleCurrentChange() {
-
+			handleCurrentChange(val) {
+				this.fetchData(val);
+			},
+			fetchData(pageNum) {
+				this.loading = true;
+				this.page.num = pageNum || 1;
+				var data = {};
+				data.page = {
+					pageNo: this.page.num,
+					pageSize: this.page.size
+				};
+				data.number400TimePacket = Object.assign({}, this.form);
+				data.number400TimePacket.channel = this.active;
+				delete data.number400TimePacket["time"];
+				data.beforeTime = this.form.time[0] || '';
+				data.afterTime = this.form.time[1] || '';
+				this.$ajax.post("/vos/number400TimePacket/search", data).then(res => {
+					if (res.code == 200) {
+						this.loading = false;
+						this.tableData = res.data.number400TimePackets;
+						this.page.total = res.data.totalCount;
+					}
+				});
 			}
 		}
 	}
