@@ -165,7 +165,7 @@
                     <span>400号码：</span>
                     <el-button type="primary" size="mini" @click="addNumdialogVisible = true">+新增号码</el-button>
                 </div>
-                <div style="overflow: hidden">
+                <div style="overflow: hidden;margin-bottom:30px">
                     <ul>
                         <li style="float:unset;margin-left:70px">
                             <p style="text-align: right">业务身份： 本地网直销</p>
@@ -212,6 +212,53 @@
                     </ul>
                 </div>
 
+                <div class="num400">
+                    <span>目的码：</span>
+                    <div class="objCodeBox">
+                        <div class="addObjCode">
+                            <el-input v-model="addObjCode" size="mini"></el-input>
+                            <el-button type="primary" size="mini">+</el-button>
+                        </div>
+                        <div class="addObjCode">
+                            <el-input v-model="delObjCode" size="mini"></el-input>
+                            <el-button type="primary" size="mini">-</el-button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="num400" style="margin-bottom:30px;">
+                    <span>归属地区：</span>
+                    <div class="QCellCore">
+                        <el-select v-model="stepTwoForm.province" placeholder="请选择" size="mini">
+                            <el-option
+                                    v-for="item in provinceList"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item.value">
+                            </el-option>
+                        </el-select>
+                        <el-select v-model="stepTwoForm.city" placeholder="请选择" size="mini">
+                            <el-option
+                                    v-for="item in cityList"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </div>
+                    <div class="QCellCore">
+                        <span>优惠：</span>
+                        <el-select v-model="stepTwoForm.discounts" placeholder="请选择" size="mini">
+                            <el-option
+                                    v-for="item in discountsList"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </div>
+                </div>
+
                 <div style="float:left;">
                     <span class="fmini">增值服务：</span>
                 </div>
@@ -221,30 +268,33 @@
                             <el-table :data="objCodeTable"
                                       border
                                       style="width: 100%">
-
                                 <el-table-column
-                                        prop="number"
-                                        label="400号码">
+                                        type="selection"
+                                        width="55">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="增值服务名称">
                                 </el-table-column>
 
                                 <el-table-column
-                                        prop="setMeal"
-                                        label='套餐'>
+                                        prop="amount"
+                                        label='数量'>
                                 </el-table-column>
 
                                 <el-table-column
-                                        prop="lowest"
-                                        label='最低年消费'>
+                                        prop="tariff"
+                                        label='资费/单位'>
                                 </el-table-column>
 
                                 <el-table-column
-                                        prop="prestoreCost"
-                                        label='预存话费'>
+                                        prop="remark"
+                                        label='备注'>
                                 </el-table-column>
 
                                 <el-table-column
-                                        prop="unit"
-                                        label='单位'>
+                                        prop="cost"
+                                        label='费用'>
                                 </el-table-column>
 
                                 <el-table-column
@@ -252,10 +302,6 @@
                                         label='套餐详情'>
                                 </el-table-column>
 
-                                <el-table-column
-                                        prop="objCode"
-                                        label='目的码'>
-                                </el-table-column>
                             </el-table>
                         </li>
                     </ul>
@@ -291,6 +337,9 @@
                     frontImageUrl:'',        //正面照
                     contraryImageUrl: '',    //反面照
                     selfImageUrl:'',         //本人手持证件照
+                    province:'',             //归属地(省)
+                    city:'',                 //归属地(市)
+                    discounts:'',            //优惠
                 },
                 selectedNum:[{
                     number:'40023842846',
@@ -301,13 +350,19 @@
                     setMealDetail:'',
                 }],
                 objCodeTable: [{
-                    number: '234567',
-                    setMeal:'',
-                    lowest:'',
-                    prestoreCost:'',
-                    unit:'',
+                    name: '234567',
+                    amount:'',
+                    tariff:'',
+                    remark:'',
+                    cost:'',
                     setMealDetail:'',
-                    objCode: '',
+                },{
+                    name: '1111111',
+                    amount:'',
+                    tariff:'',
+                    remark:'',
+                    cost:'',
+                    setMealDetail:'',
                 }],
                 identityTypeList:[   //证件类型
                     {
@@ -321,6 +376,29 @@
                         label: '三证合一'
                     }
                 ],
+                provinceList:[{
+                    value:'1',
+                    label:'广东省'
+                },{
+                    value:'2',
+                    label:'浙江省'
+                }],
+                cityList:[{
+                    value:'1',
+                    label:'中山市'
+                },{
+                    value:'2',
+                    label:'杭州市'
+                }],
+                discountsList:[{
+                    value:'1',
+                    label:'无优惠'
+                },{
+                    value:'2',
+                    label:'3000套餐签3年'
+                }],
+                addObjCode:'',  //添加目的码
+                delObjCode:'',  //删减目的码
             };
         },
         components: {
@@ -347,7 +425,7 @@
                 console.log("event",event);
             },
             next(val){
-                this.$emit('next', val);
+                this.$emit('childNext', val);
             },
             // 选号
             addNumSave(){

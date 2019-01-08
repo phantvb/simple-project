@@ -333,3 +333,39 @@
   color:#999999;
   font-size: 12px;
 }
+.voucher{
+  overflow: hidden;
+}
+.objCodeBox{
+  text-align: left;
+}
+#firmName{
+  position: relative;
+}
+#firmNameList,#fourNumList{
+  position: absolute;
+  z-index:100;
+  width:100%;
+  border:1px solid #dcdfe6;
+  background-color: #dcdfe6;
+  border-radius: 4px;
+  max-height: 200px;
+  overflow: auto;
+  ul{
+    list-style-type: none;
+    margin-left:-40px;
+    li{
+      padding:0 5px;
+      border-bottom:1px dashed #ffffff;
+      text-align: left;
+      cursor: pointer;
+    }
+  }
+}
+.valAddSer{
+  background-color: #dcdfe6;
+  p{
+    font-weight: normal;
+    border-left: none;
+  }
+}

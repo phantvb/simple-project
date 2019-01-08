@@ -95,7 +95,7 @@
 					<el-button type="primary" size="mini" @click="voiceIn=1,voiceAdd()">+新增语音文件</el-button>
 				</div>
 				<div class="accountSelect">
-					<el-select v-model="accountStatus" placeholder="请选择" size="mini">
+					<el-select v-model="accountStatus" placeholder="请选择" size="mini" @change="statusChange">
 						<el-option
 								v-for="item in statusOptions"
 								:key="item.value"
@@ -111,28 +111,23 @@
 					:data="tableData"
 					style="width: 100%">
 				<el-table-column
-						prop="firmName"
+						prop="business.companyName"
 						label="企业名称"
 						width="300">
 				</el-table-column>
 
 				<el-table-column
-						prop="fourPhone"
+						prop="business.number400"
 						label="400电话">
 				</el-table-column>
 
 				<el-table-column
-						prop="voiceType"
-						label="语音类型">
+						prop="assignee"
+						label="受理人">
 				</el-table-column>
 
 				<el-table-column
-						prop="fileName"
-						label="文件名称">
-				</el-table-column>
-
-				<el-table-column
-						prop="date"
+						prop="createTime"
 						label="日期">
 				</el-table-column>
 
@@ -142,7 +137,6 @@
 				</el-table-column>
 
 				<el-table-column
-						prop="status"
 						label="操作">
 					<template slot-scope="scope">
 						<el-button size="mini" type="text">试听</el-button>
@@ -161,10 +155,10 @@
 				@size-change="handleSizeChange"
 				@current-change="handleCurrentChange"
 				:current-page="currentPage"
-				:page-sizes="[100, 200, 300, 400]"
+				:page-sizes="[10, 20, 50, 100]"
 				:page-size="100"
 				layout="total, sizes, prev, pager, next, jumper"
-				:total="400">
+				:total="pageObj.total">
 		</el-pagination>
 	</div>
 </template>
@@ -189,28 +183,21 @@
                     voiceFile:'',
                     voiceName:'',
                 },
-                tableData: [{
-                    firmName: '杭州顺网科技股份有限公司',
-                    fourPhone: '5876552',
-                    voiceType:'MP4',
-                    fileName:'轻音乐',
-                    date:'2019/01/01',
-                    status:'等待送核'
-                }],
+                tableData: [],
                 statusOptions: [
                     {
-                        value: '1',
-                        label: '等待审核'
+                        value: 'Wait_To_Audit',
+                        label: '等待送审'
                     }, {
-                        value: '2',
-                        label: '待审核'
+                        value: 'Voice_Auditing',
+                        label: '审核中'
                     }, {
-                        value: '3',
+                        value: 'Audit_Success',
                         label: '审核通过'
                     },
                     {
-                        value: '4',
-                        label: '被驳回'
+                        value: 'Terminate_Flow',
+                        label: '受理终止'
                     }
                 ],
                 voiceList:[{
@@ -220,17 +207,27 @@
                     value:'2',
                     title:'导航音',
 				}],
+                pageObj:{
+                    total:0,
+                    page:1,
+                    pageSize:10,
+                },
                 accountStatus:'',
-                currentPage: 4,   //分页
+                currentPage: 1,   //当前页
                 textarea2:'',
 			};
+		},
+		created(){
+		    this.voiceFileLists();
 		},
 		components: {},
 		methods: {
             handleSizeChange(val) {
+                this.pageObj.pageSize = val;
                 console.log(`每页 ${val} 条`);
             },
             handleCurrentChange(val) {
+                this.pageObj.page = val;
                 console.log(`当前页: ${val}`);
             },
             //弹窗关闭按钮
@@ -247,8 +244,50 @@
 			},
             voiceDetial(scope){
                console.log(scope);
-			}
+			},
+            voiceFileLists(){
+                console.log(this.form.time[0]);
+                console.log(this.form.time[1]);
+                let dateStart = new Date(this.form.time[0]);
+                let dateEnd = new Date(this.form.time[1]);
+                let dateStart_value=dateStart.getFullYear() + '-' + (dateStart.getMonth() + 1) + '-' + dateStart.getDate();
+                let dateEnd_value=dateEnd.getFullYear() + '-' + (dateEnd.getMonth() + 1) + '-' + dateEnd.getDate();
+                console.log(dateStart_value);
+                console.log(dateEnd_value);
+                this.$ajax.post('/vos/business/getBusinessFlowList',{
+                    "type":"Voice",
+                    "dateStart":this.form.time[0]==undefined?'':dateStart_value,
+                    "dateEnd":this.form.time[1]==undefined?'':dateEnd_value,
+                    "companyName":this.form.firmName,
+                    "status":this.accountStatus,
+                    "number400":this.form.phoneNum,
+                    "page":{
+                        "pageNo":this.pageObj.page,
+                        "pageSize":this.pageObj.pageSize,
+                    }
+                }).then((res)=>{
+                    console.log(res.data.businessFlows);
+                    this.tableData = res.data.businessFlows;
+                    this.pageObj.total = res.data.totalCount;
+                    this.tableData.map((item)=>{
+                        if(item.status=='Wait_To_Audit'){
+                            item.status='等待送审'
+                        }else if(item.status=='Audit_Success'){
+                            item.status='审核通过'
+                        }else if(item.status=='Voice_Auditing'){
+                            item.status='审核中'
+                        }else if(item.status=='Terminate_Flow'){
+                            item.status='受理终止'
+						}
+                    })
+                })
+            },
+			// 状态改变
+            statusChange(val){
+                this.voiceFileLists();
+			},
 		},
+
 		computed: {}
 	}
 </script>

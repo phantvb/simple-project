@@ -77,3 +77,21 @@ footer {
   overflow: hidden;
 
 }
+.objCodeBox{
+  overflow: hidden;
+  float:left;
+  margin-left:14px;
+  width:80%;
+  .addObjCode{
+    margin-bottom:20px;
+  }
+}
+.num400{
+  span{
+    float:left;
+  }
+}
+.QCellCore{
+  float:left;
+  width:40%;
+}

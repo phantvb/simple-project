@@ -1,9 +1,9 @@
 <template>
     <div id="stepOne">
-        <el-form ref="acceptForm" :model="acceptForm" label-width="100px">
+        <el-form ref="acceptForm" :model="acceptForm" label-width="140px">
             <div class="acceptMsg">
                 <p>企业基本信息</p>
-                <el-form-item label="企业名称：" class="firmName">
+                <el-form-item label="企业名称：" class="identity">
                     <el-input v-model="acceptForm.firmName" size="mini" placeholder=" 营业执照上公司全称，个体工商户填写字号全称，组织机构上的机构全称"></el-input>
                 </el-form-item>
                 <el-form-item label="证件编号：" class="identity">
@@ -87,6 +87,36 @@
                         </el-select>
                         <el-input v-model="acceptForm.legalIdentityNo" size="mini" placeholder="根据证件类型，填写相应的证件号码"></el-input>
                     </el-form-item>
+                        <el-form-item label="身份证住址：" class="firmName"  v-if="acceptForm.legalIdentity==1">
+                            <el-input v-model="acceptForm.idAddress" size="mini" placeholder="填入身份证上的住址"></el-input>
+                        </el-form-item>
+                        <el-form-item label="身份证有效期：" class="indate" v-if="acceptForm.legalIdentity==1">
+                            <el-date-picker
+                                    v-model="acceptForm.idIndate"
+                                    type="daterange"
+                                    range-separator="至"
+                                    start-placeholder="开始日期"
+                                    end-placeholder="结束日期">
+                            </el-date-picker>
+                        </el-form-item>
+                        <el-form-item label="护照有效期：" class="indate"  v-if="acceptForm.legalIdentity==2">
+                            <el-date-picker
+                                v-model="acceptForm.passportIndate"
+                                type="daterange"
+                                range-separator="至"
+                                start-placeholder="开始日期"
+                                end-placeholder="结束日期">
+                            </el-date-picker>
+                        </el-form-item>
+                        <el-form-item label="军官证有效期：" class="indate"  v-if="acceptForm.legalIdentity==3">
+                           <el-date-picker
+                                v-model="acceptForm.officerCardIndate"
+                                type="daterange"
+                                range-separator="至"
+                                start-placeholder="开始日期"
+                                end-placeholder="结束日期">
+                           </el-date-picker>
+                        </el-form-item>
                 </div>
             </div>
         </el-form>
@@ -98,6 +128,13 @@
 <script>
     export default {
         name: 'stepOne',
+        components: {},
+        props:[
+            "actives"
+        ],
+        created(){
+            console.log("actives",this.actives);
+        },
         data() {
             return {
                 acceptForm:{
@@ -119,17 +156,21 @@
                     legalPhone:'',
                     legalIdentity:'',
                     legalIdentityNo:'',
+                    idAddress:'',
+                    idIndate:'',         //身份证有效期
+                    passportIndate:'',   //护照有效期
+                    officerCardIndate:'',//军官证有效期
                 },
                 identityTypeList:[   //证件类型
                     {
                         value: '1',
-                        label: '营业执照'
+                        label: '身份证'
                     }, {
                         value: '2',
-                        label: '组织机构代码证'
+                        label: '护照'
                     }, {
                         value: '3',
-                        label: '三证合一'
+                        label: '军官证'
                     }
                 ],
             };
@@ -137,10 +178,11 @@
         components: {},
         methods: {
             next(){
-                this.$emit('next', 2);
+                this.$emit('childNext', 2);
             },
             change123(event) {
                 console.log("event",event);
+                console.log("acceptForm.legalIdentity",this.acceptForm.legalIdentity);
             },
         },
         computed: {}

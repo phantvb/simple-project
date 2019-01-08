@@ -8,20 +8,29 @@
         width="80%"
         :before-close="handleClose">
         <div>
-          <el-form ref="acceptForm" :model="acceptForm" label-width="140px">
+          <el-form ref="acceptForm" :rules="rules" :model="acceptForm" label-width="140px">
             <div class="objCodeMsg">
 
-              <el-form-item label="企业名称：" class="firmName">
-                <el-input v-model="acceptForm.firmName" size="mini" placeholder=" 营业执照上公司全称，个体工商户填写字号全称，组织机构上的机构全称"></el-input>
+              <el-form-item label="企业名称：" class="firmName" id="firmName" prop="firmName">
+                <el-input
+                        v-model="acceptForm.firmName"
+                        size="mini"
+                        placeholder=" 营业执照上公司全称，个体工商户填写字号全称，组织机构上的机构全称" @input="searchFirm">
+                </el-input>
+                <div id="firmNameList" v-if="acceptForm.firmName!='' && firmNameList.length!=0 && firmNameShow">
+                  <ul>
+                    <li v-for="(item,index) in firmNameList" :key="index">{{item.companyName}}</li>
+                  </ul>
+                </div>
               </el-form-item>
 
-              <el-form-item label="使用用途：" class="identity">
+              <el-form-item label="使用用途：" class="identity" prop="usage">
                 <el-select v-model="acceptForm.usage" @change="change123" placeholder="请选择" size="mini">
                   <el-option :label="item.label" :value="item.value" v-for="(item,index) in usage" :key="index"></el-option>
                 </el-select>
               </el-form-item>
 
-              <el-form-item label="目的码证明材料：" class="materials">
+              <el-form-item label="目的码证明材料：" class="materials" prop="imageUrl">
                 <el-upload
                   class="avatar-uploader"
                   action="https://jsonplaceholder.typicode.com/posts/"
@@ -34,22 +43,43 @@
                 <div class="uploadTips"><p>说明：目的码证明材料可以是缴费材料，也可以是自助平台相关截图</p></div>
               </el-form-item>
 
+              <el-form-item label="400号码：" class="firmName" prop="fourNum">
+                <el-input
+                        v-model="acceptForm.fourNum"
+                        size="mini"
+                        placeholder=" 请搜索400号码" @input="searchFourNum"></el-input>
+                <div id="fourNumList" v-if="numShow">
+                  <ul>
+                    <li v-for="(item,index) in fourNumList" :key="index" @click="num400li(item)">{{item.number400}}</li>
+                  </ul>
+                </div>
+              </el-form-item>
+
               <el-form-item label="目的码：">
-                <el-table :cell-placeholder="cellStyle"
-                  :data="objCodeTable"
-                  border
-                  style="width: 100%">
+                <div>
+                  <div class="objCodeBox">
+                    <el-button type="primary" size="mini" @click="addObjCodes()">+新增目的码</el-button>
+                    <div v-for="(item,index) in objCodeList" :key="index">
+                      <div class="addObjCode">
+                        <el-input v-model="item.destnumber" size="mini"></el-input>
+                        <el-button type="primary" icon="el-icon-minus" size="mini" @click="delObjCodes(index)"></el-button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </el-form-item>
 
-                  <el-table-column
-                    prop="number"
-                    label="400号码">
-                  </el-table-column>
-
-                  <el-table-column
-                    prop="objCode"
-                    label='目的码 (填入目的码，多个请用","隔开)'>
-                  </el-table-column>
-                </el-table>
+              <el-form-item label="增值资费：">
+                <div>
+                  <div class="objCodeBox">
+                    <span>增加目的码</span>
+                    <div class="valAddSer">
+                      <p>功能资费：</p>
+                      <p>是否赠送：</p>
+                      <p>功能备注：</p>
+                    </div>
+                  </div>
+                </div>
               </el-form-item>
             </div>
           </el-form>
@@ -79,7 +109,7 @@
           </el-form-item>
 
           <el-form-item class="searchBtn">
-            <el-button type="primary" size="mini">搜索</el-button>
+            <el-button type="primary" size="mini" @click="objCodeLists()">搜索</el-button>
             <el-button @click="resetForm('form')" size="mini">重置</el-button>
           </el-form-item>
         </div>
@@ -94,12 +124,12 @@
         </div>
         <div class="accountSelect">
           <span style="font-size:12px">状态:</span>
-          <el-select v-model="accountStatus" placeholder="请选择" size="mini">
+          <el-select v-model="accountStatus" placeholder="请选择" size="mini" @change="statusChange">
             <el-option
               v-for="item in statusOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
+              :key="item.dicKey"
+              :label="item.dicValue"
+              :value="item.dicKey">
             </el-option>
           </el-select>
           <el-button type="primary" plain size="mini">导出</el-button>
@@ -110,24 +140,19 @@
         :data="tableData"
         style="width: 100%">
         <el-table-column
-          prop="firmName"
+          prop="business.companyName"
           label="企业名称"
           width="200">
         </el-table-column>
 
         <el-table-column
-          prop="fourPhone"
+          prop="business.number400"
           label="400电话">
         </el-table-column>
 
         <el-table-column
-          prop="receiver"
+          prop="assignee"
           label="受理人">
-        </el-table-column>
-
-        <el-table-column
-          prop="use"
-          label="用途">
         </el-table-column>
 
         <el-table-column
@@ -164,10 +189,10 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
       :current-page="currentPage"
-      :page-sizes="[100, 200, 300, 400]"
-      :page-size="100"
+      :page-sizes="[10, 20, 50, 100]"
+      :page-size="10"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="400">
+      :total="pageObj.total">
     </el-pagination>
   </div>
 </template>
@@ -177,6 +202,8 @@
     name: 'objCodeAudit',
     data() {
       return {
+        firmNameShow:false,
+        numShow:false,
         dialogVisible:false, //新增、编辑目的码弹窗显示状态
         objCodeIn:1,
         form:{
@@ -187,79 +214,56 @@
           firmName:'',
           usage:'',
           imageUrl: '',    //上传图片
+          fourNum:'',
+          desc:'',
+          objCount:1,     //目的码数量
+          delObjCode:'',  //删减目的码
         },
-        tableData: [{
-          id:1,
-          firmName: '杭州顺网科技股份有限公司',
-          fourPhone: '5876552',
-          receiver:'华勇',
-          use:'办公',
-          createTime:'2018-12-19',
-          status:'等待送核',
-        },{
-          id:2,
-          firmName: '杭州顺网科技股份有限公司',
-          fourPhone: '5876552',
-          receiver:'华勇',
-          use:'办公',
-          createTime:'2018-12-19',
-          status:'等待送核',
-        },{
-          id:3,
-          firmName: '杭州顺网科技股份有限公司',
-          fourPhone: '5876552',
-          receiver:'华勇',
-          use:'办公',
-          createTime:'2018-12-19',
-          status:'等待送核',
-        }],
-        objCodeTable:[{
-          number: '234567',
-          objCode: '',
-      }],
-        statusOptions: [
-          {
-            value: '1',
-            label: '全部'
-          }, {
-            value:'2',
-            label:'等待审核'
-          },{
-            value: '3',
-            label: '待审核'
-          }, {
-            value: '4',
-            label: '审核通过'
+          rules:{
+              firmName: [
+                  { required: true, message: '请输入企业名称', trigger: 'change' }
+              ],
           },
-          {
-            value: '5',
-            label: '被驳回'
-          }
-        ],
+        tableData: [],
+        statusOptions: [],
         usage:[   //证件类型
           {
-            value: '1',
-            label: '办公'
+            value: 'DestNum_Auditing',
+            label: '审核中'
           }, {
-            value: '2',
-            label: '外呼'
+            value: 'Audit_Success',
+            label: '审核通过'
           }, {
-            value: '3',
-            label: '其他'
+            value: 'Wait_To_Audit',
+            label: '等待送审'
           }
         ],
-        currentPage: 4,   //分页
+        objCodeList:[{}], //目的码数组
+        firmNameList:[],  //公司名称数组
+        fourNumList:[],   //400号码列表
+        currentPage: 1,   //当前页
         accountStatus:'',
-
+        addObjCode:'',  //添加目的码
+        pageObj:{
+            total:0,
+            page:1,
+            pageSize:10,
+          }
       };
     },
     components: {},
+      created(){
+        this.objCodeLists();
+        this.statusList();
+      },
     methods: {
       // 分页
       handleSizeChange(val) {
+          this.pageObj.pageSize = val;
         console.log(`每页 ${val} 条`);
       },
       handleCurrentChange(val) {
+          this.pageObj.page = val;
         console.log(`当前页: ${val}`);
       },
       //弹窗关闭按钮
@@ -302,10 +306,115 @@
         }
         return isJPG && isLt2M;
       },
+        //新增目的码
+
+        s(){
+          let unit = {};
+          this.objCodeList.push(unit);
+        },
+        // 删除目的码
+        delObjCodes(index){
+          console.log(index);
+          this.objCodeList.splice(index,1);
+        },
       //点击详情
       details(scope){
         console.log(scope);
-      }
+      },
+        // 企业模糊搜索
+        searchFirm(val){
+          console.log(val);
+          this.$ajax.get('/vos/company/fuzzySearch?company='+this.acceptForm.firmName).then((res)=>{
+              console.log(res.data);
+              this.firmNameList = res.data;
+          })
+        },
+        //400号码搜索
+        searchFourNum(){
+            this.$ajax.post('/vos/num400config/search',{
+                "page":{
+                "pageNo":"1",
+                    "pageSize":"50"
+            },
+                "number400":{
+                "number400":this.acceptForm.fourNum,
+            }
+            }).then((res)=>{
+                console.log(res.data.number400s);
+                this.fourNumList = res.data.number400s;
+                if(this.acceptForm.fourNum!='' && this.fourNumList.length!=0){
+                    this.numShow = true;
+                }
+            })
+        },
+        //400号码li
+        num400li(val){
+          console.log(val);
+            this.numShow = false;
+            this.acceptForm.fourNum = val.number400;
+            if(this.acceptForm.fourNum!=''){
+                this.searchObjCode();
+            }
+
+        },
+        //目的码
+        searchObjCode(){
+          this.$ajax.get('/vos/destnum/getDestNumbersToModify?number400='+this.acceptForm.fourNum).then((res)=>{
+              console.log(res.data.destNumber);
+              this.objCodeList = res.data.destNumber;
+          })
+        },
+        // 目的码列表
+        objCodeLists(){
+            console.log(this.form.time[0]);
+            console.log(this.form.time[1]);
+          let dateStart = new Date(this.form.time[0]);
+          let dateEnd = new Date(this.form.time[1]);
+            let dateStart_value=dateStart.getFullYear() + '-' + (dateStart.getMonth() + 1) + '-' + dateStart.getDate();
+            let dateEnd_value=dateEnd.getFullYear() + '-' + (dateEnd.getMonth() + 1) + '-' + dateEnd.getDate();
+            console.log(dateStart_value);
+            console.log(dateEnd_value);
+            this.$ajax.post('/vos/business/getBusinessFlowList',{
+              "type":"Destnum",
+              "dateStart":this.form.time[0]==undefined?'':dateStart_value,
+              "dateEnd":this.form.time[1]==undefined?'':dateEnd_value,
+              "companyName":this.form.firmName,
+              "status":this.accountStatus,
+              "number400":this.acceptForm.fourNum,
+              "page":{
+                  "pageNo":this.pageObj.page,
+                  "pageSize":this.pageObj.pageSize,
+              }
+          }).then((res)=>{
+              console.log(res.data.businessFlows);
+              this.tableData = res.data.businessFlows;
+              this.tableData.map((item)=>{
+                  if(item.status=='Wait_To_Audit'){
+                      item.status='等待送审'
+                  }else if(item.status=='Audit_Success'){
+                      item.status='审核通过'
+                  }else if(item.status=='DestNum_Auditing'){
+                      item.status='审核中'
+                  }
+              })
+          })
+        },
+        statusList(){
+          this.$ajax.post('/vos/dic/getDicsByType',{
+              "dicType":"flowType",
+              "status":this.accountStatus,
+          }).then((res)=>{
+              console.log(res.data);
+              console.log(res.data.dicList);
+              console.log(res.data.totalCount);
+              this.statusOptions = res.data.dicList;
+              this.pageObj.total = res.data.totalCount;
+              console.log(this.pageObj.total);
+          })
+        },
+        statusChange(val){
+          this.statusList();
+        }
     },
     computed: {
     }

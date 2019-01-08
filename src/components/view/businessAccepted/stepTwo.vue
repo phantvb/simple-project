@@ -131,7 +131,7 @@
                 return isJPG && isLt2M;
             },
             next(val){
-                this.$emit('next', val);
+                this.$emit('childNext', val);
             }
         },
         computed: {}
