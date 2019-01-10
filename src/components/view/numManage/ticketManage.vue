@@ -1,5 +1,6 @@
 <template>
-	<div id="ticketManage" class="managerFormTitle">
+	<div id="ticketManage" class="managerFormTitle" v-loading="loading">
+		<Aplayer name="123" music_url="http://192.168.0.123:5480/vos/voice/123.wav"></Aplayer>
 		<el-tabs v-model="active">
 			<el-tab-pane label="自助直销" name="self"></el-tab-pane>
 			<el-tab-pane label="渠道" name="channel"></el-tab-pane>
@@ -51,21 +52,21 @@
 				<el-button type="primary" plain size="mini">导出</el-button>
 			</section>
 			<el-table :data="tableData" style="width: 100%;margin-bottom:15px;">
-				<el-table-column prop="type" label="企业名称" min-width="100">
+				<el-table-column prop="companyName" label="企业名称" min-width="100">
 				</el-table-column>
-				<el-table-column prop="name" label="400号码" min-width="100">
+				<el-table-column prop="number400" label="400号码" min-width="100">
 				</el-table-column>
-				<el-table-column prop="number" label="主叫号码" min-width="100">
+				<el-table-column prop="callingNumber" label="主叫号码" min-width="100">
 				</el-table-column>
-				<el-table-column prop="person" label="被叫号码" min-width="100">
+				<el-table-column prop="calledNumber" label="被叫号码" min-width="100">
 				</el-table-column>
-				<el-table-column prop="时间" label="套餐到期时间" min-width="120">
+				<el-table-column prop="createTime" label="时间" min-width="120">
 				</el-table-column>
-				<el-table-column prop="status" label="通话时长（秒）" min-width="100">
+				<el-table-column prop="callDuration" label="通话时长（秒）" min-width="100">
 				</el-table-column>
 				<el-table-column prop="name" label="操作" min-width="200">
 					<template slot-scope="scope">
-						<el-button size="mini" type="text">试听</el-button>
+						<el-button size="mini" type="text">试听{{scope.row.recordAddress}}</el-button>
 						<el-button size="mini" type="text" @click="showTicketDetail(true)">详情</el-button>
 					</template>
 				</el-table-column>
@@ -74,6 +75,7 @@
 			</el-pagination>
 		</el-tabs>
 		<ticketDetail :show="ticketDetailShow" @close="showTicketDetail(false)"></ticketDetail>
+
 	</div>
 </template>
 <style lang="scss" scoped>
@@ -81,10 +83,12 @@
 </style>
 <script>
 	import ticketDetail from './component/ticketDetail.vue'
+	import Aplayer from '../component/Aplayer/a_player.vue'
 	export default {
 		name: 'ticketManage',
 		components: {
-			ticketDetail
+			ticketDetail,
+			Aplayer
 		},
 		data() {
 			return {
@@ -115,7 +119,13 @@
 					num: 1,
 					size: 10,
 					total: 1
-				}
+				},
+				loading: false
+			}
+		},
+		watch: {
+			active(n, o) {
+				this.fetchData();
 			}
 		},
 		mounted() {
@@ -133,6 +143,7 @@
 			},
 			fetchData(pageNum) {
 				var data = {};
+				this.loading = false;
 				this.page.num = pageNum || 1;
 				data.page = {
 					pageNo: this.page.num,
@@ -146,11 +157,12 @@
 				data.callRecords.calledNumber = this.form.calledNumber;
 				data.callDurationStart = this.form.callDurationStart;
 				data.callDurationEnd = this.form.callDurationEnd;
-				data.timeStart = this.form.time[0];
-				data.timeEnd = this.form.time[1];
-				this.$ajax.post("/vos/callRecord/search", this.$format(data)).then(res => {
+				data.timeStart = this.form.time[0] || '';
+				data.timeEnd = this.form.time[1] || '';
+				this.$ajax.post("/vos/callRecord/search", data).then(res => {
 					if (res.code == 200) {
-						this.tableData = res.data.number400s;
+						this.loading = false;
+						this.tableData = res.data.callRecordList;
 						this.page.total = res.data.totalCount;
 					}
 				});

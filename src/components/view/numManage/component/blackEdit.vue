@@ -5,8 +5,9 @@
 				<div class="form_item" v-if="type=='one'">
 					<div class="form_title right">400号码：</div>
 					<div class="form_con">
-						<el-select v-model="number400" placeholder="请选择" size="mini">
-							<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
+						<el-select v-model="number400" filterable remote reserve-keyword placeholder="请输入400号" :remote-method="remoteMethod" :loading="loading" size="mini" value-key="id">
+							<el-option v-for="(item,index) in numberOptions" :key="index" :label="item.number400" :value="item">
+							</el-option>
 						</el-select>
 						<el-button type="primary" size="mini">搜索</el-button>
 					</div>
@@ -16,12 +17,12 @@
 					<div class="form_con">
 						<div v-for="(item,index) in blackList" :key="index" style="margin-bottom:10px;">
 							<el-input v-model="item.num" size="mini" placeholder="请输入黑名单号码"></el-input>
-							<el-button v-if="type=='all'&&index==0" type="primary" icon="el-icon-plus" size="mini" @click="addBlack(true)"></el-button>
-							<el-button v-if="type=='all'&&index>0" type="primary" icon="el-icon-minus" size="mini" @click="addBlack(false,index)"></el-button>
+							<el-button v-if="type=='all'&&!data.id&&index==0" type="primary" icon="el-icon-plus" size="mini" @click="addBlack(true)"></el-button>
+							<el-button v-if="type=='all'&&!data.id&&index>0" type="primary" icon="el-icon-minus" size="mini" @click="addBlack(false,index)"></el-button>
 						</div>
 					</div>
 				</div>
-				<div class="form_item" v-if="type=='one'&&this.valueAdded.id">
+				<div class="form_item" v-show="type=='one'">
 					<div class="form_title right">增值资费：</div>
 					<div class="form_con">{{valueAdded.tariffName}}
 						<div class="search padding">
@@ -54,16 +55,10 @@
 				if (this.data.id) {
 					this.number400 = this.data.number400;
 					this.blackList[0].num = this.data.blackNumber;
-					if (this.type == 'one') {
-						this.getValueAdded(this.data.valueAddedId);
-					} else {
-
-					}
 				} else {
 					this.number400 = "";
 					this.blackList = [];
 					this.blackList.push({ num: "" });
-					this.valueAdded = {};
 				}
 			}
 		},
@@ -75,62 +70,76 @@
 				}],
 				valueAdded: {},
 				dialogVisible: false,
-				options: [
-					{ value: 0, label: "转接" },
-					{ value: 1, label: "放音挂机" },
-					{ value: 2, label: "IVR" }
-				]
+				numberOptions: [],
+				loading: false,
 			};
 		},
 		mounted() {
+			this.getValueAdded();
 			//this.$ajax.get('/vos/number400/getAll')
 		},
 		methods: {
 			submit() {
 				var data = {};
+				data.blacklist = [];
 				var url = '';
 				if (this.data.id) {
 					//编辑
 					if (this.type == 'one') {
 						url = '/vos/blacklist/update';
-						data.blacklist = {
-							id: this.data.id || '',
-							number400: this.number400,
+						data.blacklist.push({
+							id: this.data.id,
+							number400: this.data.number400,
 							blackType: this.type,
-							blackNumber: this.blackList[0].num
-						}
+							blackNumber: this.blackList[0].num,
+							companyName: this.data.companyName,
+							valueAddedId: this.valueAdded.id,
+							tariffName: this.valueAdded.tariffName,
+							tariffFee: this.valueAdded.tariffFee,
+							presents: this.valueAdded.presents,
+							units: this.valueAdded.units
+						});
 					} else {
 						url = '/vos/blacklist/update';
-						data.blacklist = {
-							id: 5,
-							number400: 400100009,
-							blackType: 'one',
-							blackNumber: 123456789
-						}
-
+						this.blackList.map(item => {
+							data.blacklist.push({
+								blackNumber: item.num,
+								blackType: this.type,
+								id: this.data.id
+							})
+						});
 					}
 				} else {
-                    //新增
-                    if (this.type == 'one') {
-						url = '/vos/blacklist/update';
-						data.blacklist = {
-							id: this.data.id || '',
-							number400: this.number400,
+					//新增
+					if (this.type == 'one') {
+						url = '/vos/blacklist/add';
+						data.blacklist.push({
+							number400: this.number400.number400,
 							blackType: this.type,
-							blackNumber: this.blackList[0].num
-						}
+							blackNumber: this.blackList[0].num,
+							companyName: this.number400.companyName,
+							valueAddedId: this.valueAdded.id,
+							tariffName: this.valueAdded.tariffName,
+							tariffFee: this.valueAdded.tariffFee,
+							presents: this.valueAdded.presents,
+							units: this.valueAdded.units
+						});
 					} else {
-						url = '/vos/blacklist/update';
-						data.blacklist = {
-							id: 5,
-							number400: 400100009,
-							blackType: 'one',
-							blackNumber: 123456789
-						}
-
+						url = '/vos/blacklist/add';
+						this.blackList.map(item => {
+							data.blacklist.push({
+								blackNumber: item.num,
+								blackType: this.type
+							})
+						});
 					}
 				}
-
+				this.$ajax.post(url, data).then(res => {
+					if (res.code == 200) {
+						this.dialogVisible = false;
+						this.close();
+					}
+				})
 			},
 			close() {
 				this.$emit("close");
@@ -144,13 +153,36 @@
 					}
 				}
 			},
-			getValueAdded(id) {
-				this.$ajax.get('/vos/blacklist/getValueAdded/' + id).then(res => {
+			getValueAdded() {
+				this.$ajax.get('/vos/blacklist/getValueAdded/' + 8).then(res => {
 					if (res.code == 200) {
 						this.valueAdded = res.data;
 					}
 				})
-			}
+			},
+			remoteMethod(query) {
+				if (query !== '') {
+					this.loading = true;
+					this.$ajax.post('/vos/num400config/search', {
+						page: {
+							pageNo: 1,
+							pageSize: 20
+						},
+						number400: {
+							number400: query,
+							channel: this.active,
+							status: "CanUse"
+						}
+					}).then(res => {
+						if (res.code == 200) {
+							this.loading = false;
+							this.numberOptions = res.data.number400s;
+						}
+					})
+				} else {
+					this.numberOptions = [];
+				}
+			},
 		}
 	};
 </script>

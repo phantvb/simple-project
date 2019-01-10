@@ -17,7 +17,7 @@
 			<div class="form_item">
 				<div class="form_title right">时长包：</div>
 				<div class="form_con">
-					<el-select v-model="charge" placeholder="请选择" size="mini" value-key="id">
+					<el-select v-model="form.charge" placeholder="请选择" size="mini" value-key="id">
 						<el-option v-for="item in timePacketOptions" :key="item.id" :label="item.timePacketName" :value="item">
 						</el-option>
 					</el-select>
@@ -27,6 +27,15 @@
 				<div class="form_title right">数量：</div>
 				<div class="form_con">
 					<el-input v-model="form.amount" style="max-width:220px;" size="mini" placeholder="填写该优惠方案名称"></el-input> 个
+				</div>
+			</div>
+			<div class="form_item">
+				<div class="form_title right">优惠：</div>
+				<div class="form_con">
+					<el-select v-model="form.concession" placeholder="请选择" size="mini" value-key="id">
+						<el-option v-for="item in concessionOptions" :key="item.id" :label="item.concessionName" :value="item">
+						</el-option>
+					</el-select>
 				</div>
 			</div>
 			<footer class="right">
@@ -47,39 +56,56 @@
 		watch: {
 			show(newV, oldV) {
 				this.dialogVisible = newV;
+				if (newV) {
+					this.getTimePacket();
+					this.form.amount = 1;
+				}
 			},
-			active(n, o) {
-				this.getTimePacket(n);
+			'form.charge': {
+				handler: function (n, o) {
+					if (n.rechargeLimit != 0 && this.form.amount != 0) {
+						this.getConcession();
+					}
+				},
+			},
+			'form.amount': {
+				handler: function (n, o) {
+					if (n != 0 && this.form.charge.rechargeLimit != 0) {
+						this.getConcession();
+					}
+				},
 			}
 		},
 		data() {
 			return {
 				dialogVisible: false,
-				charge: '',
 				form: {
 					number400: '',
 					companyName: '',
-					amount: 1
+					amount: 0,
+					charge: {},
+					concession: {},
 				},
 				loading: false,
 				timePacketOptions: [],
+				concessionOptions: [],
 				numberOptions: []
 			}
 		},
 		mounted() {
-			this.getTimePacket(this.active);
+			this.getTimePacket();
 		},
 		methods: {
 			submit() {
 				var data = {};
-				data.timePacketName = this.charge.timePacketName;
-				data.rechargeLimit = this.charge.rechargeLimit;
-				data.dialingTime = this.charge.dialingTime;
 				data.channel = this.active;
-				data.timePacketName = this.charge.timePacketName;
 				data = Object.assign(data, this.form);
+				data = Object.assign(data, this.form.charge);
+				delete data.id;
+				delete data.charge;
+				delete data.concession;
 				data.number400 = data.number400.number400;
-				this.$ajax.post('/vos/number400TimePacket/add', { number400TimePacket: data }).then(res => {
+				this.$ajax.post('/vos/number400TimePacket/add', { number400TimePacket: data, concessionScheme: this.form.concession }).then(res => {
 					if (res.code == 200) {
 						this.dialogVisible = false;
 						this.close();
@@ -87,6 +113,7 @@
 				})
 			},
 			close() {
+				this.$clear(this.form);
 				this.$emit('close');
 			},
 			remoteMethod(query) {
@@ -115,10 +142,20 @@
 			number400Change(val) {
 				this.form.companyName = val.companyName;
 			},
-			getTimePacket(n) {
-				this.$ajax.post('/vos/tariffPackage/getTimePacket', { timePacket: { channel: n } }).then(res => {
+			getTimePacket() {
+				this.$ajax.post('/vos/tariffPackage/getTimePacket', { timePacket: { channel: this.active } }).then(res => {
 					if (res.code == 200) {
 						this.timePacketOptions = res.data.timePacketList;
+					}
+				});
+			},
+			getConcession() {
+				var data = {};
+				data.rechargeLimit = this.form.charge.rechargeLimit || 0;
+				data.amount = this.form.amount;
+				this.$ajax.post('/vos/number400TimePacket/searchConcession', { number400TimePacket: data }).then(res => {
+					if (res.code == 200) {
+						this.concessionOptions = res.data.concessionSchemes;
 					}
 				})
 			}

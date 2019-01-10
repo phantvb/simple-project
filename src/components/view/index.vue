@@ -58,7 +58,7 @@
 		},
 		mounted() {
 			this.$ajax.post('/vos/user/apiLogin', {
-				username: 'jeq',
+				username: 'admin',
 				password: '123456'
 			}).then(res => {
 				if (res.code == 200) {

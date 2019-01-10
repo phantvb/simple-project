@@ -32,13 +32,13 @@
 				</div>
 			</div>
 			<section class="left block lineTop">
-				<el-button type="primary" size="mini" @click="showblackEdit(true,{})"><i class="el-icon-plus"></i> {{active==1?'新增企业黑名单':'新增全局黑名单'}}</el-button>
-				<el-button type="primary" plain size="mini">删除</el-button>
+				<el-button type="primary" size="mini" @click="showblackEdit(true,{})"><i class="el-icon-plus"></i> {{active=='one'?'新增企业黑名单':'新增全局黑名单'}}</el-button>
+				<el-button type="primary" plain size="mini" @click="removeBlackEditSel">删除</el-button>
 				<div style="float:right">
 					<el-button type="primary" plain size="mini">导出</el-button>
 				</div>
 			</section>
-			<el-table :data="tableData" style="width: 100%;margin-bottom:15px;">
+			<el-table :data="tableData" style="width: 100%;margin-bottom:15px;" @selection-change="handleSelectionChange">
 				<el-table-column type="selection" width="55">
 				</el-table-column>
 				<el-table-column prop="companyName" label="企业名称" min-width="100" v-if="active=='one'">
@@ -52,7 +52,7 @@
 				<el-table-column prop="name" label="操作" min-width="200">
 					<template slot-scope="scope">
 						<el-button size="mini" type="text" @click="showblackEdit(true,scope.row)">修改</el-button>
-						<el-button size="mini" type="text">删除</el-button>
+						<el-button size="mini" type="text" @click="removeBlackEdit(scope.row)">删除</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
@@ -86,6 +86,7 @@
 					blackNumber: ""
 				},
 				editData: {},
+				multipleSelection: [],
 				blackEditShow: false,
 				loading: false,
 				status: '',
@@ -113,12 +114,14 @@
 			}
 		},
 		mounted() {
+			console.log(this)
 			this.fetchData();
 		},
 		methods: {
 			showblackEdit(bol, data) {
 				this.editData = data;
 				this.blackEditShow = bol;
+				this.fetchData(this.page.num);
 			},
 			handleSizeChange() {
 				this.fetchData();
@@ -147,6 +150,31 @@
 					}
 				});
 			},
+			handleSelectionChange(val) {
+				this.multipleSelection = val;
+			},
+			removeBlackEdit(data) {
+				this.remove(data.id);
+			},
+			removeBlackEditSel() {
+				var arr = [];
+				this.multipleSelection.map(item => {
+					arr.push(item.id);
+				});
+				var ids = arr.join(',');
+				this.remove(ids);
+			},
+			remove(ids) {
+				this.$ajax.post('/vos/blacklist/delete', { ids: ids }).then(res => {
+					if (res.code == 200) {
+						this.$message({
+							message: '删除成功',
+							type: 'success'
+						});
+						this.fetchData(this.page.num);
+					}
+				})
+			}
 		}
 	}
 </script>

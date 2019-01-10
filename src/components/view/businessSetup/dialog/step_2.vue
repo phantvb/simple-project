@@ -1,8 +1,5 @@
 <template>
 	<div id="step_2" class="step">
-		<el-dialog :visible.sync="dialogVisible">
-			<img width="100%" :src="dialogImageUrl" alt="">
-		</el-dialog>
 		<div>
 			<div class="title">
 				企业资料
@@ -14,8 +11,8 @@
 					</div>
 					<ul>
 						<li class="l2">
-							<el-upload class="avatar-uploader examplew" :with-credentials="true" :action="$global.uploadUrl" :show-file-list="false" :file-list="fileList" :on-success="uploaded">
-								<img v-if="imageUrl" :src="imageUrl" class="avatar">
+							<el-upload class="avatar-uploader examplew" :with-credentials="true" :action="$global.uploadUrl" :show-file-list="false" :on-success="uploaded1">
+								<img v-if="imageUrl.p1" :src="imageUrl.p1" class="avatar">
 								<i v-else class="el-icon-plus avatar-uploader-icon"></i>
 							</el-upload>
 						</li>
@@ -40,22 +37,22 @@
 						<li class="l2">
 							<ul>
 								<li class="l2">
-									<el-upload class="avatar-uploader exampleh" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="handleAvatarSuccess" :on-error="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
-										<img v-if="imageUrl" :src="imageUrl" class="avatar">
+									<el-upload class="avatar-uploader exampleh" :with-credentials="true" :action="$global.uploadUrl" :show-file-list="false" :on-success="uploaded2">
+										<img v-if="imageUrl.p2" :src="imageUrl.p2" class="avatar">
 										<i v-else class="el-icon-plus avatar-uploader-icon"></i>
 									</el-upload>
 								</li>
 								<li class="l2">
-									<el-upload class="avatar-uploader exampleh" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="handleAvatarSuccess" :on-error="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
-										<img v-if="imageUrl" :src="imageUrl" class="avatar">
+									<el-upload class="avatar-uploader exampleh" :with-credentials="true" :action="$global.uploadUrl" :show-file-list="false" :on-success="uploaded3">
+										<img v-if="imageUrl.p3" :src="imageUrl.p3" class="avatar">
 										<i v-else class="el-icon-plus avatar-uploader-icon"></i>
 									</el-upload>
 								</li>
 							</ul>
 							<ul>
 								<li class="l2">
-									<el-upload class="avatar-uploader exampleh" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="handleAvatarSuccess" :on-error="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
-										<img v-if="imageUrl" :src="imageUrl" class="avatar">
+									<el-upload class="avatar-uploader exampleh" :with-credentials="true" :action="$global.uploadUrl" :show-file-list="false" :on-success="uploaded4">
+										<img v-if="imageUrl.p4" :src="imageUrl.p4" class="avatar">
 										<i v-else class="el-icon-plus avatar-uploader-icon"></i>
 									</el-upload>
 								</li>
@@ -85,8 +82,8 @@
 		</div>
 		<footer class="right">
 			<el-button type="primary" size="mini" @click="next(1)" plain>上一步</el-button>
-			<el-button type="primary" size="mini" plain>暂存信息</el-button>
-			<el-button type="primary" size="mini" @click="next(3)">立刻送审</el-button>
+			<el-button type="primary" size="mini" plain @click="submit(false)">暂存信息</el-button>
+			<el-button type="primary" size="mini" @click="submit(true)">立刻送审</el-button>
 		</footer>
 	</div>
 </template>
@@ -112,7 +109,7 @@
 
 	.examplew .avatar {
 		width: 120px;
-		height: 148px;
+		height: 169px;
 	}
 
 	.exampleh .avatar-uploader-icon {
@@ -122,7 +119,7 @@
 	}
 
 	.exampleh .avatar {
-		width: 148px;
+		width: 200px;
 		height: 120px;
 	}
 
@@ -145,18 +142,67 @@
 		name: 'baseMes',
 		data() {
 			return {
-				imageUrl: '',
-				dialogImageUrl: '',
-				dialogVisible: false,
-				fileList: []
+				imageUrl: {
+					p1: '',
+					p2: '',
+					p3: '',
+					p4: ''
+				},
+				file: {
+					p1: '',
+					p2: '',
+					p3: '',
+					p4: ''
+				}
 			}
 		},
+		watch: {
+			oneData(newV, oldV) {
+				this.file.p1 = newV.companyProofPic;
+				this.file.p2 = newV.legalCardFrontPic;
+				this.file.p3 = newV.legalCardBackPic;
+				this.file.p4 = newV.legalCardHandPic;
+				this.imageUrl.p1 = 'http://192.168.0.117:5480/vos/' + this.file.p1;
+				this.imageUrl.p2 = 'http://192.168.0.117:5480/vos/' + this.file.p2;
+				this.imageUrl.p3 = 'http://192.168.0.117:5480/vos/' + this.file.p3;
+				this.imageUrl.p4 = 'http://192.168.0.117:5480/vos/' + this.file.p4;
+			}
+		},
+		props: ['oneData', 'id'],
 		methods: {
 			next(step) {
 				this.$emit('next', step);
 			},
-			uploaded(res, files, fileList) {
-				this.imageUrl = 'http://192.168.0.154:5480/vos/' + res;
+			submit(bol) {
+				var url = bol ? '/vos/company/sendToCompanyAudit' : '/vos/company/startAndSave';
+				var data = {};
+				data.company = Object.assign({}, this.oneData);
+				data.company.companyProofPic = this.file.p1;
+				data.company.legalCardFrontPic = this.file.p2;
+				data.company.legalCardBackPic = this.file.p3;
+				data.company.legalCardHandPic = this.file.p4;
+				data.companyFlow = {
+					flowId: this.id || ''
+				};
+				this.$ajax.post(url, data).then(res => {
+					if (res.code == 200) {
+						this.$message.success('操作成功');
+						this.$emit('complete');
+					}
+				})
+			},
+			beforeAvatarUpload(file) {
+				const isLt10M = file.size / 1024 / 1024 < 10;
+				if (!isLt10M) {
+					this.$message.error('上传头像图片大小不能超过 10MB!');
+				}
+				return true;
+			},
+			uploaded1(res, files, fileList) {
+				if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {
+					this.file.p1 = res;
+					this.imageUrl.p1 = 'http://192.168.0.117:5480/vos/' + res;
+				}
 				// let file = files.raw;
 				// let param = new FormData(); //创建form对象
 				// param.append('file', file); //通过append向form对象添加数据
@@ -167,28 +213,25 @@
 				// 	console.log(response);
 				// })
 			},
-			handleRemove(file, fileList) {
-				console.log(file, fileList);
-			},
-			handlePictureCardPreview(file) {
-				this.dialogImageUrl = file.url;
-				this.dialogVisible = true;
-			},
-			handleAvatarSuccess(res, file) {
-				this.imageUrl = URL.createObjectURL(file.raw);
-			},
-			beforeAvatarUpload(file) {
-				const isJPG = file.type === 'image/jpeg';
-				const isLt2M = file.size / 1024 / 1024 < 2;
-
-				// if (!isJPG) {
-				// this.$message.error('上传头像图片只能是 JPG 格式!');
-				// }
-				if (!isLt2M) {
-					this.$message.error('上传头像图片大小不能超过 2MB!');
+			uploaded2(res, files, fileList) {
+				if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {
+					this.file.p2 = res;
+					this.imageUrl.p2 = 'http://192.168.0.117:5480/vos/' + res;
 				}
-				return true;
-			}
+			},
+			uploaded3(res, files, fileList) {
+				if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {
+					this.file.p3 = res;
+					this.imageUrl.p3 = 'http://192.168.0.117:5480/vos/' + res;
+				}
+			},
+			uploaded4(res, files, fileList) {
+				if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {
+					this.file.p4 = res;
+					this.imageUrl.p4 = 'http://192.168.0.117:5480/vos/' + res;
+				}
+			},
+
 		},
 
 	}

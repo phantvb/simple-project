@@ -11,32 +11,26 @@
 				<ul v-if="billType==0">
 					<li>
 						<span class="demonstration">400号码：</span>
-						<el-input v-model="form.number400" placeholder="请输入内容" size="mini">
-						</el-input>
+						<el-input v-model="form.number400" placeholder="请输入内容" size="mini"></el-input>
 					</li>
 					<li>
 						<span class="demonstration">企业名称：</span>
-						<el-input v-model="form.companyName" placeholder="请输入内容" size="mini">
-						</el-input>
+						<el-input v-model="form.companyName" placeholder="请输入内容" size="mini"></el-input>
 					</li>
 					<li>
 						<span class="demonstration">套餐：</span>
 						<el-select v-model="form.packageName" placeholder="请选择" size="mini">
-							<el-option v-for="item in packageOptions" :key="item.value" :label="item.label" :value="item.value">
-							</el-option>
+							<el-option v-for="item in packageOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
 						</el-select>
 					</li>
 				</ul>
 				<div class="block left">
 					<span class="demonstration" v-if="billType==0">月份：</span>
-					<el-date-picker style="margin-right:15px;" v-model="form.time" type="month" placeholder="请选择月份" size="mini" format="yyyy 年 MM 月" value-format="yyyy-MM" @change="fetchData()">
-					</el-date-picker>
+					<el-date-picker style="margin-right:15px;" v-if="billType==0" v-model="form.time" type="month" placeholder="请选择月份" size="mini" format="yyyy 年 MM 月" value-format="yyyy-MM" @change="fetchData()"></el-date-picker>
 					<span class="demonstration" v-if="billType==1">开始月份：</span>
-					<el-date-picker style="margin-right:15px;" v-model="monthTotalBillForm.timeS" type="month" placeholder="请选择月份" size="mini" format="yyyy 年 MM 月" value-format="yyyy-MM" @change="fetchData()">
-					</el-date-picker>
+					<el-date-picker style="margin-right:15px;" v-if="billType==1" v-model="monthTotalBillForm.timeS" type="month" placeholder="请选择月份" size="mini" format="yyyy 年 MM 月" value-format="yyyy-MM" @change="fetchData()"></el-date-picker>
 					<span class="demonstration" v-if="billType==1">结束月份：</span>
-					<el-date-picker style="margin-right:15px;" v-model="monthTotalBillForm.timeE" type="month" placeholder="请选择月份" size="mini" format="yyyy 年 MM 月" value-format="yyyy-MM" @change="fetchData()">
-					</el-date-picker>
+					<el-date-picker style="margin-right:15px;" v-if="billType==1" v-model="monthTotalBillForm.timeE" type="month" placeholder="请选择月份" size="mini" format="yyyy 年 MM 月" value-format="yyyy-MM" @change="fetchData()"></el-date-picker>
 					<el-button type="primary" size="mini" style="width:80px;" @click="fetchData()">搜索</el-button>
 					<el-button type="primary" plain size="mini" style="width:80px;" @click="reset">重置</el-button>
 				</div>
@@ -45,29 +39,18 @@
 				<el-button type="primary" plain size="mini">导出</el-button>
 			</section>
 			<el-table v-show="billType==0" :data="tableData" style="width: 100%;margin-bottom:15px;">
-				<el-table-column type="selection" width="55">
-				</el-table-column>
+				<el-table-column type="selection" width="55"></el-table-column>
 				<el-table-column prop="month" label="月份" min-width="80">
-					<template slot-scope="scope">
-						{{scope.row.year+'-'+scope.row.month}}
-					</template>
+					<template slot-scope="scope">{{scope.row.year+'-'+scope.row.month}}</template>
 				</el-table-column>
-				<el-table-column prop="companyName" label="企业名称" min-width="100">
-				</el-table-column>
-				<el-table-column prop="number400" label="400号码" min-width="100">
-				</el-table-column>
-				<el-table-column prop="packageName" label="套餐" min-width="80">
-				</el-table-column>
-				<el-table-column prop="feeUsed" label="套餐内计费" min-width="120">
-				</el-table-column>
-				<el-table-column prop="excessFee" label="超额计费" min-width="120">
-				</el-table-column>
-				<el-table-column prop="excessMinute" label="时长包计费" min-width="120">
-				</el-table-column>
-				<el-table-column prop="feeValueAdded" label="增值业务费用" min-width="150">
-				</el-table-column>
-				<el-table-column prop="totalFee" label="费用合计" min-width="80">
-				</el-table-column>
+				<el-table-column prop="companyName" label="企业名称" min-width="100"></el-table-column>
+				<el-table-column prop="number400" label="400号码" min-width="120"></el-table-column>
+				<el-table-column prop="packageName" label="套餐" min-width="150"></el-table-column>
+				<el-table-column prop="feeUsed" label="套餐内计费" min-width="100"></el-table-column>
+				<el-table-column prop="excessFee" label="超额计费" min-width="80"></el-table-column>
+				<el-table-column prop="excessMinute" label="时长包计费" min-width="80"></el-table-column>
+				<el-table-column prop="feeValueAdded" label="增值业务费用" min-width="100"></el-table-column>
+				<el-table-column prop="totalFee" label="费用合计" min-width="80"></el-table-column>
 				<el-table-column prop="name" label="操作" min-width="200">
 					<template slot-scope="scope">
 						<el-button size="mini" type="text" @click="showBillDetail(true,scope.row)">详情</el-button>
@@ -75,58 +58,52 @@
 				</el-table-column>
 			</el-table>
 			<el-table v-show="billType==1" :data="tableData" style="width: 100%;margin-bottom:15px;">
-				<el-table-column type="selection" width="55">
-				</el-table-column>
+				<el-table-column type="selection" width="55"></el-table-column>
 				<el-table-column prop="month" label="月份" min-width="80">
-					<template slot-scope="scope">
-						{{scope.row.year+'-'+scope.row.month}}
-					</template>
+					<template slot-scope="scope">{{scope.row.year+'-'+scope.row.month}}</template>
 				</el-table-column>
-				<el-table-column prop="usedTime" label="当月使用时长(秒)" min-width="100">
-				</el-table-column>
-				<el-table-column prop="usedMinutes" label="当月使用分钟数" min-width="100">
-				</el-table-column>
-				<el-table-column prop="inpackageFee" label="当月套餐计费(元)" min-width="120">
-				</el-table-column>
-				<el-table-column prop="excessFee" label="当月超额计费(元)" min-width="100">
-				</el-table-column>
-				<el-table-column prop="shouldReceive" label="当月应收合计(元)" min-width="120">
-				</el-table-column>
-				<el-table-column prop="lineCost" label="当月线路成本(元)" min-width="100">
-				</el-table-column>
-				<el-table-column prop="profit" label="当月利润(元)" min-width="100">
-				</el-table-column>
+				<el-table-column prop="usedTime" label="当月使用时长(秒)" min-width="100"></el-table-column>
+				<el-table-column prop="usedMinutes" label="当月使用分钟数" min-width="100"></el-table-column>
+				<el-table-column prop="inpackageFee" label="当月套餐计费(元)" min-width="120"></el-table-column>
+				<el-table-column prop="excessFee" label="当月超额计费(元)" min-width="100"></el-table-column>
+				<el-table-column prop="shouldReceive" label="当月应收合计(元)" min-width="120"></el-table-column>
+				<el-table-column prop="lineCost" label="当月线路成本(元)" min-width="100"></el-table-column>
+				<el-table-column prop="profit" label="当月利润(元)" min-width="100"></el-table-column>
 			</el-table>
-			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page.num" :page-sizes="$global.pageSize" :page-size="page.size" layout="total, sizes, prev, pager, next, jumper" :total="page.total">
-			</el-pagination>
+			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page.num" :page-sizes="$global.pageSize" :page-size="page.size" layout="total, sizes, prev, pager, next, jumper" :total="page.total"></el-pagination>
 		</el-tabs>
-		<billDetail :show="billDetail" @close="showBillDetail(false,{})" :data="billDetailData"></billDetail>
+		<billDetail :show="billDetail" @close="close" :data="billDetailData"></billDetail>
 	</div>
 </template>
 <style lang="scss" scoped>
-	@import './common.scss';
+	@import "./common.scss";
 </style>
 <script>
-	import billDetail from './component/billDetail.vue'
+	import billDetail from "./component/billDetail.vue";
 	export default {
-		name: 'billManage',
+		name: "billManage",
 		components: {
 			billDetail
 		},
 		data() {
 			return {
 				form: {
-					number400: '',
-					companyName: '',
-					packageName: '',
-					time: ''
+					number400: "",
+					companyName: "",
+					packageName: "",
+					time: ""
 				},
 				monthTotalBillForm: {
-					timeS: '',
-					timeE: ''
+					timeS: "",
+					timeE: ""
 				},
-				billDetailData: {},
-				active: 'self',
+				billDetailData: {
+					numberMonthBill: {},
+					ValueAddedList: [],
+					timePacketList: [],
+					packageInfo: {}
+				},
+				active: "self",
 				billType: 0,
 				loading: false,
 				billDetail: false,
@@ -137,6 +114,11 @@
 					size: 10,
 					total: 1
 				}
+			};
+		},
+		watch: {
+			active(n, o) {
+				this.fetchData();
 			}
 		},
 		mounted() {
@@ -147,15 +129,20 @@
 				this.billType = type;
 				this.fetchData();
 			},
+			close() {
+				this.showBillDetail(false, {});
+				this.fetchData();
+			},
 			showBillDetail(bol, data) {
-				console.log(data);
-				this.billDetail = bol;
 				if (data.id) {
-					this.$ajax.get('/vos/monthBill/getDetail/' + data.id).then(res => {
+					this.$ajax.get("/vos/monthBill/getDetail/" + data.id).then(res => {
 						if (res.code == 200) {
 							this.billDetailData = res.data;
+							this.billDetail = bol;
 						}
-					})
+					});
+				} else {
+					this.billDetail = bol;
 				}
 			},
 			handleSizeChange() {
@@ -166,20 +153,23 @@
 			},
 			reset() {
 				this.$clear(this.form);
+				this.$clear(this.monthTotalBillForm);
+				this.fetchData();
 			},
 			fetchData(pageNum) {
 				this.page.num = pageNum || 1;
 				this.loading = true;
 				var data = {};
+				data.page = {
+					pageNo: this.page.num,
+					pageSize: this.page.size
+				};
+				data.channel = this.active;
 				if (this.billType == 0) {
-					data.page = {
-						pageNo: this.page.num,
-						pageSize: this.page.size
-					};
 					data.numberMonthBill = Object.assign({}, this.form);
 					delete data.numberMonthBill["time"];
-					data.numberMonthBill.year = this.form.time.split('-')[0] || '';
-					data.numberMonthBill.month = this.form.time.split('-')[1] || '';
+					data.numberMonthBill.year = this.form.time.split("-")[0] || "";
+					data.numberMonthBill.month = this.form.time.split("-")[1] || "";
 					this.$ajax.post("/vos/monthBill/search", data).then(res => {
 						if (res.code == 200) {
 							this.loading = false;
@@ -188,14 +178,10 @@
 						}
 					});
 				} else {
-					data.page = {
-						pageNo: this.page.num,
-						pageSize: this.page.size
-					};
-					data.yearStart = this.monthTotalBillForm.timeS.split('-')[0] || '';
-					data.monthStart = this.monthTotalBillForm.timeS.split('-')[1] || '';
-					data.yearEnd = this.monthTotalBillForm.timeE.split('-')[0] || '';
-					data.monthEnd = this.monthTotalBillForm.timeE.split('-')[1] || '';
+					data.yearStart = this.monthTotalBillForm.timeS.split("-")[0] || "";
+					data.monthStart = this.monthTotalBillForm.timeS.split("-")[1] || "";
+					data.yearEnd = this.monthTotalBillForm.timeE.split("-")[0] || "";
+					data.monthEnd = this.monthTotalBillForm.timeE.split("-")[1] || "";
 					this.$ajax.post("/vos/monthTotalBill/search", data).then(res => {
 						if (res.code == 200) {
 							this.loading = false;
@@ -206,5 +192,5 @@
 				}
 			}
 		}
-	}
+	};
 </script>

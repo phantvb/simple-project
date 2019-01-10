@@ -32,8 +32,7 @@
 					<li class="l3">
 						<el-form-item label="行业类型" prop="industryType">
 							<el-select v-model="form.industryType" placeholder="请选择" size="mini">
-								<el-option label="区域一" value="shanghai"></el-option>
-								<el-option label="区域二" value="beijing"></el-option>
+								<el-option v-for="item in industryTypeOptions" :key="item.id" :label="item.dicValue" :value="item.id"></el-option>
 							</el-select>
 						</el-form-item>
 					</li>
@@ -41,18 +40,18 @@
 				<el-form-item label="注册地址" prop="registAddress">
 					<ul>
 						<li class="l3">
-							<el-select v-model="form.registProvince" filterable placeholder="请选择省份" size="mini" @change="getCity" value-key="id">
-								<el-option v-for="item in ProvinceOptions" :key="item.id" :label="item.province" :value="item"></el-option>
+							<el-select v-model="form.registProvince" filterable placeholder="请选择省份" size="mini" @change="clear('regist',0)">
+								<el-option v-for="item in ProvinceOptions" :key="item.id" :label="item.province" :value="item.province"></el-option>
 							</el-select>
 						</li>
 						<li class="l3">
-							<el-select v-model="form.registCity" filterable placeholder="请选择城市" size="mini" @change="getArea" value-key="id">
-								<el-option v-for="item in registCityOptions" :key="item.id" :label="item.city" :value="item"></el-option>
+							<el-select v-model="form.registCity" filterable placeholder="请选择城市" size="mini" @focus="getCity" @change="clear('regist',1)">
+								<el-option v-for="item in registCityOptions" :key="item.id" :label="item.city" :value="item.city"></el-option>
 							</el-select>
 						</li>
 						<li class="l3">
-							<el-select v-model="form.registArea" filterable placeholder="请选择区" size="mini" value-key="id">
-								<el-option v-for="item in registAreaOptions" :key="item.id" :label="item.area" :value="item"></el-option>
+							<el-select v-model="form.registArea" filterable placeholder="请选择区" size="mini" @focus="getArea">
+								<el-option v-for="item in registAreaOptions" :key="item.id" :label="item.area" :value="item.area"></el-option>
 							</el-select>
 						</li>
 					</ul>
@@ -61,18 +60,18 @@
 				<el-form-item label="办公地址" prop="officeAddress">
 					<ul>
 						<li class="l3">
-							<el-select v-model="form.officeProvince" filterable placeholder="请选择省份" size="mini" @change="getOfficeCity" value-key="id">
-								<el-option v-for="item in ProvinceOptions" :key="item.id" :label="item.province" :value="item"></el-option>
+							<el-select v-model="form.officeProvince" filterable placeholder="请选择省份" size="mini" @change="clear('office',0)">
+								<el-option v-for="item in ProvinceOptions" :key="item.id" :label="item.province" :value="item.province"></el-option>
 							</el-select>
 						</li>
 						<li class="l3">
-							<el-select v-model="form.officeCity" filterable placeholder="请选择城市" size="mini" @change="getOfficeArea" value-key="id">
-								<el-option v-for="item in officeCityOptions" :key="item.id" :label="item.city" :value="item"></el-option>
+							<el-select v-model="form.officeCity" filterable placeholder="请选择城市" size="mini" @focus="getOfficeCity" @change="clear('office',1)">
+								<el-option v-for="item in officeCityOptions" :key="item.id" :label="item.city" :value="item.city"></el-option>
 							</el-select>
 						</li>
 						<li class="l3">
-							<el-select v-model="form.officeArea" filterable placeholder="请选择区" size="mini" value-key="id">
-								<el-option v-for="item in officeAreaOptions" :key="item.id" :label="item.area" :value="item"></el-option>
+							<el-select v-model="form.officeArea" filterable placeholder="请选择区" size="mini" @focus="getOfficeArea">
+								<el-option v-for="item in officeAreaOptions" :key="item.id" :label="item.area" :value="item.area"></el-option>
 							</el-select>
 						</li>
 					</ul>
@@ -138,13 +137,19 @@
 					companyCharacter: '',
 					companyRank: '',
 					industryType: '',
-					registProvince: {},
-					registCity: {},
-					registArea: {},
+					registProvince: '',
+					registCity: '',
+					registArea: '',
+					registProvinceId: '',
+					registCityId: '',
+					registAreaId: '',
 					registAddress: '',
-					officeCity: {},
-					officeProvince: {},
-					officeArea: {},
+					officeCity: '',
+					officeProvince: '',
+					officeAreaId: '',
+					officeCityId: '',
+					officeProvinceId: '',
+					officeArea: '',
 					officeAddress: '',
 					phone: '',
 					legalPerson: '',
@@ -220,6 +225,7 @@
 				registAreaOptions: [],
 				officeCityOptions: [],
 				officeAreaOptions: [],
+				industryTypeOptions: [],
 				legalCardOptions: [{
 					value: 'id_card',
 					label: '身份证'
@@ -233,6 +239,17 @@
 				rules: {}
 			}
 		},
+		props: ['oldData'],
+		watch: {
+			oldData(newV, oldV) {
+				for (let key in newV) {
+					if (key in this.form) {
+						this.form[key] = newV[key];
+					}
+				};
+				this.form.cardDate = [newV.cardStartDate || '', newV.cardEndDate || ''];
+			}
+		},
 		created() {
 			for (let key in this.form) {
 				this.$set(this.rules, key, [{ required: true, message: '请输入正确信息', trigger: 'blur' }]);
@@ -244,54 +261,94 @@
 					this.ProvinceOptions = res.data;
 				}
 			});
+			this.$ajax.post('/vos/dic/getDicsByType', { dicType: 'industry_category', status: '' }).then(res => {
+				if (res.code == 200) {
+					this.industryTypeOptions = res.data.dicList;
+				}
+			});
 		},
 		methods: {
-			next() {
-				// var data = {};
-				// data = Object.assign(data, this.form);
-				// data.registProvince = this.form.registProvince.province;
-				// data.registProvinceId = this.form.registProvince.provinceId;
-				// data.registCity = this.form.registCity.city;
-				// data.registCityId = this.form.registCity.cityId;
-				// data.registArea = this.form.registArea.area;
-				// data.registaAreaId = this.form.registArea.areaId;
-				// data.officeProvince = this.form.officeProvince.province;
-				// data.officeProvinceId = this.form.officeProvince.provinceId;
-				// data.officeCity = this.form.officeCity.city;
-				// data.officeCityId = this.form.officeCity.cityId;
-				// data.officeArea = this.form.officeArea.area;
-				// data.officeAreaId = this.form.officeArea.areaId;
-				// data.cardStartDate = this.form.cardDate[0];
-				// data.cardEndDate = this.form.cardDate[1];
-				// this.$ajax.post('/vos/company/sendToCompanyAudit', { company: this.$format(data) }).then(res => {
-
-				// })
-				this.$emit('next', 2);
+			clear(type, num) {
+				if (type == 'office') {
+					this.form.officeArea = '';
+					if (num == 0) {
+						this.form.officeCity = '';
+					}
+				} else {
+					this.form.registArea = '';
+					if (num == 0) {
+						this.form.registCity = '';
+					}
+				}
 			},
-			getCity(val) {
-				this.$ajax.get('/vos/address/getCitiesByProvinceId?provinceId=' + val.provinceId).then(res => {
+			next() {
+				var data = {};
+				data = Object.assign(data, this.form);
+				data.registProvinceId = this.form.registProvinceId = this.checkValue(data.registProvince, this.ProvinceOptions, this.form.registProvinceId);
+				data.registCityId = this.form.registCityId = this.checkValue(data.registCity, this.registCityOptions, this.form.registCityId);
+				data.registAreaId = this.form.registAreaId = this.checkValue(data.registArea, this.registAreaOptions, this.form.registAreaId);
+				data.officeProvinceId = this.form.officeProvinceId = this.checkValue(data.officeProvince, this.ProvinceOptions, this.form.officeProvinceId);
+				data.officeCityId = this.form.officeCityId = this.checkValue(data.officeCity, this.officeCityOptions, this.form.officeCityId);
+				data.officeAreaId = this.form.officeAreaId = this.checkValue(data.officeArea, this.officeAreaOptions, this.form.officeAreaId);
+				data.cardStartDate = this.form.cardDate[0];
+				data.cardEndDate = this.form.cardDate[1];
+				delete data.cardDate;
+				this.$refs.form.validate((valid) => {
+					if (valid) {
+						this.$emit('next', 2, data);
+					} else {
+						return false;
+					}
+				});
+				//this.$emit('next', 2, data);
+			},
+			checkValue(value, options, oldId) {
+				if (options.length > 0) {
+					for (let item of options) {
+						let v = item.province || item.city || item.area;
+						if (v == value) {
+							let id = item.areaId || item.cityId || item.provinceId;
+							return id;
+						}
+					};
+				} else {
+					return oldId;
+				}
+			},
+			getCity(e) {
+				console.log(e);
+				var id = this.checkValue(this.form.registProvince, this.ProvinceOptions);
+				this.$ajax.get('/vos/address/getCitiesByProvinceId?provinceId=' + id).then(res => {
 					if (res.code == 200) {
+
 						this.registCityOptions = res.data;
 					}
 				});
 			},
 			getArea(val) {
-				this.$ajax.get('/vos/address/getAreasByCityId?cityId=' + val.cityId).then(res => {
+				var id = this.checkValue(this.form.registCity, this.registCityOptions);
+				this.$ajax.get('/vos/address/getAreasByCityId?cityId=' + id).then(res => {
 					if (res.code == 200) {
+						this.form.registArea = '';
 						this.registAreaOptions = res.data;
 					}
 				});
 			},
 			getOfficeCity(val) {
-				this.$ajax.get('/vos/address/getCitiesByProvinceId?provinceId=' + val.provinceId).then(res => {
+				var id = this.checkValue(this.form.officeProvince, this.ProvinceOptions);
+				this.$ajax.get('/vos/address/getCitiesByProvinceId?provinceId=' + id).then(res => {
 					if (res.code == 200) {
+						this.form.officeCity = '';
+						this.form.officeArea = '';
 						this.officeCityOptions = res.data;
 					}
 				});
 			},
 			getOfficeArea(val) {
-				this.$ajax.get('/vos/address/getAreasByCityId?cityId=' + val.cityId).then(res => {
+				var id = this.checkValue(this.form.officeCity, this.officeCityOptions);
+				this.$ajax.get('/vos/address/getAreasByCityId?cityId=' + id).then(res => {
 					if (res.code == 200) {
+						this.form.officeArea = '';
 						this.officeAreaOptions = res.data;
 					}
 				});

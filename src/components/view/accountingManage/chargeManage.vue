@@ -1,5 +1,5 @@
 <template>
-	<div id="chargeManage" class="managerFormTitle">
+	<div id="chargeManage" class="managerFormTitle" v-loading="loading">
 		<el-tabs v-model="active">
 			<el-tab-pane label="自助直销" name="self"></el-tab-pane>
 			<el-tab-pane label="渠道" name="channel"></el-tab-pane>
@@ -20,8 +20,8 @@
 					<span class="demonstration">充值时间：</span>
 					<el-date-picker style="margin-right:15px;" v-model="form.time" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" size="mini" format="yyyy 年 MM 月 dd 日" value-format="yyyy-MM-dd 00:00:00" @change="fetchData()">
 					</el-date-picker>
-					<el-button type="primary" size="mini" style="width:80px;">搜索</el-button>
-					<el-button type="primary" plain size="mini" style="width:80px;">重置</el-button>
+					<el-button type="primary" size="mini" style="width:80px;" @click="fetchData()">搜索</el-button>
+					<el-button type="primary" plain size="mini" style="width:80px;" @click="reset">重置</el-button>
 				</div>
 			</div>
 			<section class="right block lineTop">
@@ -76,7 +76,13 @@
 					num: 1,
 					size: 10,
 					total: 1
-				}
+				},
+				loading: false
+			}
+		},
+		watch: {
+			active(n, o) {
+				this.fetchData();
 			}
 		},
 		mounted() {
@@ -91,6 +97,10 @@
 			},
 			handleCurrentChange(val) {
 				this.fetchData(val);
+			},
+			reset() {
+				this.$clear(this.form);
+				this.fetchData();
 			},
 			fetchData(pageNum) {
 				this.loading = true;

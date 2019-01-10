@@ -20,9 +20,9 @@ Vue.prototype.$clear = function (obj) {
 			} else {
 				this.$clear(obj[key]);
 			}
-		} else if (typeof (obj[key] == 'string')) {
+		} else if (typeof (obj[key]) == 'string') {
 			obj[key] = '';
-		} else if (typeof (obj[key] == 'number')) {
+		} else if (typeof (obj[key]) == 'number') {
 			obj[key] = 0;
 		}
 	}

@@ -4,7 +4,7 @@
 			企业管理
 		</header>
 		<el-tabs v-model="active">
-			<el-tab-pane label="全部" name=""></el-tab-pane>
+			<el-tab-pane label="全部" name="all"></el-tab-pane>
 			<el-tab-pane label="企业审核" name="Company_Auditing"></el-tab-pane>
 			<el-tab-pane label="变更审核" name="Modify_Auditing"></el-tab-pane>
 			<el-tab-pane label="注销审核" name="Canceling_Auditing"></el-tab-pane>
@@ -84,7 +84,7 @@
 				<el-table-column prop="name" label="操作" min-width="200">
 					<template slot-scope="scope">
 						<el-button size="mini" type="text">详情</el-button>
-						<el-button size="mini" type="text">编辑</el-button>
+						<el-button size="mini" type="text" @click="addCompany(true,scope.row.flowId)">编辑</el-button>
 						<el-button size="mini" type="text">送审</el-button>
 						<el-button size="mini" type="text">撤回</el-button>
 						<el-button size="mini" type="text">变更</el-button>
@@ -97,7 +97,7 @@
 			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page.num" :page-sizes="$global.pageSize" :page-size="page.size" layout="total, sizes, prev, pager, next, jumper" :total="page.total">
 			</el-pagination>
 		</el-tabs>
-		<company :show="addCompanys" @close="addCompany(false)"></company>
+		<company :show="addCompanys" @close="addCompany(false)" :flowId="flowId"></company>
 	</div>
 </template>
 <style lang="scss" scoped>
@@ -112,9 +112,10 @@
 		},
 		data() {
 			return {
-				active: '',
+				active: 'all',
 				addCompanys: false,
 				baseData: {},
+				flowId: '',
 				form: {
 					name: '',
 					person: '',
@@ -157,7 +158,9 @@
 			this.fetchData();
 		},
 		methods: {
-			addCompany(bol) {
+			addCompany(bol, id) {
+				console.log(id)
+				this.flowId = id || '';
 				this.addCompanys = bol;
 			},
 			handleSizeChange() {
