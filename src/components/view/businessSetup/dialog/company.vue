@@ -6,8 +6,8 @@
 				<el-step title="上传企业资料"></el-step>
 				<el-step title="送审"></el-step>
 			</el-steps>
-			<baseMes v-if="active==1" @next="next"></baseMes>
-			<baseData v-if="active==2" @next="next"></baseData>
+			<baseMes v-show="active==1" @next="next" :oldData="oldData"></baseMes>
+			<baseData v-show="active==2" @next="next" :oneData="oneData" :id="flowId" @complete='complete'></baseData>
 		</el-dialog>
 	</div>
 </template>
@@ -19,7 +19,7 @@
 	import baseData from './step_2.vue';
 	export default {
 		name: 'company',
-		props: ['show'],
+		props: ['show', 'flowId'],
 		components: {
 			baseMes,
 			baseData
@@ -27,20 +27,38 @@
 		watch: {
 			show(newV, oldV) {
 				this.dialogVisible = newV;
+				this.active = 1;
+			},
+			flowId(n, o) {
+				if (n) {
+					this.$ajax.get('/vos/company/getCacheData?flowId=' + this.flowId).then(res => {
+						if (res.code == 200) {
+							this.oldData = res.data.company;
+						}
+					})
+				}
 			}
 		},
 		data() {
 			return {
 				active: 1,
 				dialogVisible: false,
+				oneData: {},
+				oldData: {}
 			}
 		},
 		methods: {
+			complete() {
+				this.dialogVisible = false;
+				this.close();
+			},
 			close() {
 				this.$emit('close');
 			},
-			next(step) {
-				console.log(step);
+			next(step, data) {
+				if (step == 2) {
+					this.oneData = data;
+				}
 				this.active = step;
 			}
 		}

@@ -93,13 +93,16 @@
 }
 
 /*账号管理*/
+.numForm{
+	margin:20px;
+}
 .numForm .el-form .el-form-item {
 	width: 30%;
 	float: left;
 }
 
 .numForm .el-form .el-form-item:last-child {
-	width: 52%;
+	width: 62%;
 	padding: 20px 0;
 	margin-bottom: 0;
 }
@@ -114,8 +117,9 @@
 	margin-left: 20px !important;
 }
 
-.el-pagination {
+.accountTable .el-pagination {
 	float: right;
+	margin-top:20px;
 }
 
 /*全局弹窗头部背景*/
@@ -199,53 +203,57 @@
 	float: left;
 }
 
-.acceptMsg .firmName,
-.objCodeMsg .firmName {
-	width: 80%;
+.acceptMsg .firmName{
+	width: 33% !important;
 }
-
-.acceptMsg .firmName {
-	width: 80%;
+.objCodeMsg .firmName{
+	width:90%;
 }
-
+.acceptMsg .indate{
+	width:60% !important;
+}
+.acceptMsg .indate .el-form-item__content{
+	margin-left:0 !important;
+	float:left;
+}
+.acceptMsg .stepTwoFirmName {
+	width: 50%;
+	float:left;
+}
 .acceptMsg .identity {
 	width: 80%;
 }
-
 .acceptMsg .identity .el-select {
 	width: 20%;
 	float: left;
 	margin-right: 1%;
 }
-
 .objCodeMsg .identity .el-select {
 	width: 30%;
 	float: left;
 	margin-right: 1%;
 }
-
+.legalInfo .identity .el-select{
+	width:30%;
+}
 .acceptMsg .identity .el-input {
-	width: 79%;
+	width: 68%;
 	float: left;
 }
 
 .acceptMsg .identity .el-select .el-input {
 	width: 100%;
 }
-
 .managerFormTitle .search .el-input {
 	width: auto;
 }
-
 .objCodeSearch .el-form-item {
 	margin-bottom: 0 !important;
 }
-
 .objCodeDialog .el-dialog {
 	width: 50% !important;
 	overflow: hidden;
 }
-
 .objCodeDialog .el-table .cell,
 .el-table th div,
 .el-table--border td:first-child .cell,
@@ -261,7 +269,73 @@
 .objCodeDialog .materials .el-form-item__content {
 	line-height: 23px;
 }
+.threeSelect .el-form-item,.legalInfo .el-form-item{
+	width:20%;
+	float:left;
+}
+.legalInfo .el-form-item{
+	width:76%;
+	margin-right:10px;
+}
+.threeSelect .el-form-item .el-select{
+	width:100%;
+}
+.regUrl .onlyInput ,.businessAddress .onlyInput{
+	margin-left:140px;
+	width:44%;
+	margin-bottom:22px;
+}
+.handleInfo .el-form-item{
+	width:33%;
+	margin-right:20px;
+	float:left;
+}
+.handleInfo .identity{
+	width:66%;
+}
+.handleInfo .identity .el-select{
+	float: left;
+	width: 30%;
+}
+.handleInfo .identity .handleIdentityNo{
+	float: left;
+	width: 67%;
+	margin-left: 10px;
+}
+.voiceForm .voiceType .el-select,.voiceForm .el-button{
+	float:left;
+}
+.voiceForm .el-button{
+	margin-left:20px;
+}
+.voiceForm .voiceType .el-form-item__content,.voiceForm .type .el-input{
+	line-height: 0 !important;
+}
+.voiceForm .voiceType .el-input{
+	width:50%;
+	float:left;
+}
+.voiceForm .type .el-select{
+	float:left;
+}
+.voiceForm .objCodeMsg .input .el-form-item__content{
+	float:left;
+	width:50%;
+	margin-left:0 !important;
+}
+.voiceForm .el-textarea__inner{
+	width:50%;
+	min-height: 90px !important;
+	margin-left:90px;
+	overflow: auto;
+}
 
+.objCodeBox .addObjCode .el-input{
+	width:35%;
+}
+.objCodeBox .addObjCode .el-button{
+	/*width:45px;*/
+}
 /*自定义导航*/
 #customNavigation .el-tree-node .el-tree-node__content {
 	margin-bottom: 5px;
@@ -276,4 +350,13 @@
 
 #numSetAction .el-card {
 	background-color: #ecf5ff;
+}
+.addNumform .el-input{
+	width:50%;
+}
+.addNumform .el-tabs--border-card{
+	border:1px solid #2596EF;
+}
+.busMaterForm .el-form-item .el-form-item__content{
+	text-align: left;
 }

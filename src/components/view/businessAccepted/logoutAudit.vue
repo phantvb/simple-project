@@ -110,10 +110,10 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
       :current-page="currentPage"
-      :page-sizes="[100, 200, 300, 400]"
+      :page-sizes="[10, 20, 50, 100]"
       :page-size="100"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="400">
+      :total="pageObj.total">
     </el-pagination>
   </div>
 </template>
@@ -169,17 +169,13 @@
         statusOptions: [
           {
             value: '1',
-            label: '等待审核'
+            label: '变更审核'
           }, {
             value: '2',
-            label: '待审核'
+            label: '变更审核驳回'
           }, {
             value: '3',
-            label: '审核通过'
-          },
-          {
-            value: '4',
-            label: '被驳回'
+            label: '受理终止'
           }
         ],
         identityTypeList:[   //证件类型
@@ -195,6 +191,11 @@
           }
         ],
         accountStatus:'',
+          pageObj:{
+              total:0,
+              page:1,
+              pageSize:10,
+          },
         currentPage: 4,   //分页
       };
     },

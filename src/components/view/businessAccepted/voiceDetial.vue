@@ -1,5 +1,5 @@
 <template>
-    <div id="objCodeDetail">
+    <div id="voiceDetial">
         <div id="base">
             <header class="left">
                 业务受理> 400业务> 目的码审核详情
@@ -19,6 +19,7 @@
                     <p class="fmini">证件编号： </p>
                     <p class="fmini"><span>企业性质：</span><span>企业等级：</span><span>行业类型：</span></p>
                     <p class="fmini">注册地址：</p>
+                    <p class="fmini">办公地址：</p>
                     <p class="fmini">企业电话：</p>
                     <div>
                         <div style="float:left;">
@@ -35,45 +36,30 @@
             <section>
                 <div class="detailMsg">
                     <p>
-                        目的码审核信息
+                        语音文件信息
                     </p>
                 </div>
                 <div class="block left">
-                    <p class="fmini">使用用途：</p>
-                    <p class="fmini">目的码证明材料：</p>
+                    <p class="fmini">400号码：</p>
+                    <p class="fmini">语音类型：</p>
+                    <p class="fmini">语音名称：</p>
                     <div>
                         <div style="float:left;">
-                            <span class="fmini">目的码：</span>
+                            <span class="fmini">语音文件：</span>
                         </div>
                         <ul>
                             <li class="l2">
-                                <img class="examplew" src="../../../assets/example_1.png" alt="">
+                                <div>
+                                    <audio controls>
+                                        <source src="horse.ogg" type="audio/ogg">
+                                        <source src="horse.mp3" type="audio/mpeg">
+                                        您的浏览器不支持 audio 元素。
+                                    </audio>
+                                </div>
                             </li>
                         </ul>
                     </div>
-                    <div>
-                        <div style="float:left;">
-                            <span class="fmini">目的码：</span>
-                        </div>
-                        <ul>
-                            <li class="l2">
-                                <el-table :data="objCodeTable"
-                                          border
-                                          style="width: 100%">
-
-                                    <el-table-column
-                                            prop="number"
-                                            label="400号码">
-                                    </el-table-column>
-
-                                    <el-table-column
-                                            prop="objCode"
-                                            label='目的码 (填入目的码，多个请用","隔开)'>
-                                    </el-table-column>
-                                </el-table>
-                            </li>
-                        </ul>
-                    </div>
+                    <p class="fmini">是否制作计费：</p>
                     <div>
                     </div>
                 </div>
@@ -104,7 +90,7 @@
 </template>
 <script>
     export default {
-        name: 'objCodeDetail',
+        name: 'voiceDetial',
         data() {
             return {
                 objCodeTable: [{

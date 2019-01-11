@@ -33,12 +33,11 @@
 				this.listenMusic();
 				this.timer = setInterval(this.listenMusic, 1000)
 			});
-			eventBus.$on('music_play', (currentName) => {
-				if (!_this.$refs[_this.name]) { return } else if (_this.$refs[_this.name] && _this.name != currentName) {
-					_this.$refs[_this.name].pause()
-				}
-			});
-			console.log('change');
+			// eventBus.$on('music_play', (currentName) => {
+			// 	if (!_this.$refs[_this.name]) { return } else if (_this.$refs[_this.name] && _this.name != currentName) {
+			// 		_this.$refs[_this.name].pause()
+			// 	}
+			// });
 			this.cWidth = this.$refs.content.clientWidth;
 		},
 		props: ['name', 'music_url', 'size'],
@@ -58,10 +57,12 @@
 			play() {
 				if (this.$refs[this.name].paused) {
 					this.$refs[this.name].play();
-					eventBus.$emit('music_play', this.name);
+					//eventBus.$emit('music_play', this.name);
 					this.timer = setInterval(this.listenMusic, 1000)
-				} else { this.$refs[this.name].pause();
-					clearInterval(this.timer); }
+				} else {
+					this.$refs[this.name].pause();
+					clearInterval(this.timer);
+				}
 				this.music.isPlay = !this.$refs[this.name].paused
 				this.$nextTick(() => { document.getElementById('play').blur() })
 			},

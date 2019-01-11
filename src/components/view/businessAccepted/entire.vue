@@ -41,7 +41,7 @@
         </div>
         <div class="accountSelect">
           <span style="font-size:12px">状态:</span>
-          <el-select v-model="accountStatus" placeholder="请选择" size="mini">
+          <el-select v-model="accountStatus" placeholder="请选择" size="mini" @change="statusChange">
             <el-option
               v-for="item in statusOptions"
               :key="item.value"
@@ -62,18 +62,18 @@
         </el-table-column>
 
         <el-table-column
-          prop="firmName"
+          prop="business.companyName"
           label="企业名称"
           width="300">
         </el-table-column>
 
         <el-table-column
-          prop="fourPhone"
+          prop="business.number400"
           label="400电话">
         </el-table-column>
 
         <el-table-column
-          prop="date"
+          prop="createTime"
           label="日期">
         </el-table-column>
 
@@ -83,7 +83,6 @@
         </el-table-column>
 
         <el-table-column
-          prop="status"
           label="操作">
           <template slot-scope="scope">
             <el-button size="mini" type="text">详情</el-button>
@@ -106,10 +105,10 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
       :current-page="currentPage"
-      :page-sizes="[100, 200, 300, 400]"
-      :page-size="100"
+      :page-sizes="[10, 20, 50, 100]"
+      :page-size="10"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="400">
+      :total="pageObj.total">
     </el-pagination>
   </div>
 </template>
@@ -119,57 +118,58 @@
     name: 'entire',
     data() {
       return {
+
         form:{
           firmName:'',
           phoneNum:'',
           time:'',
         },
-        tableData: [{
-          type: '业务受理',
-          firmName: '杭州顺网科技股份有限公司',
-          fourPhone: '5876552',
-          date:'2018-11-28',
-          status:'等待送核'
-        }, {
-          type: '业务受理',
-          firmName: '杭州顺网科技股份有限公司',
-          fourPhone: '5876552',
-          date:'2018-11-28',
-          status:'等待送核'
-        }, {
-          type: '业务受理',
-          firmName: '杭州顺网科技股份有限公司',
-          fourPhone: '5876552',
-          date:'2018-11-28',
-          status:'等待送核'
-        }, {
-          type: '业务受理',
-          firmName: '杭州顺网科技股份有限公司',
-          fourPhone: '5876552',
-          date:'2018-11-28',
-          status:'等待送核'
-        }],
+        tableData: [],
         statusOptions: [
-          {
-            value: '1',
-            label: '等待审核'
-          }, {
-            value: '2',
-            label: '待审核'
-          }, {
-            value: '3',
-            label: '审核通过'
-          },
-          {
-            value: '4',
-            label: '被驳回'
-          }
+            {
+                value: 'Wait_To_Audit',
+                label: '等待送审'
+            },{
+                value: 'Business_Auditing',
+                label: '审核中'
+            },{
+                value: 'Audit_Success',
+                label: '审核通过'
+            },
+            {
+                value: 'Modify_Auditing',
+                label: '变更审核中'
+            },
+            {
+                value: 'Modify_Rejected',
+                label: '变更审核驳回'
+            },
+            {
+                value: 'Canceling_Auditing',
+                label: '注销审核'
+            },
+            {
+                value: 'Cancelled',
+                label: '已注销'
+            },
+            {
+                value: 'Terminate_Flow',
+                label: '受理终止'
+            },
         ],
+          pageObj:{
+              total:0,
+              page:1,
+              pageSize:10,
+          },
         currentPage: 4,   //分页
         accountStatus:'',
       };
     },
     components: {},
+    created(){
+        this.entireLists();
+      },
     methods: {
       handleSizeChange(val) {
         console.log(`每页 ${val} 条`);
@@ -177,6 +177,64 @@
       handleCurrentChange(val) {
         console.log(`当前页: ${val}`);
       },
+        // 全部表格
+        entireLists(){
+            // console.log(this.form.time[0]);
+            // console.log(this.form.time[1]);
+            let dateStart = new Date(this.form.time[0]);
+            let dateEnd = new Date(this.form.time[1]);
+            let dateStart_value=dateStart.getFullYear() + '-' + (dateStart.getMonth() + 1) + '-' + dateStart.getDate();
+            let dateEnd_value=dateEnd.getFullYear() + '-' + (dateEnd.getMonth() + 1) + '-' + dateEnd.getDate();
+            // console.log(dateStart_value);
+            // console.log(dateEnd_value);
+            this.$ajax.post('/vos/business/getBusinessFlowList',{
+                "type":"",
+                "dateStart":this.form.time[0]==undefined?'':dateStart_value,
+                "dateEnd":this.form.time[1]==undefined?'':dateEnd_value,
+                "companyName":this.form.firmName,
+                "status":this.accountStatus,
+                "number400":this.form.phoneNum,
+                "page":{
+                    "pageNo":this.pageObj.page,
+                    "pageSize":this.pageObj.pageSize,
+                }
+            }).then((res)=>{
+                console.log(res.data.businessFlows);
+                this.tableData = res.data.businessFlows;
+                this.pageObj.total = res.data.totalCount;
+                this.tableData.map((item)=>{
+                    if(item.status=='Wait_To_Audit'){
+                        item.status='等待送审'
+                    }else if(item.status=='Audit_Success'){
+                        item.status='审核通过'
+                    }else if(item.status=='Business_Auditing'){
+                        item.status='审核中'
+                    }else if(item.status=='Modify_Auditing'){
+                        item.status='变更审核中'
+                    }else if(item.status=='Modify_Rejected'){
+                        item.status='变更审核驳回'
+                    }else if(item.status=='Canceling_Auditing'){
+                        item.status='注销审核'
+                    }else if(item.status=='Cancelled'){
+                        item.status='已注销'
+                    }else if(item.status=='Terminate_Flow'){
+                        item.status='受理终止'
+                    }
+
+                    if(item.type=='Voice'){
+                        item.type='语音'
+                    }else if(item.type=='Business'){
+                        item.type='业务'
+                    }else if(item.type=='Destnum'){
+                        item.type='目的码'
+                    }
+                })
+            })
+        },
+        // 状态改变
+        statusChange(){
+          this.entireLists();
+        }
     },
     computed: {
     }

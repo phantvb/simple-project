@@ -3,10 +3,10 @@
     <!--添加用户弹窗-->
     <div class="addUserDialog">
       <el-dialog
-        title="新增用户"
-        :visible.sync="dialogVisible"
-        width="50%"
-        :before-close="handleClose">
+              title="新增用户"
+              :visible.sync="dialogVisible"
+              width="50%"
+              :before-close="handleClose">
         <div>
           <el-form ref="addTopForm" :model="addTopForm" label-width="100px">
             <div class="accountMessage">
@@ -77,7 +77,6 @@
       </el-dialog>
     </div>
 
-
     <!--搜索表单-->
     <div class="numForm">
       <el-form ref="form" :model="form" label-width="100px">
@@ -99,6 +98,7 @@
             <el-button type="primary" size="mini">全部</el-button>
             <el-button size="mini">运营人员</el-button>
             <el-button size="mini">省级管理员</el-button>
+            <el-button size="mini">地市管理员</el-button>
             <el-button size="mini">代理/直销渠道</el-button>
             <el-button size="mini">前台用户</el-button>
           </el-form-item>
@@ -184,19 +184,18 @@
             <el-button size="mini" type="text">删除</el-button>
           </template>
         </el-table-column>
-
       </el-table>
+      <!--分页-->
+      <el-pagination
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+              :current-page="currentPage"
+              :page-sizes="[100, 200, 300, 400]"
+              :page-size="100"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="400">
+      </el-pagination>
     </div>
-    <!--分页-->
-    <el-pagination
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :current-page="currentPage"
-      :page-sizes="[100, 200, 300, 400]"
-      :page-size="100"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="400">
-    </el-pagination>
   </div>
 </template>
 
