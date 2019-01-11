@@ -223,11 +223,14 @@
                 this.addDiscountForm.packageDeals = '';
                 this.addDiscountForm.availableTime = '';
                 this.addDiscountForm.concessionTime = '';
+                this.addDiscountForm.checkList = [];
                 this.addDiscountForm.value2 = '';
                 this.addDiscountForm.id = '';
 
                 this.updateData = 'none';
                 this.submitData = 'inline-block';
+
+                this.changeStyle();
 
                 this.disabledSelf = false;
                 this.disabledChannel = false;
@@ -310,16 +313,6 @@
                 this.tableData = [this.cTableData1, this.cTableData2];
 
                 this.addDiscountFormDialogVisible = true;
-
-                this.addDiscountForm.concessionName = '';
-                this.addDiscountForm.value = '';
-                this.addDiscountForm.rechargeLimit = '';
-                this.addDiscountForm.donationQuota = '';
-                this.addDiscountForm.packageDeals = '';
-                this.addDiscountForm.availableTime = '';
-                this.addDiscountForm.concessionTime = '';
-                this.addDiscountForm.value2 = '';
-                this.addDiscountForm.id = '';
 
                 this.updateData = 'inline-block';
                 this.submitData = 'none';
@@ -419,7 +412,7 @@
 
             // 改变新增优惠方案的dialog样式
             changeStyle() {
-                if (this.addDiscountForm.value == '1') {
+                if (this.addDiscountForm.value == '1' || this.addDiscountForm.value == '') {
                     this.addDiscountForm.style1 = 'block';
                     this.addDiscountForm.style2 = 'none';
                 }

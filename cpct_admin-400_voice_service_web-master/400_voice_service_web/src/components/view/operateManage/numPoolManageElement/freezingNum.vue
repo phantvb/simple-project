@@ -40,7 +40,7 @@
 
         <div class="buttonDiv">
             <div style="float: left;">
-                <el-button type="primary" size="mini" @click="thaw">解冻</el-button>
+                <el-button type="primary" size="mini" @click="batchThaw">解冻</el-button>
             </div>
             <div style="float: right;">
                 <el-button type="primary" plain size="mini" @click="exportInfo">导出</el-button>
@@ -50,7 +50,10 @@
         <div>
             <el-table
                 :data="tableData"
-                style="width: 100%;margin-bottom:15px;">
+                ref="multipleTable"
+                tooltip-effect="dark"
+                style="width: 100%;margin-bottom:15px;"
+                @selection-change="handleSelectionChange">
                 <el-table-column
                     type="selection"
                     min-width="100">
@@ -66,7 +69,7 @@
                     min-width="100">
                 </el-table-column>
                 <el-table-column
-                    prop="companyId"
+                    prop="companyName"
                     label="企业名称"
                     min-width="100">
                 </el-table-column>
@@ -130,7 +133,8 @@
                     num: 1,
                     size: 10,
                     total: 1
-                }
+                },
+                selectedItems: []
             }
         },
         methods: {
@@ -160,7 +164,7 @@
 
                 this.$ajax.post('/vos/number400/search', {
                     "page": {
-                        "pageNo": this.page.currentPage,
+                        "pageNo": '1',
                         "pageSize": this.page.size
                     },
                     "number400": {
@@ -174,6 +178,19 @@
                     if (res.code == 200) {
                         this.tableData = res.data.number400s;
                         this.page.total = res.data.totalCount;
+
+                        for (let i = 0; i < this.tableData.length; i++) {
+                            if (this.tableData[i].channel == 'self') {
+                                this.tableData[i].channel = '自助直销';
+                            }
+                            if (this.tableData[i].channel == 'channel') {
+                                this.tableData[i].channel = '渠道';
+                            }
+
+                            if (this.tableData[i].status == 'Freezed') {
+                                this.tableData[i].status = '冷冻中';
+                            }
+                        }
                     }
                 });
 
@@ -185,14 +202,69 @@
                 this.freezingNumForm.date = '';
                 this.freezingNumForm.checkList = [];
             },
-            thaw() {
 
-            },
             exportInfo() {
 
             },
-            handleEdit() {
 
+            // 批量选择
+            handleSelectionChange(val) {
+                this.selectedItems = val;
+            },
+
+            batchThaw() {
+
+                this.$confirm('此操作将解冻这些信息, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消'
+                }).then(() => {
+                    let number400 = [];
+                    for (let i = 0; i < this.selectedItems.length; i++) {
+                        number400.push({
+                            "id": this.selectedItems[i].id,
+                            "number400": this.selectedItems[i].number400,
+                            "guideNumber": this.selectedItems[i].guideNumber
+                        })
+                    }
+
+                    this.$ajax.post('/vos/number400/thaw', {
+                        "number400": number400
+                    }).then((res) => {
+                        if (res.code == 200) {
+                            this.$message({
+                                message: '解冻成功!',
+                                type: 'success'
+                            });
+                            this.loadData();
+                        }
+                    });
+
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除!'
+                    });
+                });
+
+            },
+
+            // 解冻
+            handleEdit(index, row) {
+                this.$ajax.post('/vos/number400/thaw', {
+                    "number400": {
+                        "id": row.id,
+                        "number400": row.number400,
+                        "guideNumber": row.guideNumber
+                    }
+                }).then((res) => {
+                    if (res.code == 200) {
+                        this.$message({
+                            message: '解冻成功!',
+                            type: 'success'
+                        });
+                        this.loadData();
+                    }
+                });
             },
             loadData() {
                 this.$ajax.post('/vos/number400/getAll', {
@@ -209,6 +281,19 @@
                     if (res.code == 200) {
                         this.tableData = res.data.number400s;
                         this.page.total = res.data.totalCount;
+
+                        for (let i = 0; i < this.tableData.length; i++) {
+                            if (this.tableData[i].channel == 'self') {
+                                this.tableData[i].channel = '自助直销';
+                            }
+                            if (this.tableData[i].channel == 'channel') {
+                                this.tableData[i].channel = '渠道';
+                            }
+
+                            if (this.tableData[i].status == 'Freezed') {
+                                this.tableData[i].status = '冷冻中';
+                            }
+                        }
                     }
                 });
             }

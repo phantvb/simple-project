@@ -3,7 +3,7 @@
         <div class="search">
             <el-form ref="usableNumForm" :model="usableNumForm">
                 <el-form-item style="float: left;margin-left: 10px;">
-                    <el-input v-model="usableNumForm.number" placeholder="请输入内容" size="mini" style="width:300px;">
+                    <el-input v-model="usableNumForm.number" placeholder="请输入400号码" size="mini" style="width:300px;">
                         <template slot="prepend" style="width:80px;">400号码：</template>
                     </el-input>
                 </el-form-item>
@@ -61,7 +61,7 @@
                 </el-table-column>
                 <el-table-column
                     label="操作"
-                    min-width="100">
+                    min-width="80">
                     <template slot-scope="scope">
                         <el-button
                             size="mini"
@@ -111,7 +111,7 @@
 
                         <el-form-item label="引示号码：">
                             <el-select v-model="addNumberForm.guideNumberValue" placeholder="请选择" size="mini"
-                                       class="el-input">
+                                       class="el-input" @focus="getCanUseCitationNum">
                                 <el-option
                                     v-for="item in addNumberForm.guideNumberOptions"
                                     :key="item.value"
@@ -122,7 +122,7 @@
                         </el-form-item>
 
                         <el-form-item label="关联套餐：" style="margin-top: 15px;">
-                            <el-tabs v-model="activeName" type="card">
+                            <el-tabs v-model="addNumberForm.activeName" type="card" @tab-click="loadTariffPackage">
                                 <el-tab-pane label="自助直销" name="first">
                                     <el-checkbox-group v-model="addNumberForm.selfCheckList"
                                                        v-for="(item,index) in this.addNumberForm.selfTableData.length"
@@ -209,7 +209,7 @@
             return {
                 addNumberFormDialogVisible: false,
                 importNumberFormDialogVisible: false,
-                activeName: 'first',
+
                 radio1: 1,
                 radio2: 1,
                 usableNumForm: {
@@ -230,7 +230,8 @@
                     selfCheckList: [],
                     channelCheckList: [],
                     guideNumberOptions: [],
-                    guideNumberValue: ''
+                    guideNumberValue: '',
+                    activeName: 'first'
                 },
                 importNumberForm: {
                     totalNum: '2',
@@ -244,10 +245,11 @@
                         }
                     ]
                 },
+                packages:[],    // 保存关联的套餐名 翻译用
                 selectedItems: [],
                 ids: [],     // 批量删除时保存id
-                getIds: [],
-                getIdsItem: [],
+                getItemTariffNames: [],
+                getItemIds: [],
                 aTableData1: [],
                 aTableData2: [],
 
@@ -276,7 +278,7 @@
             search() {
                 let str = '';
                 if (this.usableNumForm.checkList.length == 2) {
-                    str = "self+channel";
+                    str = "self,channel";
                 }
                 if (this.usableNumForm.checkList.length == 1 && this.usableNumForm.checkList[0] == "自助直销") {
                     str = "self";
@@ -286,7 +288,7 @@
                 }
                 this.$ajax.post('/vos/number400/search', {
                     "page": {
-                        "pageNo": this.page.currentPage,
+                        "pageNo": '1',
                         "pageSize": this.page.size
                     },
                     "number400": {
@@ -314,6 +316,7 @@
                 this.addNumberForm.selfCheckList = [];
                 this.addNumberForm.channelCheckList = [];
                 this.addNumberForm.guideNumberValue = '';
+                this.addNumberForm.guideNumberOptions=[];
             },
 
             // 显示新增400号码请求，并加载关联套餐
@@ -350,6 +353,7 @@
                         }
                     });
                     this.addNumberForm.channelTableData = [];
+                    this.addNumberForm.activeName='first';
                 }
                 if (this.addNumberForm.checkList.length == 1 && this.addNumberForm.checkList[0] == '渠道') {
                     // 渠道
@@ -362,8 +366,8 @@
                             this.addNumberForm.channelTableData = res.data.tariffPackageList;
                         }
                     });
-
                     this.addNumberForm.selfTableData = [];
+                    this.addNumberForm.activeName='second';
                 }
                 if (this.addNumberForm.checkList.length == 2) {
                     // 自助直销 渠道
@@ -385,6 +389,7 @@
                             this.addNumberForm.channelTableData = res.data.tariffPackageList;
                         }
                     });
+                    this.addNumberForm.activeName='first';
                 }
                 if (this.addNumberForm.checkList.length == 0) {
                     // 都不选
@@ -443,26 +448,12 @@
 
             // 编辑
             handleEdit(index, row) {
-                this.addNumberForm.number = '';
-                this.addNumberForm.checkList = [];
-                this.addNumberForm.guideNumberOptions = [];
-
                 this.addNumberFormDialogVisible = true;
+
                 this.updateData = 'inline-block';
                 this.submitData = 'none';
 
-                this.$ajax.post('/vos/tariffPackage/getTariff', {
-                    "tariff": {
-                        "channel": ""
-                    }
-                }).then((res) => {
-                    if (res.code == 200) {
-                        this.addNumberForm.selfTableData = res.data.tariffPackageList;
-                    }
-                });
-
-                // 加载可用引示号
-                this.getCanUseCitationNum();
+                this.reset();
 
                 let channel = '';
                 if (row.channel == '自助直销') {
@@ -479,6 +470,9 @@
                 this.addNumberForm.checkList = channel;
                 this.addNumberForm.guideNumberValue = row.guideNumber;
                 this.id = row.id;
+
+                this.changeCheckList();
+
             },
 
             updateUsableNum() {
@@ -563,8 +557,7 @@
             batchDelete() {
                 this.$confirm('此操作将永久删除这些信息, 是否继续?', '提示', {
                     confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
+                    cancelButtonText: '取消'
                 }).then(() => {
 
                     if (this.selectedItems.length == 0) {
@@ -618,74 +611,52 @@
 
 
                 for (let i = 0; i < this.tableData.length; i++) {
-                    this.getIdsItem = res.number400s[i].packageIds.split(",");    //把接收到的id字符串转换成数组
+                    this.getItemIds = res.number400s[i].packageIds.split(",");    //把接收到的id字符串转换成数组
                     if (this.tableData[i].channel == 'self') {
                         this.tableData[i].channel = '自助直销';
 
-                        for (let n = 0; n < this.getIdsItem.length; n++) {
+                        for (let n = 0; n < this.getItemIds.length; n++) {
                             for (let j = 0; j < this.aTableData1.length; j++) {
-                                if (this.getIdsItem[n] == this.aTableData1[j].id) {
-                                    this.getIds.push(this.aTableData1[j].tariffName);
+                                if (this.getItemIds[n] == this.aTableData1[j].id) {
+                                    this.getItemTariffNames.push(this.aTableData1[j].tariffName);
                                 }
                             }
                         }
-                        res.number400s[i].packageIds = this.getIds.join(",");
-                        this.getIds = [];
+                        res.number400s[i].packageIds = this.getItemTariffNames.join(",");
+                        this.getItemTariffNames = [];
                     }
                     if (this.tableData[i].channel == 'channel') {
                         this.tableData[i].channel = '渠道';
-                        for (let n = 0; n < this.getIdsItem.length; n++) {
+                        for (let n = 0; n < this.getItemIds.length; n++) {
                             for (let j = 0; j < this.aTableData2.length; j++) {
-                                if (this.getIdsItem[n] == this.aTableData2[j].id) {
-                                    this.getIds.push(this.aTableData2[j].tariffName);
+                                if (this.getItemIds[n] == this.aTableData2[j].id) {
+                                    this.getItemTariffNames.push(this.aTableData2[j].tariffName);
                                 }
                             }
                         }
-                        res.number400s[i].packageIds = this.getIds.join(",");
-                        this.getIds = [];
+                        res.number400s[i].packageIds = this.getItemTariffNames.join(",");
+                        this.getItemTariffNames = [];
                     }
                     if (this.tableData[i].channel == 'self,channel') {
                         this.tableData[i].channel = '自助直销,渠道';
-                        for (let n = 0; n < this.getIdsItem.length; n++) {
+                        for (let n = 0; n < this.getItemIds.length; n++) {
                             for (let j = 0; j < this.aTableData1.length; j++) {
-                                if (this.getIdsItem[n] == this.aTableData1[j].id) {
-                                    this.getIds.push(this.aTableData1[j].tariffName);
+                                if (this.getItemIds[n] == this.aTableData1[j].id) {
+                                    this.getItemTariffNames.push(this.aTableData1[j].tariffName);
                                 }
                             }
                         }
-                        for (let n = 0; n < this.getIdsItem.length; n++) {
+                        for (let n = 0; n < this.getItemIds.length; n++) {
                             for (let j = 0; j < this.aTableData2.length; j++) {
-                                if (this.getIdsItem[n] == this.aTableData2[j].id) {
-                                    this.getIds.push(this.aTableData2[j].tariffName);
+                                if (this.getItemIds[n] == this.aTableData2[j].id) {
+                                    this.getItemTariffNames.push(this.aTableData2[j].tariffName);
                                 }
                             }
                         }
-                        res.number400s[i].packageIds = this.getIds.join(",");
-                        this.getIds = [];
+                        res.number400s[i].packageIds = this.getItemTariffNames.join(",");
+                        this.getItemTariffNames = [];
                     }
                 }
-            },
-
-            // 得到新增dialog里面的关联套餐的列表
-            getIdsFunction() {
-                let ids = [];
-                for (let i = 0; i < this.addNumberForm.selfCheckList.length; i++) {
-                    for (let j = 0; j < this.addNumberForm.selfTableData.length; j++) {
-                        if (this.addNumberForm.selfCheckList[i] == this.addNumberForm.selfTableData[j].tariffName) {
-                            ids.push(this.addNumberForm.selfTableData[j].id);
-                        }
-                    }
-                }
-
-                for (let i = 0; i < this.addNumberForm.channelCheckList.length; i++) {
-                    for (let j = 0; j < this.addNumberForm.channelTableData.length; j++) {
-                        if (this.addNumberForm.channelCheckList[i] == this.addNumberForm.channelTableData[j].tariffName) {
-                            ids.push(this.addNumberForm.channelTableData[j].id);
-                        }
-                    }
-                }
-                ids = ids.join(",");
-                return ids;
             },
 
             //加载可用引示号
@@ -731,6 +702,28 @@
                 });
             },
 
+            // 得到新增dialog里面的关联套餐的列表
+            getIdsFunction() {
+                let ids = [];
+                for (let i = 0; i < this.addNumberForm.selfCheckList.length; i++) {
+                    for (let j = 0; j < this.addNumberForm.selfTableData.length; j++) {
+                        if (this.addNumberForm.selfCheckList[i] == this.addNumberForm.selfTableData[j].tariffName) {
+                            ids.push(this.addNumberForm.selfTableData[j].id);
+                        }
+                    }
+                }
+
+                for (let i = 0; i < this.addNumberForm.channelCheckList.length; i++) {
+                    for (let j = 0; j < this.addNumberForm.channelTableData.length; j++) {
+                        if (this.addNumberForm.channelCheckList[i] == this.addNumberForm.channelTableData[j].tariffName) {
+                            ids.push(this.addNumberForm.channelTableData[j].id);
+                        }
+                    }
+                }
+                ids = ids.join(",");
+                return ids;
+            },
+
             loadData() {
                 this.$ajax.post('/vos/number400/getAll', {
                     "page": {
@@ -770,8 +763,11 @@
                     }
                 });
 
-                this.getCanUseCitationNum();
             },
+
+            loadTariffPackage(){
+
+            }
         },
         created() {
             this.loadData();

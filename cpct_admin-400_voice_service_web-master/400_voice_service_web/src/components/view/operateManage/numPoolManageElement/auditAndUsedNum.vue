@@ -98,11 +98,10 @@
                     currentPage: 1,
                     size: 10,
                     total: 1
-                }
+                },
+                status:''
             }
         },
-
-        props:['status'],
 
         methods: {
             // 修改页面显示数据大小
@@ -118,6 +117,7 @@
             },
 
             search() {
+                console.log(this.status)
                 let str = '';
                 if (this.auditNumForm.checkList.length == 2) {
                     str = "self+channel";
@@ -130,13 +130,13 @@
                 }
                 this.$ajax.post('/vos/number400/search', {
                     "page": {
-                        "pageNo": this.page.currentPage,
+                        "pageNo": '1',
                         "pageSize": this.page.size
                     },
                     "number400": {
                         "number400": this.auditNumForm.number,
                         "channel": str,
-                        "status": "Auditing",
+                        "status": this.status,
                         "companyName": this.auditNumForm.companyName,
                         "guideNumber": this.auditNumForm.citationNumber
                     }
@@ -155,6 +155,9 @@
                             if (this.tableData[i].status == 'Auditing') {
                                 this.tableData[i].status = '审核中';
                             }
+                            if (this.tableData[i].status == 'Used') {
+                                this.tableData[i].status = '使用中';
+                            }
                         }
                     }
                 });
@@ -170,7 +173,9 @@
             exportInfo() {
 
             },
-            loadData() {
+            loadData(status) {
+                this.reset();
+                this.status=status;
                 this.$ajax.post('/vos/number400/getAll', {
                     "page": {
                         "pageNo": this.page.currentPage,
@@ -179,7 +184,7 @@
                     "number400": {
                         "number400": "",
                         "channel": "",
-                        "status": "Auditing",
+                        "status": status,
                         "companyName": "",
                         "guideNumber": ""
                     }
@@ -195,7 +200,13 @@
                             if (this.tableData[i].channel == 'channel') {
                                 this.tableData[i].channel = '渠道';
                             }
+                            if (this.tableData[i].channel == 'self,channel') {
+                                this.tableData[i].channel = '自助直销,渠道';
+                            }
 
+                            if (this.tableData[i].status == 'Used') {
+                                this.tableData[i].status = '使用中';
+                            }
                             if (this.tableData[i].status == 'Auditing') {
                                 this.tableData[i].status = '审核中';
                             }
@@ -211,5 +222,5 @@
 </script>
 
 <style lang="scss" scoped>
-    @import "./auditNum";
+    @import "auditAndUsedNum";
 </style>

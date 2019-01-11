@@ -6,7 +6,7 @@
         </div>
         <div style="clear: both;"></div>
         <div style="margin-top: 15px;">
-            <el-collapse v-model="activeNames" @change="handleChange">
+            <el-collapse v-model="activeNames">
                 <el-collapse-item title="自助直销" name="1">
                     <div>
                         <el-row>
@@ -150,7 +150,8 @@
                         </el-form-item>
 
                         <el-form-item label="赠送时长：">
-                            <el-input v-model="addFeesForm.durationPresentation" size="mini" class="el-input"></el-input>
+                            <el-input v-model="addFeesForm.durationPresentation" size="mini"
+                                      class="el-input"></el-input>
                             <span class="span">分钟</span>
                         </el-form-item>
 
@@ -227,16 +228,16 @@
             showAddFees() {
                 this.addFeesFromDialogVisible = true;
 
-                this.addFeesForm.name = '';
+                this.addFeesForm.tariffName = '';
                 this.addFeesForm.radio = '';
-                this.addFeesForm.rule = '';
-                this.addFeesForm.fee = '';
-                // this.addFeesForm.bottomFee = '';
-                this.addFeesForm.unit = '';
+                this.addFeesForm.packageRules = '';
+                this.addFeesForm.basicFunctionFee = '';
+                this.addFeesForm.units = '';
                 this.addFeesForm.unitPrice = '';
-                this.addFeesForm.duration = '';
-                this.addFeesForm.exceeding = '';
-                this.addFeesForm.content = '';
+                this.addFeesForm.durationPresentation = '';
+                this.addFeesForm.excessTariff = '';
+                this.addFeesForm.packageContent = '';
+                this.addFeesForm.checkList = [];
                 this.addFeesForm.id = '';
 
                 this.updateData = 'none';
@@ -286,6 +287,12 @@
                             type: 'warning'
                         });
                     }
+                    if (res.code == 40005) {
+                        this.$message({
+                            message: '存在空字段!',
+                            type: 'warning'
+                        });
+                    }
                 });
                 this.addFeesFromDialogVisible = false
             },
@@ -324,7 +331,6 @@
                 this.addFeesForm.radio = radio;
                 this.addFeesForm.packageRules = this.tableData[num][index].packageRules;
                 this.addFeesForm.basicFunctionFee = this.tableData[num][index].basicFunctionFee;
-                // this.addFeesForm.bottomFee = this.tableData[num][index].bottomFee;
                 this.addFeesForm.units = this.tableData[num][index].units;
                 this.addFeesForm.unitPrice = this.tableData[num][index].unitPrice;
                 this.addFeesForm.durationPresentation = this.tableData[num][index].durationPresentation;
@@ -407,10 +413,6 @@
                     })
                     .catch(_ => {
                     });
-            },
-
-            handleChange() {
-
             },
 
             loadData() {

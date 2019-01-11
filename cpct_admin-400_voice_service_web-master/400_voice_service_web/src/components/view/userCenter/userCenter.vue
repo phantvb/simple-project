@@ -39,7 +39,7 @@
             </div>
         </section>
         <message :show="mesEdit" :data="tableData" @close="editMes(false)"></message>
-        <portrait :show="portraitEdit" @close="editPortrait(false)"></portrait>
+        <portrait :show="portraitEdit" :data="tableData" @close="editPortrait(false)"></portrait>
         <password :show="passEdit" :data="tableData" @close="editPass(false)"></password>
     </div>
 </template>

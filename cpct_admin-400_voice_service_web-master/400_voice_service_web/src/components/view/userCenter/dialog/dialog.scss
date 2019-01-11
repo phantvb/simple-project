@@ -1,70 +1,78 @@
-$blue:#409EFF;
-$grey:#999;
-$padding:15px;
-ul{
-    overflow: hidden;
-    padding: 0;
-    li{
-        list-style: none;
-        float: left;
-    }
-    li.l2{
-        width: 50%;
-    }
-    li.l3{
-        width: 33%;
-    }
+$blue: #409EFF;
+$grey: #999;
+$padding: 15px;
+ul {
+  overflow: hidden;
+  padding: 0;
+  li {
+    list-style: none;
+    float: left;
+  }
+  li.l2 {
+    width: 50%;
+  }
+  li.l3 {
+    width: 33%;
+  }
 }
-section{
-    overflow: hidden;
-    .title{
-        position: relative;
-        margin: $padding;
-        padding: 0px $padding;
-        &::before{
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 2px;
-            height: 100%;
-            background-color: $blue;
-        }
+
+section {
+  overflow: hidden;
+  .title {
+    position: relative;
+    margin: $padding;
+    padding: 0px $padding;
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 2px;
+      height: 100%;
+      background-color: $blue;
     }
-    .part{
-        margin: $padding;
-        padding: 0px $padding;
-    }
+  }
+  .part {
+    margin: $padding;
+    padding: 0px $padding;
+  }
 }
-.message{
-    p{
-        font-size: 13px;
-        margin: 5px 0px;
-    }
+
+.message {
+  p {
+    font-size: 13px;
+    margin: 5px 0px;
+  }
 }
-.dialog-footer{
-    border-top: 1px solid #ccc;
-    padding-top: $padding;
-    button{
-        width: 100px;
-    }
+
+.dialog-footer {
+  border-top: 1px solid #ccc;
+  padding-top: $padding;
+  button {
+    width: 100px;
+  }
 }
-#portrait{
-    .preview{
-        text-align: center;
-        p{
-            text-align: center;
-        }
-        img{
-            width: 70%;
-            height: 70%;
-            border-radius: 100%;
-            float: unset;
-            margin: $padding auto 0px;
-        }
+
+#portrait {
+  .preview {
+    text-align: center;
+    p {
+      text-align: center;
     }
-    .note{
-        margin: 0px 0px $padding;
-        font-size: 13px;
+    img {
+      width: 70%;
+      height: 70%;
+      border-radius: 100%;
+      float: unset;
+      margin: $padding auto 0px;
     }
+  }
+  .note {
+    margin: $padding 0px;
+    font-size: 13px;
+  }
+}
+
+.hiddenInput {
+  display: none;
 }

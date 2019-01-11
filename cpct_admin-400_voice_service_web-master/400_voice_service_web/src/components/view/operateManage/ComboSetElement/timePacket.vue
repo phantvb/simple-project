@@ -84,7 +84,7 @@
                 width="30%"
                 :before-close="handleClose">
                 <div>
-                    <el-form ref="addDiscountForm" :model="addTimePacketForm" label-width="100px">
+                    <el-form ref="addTimePacketForm" :model="addTimePacketForm" label-width="100px">
 
                         <el-form-item label="时长包名：">
                             <el-input v-model="addTimePacketForm.timePacketName" size="mini"
@@ -136,7 +136,7 @@
                     timePacketName: '',
                     rechargeLimit: '',
                     dialingTime: '',
-                    checkList: ['自助直销', '渠道'],
+                    checkList: [],
                     id: ''
                 },
                 dTotalCount1: '',
@@ -158,8 +158,10 @@
                 this.addTimePacketFormDialogVisible = true;
 
                 this.addTimePacketForm.timePacketName = '';
-                this.addTimePacketForm.rechargeLimit = '';
+                this.addTimePacketForm.rechargeLimit ='';
                 this.addTimePacketForm.dialingTime = '';
+                this.addTimePacketForm.checkList = [];
+
                 this.addTimePacketForm.id = '';
 
                 this.updateData = 'none';
@@ -209,11 +211,6 @@
                 this.tableData = [this.dTableData1, this.dTableData2];
 
                 this.addTimePacketFormDialogVisible = true;
-
-                this.addTimePacketForm.timePacketName = '';
-                this.addTimePacketForm.rechargeLimit = '';
-                this.addTimePacketForm.dialingTime = '';
-                this.addTimePacketForm.id = '';
 
                 this.updateData = 'inline-block';
                 this.submitData = 'none';

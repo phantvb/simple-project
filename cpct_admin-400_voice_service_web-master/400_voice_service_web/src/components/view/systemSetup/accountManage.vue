@@ -154,6 +154,7 @@
                         <el-button size="mini" @click="searchMess('')">全部</el-button>
                         <el-button size="mini"
                                    v-for="(item,index) in this.allRoleTableData"
+                                   :key="index"
                                    @click="searchMess(allRoleTableData[index].name)">{{allRoleTableData[index].nameZh}}
                         </el-button>
                     </el-form-item>
@@ -335,7 +336,7 @@
                             "name": this.form.userName
                         },
                         "page": {
-                            "pageNo": this.page.currentPage,
+                            "pageNo": '1',
                             "pageSize": this.page.size
                         }
                     }).then(res => {

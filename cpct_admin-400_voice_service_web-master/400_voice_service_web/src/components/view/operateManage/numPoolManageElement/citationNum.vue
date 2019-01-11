@@ -224,7 +224,7 @@
 
                 this.$ajax.post('/vos/guideNumber/search', {
                     "page": {
-                        "pageNo": this.page.currentPage,
+                        "pageNo": '1',
                         "pageSize": this.page.size
                     },
                     "guideNumber": {

@@ -87,17 +87,22 @@
                 <el-dialog
                     title="新增/编辑公告"
                     :visible.sync="dialogVisible"
-                    width="40%">
+                    width="40%"
+                    :before-close="handleClose"
+                    @opened="lcb">
+
                     <el-form>
                         <el-form-item label="公告标题">
                             <el-input v-model="title"></el-input>
                         </el-form-item>
                         <el-form-item label="公告内容"></el-form-item>
-                        <wangEditor :wangEditorContent='catchContent'></wangEditor>
+                        <wangEditor v-if="dialogVisible" :addContent="getContent" :editContent="editContent" ref="lcb"></wangEditor>
                     </el-form>
                     <span slot="footer" class="dialog-footer">
-            <el-button type="primary" @click="addNotice;">确 定</el-button>
-            <el-button @click="dialogVisible = false">取 消</el-button>
+                        <el-button type="primary" @click="addNotice" :style="'display:'+submitData+';'">确 定</el-button>
+                        <el-button type="primary" @click="updateNotice"
+                                   :style="'display:'+updateData+';'">编 辑</el-button>
+                        <el-button @click="dialogVisible = false">取 消</el-button>
           </span>
                 </el-dialog>
             </div>
@@ -128,31 +133,42 @@
                     total: 1
                 },
                 title: '',
+                addContent: '',
                 editContent: '',
+                id: '',
 
                 content: '',
 
                 selectedItems: [],
-                ids: []
+                ids: [],
+
+                updateData: 'none',// 编辑和新增公用一个弹窗控制按钮显示
+                submitData: 'inline-block'
             }
         },
 
+        props: ['textarea'],
+
         methods: {
-            catchContent(value) {
-                this.editContent = value;     // 在这里接受子组件传过来的参数，赋值给data里的参数
+            lcb(){
+                this.$refs.lcb.test();
             },
 
+            // 得到子组件传过来的内容，用于新增
+            getContent(content) {
+                this.addContent = content;    // 在这里接受子组件传过来的参数，赋值给data里的参数
+            },
 
             // 修改页面显示数据大小
             handleSizeChange(val) {
                 this.page.size = val;
-                this.loadTableData();
+                this.loadData();
             },
 
             // 修改当前显示页面
             handleCurrentChange(val) {
                 this.page.currentPage = val;
-                this.loadTableData();
+                this.loadData();
             },
 
             // 重置
@@ -160,6 +176,9 @@
                 this.form.title = '';
                 this.form.person = '';
                 this.form.date = [];
+                this.title = '';
+                this.editContent = '';
+                this.id = '';
             },
 
             // 搜索信息
@@ -174,7 +193,7 @@
                         "publishMan": this.form.person
                     },
                     "page": {
-                        "pageNo": this.page.currentPage,
+                        "pageNo": '1',
                         "pageSize": this.page.size
                     },
                     "beforeTime": this.form.date[0],
@@ -188,15 +207,76 @@
             },
 
             showAddNotice() {
-                this.dialogVisible = true
                 this.title = '';
                 this.editContent = '';
-            },
-            addNotice() {
-                console.log(this.editContent)
-                // this.dialogVisible = false;
+                this.addContent = '';
+                this.id = '';
+
+                this.dialogVisible = true;
+
+                this.updateData = 'none';
+                this.submitData = 'inline-block';
             },
 
+            addNotice() {
+
+                this.$ajax.post('/vos/announcement/add', {
+                    "ann": {
+                        "title": this.title,
+                        "content": this.addContent
+                    }
+                }).then((res) => {
+                    if (res.code == 200) {
+                        this.$message({
+                            message: '新增成功',
+                            type: 'success'
+                        });
+                        this.loadData();
+                    }
+                    if (res.code == 4005) {
+                        this.$message.error('您无权操作');
+                    }
+                });
+                this.dialogVisible = false;
+            },
+
+            handleEdit(index, row) {
+                this.title = '';
+                this.editContent = '';
+                this.addContent = '';
+                this.id = '';
+
+                this.dialogVisible = true;
+
+                this.updateData = 'inline-block';
+                this.submitData = 'none';
+
+                this.title = row.title;
+                this.editContent = row.content;
+                this.id = row.id;
+            },
+
+            updateNotice() {
+                this.$ajax.post('/vos/announcement/update', {
+                    "ann": {
+                        "title": this.title,
+                        "content": this.addContent,
+                        "id": this.id
+                    }
+                }).then((res) => {
+                    if (res.code == 200) {
+                        this.$message({
+                            message: '编辑成功',
+                            type: 'success'
+                        });
+                        this.loadData();
+                    }
+                    if (res.code == 4005) {
+                        this.$message.error('您无权操作');
+                    }
+                });
+                this.dialogVisible = false;
+            },
 
             // 批量删除
             handleSelectionChange(val) {
@@ -206,8 +286,7 @@
             batchDelete() {
                 this.$confirm('此操作将永久删除这些信息, 是否继续?', '提示', {
                     confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
+                    cancelButtonText: '取消'
                 }).then(() => {
 
                     for (let i = 0; i < this.selectedItems.length; i++) {
@@ -239,27 +318,15 @@
 
             },
 
-            handleEdit(index, row) {
-                this.$ajax.get('/vos/announcement/getDetail/' + row.id).then((res) => {
-
-                    this.dialogVisible = true;
-                    this.title = row.title;
-                    this.editContent = row.content;
-                });
-            },
-
             // 删除
             handleDelete(index, row) {
                 this.$confirm('此操作将永久删除该条信息, 是否继续?', '提示', {
                     confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
+                    cancelButtonText: '取消'
                 }).then(() => {
 
                     this.$ajax.post('/vos/announcement/delete', {
-                        "ann": {
-                            "ids": row.id
-                        }
+                        "ids": row.id
                     }).then((res) => {
                         if (res.code == 200) {
                             this.$message({
@@ -319,7 +386,16 @@
                     }
                 });
 
-            }
+            },
+
+            handleClose(done) {
+                this.$confirm('确认关闭？')
+                    .then(_ => {
+                        done();
+                    })
+                    .catch(_ => {
+                    });
+            },
         },
         created() {
             this.loadData();

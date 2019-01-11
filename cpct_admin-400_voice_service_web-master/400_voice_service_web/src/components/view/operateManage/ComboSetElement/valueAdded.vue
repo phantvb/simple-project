@@ -106,7 +106,7 @@
                 width="30%"
                 :before-close="handleClose">
                 <div>
-                    <el-form ref="addFeesForm" :model="AddComboForm" label-width="100px">
+                    <el-form ref="AddComboForm" :model="AddComboForm" label-width="100px">
                         <el-form-item label="套餐名称：">
                             <el-input v-model="AddComboForm.name" size="mini" class="el-input"></el-input>
                         </el-form-item>
@@ -117,7 +117,8 @@
                         </el-form-item>
 
                         <el-form-item label="计价单位：">
-                            <el-select v-model="AddComboForm.value" placeholder="请选择" style="float: left;width: 80%" size="mini">
+                            <el-select v-model="AddComboForm.value" placeholder="请选择" style="float: left;width: 80%"
+                                       size="mini">
                                 <el-option
                                     v-for="item in AddComboForm.options"
                                     :key="item.value"
@@ -210,11 +211,12 @@
 
                 this.AddComboForm.name = '';
                 this.AddComboForm.fee = '';
+                this.AddComboForm.value = '';
                 this.AddComboForm.remark = '';
                 this.AddComboForm.radio = '';
                 this.AddComboForm.type = '';
+                this.AddComboForm.checkList = [];
                 this.AddComboForm.id = '';
-                this.AddComboForm.value = '';
 
                 this.updateData = 'none';
                 this.submitData = 'inline-block';
@@ -267,15 +269,6 @@
                 this.tableData = [this.bTableData1, this.bTableData2];
 
                 this.addComboFromDialogVisible = true;
-
-                this.AddComboForm.name = '';
-                this.AddComboForm.fee = '';
-                this.AddComboForm.value = '';
-                this.AddComboForm.remark = '';
-                this.AddComboForm.radio = '';
-                this.AddComboForm.type = '';
-                this.AddComboForm.checkList = '';
-                this.AddComboForm.id = '';
 
                 this.updateData = 'inline-block';
                 this.submitData = 'none';
@@ -414,14 +407,14 @@
                             if (this.bTableData1[i].type == 1) {
                                 this.bTableData1[i].type = 'none';
                             }
-                            if(this.bTableData1[i].units=='perMonth'){
-                                this.bTableData1[i].units='/月'
+                            if (this.bTableData1[i].units == 'perMonth') {
+                                this.bTableData1[i].units = '/月'
                             }
-                            if(this.bTableData1[i].units=='perOne'){
-                                this.bTableData1[i].units='/个'
+                            if (this.bTableData1[i].units == 'perOne') {
+                                this.bTableData1[i].units = '/个'
                             }
-                            if(this.bTableData1[i].units=='perMonthOne'){
-                                this.bTableData1[i].units='/月/个'
+                            if (this.bTableData1[i].units == 'perMonthOne') {
+                                this.bTableData1[i].units = '/月/个'
                             }
                         }
                     }
@@ -444,14 +437,14 @@
                             if (this.bTableData2[i].type == 1) {
                                 this.bTableData2[i].type = 'none';
                             }
-                            if(this.bTableData2[i].units=='perMonth'){
-                                this.bTableData2[i].units='/月'
+                            if (this.bTableData2[i].units == 'perMonth') {
+                                this.bTableData2[i].units = '/月'
                             }
-                            if(this.bTableData2[i].units=='perOne'){
-                                this.bTableData2[i].units='/个'
+                            if (this.bTableData2[i].units == 'perOne') {
+                                this.bTableData2[i].units = '/个'
                             }
-                            if(this.bTableData2[i].units=='perMonthOne'){
-                                this.bTableData2[i].units='/月/个'
+                            if (this.bTableData2[i].units == 'perMonthOne') {
+                                this.bTableData2[i].units = '/月/个'
                             }
                         }
                     }

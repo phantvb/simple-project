@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-dialog title="编辑资料" :visible.sync="dialogFormVisible" @close="close">
+        <el-dialog title="编辑资料" :visible.sync="dialogFormVisible" @close="close" width="50%">
             <el-form :model="form">
                 <section>
                     <div class="title">
@@ -41,41 +41,42 @@
                         </el-form-item>
                     </li>
                 </ul>
-                <el-form-item label="地区" :label-width="formLabelWidth">
-                    <el-select v-model="form.province" filterable placeholder="请选择" size="mini" style="width:30%;"
+                <el-form-item label="地区" :label-width="formLabelWidth" style="width: 100%">
+                    <el-select v-model="form.province" placeholder="请选择" size="mini"
                                @focus="loadProvince" @change="loadCity">
                         <el-option
-                            v-for="item in options.province"
-                            :key="item.value"
+                            v-for="(index,item) in options.province"
+                            :key="index"
                             :label="item.label"
                             :value="item.value">
                         </el-option>
                     </el-select>
-                    <el-select v-model="form.city" filterable placeholder="请选择" size="mini" style="width:30%;"
+                    <el-select v-model="form.city" placeholder="请选择" size="mini"
                                @change="loadArea">
                         <el-option
-                            v-for="item in options.city"
-                            :key="item.value"
+                            v-for="(index,item) in options.city"
+                            :key="index"
                             :label="item.label"
                             :value="item.value">
                         </el-option>
                     </el-select>
-                    <el-select v-model="form.area" filterable placeholder="请选择" size="mini" style="width:30%;">
+                    <el-select v-model="form.area" placeholder="请选择" size="mini" >
                         <el-option
-                            v-for="item in options.area"
-                            :key="item.value"
+                            v-for="(index,item) in options.area"
+                            :key="index"
                             :label="item.label"
                             :value="item.value">
                         </el-option>
                     </el-select>
+
                 </el-form-item>
                 <ul>
-                    <li class="l2">
+                    <li >
                         <el-form-item label="身份证" :label-width="formLabelWidth">
                             <el-input v-model="form.idCard" autocomplete="off" size="mini"></el-input>
                         </el-form-item>
                     </li>
-                    <li class="l2">
+                    <li >
                         <el-form-item label="邮箱" :label-width="formLabelWidth">
                             <el-input v-model="form.email" autocomplete="off" size="mini"></el-input>
                         </el-form-item>
