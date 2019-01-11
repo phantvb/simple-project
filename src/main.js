@@ -3,6 +3,7 @@
 import Vue from 'vue';
 import App from './App';
 import '@/assets/css/main.css';
+import store from '@/store';
 import router from './router';
 import axios from 'axios';
 import ElementUI from 'element-ui';
@@ -60,6 +61,7 @@ Vue.prototype.$global = {
 new Vue({
 	el: '#app',
 	router,
+    store,
 	components: { App },
 	template: '<App/>',
     render: h => h(App),

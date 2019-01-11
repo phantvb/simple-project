@@ -85,22 +85,22 @@
             </el-dialog>
         </div>
 
-        <el-form ref="stepTwoForm" :model="stepTwoForm" label-width="100px">
+        <el-form ref="stepThreeForm" :model="stepThreeForm" label-width="100px">
             <div class="title left">
                 经办人基本信息
             </div>
             <div class="handleInfo">
                 <el-form-item label="经办人姓名：" class="firmName">
-                    <el-input v-model="stepTwoForm.handleName" size="mini" placeholder="填入法人真实姓名"></el-input>
+                    <el-input v-model="stepThreeForm.handleName" size="mini" placeholder="填入法人真实姓名"></el-input>
                 </el-form-item>
                 <el-form-item label="经办人电话：" class="firmName">
-                    <el-input v-model="stepTwoForm.handlePhone" size="mini" placeholder="填入法人联系电话（固话或手机）"></el-input>
+                    <el-input v-model="stepThreeForm.handlePhone" size="mini" placeholder="填入法人联系电话（固话或手机）"></el-input>
                 </el-form-item>
                 <el-form-item label="经办人证件：" class="identity">
-                    <el-select v-model="stepTwoForm.handleIdentity" @change="change123" placeholder="请选择" size="mini">
+                    <el-select v-model="stepThreeForm.handleIdentity" @change="change123" placeholder="请选择" size="mini">
                         <el-option :label="item.label" :value="item.value" v-for="(item,index) in identityTypeList" :key="index"></el-option>
                     </el-select>
-                    <el-input class="handleIdentityNo" v-model="stepTwoForm.handleIdentityNo" size="mini" placeholder="根据证件类型，填写相应的证件号码"></el-input>
+                    <el-input class="handleIdentityNo" v-model="stepThreeForm.handleIdentityNo" size="mini" placeholder="根据证件类型，填写相应的证件号码"></el-input>
                 </el-form-item>
             </div>
             <div class="block person_data">
@@ -113,13 +113,13 @@
                         <ul>
                             <li class="l2">
                                 <el-upload class="avatar-uploader exampleh" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="handleAvatarSuccess" :on-error="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
-                                    <img v-if="stepTwoForm.frontImageUrl" :src="stepTwoForm.frontImageUrl" class="avatar">
+                                    <img v-if="stepThreeForm.frontImageUrl" :src="stepThreeForm.frontImageUrl" class="avatar">
                                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                 </el-upload>
                             </li>
                             <li class="l2">
                                 <el-upload class="avatar-uploader exampleh" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="handleAvatarSuccess" :on-error="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
-                                    <img v-if="stepTwoForm.contraryImageUrl" :src="stepTwoForm.contraryImageUrl" class="avatar">
+                                    <img v-if="stepThreeForm.contraryImageUrl" :src="stepThreeForm.contraryImageUrl" class="avatar">
                                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                 </el-upload>
                             </li>
@@ -127,7 +127,7 @@
                         <ul>
                             <li class="l2">
                                 <el-upload class="avatar-uploader exampleh" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="handleAvatarSuccess" :on-error="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
-                                    <img v-if="stepTwoForm.selfImageUrl" :src="imageUrl.selfImageUrl" class="avatar">
+                                    <img v-if="stepThreeForm.selfImageUrl" :src="imageUrl.selfImageUrl" class="avatar">
                                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                 </el-upload>
                             </li>
@@ -214,14 +214,11 @@
 
                 <div class="num400">
                     <span>目的码：</span>
+                    <el-button type="primary" size="mini" @click="addObjCodes()">+新增目的码</el-button>
                     <div class="objCodeBox">
                         <div class="addObjCode">
-                            <el-input v-model="addObjCode" size="mini"></el-input>
-                            <el-button type="primary" size="mini">+</el-button>
-                        </div>
-                        <div class="addObjCode">
                             <el-input v-model="delObjCode" size="mini"></el-input>
-                            <el-button type="primary" size="mini">-</el-button>
+                            <el-button type="primary" icon="el-icon-minus" size="mini" @click="delObjCodes(index)"></el-button>
                         </div>
                     </div>
                 </div>
@@ -229,7 +226,7 @@
                 <div class="num400" style="margin-bottom:30px;">
                     <span>归属地区：</span>
                     <div class="QCellCore">
-                        <el-select v-model="stepTwoForm.province" placeholder="请选择" size="mini">
+                        <el-select v-model="stepThreeForm.province" placeholder="请选择" size="mini">
                             <el-option
                                     v-for="item in provinceList"
                                     :key="item.value"
@@ -237,7 +234,7 @@
                                     :value="item.value">
                             </el-option>
                         </el-select>
-                        <el-select v-model="stepTwoForm.city" placeholder="请选择" size="mini">
+                        <el-select v-model="stepThreeForm.city" placeholder="请选择" size="mini">
                             <el-option
                                     v-for="item in cityList"
                                     :key="item.value"
@@ -248,7 +245,7 @@
                     </div>
                     <div class="QCellCore">
                         <span>优惠：</span>
-                        <el-select v-model="stepTwoForm.discounts" placeholder="请选择" size="mini">
+                        <el-select v-model="stepThreeForm.discounts" placeholder="请选择" size="mini">
                             <el-option
                                     v-for="item in discountsList"
                                     :key="item.value"
@@ -318,6 +315,7 @@
     </div>
 </template>
 <script>
+    import {mapState} from "vuex";
     import setMeal from './setMeal';
     export default {
         name: 'stepThree',
@@ -327,7 +325,7 @@
                 addNumform:{
                     activeName:'',
                 },
-                stepTwoForm:{
+                stepThreeForm:{
                     handleName:'', //经办人姓名
                     handlePhone:'',//经办人电话
                     handleIdentity:'',//经办人证件
@@ -399,10 +397,17 @@
                 }],
                 addObjCode:'',  //添加目的码
                 delObjCode:'',  //删减目的码
+                objCodeList:[], //目的码数组
             };
         },
         components: {
             setMeal
+        },
+        created(){
+            this.$root.eventHub.$on('getLoginInfo', (resp)=>{
+                console.log(resp);
+                this.getConcessionScheme(resp);
+            })
         },
         methods: {
             // 图片上传
@@ -426,6 +431,21 @@
             },
             next(val){
                 this.$emit('childNext', val);
+                if(val==4){
+                    this.ChangeBusinessStatus(this.stepThreeForm);
+                    this.ChangeDestNumberStatus(this.stepThreeForm);
+                    this.ChangeNumber400ValueAddedStatus(this.stepThreeForm);
+                }
+            },
+            //新增目的码
+            addObjCodes(){
+                let unit = {};
+                this.objCodeList.push(unit);
+            },
+            // 删除目的码
+            delObjCodes(index){
+                console.log(index);
+                this.objCodeList.splice(index,1);
             },
             // 选号
             addNumSave(){
@@ -440,8 +460,46 @@
                     .catch(_ => {
                     });
             },
+            // 优惠
+            getConcessionScheme(val){
+                console.log(val);
+                this.$ajax.post('/vos/tariffPackage/getConcessionScheme',{
+                    "concessionScheme":{
+                        "channel":"self"
+                    }
+                }).then((res)=>{
+                    console.log(res);
+                })
+            },
+            // 增值业务
+            getValueAdded(){
+                this.$ajax.post('/vos/tariffPackage/getValueAdded',{
+                    "valueAdded":{
+                        "channel":"self"
+                    }
+                }).then((res)=>{
+                    console.log(res);
+                })
+            },
+            // 存vuex更新业务信息模块入参
+            ChangeBusinessStatus(val){
+                return this.$store.dispatch("ChangeBusinessStatus", val);
+            },
+            // 存vuex更新业务信息模块入参
+            ChangeDestNumberStatus(val){
+                return this.$store.dispatch("ChangeDestNumberStatus", val);
+            },
+            // 存vuex更新增值业务模块入参
+            ChangeNumber400ValueAddedStatus(val){
+                return this.$store.dispatch("ChangeNumber400ValueAddedStatus", val);
+            },
+
         },
-        computed: {}
+        computed: {
+            ...mapState({
+                company: state => state.createActivities.company,
+            })
+        }
     }
 </script>
 <style>

@@ -28,8 +28,16 @@
 							</el-form-item>
 
 							<el-form-item label="语音文件：" class="voiceType">
-								<el-input v-model="voiceForm.voiceFile" size="mini"></el-input>
-								<el-button type="primary" size="mini">上传</el-button>
+								<el-upload
+										class="upload-demo"
+										action="https://jsonplaceholder.typicode.com/posts/"
+										:on-change="handleChange"
+										:file-list="fileList3">
+									<el-button size="small" type="primary">点击上传</el-button>
+									<div class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+								</el-upload>
+								<!--<el-input v-model="voiceForm.voiceFile" size="mini"></el-input>-->
+								<!--<el-button type="primary" size="mini">上传</el-button>-->
 							</el-form-item>
 
 							<el-form-item label="语音名称：" class="input">
@@ -156,7 +164,7 @@
 				@current-change="handleCurrentChange"
 				:current-page="currentPage"
 				:page-sizes="[10, 20, 50, 100]"
-				:page-size="100"
+				:page-size="10"
 				layout="total, sizes, prev, pager, next, jumper"
 				:total="pageObj.total">
 		</el-pagination>
@@ -215,6 +223,13 @@
                 accountStatus:'',
                 currentPage: 1,   //当前页
                 textarea2:'',
+                fileList3: [{
+                    name: 'food.jpeg',
+                    url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
+                }, {
+                    name: 'food2.jpeg',
+                    url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
+                }]
 			};
 		},
 		created(){
@@ -239,6 +254,9 @@
                     .catch(_ => {
                     });
             },
+            handleChange(file, fileList) {
+                this.fileList3 = fileList.slice(-3);
+            },
             voiceAdd(){
                 this.dialogVisible = true;
 			},
@@ -246,14 +264,14 @@
                console.log(scope);
 			},
             voiceFileLists(){
-                console.log(this.form.time[0]);
-                console.log(this.form.time[1]);
+                // console.log(this.form.time[0]);
+                // console.log(this.form.time[1]);
                 let dateStart = new Date(this.form.time[0]);
                 let dateEnd = new Date(this.form.time[1]);
                 let dateStart_value=dateStart.getFullYear() + '-' + (dateStart.getMonth() + 1) + '-' + dateStart.getDate();
                 let dateEnd_value=dateEnd.getFullYear() + '-' + (dateEnd.getMonth() + 1) + '-' + dateEnd.getDate();
-                console.log(dateStart_value);
-                console.log(dateEnd_value);
+                // console.log(dateStart_value);
+                // console.log(dateEnd_value);
                 this.$ajax.post('/vos/business/getBusinessFlowList',{
                     "type":"Voice",
                     "dateStart":this.form.time[0]==undefined?'':dateStart_value,

@@ -17,15 +17,15 @@
                         size="mini"
                         placeholder=" 营业执照上公司全称，个体工商户填写字号全称，组织机构上的机构全称" @input="searchFirm">
                 </el-input>
-                <div id="firmNameList" v-if="acceptForm.firmName!='' && firmNameList.length!=0 && firmNameShow">
+                <div id="firmNameList" v-if="firmNameShow">
                   <ul>
-                    <li v-for="(item,index) in firmNameList" :key="index">{{item.companyName}}</li>
+                    <li v-for="(item,index) in firmNameList" :key="index" @click="firmNameLi(item)">{{item.companyName}}</li>
                   </ul>
                 </div>
               </el-form-item>
 
               <el-form-item label="使用用途：" class="identity" prop="usage">
-                <el-select v-model="acceptForm.usage" @change="change123" placeholder="请选择" size="mini">
+                <el-select v-model="acceptForm.usage" placeholder="请选择" size="mini">
                   <el-option :label="item.label" :value="item.value" v-for="(item,index) in usage" :key="index"></el-option>
                 </el-select>
               </el-form-item>
@@ -74,9 +74,9 @@
                   <div class="objCodeBox">
                     <span>增加目的码</span>
                     <div class="valAddSer">
-                      <p>功能资费：</p>
-                      <p>是否赠送：</p>
-                      <p>功能备注：</p>
+                      <p>功能资费：{{tariffFee}}</p>
+                      <p>是否赠送：{{presents}}</p>
+                      <p>功能备注：{{remarks}}</p>
                     </div>
                   </div>
                 </div>
@@ -85,8 +85,8 @@
           </el-form>
         </div>
         <span slot="footer" class="dialog-footer">
-            <el-button @click="dialogVisible = false" size="mini">暂存信息</el-button>
-            <el-button type="primary" @click="dialogVisible = false" size="mini">送 审</el-button>
+            <el-button size="mini" @click="objCodeSave('acceptForm')">暂存信息</el-button>
+            <el-button type="primary" @click="objCodeSubmit('acceptForm')" size="mini">送 审</el-button>
         </span>
       </el-dialog>
     </div>
@@ -120,7 +120,7 @@
       <!--表格按钮和下拉框-->
       <div class="BtnSelect">
         <div class="accountBtn">
-          <el-button type="primary" size="mini" @click="addObjCodeSave()">+新增目的码</el-button>
+          <el-button type="primary" size="mini" @click="addObjCodeBtn()">+新增目的码</el-button>
         </div>
         <div class="accountSelect">
           <span style="font-size:12px">状态:</span>
@@ -176,7 +176,7 @@
             <el-button size="mini" type="text">注销</el-button>
             <el-button size="mini" type="text">通过审核</el-button>
             <el-button size="mini" type="text">驳回</el-button>
-            <el-button size="mini" type="text" @click="objCodeIn=2,addObjCodeSave()">编辑</el-button>
+            <el-button size="mini" type="text" @click="objCodeIn=2,objCodeEdit(scope.row)">编辑</el-button>
             <!--</router-link>-->
             <el-button size="mini" type="text">送审</el-button>
             <el-button size="mini" type="text">删除</el-button>
@@ -211,6 +211,7 @@
           time:'',
         },
         acceptForm:{
+          firmId:'',
           firmName:'',
           usage:'',
           imageUrl: '',    //上传图片
@@ -219,9 +220,54 @@
           objCount:1,     //目的码数量
           delObjCode:'',  //删减目的码
         },
+          companyInfo:{   //企业信息
+              // companyName: "",
+              // companyCardType: "",
+              // companyCardNo: "",
+              // companyCharacter: "",
+              // companyRank: "",
+              // industryType: "",
+              // registProvince: "",
+              // registProvinceId: null,
+              // registCity: null,
+              // registCityId: null,
+              // registArea: null,
+              // registaAreaId: null,
+              // registAddress: null,
+              // officeCity: "",
+              // officeCityId: "",
+              // officeProvince: null,
+              // officeProvinceId: null,
+              // officeArea: null,
+              // officeAreaId: null,
+              // officeAddress: null,
+              // phone: "",
+              // legalPerson: "",
+              // legalPhone: null,
+              // legalCard: null,
+              // cardNum: "",
+              // idCardAddress: null,
+              // cardStartDate: null,
+              // cardEndDate: null,
+              // companyProofPic: "",
+              // legalCardFrontPic: "",
+              // legalCardBackPic: null,
+              // legalCardHandPic: null,
+              // usable: "",
+              // source: ""
+          },
           rules:{
               firmName: [
-                  { required: true, message: '请输入企业名称', trigger: 'change' }
+                  { required: true, message: '请输入企业名称', trigger: 'blur' }
+              ],
+              usage:[
+                  { required: true, message: '请选择使用用途', trigger: 'change' }
+              ],
+              imageUrl:[
+                  { required: true, message: '请上传目的码证明材料', trigger: 'change' }
+              ],
+              fourNum:[
+                  { required: true, message: '请输入400号码', trigger: 'blur' }
               ],
           },
         tableData: [],
@@ -238,7 +284,7 @@
             label: '等待送审'
           }
         ],
-        objCodeList:[{}], //目的码数组
+        objCodeList:[], //目的码数组
         firmNameList:[],  //公司名称数组
         fourNumList:[],   //400号码列表
         currentPage: 1,   //当前页
@@ -248,13 +294,21 @@
             total:0,
             page:1,
             pageSize:10,
-          }
+          },
+          tariffFee:0, //功能资费
+          presents:'1',  //是否赠送;1 赠送；2 付费
+          remarks:'',  //功能描述
+          flowId:'',
+          companyId:'',
       };
     },
     components: {},
       created(){
         this.objCodeLists();
         this.statusList();
+        this.$root.eventHub.$on('getLoginInfo', (resp)=>{
+            this.addTariff(resp);
+          } )
       },
     methods: {
       // 分页
@@ -275,21 +329,6 @@
           .catch(_ => {
           });
       },
-      //新增目的码
-      addObjCodeSave(){
-        this.dialogVisible = true;
-      },
-      change123(event) {
-        console.log("event",event);
-      },
-      // 给单元格加placeholder
-      cellStyle(row, column, rowIndex, columnIndex){
-        if(columnIndex==1 && rowIndex==1){
-          return '填入目的码，多个请用","隔开'
-        }else{
-          return ''
-        }
-      },
       // 图片上传
       handleAvatarSuccess(res, file) {
         this.acceptForm.imageUrl = URL.createObjectURL(file.raw);
@@ -307,8 +346,7 @@
         return isJPG && isLt2M;
       },
         //新增目的码
-
-        s(){
+       addObjCodes(){
           let unit = {};
           this.objCodeList.push(unit);
         },
@@ -317,8 +355,8 @@
           console.log(index);
           this.objCodeList.splice(index,1);
         },
-      //点击详情
-      details(scope){
+        //点击详情
+        details(scope){
         console.log(scope);
       },
         // 企业模糊搜索
@@ -327,6 +365,9 @@
           this.$ajax.get('/vos/company/fuzzySearch?company='+this.acceptForm.firmName).then((res)=>{
               console.log(res.data);
               this.firmNameList = res.data;
+              if(this.acceptForm.firmName!='' && this.firmNameList.length!=0){
+                  this.firmNameShow = true;
+              }
           })
         },
         //400号码搜索
@@ -347,6 +388,13 @@
                 }
             })
         },
+        //企业名称li
+        firmNameLi(val){
+          console.log(val);
+          this.acceptForm.firmName = val.companyName;
+          this.companyInfo = val;
+          this.firmNameShow = false;
+        },
         //400号码li
         num400li(val){
           console.log(val);
@@ -366,14 +414,14 @@
         },
         // 目的码列表
         objCodeLists(){
-            console.log(this.form.time[0]);
-            console.log(this.form.time[1]);
+            // console.log(this.form.time[0]);
+            // console.log(this.form.time[1]);
           let dateStart = new Date(this.form.time[0]);
           let dateEnd = new Date(this.form.time[1]);
             let dateStart_value=dateStart.getFullYear() + '-' + (dateStart.getMonth() + 1) + '-' + dateStart.getDate();
             let dateEnd_value=dateEnd.getFullYear() + '-' + (dateEnd.getMonth() + 1) + '-' + dateEnd.getDate();
-            console.log(dateStart_value);
-            console.log(dateEnd_value);
+            // console.log(dateStart_value);
+            // console.log(dateEnd_value);
             this.$ajax.post('/vos/business/getBusinessFlowList',{
               "type":"Destnum",
               "dateStart":this.form.time[0]==undefined?'':dateStart_value,
@@ -399,6 +447,7 @@
               })
           })
         },
+        //状态列表
         statusList(){
           this.$ajax.post('/vos/dic/getDicsByType',{
               "dicType":"flowType",
@@ -412,8 +461,158 @@
               console.log(this.pageObj.total);
           })
         },
+        //状态转换
         statusChange(val){
           this.statusList();
+        },
+        // 增值资费
+        addTariff(val){
+          console.log(val);
+          let businessType = val.businessType;
+          if(businessType=='self'){
+              businessType = 30;
+          }else if(businessType=='channel'){
+              businessType = 31;
+          }
+          this.$ajax.get('/vos/blacklist/getValueAdded/'+businessType).then((res)=>{
+              // console.log(res.data);
+              this.tariffFee = res.data.tariffFee;
+              this.presents = res.data.presents;
+              if(this.presents=='1'){
+                  this.presents = '赠送';
+              }else{
+                  this.presents = '付费';
+              }
+              this.remarks = res.data.remarks;
+          })
+        },
+        // 新增目的码按钮清空
+        addObjCodeBtn(){
+          this.acceptForm.firmName='';
+          this.acceptForm.usage='';
+          this.acceptForm.imageUrl='';
+          this.acceptForm.fourNum='';
+          this.objCodeList = [];
+          this.dialogVisible = true;
+        },
+        // 目的码暂存
+        objCodeSave(acceptForm){
+            this.$refs[acceptForm].validate((valid) => {
+                if (valid) {
+                    let paramList=[];
+                    this.objCodeList.map((item)=>{
+                        let param={};
+                        param.id=item.id;
+                        param.destnumber=item.destnumber;
+                        param.destnumproofpic=this.acceptForm.imageUrl;
+                        param.destnumUsage=this.acceptForm.usage;
+                        param.number400=this.acceptForm.fourNum;
+                        param.companyid=this.acceptForm.firmId;
+                        paramList.push(param);
+                    });
+                    if(this.objCodeList.length==0){
+                        this.$message({type:'warning',message:'请新增目的码'});
+                        return
+                    }else{
+                        this.objCodeList.map((item)=>{
+                            if(item.destnumber==''){
+                                this.$message({type:'warning',message:'请填写或删除空的目的码'});
+                                return
+                            }
+                        })
+                        return
+                    };
+                    this.searchObjCode();
+                    this.$ajax.post('/vos/destnum/startAndSave',{
+                        "destNumber":paramList,
+                        "number400": this.acceptForm.fourNum,
+                        "company":this.companyInfo,
+                        "companyFlow":{
+                            "flowId":""
+                        }
+                    }).then((res)=>{
+                        console.log(res);
+                        if(res.code==200){
+                            this.dialogVisible = false;
+                            this.objCodeLists();
+                        }else{
+                            this.$message({type:'warning',message:res.message});
+                        }
+                    })
+                } else {
+                    console.log('error submit!!');
+                    return false;
+                }
+            });
+        },
+        // 目的码详情
+        objCodeDetail(data){
+          this.$ajax.post('/vos/destnum/getDetail',{
+            "companyFlow":{
+                "flowId": data.flowId,
+                "companyId":data.companyId,
+            },
+          }).then((res)=>{
+              if(res.code==200){
+                  console.log(res.data);
+                  console.log(res.data.destNumber);
+                  console.log(res.data.company);
+                  this.acceptForm.firmName = res.data.company.companyName;
+                  this.acceptForm.imageUrl = res.data.company.companyProofPic;
+                  this.acceptForm.fourNum = res.data.number400;
+                  res.data.destNumber.map((item)=>{
+                      this.acceptForm.firmName = item.companyName;
+                      this.acceptForm.imageUrl = item.companyProofPic;
+                      this.acceptForm.fourNum = item.number400;
+                      this.acceptForm.usage = item.destnumUsage;
+                  })
+
+              }
+          })
+        },
+        //目的码编辑
+        objCodeEdit(val){
+          console.log(val);
+          this.flowId = val.flowId;
+          this.companyId = val.companyId;
+          this.dialogVisible = true;
+          this.objCodeDetail(val);
+        },
+        // 目的码送审
+        objCodeSubmit(acceptForm){
+              this.$refs[acceptForm].validate((valid) => {
+                  if (valid) {
+                      let paramList=[];
+                      this.objCodeList.map((item)=>{
+                          let param={};
+                          param.id=item.id;
+                          param.destnumber=item.destnumber;
+                          param.destnumproofpic=this.acceptForm.imageUrl;
+                          param.destnumUsage=this.acceptForm.usage;
+                          param.number400=this.acceptForm.fourNum;
+                          param.companyid=this.acceptForm.firmId;
+                          paramList.push(param);
+                      });
+                      this.$ajax.post('/vos/destnum/sendToDestNumberAudit',{
+                          "destNumber":paramList,
+                          "number400": this.acceptForm.fourNum,
+                          "company":this.companyInfo,
+                          "companyFlow":{
+                              "flowId":""
+                          }
+                      }).then((res)=>{
+                          console.log(res);
+                          if(res.code==200){
+                              this.dialogVisible = false;
+                              this.objCodeLists();
+                          }else{
+                          }
+                      })
+                  } else {
+                      console.log('error submit!!');
+                      return false;
+                  }
+              });
         }
     },
     computed: {

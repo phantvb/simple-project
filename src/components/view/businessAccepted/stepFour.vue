@@ -111,12 +111,13 @@
         </div>
         <div class="stepBtn">
             <el-button type="primary" size="mini" @click="next(3)">上一步</el-button>
-            <el-button type="primary" size="mini" @click="next">暂存信息</el-button>
+            <el-button type="primary" size="mini" @click="addBusinessSave()">暂存信息</el-button>
             <el-button type="primary" size="mini" @click="">送审</el-button>
         </div>
     </div>
 </template>
 <script>
+    import {mapState} from "vuex";
     export default {
         name: 'stepFour',
         data() {
@@ -153,9 +154,83 @@
             },
             next(val){
                 this.$emit('childNext', val);
+            },
+            // 新增业务保存
+            addBusinessSave(){
+                this.dialogVisible = false;
+                console.log(this.company);
+                // this.$ajax.post('/vos/business/startAndSave', {
+                //     "company":{
+                //         "id":64,
+                //         "companyCardType":"business_license",   //企业类型
+                //         "companyName":"高通"                    //企业名字
+                //     },
+                //     "business":{
+                //         "number400":"400142520651",
+                //         "companyId":64,
+                //         "needCompanySave":false,
+                //         "tariffPackageId":1,
+                //         "authorizationPic":"xxxaadff.png",
+                //         "tariffName":"400商务热线300套餐",
+                //         "type":1,
+                //         "packageRules":"1200元套餐",
+                //         "basicFunctionFee":0,
+                //         "units":12,
+                //         "amount":2,
+                //         "bottomFee":1200,
+                //         "durationPresentation":9000,
+                //         "excessTariff":0,
+                //         "packageContent":"套餐内免费通话95000分钟，超出部分按照0.1元/分钟收费",
+                //         "channel":"channel"
+                //
+                //     },
+                //     "number400ValueAdded":[{
+                //         "number400":"100009",
+                //         "valueAddedName":"来电显示1",
+                //         "amount":2,
+                //         "valueAddedId":1,
+                //         "presents":1,
+                //         "remarks":"查看详情",
+                //         "valueAddedFee":10,
+                //         "units":"元/月"
+                //
+                //     },{
+                //         "number400":"100009",
+                //         "valueAddedName":"彩铃制作",
+                //         "amount":3,
+                //         "valueAddedId":4,
+                //         "presents":2,
+                //         "remarks":"客户拨打400电话，听到一段语音”您好，欢迎致电话我公司，我们将竭诚为您服务，电话接通中，请稍后",
+                //         "valueAddedFee":10,
+                //         "units":"首"
+                //
+                //     }],
+                //     "number400Concession":[{
+                //         "number400":"100009",
+                //         "concessionName":"套餐价格优惠222",
+                //         "concessionWay":2,
+                //         "packageDeals":100,
+                //         "availableTime":1000,
+                //         "channel":"channel",
+                //         "amount":1,
+                //         "units":"year"
+                //
+                //     }
+                //     ],
+                //     "companyFlow":{
+                //         "flowId":""
+                //     }
+                // }).then((res)=>{
+                //
+                // })
             }
         },
-        computed: {}
+        computed: {
+            ...mapState({
+                company: state => state.createActivities.company,
+                business: state => state.createActivities.business,
+            })
+        },
     }
 </script>
 <style>

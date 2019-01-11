@@ -55,12 +55,24 @@
 		},
 		components: { SidebarItem },
 		mounted() {
-			this.$ajax.post('/vos/user/apiLogin', {
-				username: 'jeq',
-				password: '123456'
-			}).then(res => {
-				console.log(res);
-			})
+			// this.$ajax.post('/vos/user/apiLogin', {
+			// 	username: 'jeq',
+			// 	password: '123456'
+			// }).then(res => {
+			// 	console.log(res);
+			// })
+            this.$ajax.post('/vos/user/apiLogin', {
+                username: 'admin',
+                password: '123456'
+            }).then(res => {
+                if (res.code == 200) {
+                    for (let key in res.data) {
+                        sessionStorage.setItem(key, res.data[key]);
+                        console.log(res.data);
+                        this.$root.eventHub.$emit('getLoginInfo', res.data);
+                    }
+                }
+            })
 		},
 		methods: {
 			handleOpen(key, keyPath) {

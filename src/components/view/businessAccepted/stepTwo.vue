@@ -13,7 +13,7 @@
                         <ul>
                             <li class="8">
                                 <el-upload class="avatar-uploader examplew" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="handleAvatarSuccess" :on-error="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
-                                    <img v-if="stepTwoForm.proveFile" :src="stepTwoForm.proveFile" class="avatar">
+                                    <img v-if="stepTwoForm.companyProofPic" :src="stepTwoForm.companyProofPic" class="avatar">
                                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                 </el-upload>
                             </li>
@@ -42,22 +42,22 @@
                             <li class="l2">
                                 <ul>
                                     <li class="l2">
-                                        <el-upload class="avatar-uploader exampleh" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="handleAvatarSuccess" :on-error="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
-                                            <img v-if="stepTwoForm.frontImageUrl" :src="stepTwoForm.frontImageUrl" class="avatar">
+                                        <el-upload class="avatar-uploader exampleh" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="handleFrontSuccess" :on-error="handleFrontSuccess" :before-upload="beforeAvatarUpload">
+                                            <img v-if="stepTwoForm.legalCardFrontPic" :src="stepTwoForm.legalCardFrontPic" class="avatar">
                                             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                         </el-upload>
                                     </li>
                                     <li class="l2">
-                                        <el-upload class="avatar-uploader exampleh" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="handleAvatarSuccess" :on-error="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
-                                            <img v-if="stepTwoForm.contraryImageUrl" :src="stepTwoForm.contraryImageUrl" class="avatar">
+                                        <el-upload class="avatar-uploader exampleh" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="handleContrarySuccess" :on-error="handleContrarySuccess" :before-upload="beforeAvatarUpload">
+                                            <img v-if="stepTwoForm.legalCardBackPic" :src="stepTwoForm.legalCardBackPic" class="avatar">
                                             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                         </el-upload>
                                     </li>
                                 </ul>
                                 <ul>
                                     <li class="l2">
-                                        <el-upload class="avatar-uploader exampleh" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="handleAvatarSuccess" :on-error="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
-                                            <img v-if="stepTwoForm.selfImageUrl" :src="imageUrl.selfImageUrl" class="avatar">
+                                        <el-upload class="avatar-uploader exampleh" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="handleSelfSuccess" :on-error="handleSelfSuccess" :before-upload="beforeAvatarUpload">
+                                            <img v-if="stepTwoForm.legalCardHandPic" :src="imageUrl.legalCardHandPic" class="avatar">
                                             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                         </el-upload>
                                     </li>
@@ -92,31 +92,41 @@
         </el-form>
         <div class="stepBtn">
             <el-button type="primary" size="mini" @click="next(1)">上一步</el-button>
-            <el-button type="primary" size="mini" @click="next">暂存信息</el-button>
+            <el-button type="primary" size="mini" @click="addBusinessSave()">暂存信息</el-button>
             <el-button type="primary" size="mini" @click="next(3)">下一步</el-button>
         </div>
 
     </div>
 </template>
 <script>
+    import {mapState} from "vuex";
     export default {
         name: 'stepTwo',
         data() {
             return {
                 stepTwoForm:{
-                    proveFile:'',
-                    reference:'',
-                    frontImageUrl:'',        //正面照
-                    contraryImageUrl: '',    //反面照
-                    selfImageUrl:'',         //本人手持证件照
-                }
+                    companyProofPic:'',      //企业证明材料
+                    legalCardFrontPic:'',    //正面照
+                    legalCardBackPic: '',    //反面照
+                    legalCardHandPic:'',     //本人手持证件照
+                },
+                campanyObj:{},        //企业信息对象
             };
         },
         components: {},
         methods: {
             // 图片上传
             handleAvatarSuccess(res, file) {
-                this.acceptForm.imageUrl = URL.createObjectURL(file.raw);
+                this.stepTwoForm.companyProofPic = URL.createObjectURL(file.raw);
+            },
+            handleFrontSuccess(res,file){
+                this.stepTwoForm.legalCardFrontPic = URL.createObjectURL(file.raw);
+            },
+            handleContrarySuccess(res,file){
+                this.stepTwoForm.legalCardBackPic = URL.createObjectURL(file.raw);
+            },
+            handleSelfSuccess(res,file){
+                this.stepTwoForm.legalCardHandPic = URL.createObjectURL(file.raw);
             },
             beforeAvatarUpload(file) {
                 const isJPG = file.type === 'image/jpeg';
@@ -132,9 +142,29 @@
             },
             next(val){
                 this.$emit('childNext', val);
-            }
+                // 改变vuex的值
+                if(val==3){
+                    this.campanyObj = Object.assign(this.company,this.stepTwoForm);
+                    console.log(this.campanyObj);
+                    this.ChangeCompanyStatus(this.campanyObj);
+                }
+            },
+            // 暂存按钮
+            addBusinessSave(){
+                this.campanyObj = Object.assign(this.company,this.stepTwoForm);
+                console.log(this.campanyObj);
+                this.ChangeCompanyStatus(this.campanyObj);
+            },
+            // 存vuex更新企业信息模块入参
+            ChangeCompanyStatus(val) {
+                return this.$store.dispatch("ChangeCompanyStatus", val);
+            },
         },
-        computed: {}
+        computed: {
+            ...mapState({
+                company: state => state.createActivities.company,
+            })
+        },
     }
 </script>
 <style>
