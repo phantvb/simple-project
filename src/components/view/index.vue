@@ -7,7 +7,7 @@
 			<!--左侧导航栏-->
 			<el-aside width="210px">
 				<el-menu default-active="1-4-1" class="el-menu-vertical" @open="handleOpen" @close="handleClose" :collapse="isCollapse">
-					<SidebarItem :data='router' :base-path="router.path"></SidebarItem>
+					<SidebarItem :data='router' :base-path="router.url"></SidebarItem>
 				</el-menu>
 			</el-aside>
 			<!--右侧空白页-->
@@ -50,29 +50,364 @@
 		name: 'layout',
 		data() {
 			return {
-				isCollapse: false
+				isCollapse: false,
+				//router: {}
 			};
 		},
-		components: { SidebarItem },
+		components: {
+			SidebarItem
+		},
 		mounted() {
-			// this.$ajax.post('/vos/user/apiLogin', {
-			// 	username: 'jeq',
-			// 	password: '123456'
-			// }).then(res => {
-			// 	console.log(res);
-			// })
-            this.$ajax.post('/vos/user/apiLogin', {
-                username: 'admin',
-                password: '123456'
-            }).then(res => {
-                if (res.code == 200) {
-                    for (let key in res.data) {
-                        sessionStorage.setItem(key, res.data[key]);
-                        console.log(res.data);
-                        this.$root.eventHub.$emit('getLoginInfo', res.data);
-                    }
-                }
-            })
+			this.$ajax.post('/vos/user/apiLogin', {
+				username: 'admin',
+				password: '123456'
+			}).then(res => {
+				if (res.code == 200) {
+					for (let key in res.data) {
+						sessionStorage.setItem(key, res.data[key]);
+					}
+				}
+			});
+			// this.$ajax.get('/vos/menu/getTreeMenu').then(res => {
+			// 	if (res.code == 200) {
+			// 		this.router = [{
+			// 				"id": 16,
+			// 				"url": "/numManage",
+			// 				"path": null,
+			// 				"component": null,
+			// 				"name": "号码管理",
+			// 				"iconCls": null,
+			// 				"parentId": 0,
+			// 				"roles": null,
+			// 				"children": [{
+			// 						"id": 21,
+			// 						"url": "/ObjCodeManage",
+			// 						"path": null,
+			// 						"component": null,
+			// 						"name": "目的码管理",
+			// 						"iconCls": null,
+			// 						"parentId": 16,
+			// 						"roles": null,
+			// 						"children": [],
+			// 						"meta": null,
+			// 						"type": "0",
+			// 						"checked": null
+			// 					},
+			// 					{
+			// 						"id": 20,
+			// 						"url": "/blacklistManage",
+			// 						"path": null,
+			// 						"component": null,
+			// 						"name": "黑名单管理",
+			// 						"iconCls": null,
+			// 						"parentId": 16,
+			// 						"roles": null,
+			// 						"children": [],
+			// 						"meta": null,
+			// 						"type": "0",
+			// 						"checked": null
+			// 					},
+			// 					{
+			// 						"id": 19,
+			// 						"url": "/voiceFileManage",
+			// 						"path": null,
+			// 						"component": null,
+			// 						"name": "语音文件管理",
+			// 						"iconCls": null,
+			// 						"parentId": 16,
+			// 						"roles": null,
+			// 						"children": [],
+			// 						"meta": null,
+			// 						"type": "0",
+			// 						"checked": null
+			// 					},
+			// 					{
+			// 						"id": 18,
+			// 						"url": "/ticketManage",
+			// 						"path": null,
+			// 						"component": null,
+			// 						"name": "话单管理",
+			// 						"iconCls": null,
+			// 						"parentId": 16,
+			// 						"roles": null,
+			// 						"children": [],
+			// 						"meta": null,
+			// 						"type": "0",
+			// 						"checked": null
+			// 					},
+			// 					{
+			// 						"id": 17,
+			// 						"url": "/numManage",
+			// 						"path": null,
+			// 						"component": null,
+			// 						"name": "号码管理",
+			// 						"iconCls": null,
+			// 						"parentId": 16,
+			// 						"roles": null,
+			// 						"children": [],
+			// 						"meta": null,
+			// 						"type": "0",
+			// 						"checked": null
+			// 					}
+			// 				],
+			// 				"meta": null,
+			// 				"type": "0",
+			// 				"checked": null
+			// 			},
+			// 			{
+			// 				"id": 26,
+			// 				"url": "/operateManage",
+			// 				"path": null,
+			// 				"component": null,
+			// 				"name": "运营管理",
+			// 				"iconCls": null,
+			// 				"parentId": 0,
+			// 				"roles": null,
+			// 				"children": [{
+			// 						"id": 30,
+			// 						"url": "/IndustryCategory",
+			// 						"path": null,
+			// 						"component": null,
+			// 						"name": "行业类别管理",
+			// 						"iconCls": null,
+			// 						"parentId": 26,
+			// 						"roles": null,
+			// 						"children": [],
+			// 						"meta": null,
+			// 						"type": "0",
+			// 						"checked": null
+			// 					},
+			// 					{
+			// 						"id": 29,
+			// 						"url": "/numPoolManage",
+			// 						"path": null,
+			// 						"component": null,
+			// 						"name": "号码池管理",
+			// 						"iconCls": null,
+			// 						"parentId": 26,
+			// 						"roles": null,
+			// 						"children": [],
+			// 						"meta": null,
+			// 						"type": "0",
+			// 						"checked": null
+			// 					},
+			// 					{
+			// 						"id": 28,
+			// 						"url": "/noticeManage",
+			// 						"path": null,
+			// 						"component": null,
+			// 						"name": "公告管理",
+			// 						"iconCls": null,
+			// 						"parentId": 26,
+			// 						"roles": null,
+			// 						"children": [],
+			// 						"meta": null,
+			// 						"type": "0",
+			// 						"checked": null
+			// 					},
+			// 					{
+			// 						"id": 27,
+			// 						"url": "/comboSet",
+			// 						"path": null,
+			// 						"component": null,
+			// 						"name": "资费及增值套餐设置",
+			// 						"iconCls": null,
+			// 						"parentId": 26,
+			// 						"roles": null,
+			// 						"children": [],
+			// 						"meta": null,
+			// 						"type": "0",
+			// 						"checked": null
+			// 					}
+			// 				],
+			// 				"meta": null,
+			// 				"type": "0",
+			// 				"checked": null
+			// 			},
+			// 			{
+			// 				"id": 24,
+			// 				"url": "/businessAccepted",
+			// 				"path": null,
+			// 				"component": null,
+			// 				"name": "业务受理",
+			// 				"iconCls": null,
+			// 				"parentId": 0,
+			// 				"roles": null,
+			// 				"children": [{
+			// 					"id": 25,
+			// 					"url": "/400businessManage",
+			// 					"path": null,
+			// 					"component": null,
+			// 					"name": "400业务受理",
+			// 					"iconCls": null,
+			// 					"parentId": 24,
+			// 					"roles": null,
+			// 					"children": [],
+			// 					"meta": null,
+			// 					"type": "0",
+			// 					"checked": null
+			// 				}],
+			// 				"meta": null,
+			// 				"type": "0",
+			// 				"checked": null
+			// 			},
+			// 			{
+			// 				"id": 1,
+			// 				"url": "/systemSetup",
+			// 				"path": "/",
+			// 				"component": "USER",
+			// 				"name": "系统设置",
+			// 				"iconCls": null,
+			// 				"parentId": 0,
+			// 				"roles": null,
+			// 				"children": [{
+			// 						"id": 23,
+			// 						"url": "/roleManage",
+			// 						"path": null,
+			// 						"component": null,
+			// 						"name": "角色管理",
+			// 						"iconCls": null,
+			// 						"parentId": 1,
+			// 						"roles": null,
+			// 						"children": [],
+			// 						"meta": null,
+			// 						"type": "0",
+			// 						"checked": null
+			// 					},
+			// 					{
+			// 						"id": 22,
+			// 						"url": "/systemLog",
+			// 						"path": null,
+			// 						"component": null,
+			// 						"name": "系统日志",
+			// 						"iconCls": null,
+			// 						"parentId": 1,
+			// 						"roles": null,
+			// 						"children": [],
+			// 						"meta": null,
+			// 						"type": "0",
+			// 						"checked": null
+			// 					},
+			// 					{
+			// 						"id": 6,
+			// 						"url": "/accountManage",
+			// 						"path": "/",
+			// 						"component": "USER",
+			// 						"name": "账号管理",
+			// 						"iconCls": null,
+			// 						"parentId": 1,
+			// 						"roles": null,
+			// 						"children": [],
+			// 						"meta": null,
+			// 						"type": "m",
+			// 						"checked": null
+			// 					},
+			// 					{
+			// 						"id": 2,
+			// 						"url": "/layout/userCenter",
+			// 						"path": "/",
+			// 						"component": "USER",
+			// 						"name": "用户中心",
+			// 						"iconCls": null,
+			// 						"parentId": 1,
+			// 						"roles": null,
+			// 						"children": [],
+			// 						"meta": null,
+			// 						"type": "m",
+			// 						"checked": null
+			// 					}
+			// 				],
+			// 				"meta": null,
+			// 				"type": "m",
+			// 				"checked": null
+			// 			},
+			// 			{
+			// 				"id": 11,
+			// 				"url": "/accountingManage",
+			// 				"path": null,
+			// 				"component": null,
+			// 				"name": "账务管理",
+			// 				"iconCls": null,
+			// 				"parentId": 0,
+			// 				"roles": null,
+			// 				"children": [{
+			// 						"id": 15,
+			// 						"url": "/bollotManage",
+			// 						"path": null,
+			// 						"component": null,
+			// 						"name": "开票管理",
+			// 						"iconCls": null,
+			// 						"parentId": 11,
+			// 						"roles": null,
+			// 						"children": [],
+			// 						"meta": null,
+			// 						"type": "0",
+			// 						"checked": null
+			// 					},
+			// 					{
+			// 						"id": 14,
+			// 						"url": "/chargeManage",
+			// 						"path": null,
+			// 						"component": null,
+			// 						"name": "充值管理",
+			// 						"iconCls": null,
+			// 						"parentId": 11,
+			// 						"roles": null,
+			// 						"children": [],
+			// 						"meta": null,
+			// 						"type": "0",
+			// 						"checked": null
+			// 					},
+			// 					{
+			// 						"id": 13,
+			// 						"url": "/billManage",
+			// 						"path": null,
+			// 						"component": null,
+			// 						"name": "账单管理",
+			// 						"iconCls": null,
+			// 						"parentId": 11,
+			// 						"roles": null,
+			// 						"children": [],
+			// 						"meta": null,
+			// 						"type": "0",
+			// 						"checked": null
+			// 					},
+			// 					{
+			// 						"id": 12,
+			// 						"url": "/accountingManage",
+			// 						"path": null,
+			// 						"component": null,
+			// 						"name": "账务管理",
+			// 						"iconCls": null,
+			// 						"parentId": 11,
+			// 						"roles": null,
+			// 						"children": [],
+			// 						"meta": null,
+			// 						"type": "0",
+			// 						"checked": null
+			// 					}
+			// 				],
+			// 				"meta": null,
+			// 				"type": "0",
+			// 				"checked": null
+			// 			},
+			// 			{
+			// 				"id": 10,
+			// 				"url": "/layout/businessInform",
+			// 				"path": "/",
+			// 				"component": null,
+			// 				"name": "企业管理",
+			// 				"iconCls": null,
+			// 				"parentId": 0,
+			// 				"roles": null,
+			// 				"children": [],
+			// 				"meta": null,
+			// 				"type": "m",
+			// 				"checked": null
+			// 			}
+			// 		];
+			// 	}
+			// });
 		},
 		methods: {
 			handleOpen(key, keyPath) {
@@ -102,8 +437,10 @@
 		computed: {
 			router() {
 				var format = function (fdata) {
+					fdata.url = fdata.path;
 					if (fdata.children) {
 						fdata.children.map((item, index) => {
+							item.url = item.path;
 							if (item.hidden) {
 								fdata.children.splice(index, 1);
 							} else {
@@ -115,6 +452,7 @@
 					}
 				}
 				var routerData = this.deepClone(this.$router.options.routes);
+
 				for (let key in routerData) {
 					format(routerData[key])
 				}

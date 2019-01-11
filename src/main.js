@@ -19,12 +19,27 @@ Vue.prototype.$clear = function (obj) {
 			if (toStr.call(obj[key]) == '[object Array]') {
 				obj[key] = [];
 			} else {
-				this.clear(obj[key]);
+				this.$clear(obj[key]);
 			}
-		} else if (typeof (obj[key] == 'number')) {
-			obj[key] = 0;
-		} else if (typeof (obj[key] == 'string')) {
+		} else if (typeof (obj[key]) == 'string') {
 			obj[key] = '';
+		} else if (typeof (obj[key]) == 'number') {
+			obj[key] = 0;
+		}
+	}
+	return obj;
+};
+Vue.prototype.$format = function (obj) {
+	var toStr = Object.prototype.toString;
+	for (let key in obj) {
+		if (typeof obj[key] == 'object' && obj[key] !== null) {
+			if (toStr.call(obj[key]) == '[object Array]' && obj[key] == []) {
+				delete obj[key];
+			} else {
+				this.$format(obj[key]);
+			}
+		} else if (typeof (obj[key] == 'string') && obj[key] == '') {
+			delete obj[key];
 		}
 	}
 	return obj;
@@ -54,7 +69,8 @@ axios.interceptors.response.use(res => {
 
 Vue.config.productionTip = false;
 Vue.prototype.$global = {
-	pageSize: [10, 20, 30, 50]
+	pageSize: [10, 20, 30, 50],
+	uploadUrl: '/vos/vos/common/uploadImg'
 }
 
 /* eslint-disable no-new */

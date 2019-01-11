@@ -1,5 +1,5 @@
 <template>
-	<div id="businessDetail">
+	<div id="businessDetail" class="managerFormTitle">
 		<div id="base">
 			<header class="left">
 				企业管理 > 详情

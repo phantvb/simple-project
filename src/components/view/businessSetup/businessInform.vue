@@ -1,15 +1,15 @@
 <template>
 	<div id="businessInform" class="managerFormTitle">
-		<header>
+		<header class="flg">
 			企业管理
 		</header>
 		<el-tabs v-model="active">
-			<el-tab-pane label="全部" name="1"></el-tab-pane>
-			<el-tab-pane label="企业审核" name="2"></el-tab-pane>
-			<el-tab-pane label="变更审核" name="3"></el-tab-pane>
-			<el-tab-pane label="注销审核" name="4"></el-tab-pane>
-			<el-tab-pane label="已过审企业" name="5"></el-tab-pane>
-			<el-tab-pane label="已注销企业" name="6"></el-tab-pane>
+			<el-tab-pane label="全部" name="all"></el-tab-pane>
+			<el-tab-pane label="企业审核" name="Company_Auditing"></el-tab-pane>
+			<el-tab-pane label="变更审核" name="Modify_Auditing"></el-tab-pane>
+			<el-tab-pane label="注销审核" name="Canceling_Auditing"></el-tab-pane>
+			<el-tab-pane label="已过审企业" name="Audit_Success"></el-tab-pane>
+			<el-tab-pane label="已注销企业" name="Cancelled"></el-tab-pane>
 			<div class="search">
 				<ul>
 					<li>
@@ -48,22 +48,43 @@
 				</div>
 			</section>
 			<el-table :data="tableData" style="width: 100%;margin-bottom:15px;">
-				<el-table-column prop="type" label="类型" min-width="80">
+				<el-table-column label="类型" min-width="80">
+					<template slot-scope="scope">
+						<span v-if="scope.row.status=='Company'">企业审核</span>
+						<span v-else-if="scope.row.status=='Business'">业务受理</span>
+						<span v-else-if="scope.row.status=='Destnum'">目的码审核</span>
+						<span v-else-if="scope.row.status=='Voice'">语音审核</span>
+					</template>
 				</el-table-column>
-				<el-table-column prop="name" label="企业名称" min-width="200">
+				<el-table-column prop="company.companyName" label="企业名称" min-width="200">
 				</el-table-column>
-				<el-table-column prop="number" label="证件编号" min-width="150">
+				<el-table-column prop="company.companyCardNo" label="证件编号" min-width="150">
 				</el-table-column>
-				<el-table-column prop="person" label="法人" min-width="80">
+				<el-table-column prop="company.legalPerson" label="法人" min-width="80">
 				</el-table-column>
-				<el-table-column prop="date" label="提交日期" min-width="100">
+				<el-table-column prop="createTime" label="提交日期" min-width="100">
 				</el-table-column>
-				<el-table-column prop="status" label="状态" min-width="80">
+				<el-table-column label="状态" min-width="80">
+					<template slot-scope="scope">
+						<span v-if="scope.row.status=='New_Flow'">新增受理</span>
+						<span v-else-if="scope.row.status=='Wait_To_Audit'" class="red">等待送审</span>
+						<span v-else-if="scope.row.status=='Company_Auditing'">企业审核</span>
+						<span v-else-if="scope.row.status=='Business_Auditing'">业务受理审核</span>
+						<span v-else-if="scope.row.status=='Voice_Auditing'">语音审核</span>
+						<span v-else-if="scope.row.status=='DestNum_Auditing'">目的码审核</span>
+						<span v-else-if="scope.row.status=='Audit_Success'" class="success">审核通过</span>
+						<span v-else-if="scope.row.status=='Canceling_Auditing'">注销审核中</span>
+						<span v-else-if="scope.row.status=='Modify_Auditing'" class="red">变更审核</span>
+						<span v-else-if="scope.row.status=='Terminate_Flow'" class="red">受理终止</span>
+						<span v-else-if="scope.row.status=='Cancelled'" class="red">已注销</span>
+						<span v-else-if="scope.row.status=='Modify_Rejected'" class="red">变更审核驳回</span>
+						<span v-else-if="scope.row.status=='Freezed'">注销冷冻</span>
+					</template>
 				</el-table-column>
 				<el-table-column prop="name" label="操作" min-width="200">
 					<template slot-scope="scope">
 						<el-button size="mini" type="text">详情</el-button>
-						<el-button size="mini" type="text">编辑</el-button>
+						<el-button size="mini" type="text" @click="addCompany(true,scope.row.flowId)">编辑</el-button>
 						<el-button size="mini" type="text">送审</el-button>
 						<el-button size="mini" type="text">撤回</el-button>
 						<el-button size="mini" type="text">变更</el-button>
@@ -76,7 +97,7 @@
 			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page.num" :page-sizes="$global.pageSize" :page-size="page.size" layout="total, sizes, prev, pager, next, jumper" :total="page.total">
 			</el-pagination>
 		</el-tabs>
-		<company :show="addCompanys" @close="addCompany(false)"></company>
+		<company :show="addCompanys" @close="addCompany(false)" :flowId="flowId"></company>
 	</div>
 </template>
 <style lang="scss" scoped>
@@ -91,13 +112,14 @@
 		},
 		data() {
 			return {
-				active: '1',
+				active: 'all',
 				addCompanys: false,
+				baseData: {},
+				flowId: '',
 				form: {
 					name: '',
 					person: '',
 					number: '',
-					date: null,
 					status
 				},
 				options: [{
@@ -124,29 +146,46 @@
 				}
 			}
 		},
+		watch: {
+			active(newV, oldV) {
+				this.fetchData();
+			}
+		},
 		mounted() {
-
-			var arr = [12312, 213312, 111];
-
-			this.$ajax.post('/vos/user/login', {
-				'username': 'jeq',
-				'password': '123456',
-				'code': '1233'
-			}).then(res => {
-
-			})
-
+			this.baseData.businessType = sessionStorage.getItem("businessType");
+			this.baseData.roleName = sessionStorage.getItem("roleName");
+			this.baseData.username = sessionStorage.getItem("username");
+			this.fetchData();
 		},
 		methods: {
-			addCompany(bol) {
+			addCompany(bol, id) {
+				console.log(id)
+				this.flowId = id || '';
 				this.addCompanys = bol;
 			},
 			handleSizeChange() {
-
+				this.fetchData();
 			},
-			handleCurrentChange() {
-
-			}
+			handleCurrentChange(val) {
+				this.fetchData(val);
+			},
+			fetchData(pageNum) {
+				var data = {};
+				this.page.num = pageNum || 1;
+				data = this.form;
+				data.page = {
+					pageNo: this.page.num,
+					pageSize: this.page.size
+				};
+				data.source = this.baseData.businessType;
+				data.type = 'Company';
+				this.$ajax.post("/vos/company/getAllCompanyList", this.$format(data)).then(res => {
+					if (res.code == 200) {
+						this.tableData = res.data.companyFlows;
+						this.page.total = res.data.totalCount;
+					}
+				});
+			},
 		}
 	}
 </script>

@@ -1,18 +1,18 @@
 <template>
-	<div id="bollotManage" class="managerFormTitle">
+	<div id="bollotManage" class="managerFormTitle" v-loading="loading">
 		<el-tabs v-model="active">
-			<el-tab-pane label="自助直销" name="1"></el-tab-pane>
-			<el-tab-pane label="渠道" name="2"></el-tab-pane>
+			<el-tab-pane label="自助直销" name="self"></el-tab-pane>
+			<el-tab-pane label="渠道" name="channel"></el-tab-pane>
 			<div class="search">
 				<ul>
 					<li>
 						<span class="demonstration">400号码：</span>
-						<el-input v-model="form.name" placeholder="请输入内容" size="mini">
+						<el-input v-model="form.number400" placeholder="请输入内容" size="mini">
 						</el-input>
 					</li>
 					<li>
 						<span class="demonstration">企业名称：</span>
-						<el-input v-model="form.person" placeholder="请输入内容" size="mini">
+						<el-input v-model="form.companyName" placeholder="请输入内容" size="mini">
 						</el-input>
 					</li>
 				</ul>
@@ -115,7 +115,7 @@
 		},
 		data() {
 			return {
-				active: '1',
+				active: 'self',
 				status: '',
 				bollot: false,
 				form: {
@@ -125,6 +125,7 @@
 					date: null,
 					status
 				},
+				loading: false,
 				options: [{
 					value: '',
 					label: '全部'
@@ -154,10 +155,31 @@
 				this.bollot = bol;
 			},
 			handleSizeChange() {
-
+				this.fetchData();
 			},
-			handleCurrentChange() {
-
+			handleCurrentChange(val) {
+				this.fetchData(val);
+			},
+			fetchData(pageNum) {
+				// this.loading = true;
+				//=pageNum || 1;
+				// var data = {};
+				// data.page = {
+				// 	pageNo: this.page.num,
+				// 	pageSize: this.page.size
+				// };
+				// data.number400TimePacket = Object.assign({}, this.form);
+				// data.number400TimePacket.channel = this.active;
+				// delete data.number400TimePacket["time"];
+				// data.beforeTime = this.form.time[0] || '';
+				// data.afterTime = this.form.time[1] || '';
+				// this.$ajax.post("/vos/number400TimePacket/search", data).then(res => {
+				// 	if (res.code == 200) {
+				// 		this.loading = false;
+				// 		this.tableData = res.data.number400TimePackets;
+				// 		this.page.total = res.data.totalCount;
+				// 	}
+				// });
 			}
 		}
 	}
