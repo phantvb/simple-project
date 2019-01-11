@@ -16,15 +16,15 @@
 				<el-button type="text" class="button" @click="editPortrait(true)">修改头像</el-button>
 			</div>
 			<div class="part message">
-				<p>登录账号 ：<span class="grey">18072886969</span></p>
-				<p>用户名称：沈嘉</p>
-				<p>性别：男</p>
-				<p>身份证号：</p>
-				<p>邮箱：nikor@126.com</p>
-				<p>手机：18072886969</p>
+				<p>登录账号 ：<span class="grey">{{form.username}}</span></p>
+				<p>用户名称：{{form.name}}</p>
+				<p>性别：{{form.sex=='man'?'男':'女'}}</p>
+				<!-- <p>身份证号：{{form.}}</p> -->
+				<p>邮箱：{{form.email}}</p>
+				<p>手机：{{form.phone}}</p>
 			</div>
 			<div class="part message">
-				<p>角色：超级管理员</p>
+				<p>角色：{{form.phone}}</p>
 				<p>地区：浙江省 杭州市 萧山区</p>
 				<p>状态：启用</p>
 				<p>备注：</p>
@@ -55,7 +55,8 @@
 				username: '',
 				mesEdit: false,
 				portraitEdit: false,
-				passEdit: false
+				passEdit: false,
+				form: {}
 			}
 		},
 		components: {
@@ -80,7 +81,7 @@
 			fetchData() {
 				this.$ajax.post('/vos/user/getByUsername', { username: this.username }).then(res => {
 					if (res.code == 200) {
-
+						this.form = res.data;
 					}
 				})
 			}
