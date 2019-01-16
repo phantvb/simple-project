@@ -1,11 +1,11 @@
 <template>
 	<div id="charge">
-		<el-dialog title="时长包充值" class="left" :visible.sync="dialogVisible" @close="close" v-if="dialogVisible">
+		<el-dialog title="时长包充值" class="left" :visible.sync="dialogVisible" @close="close">
 			<div class="form_item">
 				<div class="form_title right">400号码：</div>
 				<div class="form_con">
 					<el-select v-model="form.number400" @change="number400Change" filterable remote reserve-keyword placeholder="请输入400号" :remote-method="remoteMethod" :loading="loading" size="mini" value-key="id">
-						<el-option v-for="item in numberOptions" :key="item.number400" :label="item.number400" :value="item">
+						<el-option v-for="item in numberOptions" :key="item.id" :label="item.number400" :value="item">
 						</el-option>
 					</el-select>
 				</div>
@@ -105,6 +105,14 @@
 				delete data.charge;
 				delete data.concession;
 				data.number400 = data.number400.number400;
+				if (this.form.number400 == '' || !this.form.charge.timePacketName || !this.form.concession.concessionName) {
+					this.$message({
+						message: '请先完善信息',
+						type: 'warning'
+					});
+					return;
+				}
+
 				this.$ajax.post('/vos/number400TimePacket/add', { number400TimePacket: data, concessionScheme: this.form.concession }).then(res => {
 					if (res.code == 200) {
 						this.dialogVisible = false;

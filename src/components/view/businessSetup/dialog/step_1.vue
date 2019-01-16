@@ -316,7 +316,6 @@
 				}
 			},
 			getCity(e) {
-				console.log(e);
 				var id = this.checkValue(this.form.registProvince, this.ProvinceOptions);
 				this.$ajax.get('/vos/address/getCitiesByProvinceId?provinceId=' + id).then(res => {
 					if (res.code == 200) {

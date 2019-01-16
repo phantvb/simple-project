@@ -16,18 +16,18 @@
 				<el-button type="text" class="button" @click="editPortrait(true)">修改头像</el-button>
 			</div>
 			<div class="part message">
-				<p>登录账号 ：<span class="grey">{{tableData.username}}</span></p>
-				<p>用户名称：{{tableData.name}}</p>
-				<p>性别：{{sex}}</p>
-				<p>身份证号：{{tableData.idNo}}</p>
-				<p>邮箱：{{tableData.email}}</p>
-				<p>手机：{{tableData.phone}}</p>
+				<p>登录账号 ：<span class="grey">{{form.username}}</span></p>
+				<p>用户名称：{{form.name}}</p>
+				<p>性别：{{form.sex=='man'?'男':'女'}}</p>
+				<p>身份证号：{{form.idNo}}</p>
+				<p>邮箱：{{form.email}}</p>
+				<p>手机：{{form.phone}}</p>
 			</div>
 			<div class="part message">
-				<p>角色：{{tableData.nameZh}}</p>
-				<p>地区：{{tableData.province}}{{tableData.city}}{{tableData.area}}</p>
-				<p>状态：{{tableData.enabled}}</p>
-				<p>备注：{{tableData.remark}}</p>
+				<p>角色：{{form.nameZh}}</p>
+				<p>地区：{{form.province}}{{form.city}}{{form.area}}</p>
+				<p>状态：{{form.enabled?'启用':'关闭'}}</p>
+				<p>备注：{{form.remark}}</p>
 			</div>
 		</section>
 		<section>
@@ -38,9 +38,9 @@
 				<el-button type="text" class="button" @click="editPass(true)">修改密码</el-button>
 			</div>
 		</section>
-		<message :show="mesEdit" :data="tableData" @close="editMes(false)"></message>
-		<portrait :show="portraitEdit" :data="tableData" @close="editPortrait(false)"></portrait>
-		<password :show="passEdit" :data="tableData" @close="editPass(false)"></password>
+		<message :show="mesEdit" :data="form" @close="editMes(false)"></message>
+		<portrait :show="portraitEdit" :data="form" @close="editPortrait(false)"></portrait>
+		<password :show="passEdit" :data="form" @close="editPass(false)"></password>
 	</div>
 </template>
 
@@ -56,8 +56,7 @@
 				mesEdit: false,
 				portraitEdit: false,
 				passEdit: false,
-				tableData: [],
-				sex: '', // 存放翻译之后的性别
+				form: {}
 			}
 		},
 		components: {
@@ -79,19 +78,7 @@
 		created() {
 			this.$ajax.get('/vos/user/getDetail').then(res => {
 				if (res.code == 200) {
-					this.tableData = res.data;
-					if (this.tableData.sex == 'man') {
-						this.sex = '男';
-					}
-					if (this.tableData.sex == 'woman') {
-						this.sex = '女';
-					}
-					if (this.tableData.enabled == true) {
-						this.tableData.enabled = '启用';
-					}
-					if (this.tableData.enabled == false) {
-						this.tableData.enabled = '关闭';
-					}
+					this.form = res.data;
 				}
 			});
 		}

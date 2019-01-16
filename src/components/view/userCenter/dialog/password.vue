@@ -13,7 +13,7 @@
 				</el-form-item>
 			</el-form>
 			<div slot="footer" class="dialog-footer">
-				<el-button @click="dialogVisible = false" size="mini">取 消</el-button>
+				<el-button @click="close" size="mini">取 消</el-button>
 				<el-button type="primary" @click="submitForm('form')" size="mini">确 定</el-button>
 			</div>
 		</el-dialog>
@@ -44,7 +44,6 @@
 					} else {
 						callback(new Error('密码必须包含数字、字母及特殊字符'));
 					}
-
 				}
 			};
 			var validateOldPass = (rule, value, callback) => {
@@ -62,7 +61,6 @@
 					} else {
 						callback(new Error('密码必须包含数字、字母及特殊字符'));
 					}
-
 				}
 			};
 			var validatePass2 = (rule, value, callback) => {
@@ -111,6 +109,20 @@
 				}
 			},
 			submitForm(formName) {
+				var _this = this;
+				this.$ajax.post('/vos/user/editPassword', {
+					"userId": this.data.id,
+					"oldPassword": this.form.oldpass,
+					"newPassword": this.form.pass
+				}).then(res => {
+					if (res.code == 200) {
+						_this.$message({
+							message: '修改成功!',
+							type: 'success'
+						});
+						_this.close();
+					}
+				});
 				this.$refs[formName].validate((valid) => {
 					if (valid) {
 						this.$ajax.post('/vos/user/editPassword', {
@@ -119,20 +131,17 @@
 							"newPassword": this.form.pass
 						}).then(res => {
 							if (res.code == 200) {
-								this.$message({
+								_this.$message({
 									message: '修改成功!',
 									type: 'success'
 								});
-							}
-							if (res.code == 400) {
-								this.$message.error('原始密码输入错误!');
+								_this.close();
 							}
 						});
 					} else {
 						return false;
 					}
 				});
-				this.dialogVisible = false;
 			}
 		}
 	}

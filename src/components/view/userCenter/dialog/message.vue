@@ -7,13 +7,13 @@
 						账号信息
 					</div>
 					<div class="part message">
-						<p>登录账号 ：<span class="grey">{{this.data.username}}</span></p>
+						<p>登录账号 ：<span class="grey">{{form.username}}</span></p>
 						<ul>
-							<li>
-								<p>角色：{{this.data.roleName}}</p>
+							<li class="l2">
+								<p>角&#12288;&#12288;色：{{form.roleName}}</p>
 							</li>
-							<li style="margin-left: 100px;">
-								<p>状态：{{this.data.enabled}}</p>
+							<li class="l2">
+								<p>状态：{{form.enabled?'启用':'关闭'}}</p>
 							</li>
 						</ul>
 					</div>
@@ -42,16 +42,16 @@
 					</li>
 				</ul>
 				<el-form-item label="地区" :label-width="formLabelWidth" style="width: 100%">
-					<el-select v-model="form.province" placeholder="请选择" size="mini" @focus="loadProvince" @change="loadCity">
-						<el-option v-for="(index,item) in options.province" :key="index" :label="item.label" :value="item.value">
+					<el-select v-model="form.province" placeholder="请选择" size="mini" @focus="loadProvince">
+						<el-option v-for="item in options.province" :key="item.id" :label="item.province" :value="item.province">
 						</el-option>
 					</el-select>
-					<el-select v-model="form.city" placeholder="请选择" size="mini" @change="loadArea">
-						<el-option v-for="(index,item) in options.city" :key="index" :label="item.label" :value="item.value">
+					<el-select v-model="form.city" placeholder="请选择" size="mini" @focus="loadCity">
+						<el-option v-for="item in options.city" :key="item.id" :label="item.city" :value="item.city">
 						</el-option>
 					</el-select>
-					<el-select v-model="form.area" placeholder="请选择" size="mini">
-						<el-option v-for="(index,item) in options.area" :key="index" :label="item.label" :value="item.value">
+					<el-select v-model="form.area" placeholder="请选择" size="mini" @focus="loadArea">
+						<el-option v-for="item in options.area" :key="item.id" :label="item.area" :value="item.area">
 						</el-option>
 					</el-select>
 
@@ -59,7 +59,7 @@
 				<ul>
 					<li>
 						<el-form-item label="身份证" :label-width="formLabelWidth">
-							<el-input v-model="form.idCard" autocomplete="off" size="mini"></el-input>
+							<el-input v-model="form.idNo" autocomplete="off" size="mini"></el-input>
 						</el-form-item>
 					</li>
 					<li>
@@ -69,7 +69,7 @@
 					</li>
 				</ul>
 				<el-form-item label="备注" :label-width="formLabelWidth">
-					<el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="form.desc">
+					<el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="form.remark">
 					</el-input>
 				</el-form-item>
 			</el-form>
@@ -89,15 +89,27 @@
 		data() {
 			return {
 				form: {
+					id: '',
+					username: '',
+					password: '',
+					roleName: '',
+					roleId: '',
+					enabled: '',
 					name: '',
-					sex: 'man',
 					phone: '',
+					sex: '',
+					remark: '',
 					province: '',
+					provinceId: '',
 					city: '',
+					cityId: '',
 					area: '',
-					idCard: '',
+					areaId: '',
 					email: '',
-					desc: ''
+					idNo: '',
+					headPicture: '',
+					businessType: '',
+					remark: ''
 				},
 				options: {
 					province: [],
@@ -112,133 +124,75 @@
 		watch: {
 			show(newV, oldV) {
 				this.dialogFormVisible = newV;
-
-				this.form.name = this.data.name;
-				this.form.sex = this.data.sex;
-				this.form.phone = this.data.phone;
-				this.form.province = this.data.province;
-				this.form.city = this.data.city;
-				this.form.area = this.data.area;
-				this.form.idCard = this.data.idNo;
-				this.form.email = this.data.email;
-				this.form.desc = this.data.remark;
+			},
+			data(n, o) {
+				for (let key in n) {
+					if (key in this.form) {
+						this.form[key] = n[key];
+					}
+				};
+				console.log(this.form);
 			}
 		},
 		methods: {
 			close() {
-				this.init();
 				this.$emit('close');
 			},
-			init() {
-				for (let key in this.form) {
-					if (key == 'sex') {
-						this.form[key] = 1;
-					} else {
-						this.form[key] = '';
-					}
-				}
-			},
 			loadProvince() {
-				this.options.province = [];
 				this.$ajax.get('/vos/address/getAllProvince').then(res => {
 					if (res.code == 200) {
 						for (let i = 0; i < res.data.length; i++) {
-							this.options.province.push({
-								"value": res.data[i].provinceId,
-								"label": res.data[i].province
-							})
+							this.options.province = res.data;
 						}
 					}
 				});
 			},
 			loadCity() {
-				this.form.city = '';
-				this.form.area = '';
-				this.options.city = [];
-				this.$ajax.get('/vos/address/getCitiesByProvinceId?provinceId=' + this.form.province).then(res => {
+				var id = this.checkValue(this.form.province, this.options.province, this.form.provinceId);
+				this.$ajax.get('/vos/address/getCitiesByProvinceId?provinceId=' + id).then(res => {
 					if (res.code == 200) {
 						for (let i = 0; i < res.data.length; i++) {
-							this.options.city.push({
-								"value": res.data[i].cityId,
-								"label": res.data[i].city
-							})
+							this.options.city = res.data;
 						}
 					}
 				});
 			},
 			loadArea() {
-				this.form.area = '';
-				this.options.area = [];
-				this.$ajax.get('/vos/address/getAreasByCityId?cityId=' + this.form.city).then(res => {
+				var id = this.checkValue(this.form.city, this.options.city, this.form.cityId);
+				this.$ajax.get('/vos/address/getAreasByCityId?cityId=' + id).then(res => {
 					if (res.code == 200) {
 						for (let i = 0; i < res.data.length; i++) {
-							this.options.area.push({
-								"value": res.data[i].areaId,
-								"label": res.data[i].area
-							})
+							this.options.area = res.data;
 						}
 					}
 				});
 			},
-
+			checkValue(value, options, oldId) {
+				if (options.length > 0) {
+					for (let item of options) {
+						let v = item.province || item.city || item.area;
+						if (v == value) {
+							let id = item.areaId || item.cityId || item.provinceId;
+							return id;
+						}
+					};
+				} else {
+					return oldId;
+				}
+			},
 			submit() {
-				let enabled;
-				if (this.data.enabled == '启用') {
-					enabled = true;
-				}
-				if (this.data.enabled == '关闭') {
-					enabled = false;
-				}
-				let provinceName;
-				let cityName;
-				let areaName;
-				for (let i = 0; i < this.options.province.length; i++) {
-					if (this.options.province[i].value == this.form.province) {
-						provinceName = this.options.province[i].label;
-					}
-				}
-				for (let i = 0; i < this.options.city.length; i++) {
-					if (this.options.city[i].value == this.form.city) {
-						cityName = this.options.city[i].label;
-					}
-				}
-				for (let i = 0; i < this.options.area.length; i++) {
-					if (this.options.area[i].value == this.form.area) {
-						areaName = this.options.area[i].label;
-					}
-				}
-				this.$ajax.post('/vos/user/saveUser', {
-					"user": {
-						"id": this.data.id,
-						"username": this.data.username,
-						"password": this.data.password,
-						"roleName": this.data.roleName,
-						"roleId": this.data.roleId,
-						"enabled": enabled,
-						"name": this.form.name,
-						"phone": this.form.phone,
-						"sex": this.form.sex,
-						"remark": this.form.desc,
-						"province": provinceName,
-						"provinceId": this.form.province,
-						"city": cityName,
-						"cityId": this.form.city,
-						"area": areaName,
-						"areaId": this.form.area,
-						"email": this.form.email,
-						"idNo": this.form.idCard,
-						"headPicture": this.data.headPicture,
-						"businessType": this.data.businessType
-					}
-				}).then(res => {
+				this.form.provinceId = this.checkValue(this.form.province, this.options.province, this.form.provinceId);
+				this.form.cityId = this.checkValue(this.form.city, this.options.city, this.form.cityId);
+				this.form.areaId = this.checkValue(this.form.area, this.options.area, this.form.areaId);
+				this.$ajax.post('/vos/user/saveUser', { user: this.form }).then(res => {
 					if (res.code == 200) {
 						this.$message({
 							message: '编辑成功!',
 							type: 'success'
 						});
+						this.close();
 					}
 				});
-				this.dialogFormVisible = false
 			}
 		}
 	}
