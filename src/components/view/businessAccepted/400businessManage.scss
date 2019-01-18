@@ -278,6 +278,7 @@
       border:1px dashed #cccccc;
       padding:10px 20px;
       margin:0 10px 10px 0;
+      cursor: pointer;
     }
   }
   div{
@@ -368,4 +369,9 @@
     font-weight: normal;
     border-left: none;
   }
+}
+.addValueSelect{
+  overflow: hidden;
+  padding:5px 0;
+  width:100%;
 }

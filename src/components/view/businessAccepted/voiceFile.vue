@@ -1,70 +1,5 @@
 <template>
 	<div id="voiceFile">
-		<!--新增/编辑弹窗-->
-		<div class="voiceDialog">
-			<el-dialog
-					:title="voiceIn==1?'新增语音文件':'编辑语音文件'"
-					:visible.sync="dialogVisible"
-					width="40%"
-					:before-close="handleClose">
-				<div>
-					<el-form ref="voiceForm" :model="voiceForm" label-width="90px" class="voiceForm">
-						<div class="objCodeMsg">
-							<el-form-item label="企业名称：" class="input">
-								<el-input v-model="voiceForm.firmName" size="mini"></el-input>
-							</el-form-item>
-
-							<el-form-item label="400号码：" class="type">
-								<el-select v-model="voiceForm.voiceType" placeholder="请选择"  size="mini">
-									<el-option :label="item.title" :value="item.value" v-for="(item,index) in voiceList" :key="index"></el-option>
-								</el-select>
-								<el-button type="primary" size="mini">搜索</el-button>
-							</el-form-item>
-
-							<el-form-item label="语音类型：" class="type">
-								<el-select v-model="voiceForm.voiceType" placeholder="请选择"  size="mini">
-									<el-option :label="item.title" :value="item.value" v-for="(item,index) in voiceList" :key="index"></el-option>
-								</el-select>
-							</el-form-item>
-
-							<el-form-item label="语音文件：" class="voiceType">
-								<el-upload
-										class="upload-demo"
-										action="https://jsonplaceholder.typicode.com/posts/"
-										:on-change="handleChange"
-										:file-list="fileList3">
-									<el-button size="small" type="primary">点击上传</el-button>
-									<div class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-								</el-upload>
-								<!--<el-input v-model="voiceForm.voiceFile" size="mini"></el-input>-->
-								<!--<el-button type="primary" size="mini">上传</el-button>-->
-							</el-form-item>
-
-							<el-form-item label="语音名称：" class="input">
-								<el-input v-model="voiceForm.voiceName" size="mini"></el-input>
-							</el-form-item>
-
-							<el-form-item label="增值资费：" class="type">
-								<el-select v-model="voiceForm.voiceType" placeholder="请选择"  size="mini">
-									<el-option :label="item.title" :value="item.value" v-for="(item,index) in voiceList" :key="index"></el-option>
-								</el-select>
-							</el-form-item>
-							<el-input
-									type="textarea"
-									autosize
-									placeholder="请输入内容"
-									v-model="textarea2">
-							</el-input>
-						</div>
-					</el-form>
-				</div>
-				<span slot="footer" class="dialog-footer">
-            <el-button @click="dialogVisible = false" size="mini">暂存信息</el-button>
-            <el-button type="primary" @click="dialogVisible = false" size="mini">送 审</el-button>
-        </span>
-			</el-dialog>
-		</div>
-
 		<!--搜索-->
 		<div class="handlingForm">
 			<el-form ref="form" :model="form" label-width="100px">
@@ -100,7 +35,7 @@
 			<!--表格按钮和下拉框-->
 			<div class="BtnSelect">
 				<div class="accountBtn">
-					<el-button type="primary" size="mini" @click="voiceIn=1,voiceAdd()">+新增语音文件</el-button>
+					<el-button type="primary" size="mini" @click="voiceAdd()">+新增语音文件</el-button>
 				</div>
 				<div class="accountSelect">
 					<el-select v-model="accountStatus" placeholder="请选择" size="mini" @change="statusChange">
@@ -149,7 +84,7 @@
 					<template slot-scope="scope">
 						<el-button size="mini" type="text">试听</el-button>
 						<el-button size="mini" type="text" @click="voiceDetial(scope.row),$router.push('/voiceDetial/')">详情</el-button>
-						<el-button size="mini" type="text" @click="voiceIn=2,voiceAdd()">编辑</el-button>
+						<el-button size="mini" type="text" @click="voiceEdit()">编辑</el-button>
 						<el-button size="mini" type="text">送审</el-button>
 						<el-button size="mini" type="text">删除</el-button>
 						<!--<router-link :to="{path:'/addEvent/'+3+'/'+scope.row.contactEvtId}">-->
@@ -171,26 +106,26 @@
 	</div>
 </template>
 <script>
+	import DialogVoice from './dialogVoice'
 	export default {
 		name: 'voiceFile',
 		data() {
 			return {
-                dialogVisible:false,
+                dialog1Visible:false,
                 voiceIn:1,
-                active:4,
                 form:{
                     firmName:'',
                     phoneNum:'',
                     time:'',
                     receiver:'',
                 },
-                voiceForm:{
-                    firmName:'',
-                    fourNum:'',
-                    voiceType:'',
-                    voiceFile:'',
-                    voiceName:'',
-                },
+                // voiceForm:{
+                //     firmName:'',
+                //     fourNum:'',
+                //     voiceType:'',
+                //     voiceFile:'',
+                //     voiceName:'',
+                // },
                 tableData: [],
                 statusOptions: [
                     {
@@ -208,13 +143,13 @@
                         label: '受理终止'
                     }
                 ],
-                voiceList:[{
-                    value:'1',
-                    title:'彩铃',
-				},{
-                    value:'2',
-                    title:'导航音',
-				}],
+                // voiceList:[{
+                 //    value:'1',
+                 //    title:'彩铃',
+				// },{
+                 //    value:'2',
+                 //    title:'导航音',
+				// }],
                 pageObj:{
                     total:0,
                     page:1,
@@ -222,20 +157,22 @@
                 },
                 accountStatus:'',
                 currentPage: 1,   //当前页
-                textarea2:'',
-                fileList3: [{
-                    name: 'food.jpeg',
-                    url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-                }, {
-                    name: 'food2.jpeg',
-                    url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-                }]
+                // textarea2:'',
+                // fileList3: [{
+                //     name: 'food.jpeg',
+                //     url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
+                // }, {
+                //     name: 'food2.jpeg',
+                //     url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
+                // }]
 			};
 		},
 		created(){
 		    this.voiceFileLists();
 		},
-		components: {},
+		components: {
+            DialogVoice
+		},
 		methods: {
             handleSizeChange(val) {
                 this.pageObj.pageSize = val;
@@ -258,7 +195,10 @@
                 this.fileList3 = fileList.slice(-3);
             },
             voiceAdd(){
-                this.dialogVisible = true;
+                this.$root.eventHub.$emit('dialog1VisibleVoice',{visibleVoice:true,voiceIn:1});
+			},
+			voiceEdit(){
+                this.$root.eventHub.$emit('dialog1VisibleVoice',{visibleVoice:true,voiceIn:2});
 			},
             voiceDetial(scope){
                console.log(scope);

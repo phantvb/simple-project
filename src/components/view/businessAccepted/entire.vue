@@ -35,9 +35,9 @@
       <!--表格按钮和下拉框-->
       <div class="BtnSelect">
         <div class="accountBtn">
-          <el-button type="primary" size="mini" @click="addUser()">+新增受理</el-button>
-          <el-button type="primary" size="mini">+新增语音文件</el-button>
-          <el-button type="primary" size="mini">+新增目的码</el-button>
+          <el-button type="primary" size="mini" @click="businessAdd()">+新增受理</el-button>
+          <el-button type="primary" size="mini" @click="voiceAdd()">+新增语音文件</el-button>
+          <el-button type="primary" size="mini" @click="addObjCodeBtn()">+新增目的码</el-button>
         </div>
         <div class="accountSelect">
           <span style="font-size:12px">状态:</span>
@@ -114,11 +114,17 @@
 </template>
 <script>
 
+  import Dialog1 from './dialog1';
+  import DialogVoice from './dialogVoice';
   export default {
     name: 'entire',
     data() {
       return {
-
+        dialog1Visible:false,
+        dialog1VisibleVoice:false,
+        dialogVisibleBusiness:false,
+        objCodeIn:1,
+        voiceIn:1,
         form:{
           firmName:'',
           phoneNum:'',
@@ -166,7 +172,10 @@
         accountStatus:'',
       };
     },
-    components: {},
+    components: {
+        Dialog1,
+        DialogVoice,
+    },
     created(){
         this.entireLists();
       },
@@ -230,6 +239,18 @@
                     }
                 })
             })
+        },
+        //新增业务受理
+        businessAdd(){
+            this.$root.eventHub.$emit('dialogVisibleBusiness',{visibleBusiness:true,businessIn:1});
+        },
+        //新增目的码按钮
+        addObjCodeBtn(){
+            this.$root.eventHub.$emit('dialog1Visible',{visible:true,objCodeIn:1});
+        },
+        //新增语音
+        voiceAdd(){
+          this.$root.eventHub.$emit('dialog1VisibleVoice',{visibleVoice:true,voiceIn:1});
         },
         // 状态改变
         statusChange(){

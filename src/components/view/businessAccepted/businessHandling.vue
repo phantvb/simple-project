@@ -1,28 +1,5 @@
 <template>
   <div id="businessHandling">
-    <!--新增/编辑受理弹窗-->
-    <div class="addAcceptDialog">
-      <el-dialog
-        :title="businessIn==1?'新增受理':'编辑受理'"
-        :visible.sync="dialogVisible"
-        width="80%"
-        :before-close="handleClose">
-        <div>
-          <div class="steps">
-          <el-steps  :active="actives" align-center>
-            <el-step title="选择/新增企业基本信息"></el-step>
-            <el-step title="上传企业资料"></el-step>
-            <el-step title="填写业务资料"></el-step>
-            <el-step title="上传相关文件"></el-step>
-          </el-steps>
-          </div>
-          <step-one v-if="active==1" @childNext="step"></step-one>
-          <step-two v-if="active==2" @childNext="step"></step-two>
-          <step-three v-if="active==3" @childNext="step"></step-three>
-          <step-four v-if="active==4" @childNext="step"></step-four>
-        </div>
-      </el-dialog>
-    </div>
     <!--搜索-->
     <div class="handlingForm">
       <el-form ref="form" :model="form" label-width="100px">
@@ -62,7 +39,7 @@
       <!--表格按钮和下拉框-->
       <div class="BtnSelect">
         <div class="accountBtn">
-          <el-button type="primary" size="mini" @click="acceptSave()">+新增受理</el-button>
+          <el-button type="primary" size="mini" @click="businessAdd()">+新增受理</el-button>
         </div>
         <div class="accountSelect">
           <el-select v-model="accountStatus" placeholder="请选择" size="mini" @change="statusChange">
@@ -134,27 +111,27 @@
 </template>
 <script>
 
-  import stepOne from './stepOne';
-  import stepTwo from './stepTwo';
-  import stepThree from './stepThree';
-  import stepFour from './stepFour';
+  // import stepOne from './stepOne';
+  // import stepTwo from './stepTwo';
+  // import stepThree from './stepThree';
+  // import stepFour from './stepFour';
   import addAcceptDialog from './addAcceptDialog';
 
   export default {
     name: 'businessHandling',
       components: {
-          stepOne,
-          stepTwo,
-          stepThree,
-          stepFour,
+          // stepOne,
+          // stepTwo,
+          // stepThree,
+          // stepFour,
           addAcceptDialog
       },
     data() {
       return {
         dialogVisible:false,
         businessIn:1,
-        active:1,
-        actives:1,
+        // active:3,
+        actives:3,
         form:{
           firmName:'',
           phoneNum:'',
@@ -221,10 +198,15 @@
               pageSize:10,
           },
         currentPage: 1,   //当前页
+        loginResp:{},     //登录接口返回值
       };
     },
     created(){
         this.businessLists();
+        this.$root.eventHub.$on('getLoginInfo', (resp)=>{
+            console.log(resp);
+            this.loginResp = resp;
+        })
     },
     methods:{
         handleSizeChange(val) {
@@ -244,12 +226,16 @@
           .catch(_ => {
           });
       },
-
-        step(val){
-          console.log(val);
-          this.active = val;
-          this.actives = val;
+        //新增业务受理
+        businessAdd(){
+            this.$root.eventHub.$emit('dialogVisibleBusiness',{visibleBusiness:true,businessIn:1});
         },
+
+        // step(val){
+        //   console.log(val);
+        //   this.active = val;
+        //   this.actives = val;
+        // },
       // rankType(item){
       //   console.log("12343",item)
       //   // this.identityTypeList.map((items)=> {
@@ -259,9 +245,9 @@
       //   // })
       // },
       //新增/编辑受理
-      acceptSave(){
-        this.dialogVisible = true;
-      },
+      // acceptSave(){
+      //   this.dialogVisible = true;
+      // },
 
         // 业务受理表格
         businessLists(){
@@ -312,10 +298,6 @@
         statusChange(){
             this.businessLists();
         },
-
-
-
-
     },
 
     computed: {

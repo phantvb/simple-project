@@ -186,7 +186,6 @@
 	margin-left: 20px !important;
 	text-align: left;
 }
-
 .entireForm .el-range-editor--mini.el-input__inner,
 .handlingForm .el-range-editor--mini.el-input__inner {
 	width: 100%;
@@ -318,25 +317,54 @@
 .voiceForm .type .el-select{
 	float:left;
 }
-.voiceForm .objCodeMsg .input .el-form-item__content{
-	float:left;
-	width:50%;
-	margin-left:0 !important;
-}
+/*.voiceForm .objCodeMsg .input .el-form-item__content{*/
+	/*float:left;*/
+	/*width:50%;*/
+	/*margin-left:0 !important;*/
+/*}*/
 .voiceForm .el-textarea__inner{
 	width:50%;
 	min-height: 90px !important;
 	margin-left:90px;
 	overflow: auto;
 }
-
+/*.voiceForm .objCodeMsg .type .el-form-item__content{*/
+	/*text-align: left;*/
+/*}*/
+.setMeal .el-pagination{
+	text-align: right !important;
+}
 .objCodeBox .addObjCode .el-input{
 	width:35%;
 }
-.objCodeBox .addObjCode .el-button{
-	/*width:45px;*/
+.QCellCore ul li{
+	float:unset !important;
 }
-/*自定义导航*/
+.objCodeMsg .el-upload-list--text .el-upload-list__item is-success{
+	text-align: left !important;
+}
+.objCodeMsg .el-upload{
+	width:100% !important;
+}
+/*.voiceUpload {*/
+	/*overflow: hidden;*/
+	/*text-align: left;*/
+/*}*/
+.voiceUpload p{
+	margin-top: 35px;
+	text-align: left;
+	border-left: none !important;
+	font-weight: normal !important;
+}
+.voiceUpload .el-button{
+	margin-left:10px !important;
+}
+.addValueSelect div{
+	float:left;
+}
+.legalInfo .legalCard .el-select {
+	float:left;
+}
 #customNavigation .el-tree-node .el-tree-node__content {
 	margin-bottom: 5px;
 	padding: 5px;

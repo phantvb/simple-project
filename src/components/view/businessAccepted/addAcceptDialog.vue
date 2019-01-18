@@ -16,10 +16,10 @@
                             <el-step title="上传相关文件"></el-step>
                         </el-steps>
                     </div>
-                    <step-one v-if="active==1" @next="step"></step-one>
-                    <step-two v-if="active==2" @next="step"></step-two>
-                    <step-three v-if="active==3" @next="step"></step-three>
-                    <step-four v-if="active==4" @next="step"></step-four>
+                    <step-one v-show="active==1" @next="step"></step-one>
+                    <step-two v-show="active==2" @next="step"></step-two>
+                    <step-three v-show="active==3" @next="step"></step-three>
+                    <step-four v-show="active==4" @next="step"></step-four>
                 </div>
             </el-dialog>
         </div>
