@@ -71,6 +71,9 @@
 				}
 			}
 		},
+		created(){
+
+		},
 		methods: {
 			submitForm() {
 				var _this = this;
@@ -82,9 +85,12 @@
 				}).then(resp => {
 					console.log(resp)
 					_this.loading = false;
-					this.$router.push('/accountingManage/accountingManage')
+					this.$router.push('/accountingManage/accountingManage');
+                    // this.$root.eventHub.$emit('getLoginInfo', resp);
 				});
+
 			},
+
 			changeImg() {
 				document.getElementById('code').src = this.url;
 			}

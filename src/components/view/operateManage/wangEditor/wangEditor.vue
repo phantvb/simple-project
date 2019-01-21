@@ -1,31 +1,45 @@
 <template>
-  <div>
-    <div id="editor" style="text-align:left"></div>
-  </div>
+
+    <div>
+        <div id="wangEditor" ref="editorElem" style="text-align:left" v-html="editContent"></div>
+    </div>
+
+
 </template>
 
 <script>
-  //import E from 'wangeditor'
+    import E from 'wangeditor'
 
-  export default {
-    name: 'editor',
-    data () {
-      return {
-        editor: null
-      }
-    },
-    props: {
-      value: {
-        default: ''
-      }
-    },
-    mounted () {
-      var editor = new E('#editor')
-      editor.customConfig.onchange = (html) => {
-        this.formArticle.content = html
-      }
-      editor.create()
-      this.editor.txt.html(this.value) // 设置内容
+    export default {
+
+        name: 'wangEditor',
+
+        data() {
+            return {
+                content: '',
+                editor:''
+            }
+        },
+
+        props: ['addContent', 'editContent'],    //接收父组件的对象
+
+        methods:{
+            test(){
+                this.editor = new E('#wangEditor');
+
+                this.editor.customConfig.onchange = (html) => {
+                    this.content = html;
+                    this.addContent(this.content);
+                };
+
+                this.editor.create();
+            }
+
+        }
     }
-  }
+
 </script>
+
+<style lang="css">
+
+</style>

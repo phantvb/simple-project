@@ -3,38 +3,24 @@
     <!--新增/编辑受理弹窗-->
     <div class="addAcceptDialog">
       <el-dialog
-        title="新增用户"
+        :title="businessIn==1?'新增受理':'编辑受理'"
         :visible.sync="dialogVisible"
         width="80%"
         :before-close="handleClose">
         <div>
           <div class="steps">
-          <el-steps :active="1" align-center>
+          <el-steps  :active="actives" align-center>
             <el-step title="选择/新增企业基本信息"></el-step>
             <el-step title="上传企业资料"></el-step>
             <el-step title="填写业务资料"></el-step>
             <el-step title="上传相关文件"></el-step>
           </el-steps>
           </div>
-          <el-form ref="acceptForm" :model="acceptForm" label-width="100px">
-            <div class="acceptMsg">
-              <p>企业基本信息</p>
-              <el-form-item label="企业名称：" class="firmName">
-                <el-input v-model="acceptForm.firmName" size="mini" placeholder=" 营业执照上公司全称，个体工商户填写字号全称，组织机构上的机构全称"></el-input>
-              </el-form-item>
-              <el-form-item label="证件编号：" class="identity">
-                <el-select v-model="acceptForm.identityType" @change="change123" placeholder="请选择" size="mini">
-                  <el-option :label="item.label" :value="item.value" v-for="(item,index) in identityTypeList" :key="index"></el-option>
-                </el-select>
-                <el-input v-model="acceptForm.identityNo" size="mini" placeholder="根据证件类型，填写相应的证件号码"></el-input>
-              </el-form-item>
-            </div>
-          </el-form>
+          <step-one v-if="active==1" @childNext="step"></step-one>
+          <step-two v-if="active==2" @childNext="step"></step-two>
+          <step-three v-if="active==3" @childNext="step"></step-three>
+          <step-four v-if="active==4" @childNext="step"></step-four>
         </div>
-        <span slot="footer" class="dialog-footer">
-            <el-button @click="dialogVisible = false" size="mini">取 消</el-button>
-            <el-button type="primary" @click="dialogVisible = false" size="mini">确 定</el-button>
-        </span>
       </el-dialog>
     </div>
     <!--搜索-->
@@ -55,12 +41,12 @@
 
           <el-form-item label="时间：">
             <el-date-picker
-              size="mini"
-              v-model="form.time"
-              type="daterange"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期">
+                    size="mini"
+                    v-model="form.time"
+                    type="daterange"
+                    range-separator="至"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期">
             </el-date-picker>
           </el-form-item>
 
@@ -79,12 +65,12 @@
           <el-button type="primary" size="mini" @click="acceptSave()">+新增受理</el-button>
         </div>
         <div class="accountSelect">
-          <el-select v-model="accountStatus" placeholder="请选择" size="mini">
+          <el-select v-model="accountStatus" placeholder="请选择" size="mini" @change="statusChange">
             <el-option
-              v-for="item in statusOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
+                    v-for="item in statusOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
             </el-option>
           </el-select>
           <el-button type="primary" plain size="mini">导出</el-button>
@@ -92,37 +78,32 @@
       </div>
 
       <el-table
-        :data="tableData"
-        style="width: 100%">
+              :data="tableData"
+              style="width: 100%">
+
         <el-table-column
-          prop="type"
-          label="类型">
+                prop="business.companyName"
+                label="企业名称"
+                width="300">
         </el-table-column>
 
         <el-table-column
-          prop="firmName"
-          label="企业名称"
-          width="300">
+                prop="business.number400"
+                label="400电话">
         </el-table-column>
 
         <el-table-column
-          prop="fourPhone"
-          label="400电话">
+                prop="createTime"
+                label="日期">
         </el-table-column>
 
         <el-table-column
-          prop="date"
-          label="日期">
+                prop="status"
+                label="状态">
         </el-table-column>
 
         <el-table-column
-          prop="status"
-          label="状态">
-        </el-table-column>
-
-        <el-table-column
-          prop="status"
-          label="操作">
+                label="操作">
           <template slot-scope="scope">
             <el-button size="mini" type="text">详情</el-button>
             <!--<router-link :to="{path:'/addEvent/'+3+'/'+scope.row.contactEvtId}">-->
@@ -131,7 +112,7 @@
             <el-button size="mini" type="text">注销</el-button>
             <el-button size="mini" type="text">通过审核</el-button>
             <el-button size="mini" type="text">驳回</el-button>
-            <el-button size="mini" type="text">编辑</el-button>
+            <el-button size="mini" type="text" @click="businessIn=2,acceptSave()">编辑</el-button>
             <!--</router-link>-->
             <el-button size="mini" type="text">送审</el-button>
             <el-button size="mini" type="text">删除</el-button>
@@ -141,100 +122,119 @@
     </div>
     <!--分页-->
     <el-pagination
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :current-page="currentPage"
-      :page-sizes="[100, 200, 300, 400]"
-      :page-size="100"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="400">
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="currentPage"
+            :page-sizes="[10, 20, 50, 100]"
+            :page-size="10"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="pageObj.total">
     </el-pagination>
   </div>
 </template>
 <script>
 
+  import stepOne from './stepOne';
+  import stepTwo from './stepTwo';
+  import stepThree from './stepThree';
+  import stepFour from './stepFour';
+  import addAcceptDialog from './addAcceptDialog';
+
   export default {
     name: 'businessHandling',
+      components: {
+          stepOne,
+          stepTwo,
+          stepThree,
+          stepFour,
+          addAcceptDialog
+      },
     data() {
       return {
         dialogVisible:false,
+        businessIn:1,
+        active:1,
+        actives:1,
         form:{
           firmName:'',
           phoneNum:'',
           time:'',
-          receiver:'',
         },
         acceptForm:{
           firmName:'',
           identityType:'',
+          firmNature:'',
+          firmGrade:'',
+          tradeType:'',
+          province:'',
+          city:'',
+          region:'',
+          detailedAddress:'',
+          businessPro:'',
+          businessCity:'',
+          businessRegion:'',
+          businessDetailAddr:'',
+          firmPhone:'',
+          legalName:'',
+          legalPhone:'',
+          legalIdentity:'',
+          legalIdentityNo:'',
         },
-        tableData: [{
-          type: '业务受理',
-          firmName: '杭州顺网科技股份有限公司',
-          fourPhone: '5876552',
-          date:'2018-11-28',
-          status:'等待送核'
-        }, {
-          type: '业务受理',
-          firmName: '杭州顺网科技股份有限公司',
-          fourPhone: '5876552',
-          date:'2018-11-28',
-          status:'等待送核'
-        }, {
-          type: '业务受理',
-          firmName: '杭州顺网科技股份有限公司',
-          fourPhone: '5876552',
-          date:'2018-11-28',
-          status:'等待送核'
-        }, {
-          type: '业务受理',
-          firmName: '杭州顺网科技股份有限公司',
-          fourPhone: '5876552',
-          date:'2018-11-28',
-          status:'等待送核'
-        }],
+        tableData: [],
         statusOptions: [
           {
-            value: '1',
-            label: '等待审核'
-          }, {
-            value: '2',
-            label: '待审核'
-          }, {
-            value: '3',
+            value: 'Wait_To_Audit',
+            label: '等待送审'
+          },{
+                value: 'Business_Auditing',
+                label: '审核中'
+            },{
+            value: 'Audit_Success',
             label: '审核通过'
           },
           {
-            value: '4',
-            label: '被驳回'
-          }
+            value: 'Modify_Auditing',
+            label: '变更审核中'
+          },
+            {
+                value: 'Modify_Rejected',
+                label: '变更审核驳回'
+            },
+            {
+                value: 'Canceling_Auditing',
+                label: '注销审核'
+            },
+            {
+                value: 'Cancelled',
+                label: '已注销'
+            },
+            {
+                value: 'Terminate_Flow',
+                label: '受理终止'
+            }
         ],
-        identityTypeList:[   //证件类型
-          {
-            value: '1',
-            label: '营业执照'
-          }, {
-            value: '2',
-            label: '组织机构代码证'
-          }, {
-            value: '3',
-            label: '三证合一'
-          }
-        ],
+
         accountStatus:'',
-        currentPage: 4,   //分页
+          pageObj:{
+              total:0,
+              page:1,
+              pageSize:10,
+          },
+        currentPage: 1,   //当前页
       };
     },
     created(){
-      this.acceptForm.identityType=this.identityTypeList[0].value
+        this.businessLists();
     },
     methods:{
-      handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
-      },
-      handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
-      },
+        handleSizeChange(val) {
+            this.pageObj.pageSize = val;
+            console.log(`每页 ${val} 条`);
+        },
+        handleCurrentChange(val) {
+            this.pageObj.page = val;
+            console.log(`当前页: ${val}`);
+        },
       //弹窗关闭按钮
       handleClose(done) {
         this.$confirm('确认关闭？')
@@ -244,9 +244,12 @@
           .catch(_ => {
           });
       },
-      change123(event) {
-        console.log("event",event);
-      },
+
+        step(val){
+          console.log(val);
+          this.active = val;
+          this.actives = val;
+        },
       // rankType(item){
       //   console.log("12343",item)
       //   // this.identityTypeList.map((items)=> {
@@ -258,9 +261,63 @@
       //新增/编辑受理
       acceptSave(){
         this.dialogVisible = true;
-      }
+      },
+
+        // 业务受理表格
+        businessLists(){
+            // console.log(this.form.time[0]);
+            // console.log(this.form.time[1]);
+            let dateStart = new Date(this.form.time[0]);
+            let dateEnd = new Date(this.form.time[1]);
+            let dateStart_value=dateStart.getFullYear() + '-' + (dateStart.getMonth() + 1) + '-' + dateStart.getDate();
+            let dateEnd_value=dateEnd.getFullYear() + '-' + (dateEnd.getMonth() + 1) + '-' + dateEnd.getDate();
+            // console.log(dateStart_value);
+            // console.log(dateEnd_value);
+            this.$ajax.post('/vos/business/getBusinessFlowList',{
+                "type":"Business",
+                "dateStart":this.form.time[0]==undefined?'':dateStart_value,
+                "dateEnd":this.form.time[1]==undefined?'':dateEnd_value,
+                "companyName":this.form.firmName,
+                "status":this.accountStatus,
+                "number400":this.form.phoneNum,
+                "page":{
+                    "pageNo":this.pageObj.page,
+                    "pageSize":this.pageObj.pageSize,
+                }
+            }).then((res)=>{
+                console.log(res.data.businessFlows);
+                this.tableData = res.data.businessFlows;
+                this.pageObj.total = res.data.totalCount;
+                this.tableData.map((item)=>{
+                    if(item.status=='Wait_To_Audit'){
+                        item.status='等待送审'
+                    }else if(item.status=='Audit_Success'){
+                        item.status='审核通过'
+                    }else if(item.status=='Business_Auditing'){
+                        item.status='审核中'
+                    }else if(item.status=='Modify_Auditing'){
+                        item.status='变更审核中'
+                    }else if(item.status=='Modify_Rejected'){
+                        item.status='变更审核驳回'
+                    }else if(item.status=='Canceling_Auditing'){
+                        item.status='注销审核'
+                    }else if(item.status=='Cancelled'){
+                        item.status='已注销'
+                    }else if(item.status=='Terminate_Flow'){
+                        item.status='受理终止'
+                    }
+                })
+            })
+        },
+        statusChange(){
+            this.businessLists();
+        },
+
+
+
+
     },
-    components: {},
+
     computed: {
     }
   }
