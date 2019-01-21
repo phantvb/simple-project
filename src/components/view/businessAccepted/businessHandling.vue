@@ -115,7 +115,7 @@
   // import stepTwo from './stepTwo';
   // import stepThree from './stepThree';
   // import stepFour from './stepFour';
-  import addAcceptDialog from './addAcceptDialog';
+  import DialogBusiness from './dialogBusiness';
 
   export default {
     name: 'businessHandling',
@@ -124,7 +124,7 @@
           // stepTwo,
           // stepThree,
           // stepFour,
-          addAcceptDialog
+          DialogBusiness
       },
     data() {
       return {

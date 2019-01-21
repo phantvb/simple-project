@@ -194,8 +194,14 @@
                         "flowId":""
                     }
                 }).then((res)=>{
-                    console.log(res);
+                    if(res.code=='200'){
+                        console.log(res);
+                    }else{
+
+                    }
+
                 })
+                this.$root.eventHub.$emit('addAcceptSave');
             },
             // 新增业务送审
             addBusinessSend(){
@@ -220,7 +226,8 @@
                     }
                 }).then((res)=>{
                     console.log(res);
-                })
+                });
+                this.$root.eventHub.$emit('addAcceptSave',null);
             },
             // 存vuex更新企业信息模块入参
             ChangeBusinessStatus(val) {

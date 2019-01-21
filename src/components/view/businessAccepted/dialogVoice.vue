@@ -4,11 +4,11 @@
         <el-dialog
                 :title="voiceIn==1?'新增语音文件':'编辑语音文件'"
                 :visible.sync="visibleVoice"
-                width="40%"
+                width="55%"
                 :before-close="handleClose">
             <div>
                 <el-form ref="voiceForm" :model="voiceForm" label-width="90px" class="voiceForm">
-                    <div class="objCodeMsg">
+                    <div class="voiceMsg">
                         <el-form-item label="企业名称：" class="input">
                             <el-input v-model="voiceForm.firmName" size="mini"></el-input>
                         </el-form-item>
@@ -20,6 +20,76 @@
                             <el-button type="primary" size="mini">搜索</el-button>
                         </el-form-item>
 
+                        <el-table
+                                :data="tableData"
+                                border
+                                @row-click="rowInfo"
+                                style="width: 100%">
+
+                            <el-table-column
+                                    prop="voiceType"
+                                    label="语音类型"
+                                    width="180">
+                                        <template slot-scope="scope">
+                                            <div>
+                                                <el-select v-model="voiceInfo.voiType" placeholder="请选择" size="mini">
+                                                    <el-option
+                                                            v-for="item in voiceTypeList"
+                                                            :key="item.value"
+                                                            :label="item.label"
+                                                            :value="item.value">
+                                                    </el-option>
+                                                </el-select>
+                                                <!--<el-input v-model="scope.row.evtItemCode" placeholder="请输入内容" v-if="scope.row.isAdd"-->
+                                                          <!--v-on:blur="inputOnBlur(scope.row,scope.$index)"></el-input>-->
+                                                <!--<span v-if="!scope.row.isAdd">{{scope.row.evtItemCode}}</span>-->
+                                            </div>
+                                        </template>
+                            </el-table-column>
+                            <el-table-column
+                                    prop="voiceName"
+                                    label="语音名称"
+                                    width="180">
+                                        <template slot-scope="scope">
+                                            <div>
+                                                <el-input v-model="voiceInfo.voiName" placeholder="请输入内容" size="mini"></el-input>
+                                                <!--<el-input v-model="scope.row.evtItemCode" placeholder="请输入内容" v-if="scope.row.isAdd"-->
+                                                          <!--v-on:blur="inputOnBlur(scope.row,scope.$index)" size="mini"></el-input>-->
+                                                <!--<span v-if="!scope.row.isAdd">{{scope.row.evtItemCode}}</span>-->
+                                            </div>
+                                        </template>
+                            </el-table-column>
+                            <el-table-column
+                                    prop="voiceFile"
+                                    label="语音文件">
+                                        <template slot-scope="scope">
+                                            <el-upload action=""
+                                                       size="mini"
+                                                       :on-change="handleChange"
+                                                       :http-request="uploadFile"
+                                                       :limit="1">
+                                                <el-button size="small" type="primary">点击上传</el-button>
+
+                                            </el-upload>
+                                        </template>
+                            </el-table-column>
+
+                            <el-table-column
+                                    prop="operation"
+                                    label="操作">
+                                <template slot-scope="scope">
+                                    <!--<div v-if="scope.row.isMainParam=='1' && $route.params.eventIn!=2">-->
+                                        <!--<el-button size="mini" type="text" @click="editParams(scope.row,scope.$index)">编辑</el-button>-->
+                                        <!--<el-button size="mini" type="text" @click="deleteParams(scope.$index)">删除</el-button>-->
+                                    <!--</div>-->
+                                    <div>
+                                        <el-button size="mini" type="text">删除</el-button>
+                                        <el-button size="mini" type="text"></el-button>
+                                        <el-button size="mini" type="text" @click="add(scope)" v-if="tableData.length-1 == scope.$index">添加</el-button>
+                                    </div>
+                                </template>
+                            </el-table-column>
+                        </el-table>
                         <!--<el-form-item label="语音类型：" class="type">-->
                             <!--<el-select v-model="voiceForm.voiceType" placeholder="请选择"  size="mini">-->
                                 <!--<el-option :label="item.title" :value="item.value" v-for="(item,index) in voiceList" :key="index"></el-option>-->
@@ -87,6 +157,11 @@
                     voiceFile:'',
                     voiceName:'',
                 },
+                voiceInfo:{
+                    voiType:'',
+                    voiName:'',
+                    voiFile:'',
+                },
                 voiceList:[{
                     value:'1',
                     title:'彩铃',
@@ -102,9 +177,22 @@
                     name: 'food2.jpeg',
                     url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
                 }],
+                tableData:[{
+                    voiceType:'',
+                    voiceName:'',
+                    voiceFile:'',
+                }],
+
+                voiceTypeList:[
+                    {
+                        value:'1',
+                        label:'mp3'
+                    }
+                ],
                 tariffFee:0, //功能资费
                 presents:'1',  //是否赠送;1 赠送；2 付费
-                remarks:'',  //功能描述
+                remarks:'',  //功能描述,
+                file: {}
             }
         },
         created(){
@@ -126,8 +214,13 @@
                     .catch(_ => {
                     });
             },
-            handleChange(file, fileList) {
-                this.fileList3 = fileList.slice(-3);
+            handleChange(file) {
+                this.file = file.raw
+                console.log(file);
+            },
+            rowInfo(val,event){
+              console.log("rowInfo",val);
+              console.log("event",event);
             },
             // 语音送审
             voiveAudit(){
@@ -187,6 +280,28 @@
                 }).then((res)=>{
                     console.log(res);
                 })
+            },
+            add(scope){
+                console.log(scope);
+                console.log(this.tableData.length);
+
+                this.tableData.push({
+                    voiceType:'',
+                    voiceName:'',
+                    voiceFile:'',
+                })
+            },
+            // 自定义上传
+            uploadFile() {
+                // 创建表单对象
+                this.$ajax.post('https://jsonplaceholder.typicode.com/posts/',{
+                    'voice':this.file,
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                }).then((res)=>{
+                    console.log(res)
+                });
             }
         },
         computed: {},

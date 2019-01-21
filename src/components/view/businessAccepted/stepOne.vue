@@ -208,7 +208,7 @@
                         { type: 'date', required: true, message: '请选择企业等级', trigger: 'change' }
                     ],
                     industryType: [
-                        { type: 'array', required: true, message: '请选择行业类型', trigger: 'change' }
+                        { type: 'date', required: true, message: '请选择行业类型', trigger: 'change' }
                     ],
                     registProvince: [
                         { required: true, message: '请填写注册地址', trigger: 'change' }

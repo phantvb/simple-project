@@ -15,10 +15,10 @@
                         <el-step title="上传相关文件"></el-step>
                     </el-steps>
                 </div>
-                <step-one v-if="active==1" @childNext="step"></step-one>
-                <step-two v-if="active==2" @childNext="step"></step-two>
-                <step-three v-if="active==3" @childNext="step" :loginRes = "loginResp"></step-three>
-                <step-four v-if="active==4" @childNext="step"></step-four>
+                <step-one v-show="active==1" @childNext="step"></step-one>
+                <step-two v-show="active==2" @childNext="step"></step-two>
+                <step-three v-show="active==3" @childNext="step" :loginRes = "loginResp"></step-three>
+                <step-four v-show="active==4" @childNext="step"></step-four>
             </div>
         </el-dialog>
     </div>

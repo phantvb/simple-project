@@ -6,6 +6,7 @@
                     title="新增号码"
                     :visible.sync="addNumdialogVisible"
                     width="80%"
+                    append-to-body
                     :before-close="handleClose">
                 <div>
                     <div class="numMessage">
@@ -83,72 +84,75 @@
                 <el-button @click="addNumdialogVisible = false" size="mini">取 消</el-button>
                 <el-button type="primary" @click="addNumSave()" size="mini">确 定</el-button>
                 </span>
-            </el-dialog>
-        </div>
+                <!--搜索号码弹窗-->
+                <div class="searchNumDialog">
+                    <el-dialog
+                            :title="titleNum+'的搜索结果'"
+                            :visible.sync="searchNumdialogVisible"
+                            width="80%"
+                            append-to-body
+                            :before-close="handleClose">
+                        <div>
+                            <el-table :data="searchNumList"
+                                      border
+                                      style="width: 100%">
 
-        <!--搜索号码弹窗-->
-        <div class="searchNumDialog">
-            <el-dialog
-                    :title="titleNum+'的搜索结果'"
-                    :visible.sync="searchNumdialogVisible"
-                    width="80%"
-                    :before-close="handleClose">
-                <div>
-                    <el-table :data="searchNumList"
-                              border
-                              style="width: 100%">
+                                <el-table-column
+                                        prop="number400"
+                                        label="400号码">
+                                </el-table-column>
 
-                        <el-table-column
-                                prop="number400"
-                                label="400号码">
-                        </el-table-column>
+                                <el-table-column
+                                        prop="tariffName"
+                                        label="套餐">
+                                </el-table-column>
 
-                        <el-table-column
-                                prop="tariffName"
-                                label="套餐">
-                        </el-table-column>
+                                <el-table-column
+                                        prop="bottomFee"
+                                        label="最低年消费">
+                                </el-table-column>
 
-                        <el-table-column
-                                prop="bottomFee"
-                                label="最低年消费">
-                        </el-table-column>
+                                <el-table-column
+                                        prop="durationPresentation"
+                                        label="预存话费">
+                                </el-table-column>
 
-                        <el-table-column
-                                prop="durationPresentation"
-                                label="预存话费">
-                        </el-table-column>
-
-                        <!--<el-table-column-->
+                                <!--<el-table-column-->
                                 <!--prop="unit"-->
                                 <!--label="单位">-->
-                        <!--</el-table-column>-->
+                                <!--</el-table-column>-->
 
-                        <el-table-column
-                                prop="packageContent"
-                                label="套餐详细">
-                        </el-table-column>
+                                <el-table-column
+                                        prop="packageContent"
+                                        label="套餐详细">
+                                </el-table-column>
 
-                        <el-table-column
-                                label="操作">
-                            <template slot-scope="scope">
-                                <el-button size="mini" type="text" @click="">选择</el-button>
-                            </template>
-                        </el-table-column>
-                    </el-table>
-                </div>
-                <span slot="footer" class="dialog-footer">
+                                <el-table-column
+                                        label="操作">
+                                    <template slot-scope="scope">
+                                        <el-button size="mini" type="text" @click="searchNumdialogVisible=false">选择</el-button>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                        </div>
+                        <span slot="footer" class="dialog-footer">
                 <el-pagination
-                            @size-change="handleSizeChange"
-                            @current-change="handleCurrentChange"
-                            :current-page="currentPage"
-                            :page-sizes="[10, 20, 50, 100]"
-                            :page-size="10"
-                            layout="total, sizes, prev, pager, next, jumper"
-                            :total="pageObj.total">
+                        @size-change="handleSizeChange"
+                        @current-change="handleCurrentChange"
+                        :current-page="currentPage"
+                        :page-sizes="[10, 20, 50, 100]"
+                        :page-size="10"
+                        layout="total, sizes, prev, pager, next, jumper"
+                        :total="pageObj.total">
                 </el-pagination>
                 </span>
+                    </el-dialog>
+                </div>
+
             </el-dialog>
         </div>
+
+
 
         <el-form ref="stepThreeForm" :model="stepThreeForm" label-width="100px">
             <div class="title left">
@@ -533,7 +537,7 @@
             },
             // 选号
             addNumSave(){
-
+                this.addNumdialogVisible=false;
             },
             // 新增号码按钮
             addNum(){
