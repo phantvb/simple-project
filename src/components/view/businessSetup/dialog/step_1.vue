@@ -294,13 +294,16 @@
 				data.cardEndDate = this.form.cardDate[1];
 				delete data.cardDate;
 				this.$refs.form.validate((valid) => {
-					if (valid) {
-						this.$emit('next', 2, data);
-					} else {
-						return false;
-					}
+					this.$emit('next', 2, data);
+					this.$emit('isComplete', valid);
+					// if (valid) {
+					//     this.$emit('next', 2, data);
+					//     this.$emit('next', 2, data);
+					// } else {
+					//     this.$emit('next', 2, data);
+					// 	return false;
+					// }
 				});
-				//this.$emit('next', 2, data);
 			},
 			checkValue(value, options, oldId) {
 				if (options.length > 0) {

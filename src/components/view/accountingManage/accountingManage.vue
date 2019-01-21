@@ -68,16 +68,16 @@
 				<el-table-column prop="name" label="操作" min-width="200">
 					<template slot-scope="scope">
 						<el-button size="mini" type="text" @click="addfavourable(true,scope.row)">添加优惠</el-button>
-						<el-button size="mini" type="text" @click="addtransfer(true,scope.row)">确认到账</el-button>
-						<el-button size="mini" type="text">详情</el-button>
+						<el-button size="mini" type="text" @click="addtransfer(true,scope.row,0)">确认到账</el-button>
+						<el-button size="mini" type="text" @click="addtransfer(true,scope.row,1)">详情</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
 			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page.num" :page-sizes="$global.pageSize" :page-size="page.size" layout="total, sizes, prev, pager, next, jumper" :total="page.total">
 			</el-pagination>
 		</el-tabs>
-		<favourable :show="favourable" @close="addfavourable(false)" :data="favourableData" :active="this.form.channel"></favourable>
-		<transfer :show="transfer" @close="addtransfer(false)" :data="transferData"></transfer>
+		<favourable :show="favourable" @close="closefavourable" :data="favourableData" :active="this.form.channel"></favourable>
+		<transfer :show="transfer" @close="closetransfer" :transferType="transferType" :data="transferData"></transfer>
 	</div>
 </template>
 <style lang="scss" scoped>
@@ -95,6 +95,7 @@
 		data() {
 			return {
 				favourable: false,
+				transferType: 0, //0:编辑1查看
 				transfer: false,
 				form: {
 					number400: "",
@@ -138,9 +139,22 @@
 				this.favourableData = data || {};
 				this.favourable = bol;
 			},
-			addtransfer(bol, data) {
+			addtransfer(bol, data, type) {
+				this.transferType = type;
 				this.transferData = data || {};
 				this.transfer = bol;
+			},
+			closefavourable(bol) {
+				if (bol) {
+					this.fetchData();
+				}
+				this.addfavourable(false);
+			},
+			closetransfer(bol) {
+				if (bol) {
+					this.fetchData();
+				}
+				this.addtransfer(false);
 			},
 			handleSizeChange() {
 				this.fetchData();
