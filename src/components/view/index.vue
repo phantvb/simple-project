@@ -65,6 +65,7 @@
 				if (res.code == 200) {
 					for (let key in res.data) {
 						sessionStorage.setItem(key, res.data[key]);
+                        this.$root.eventHub.$emit('getLoginInfo', res.data);
 					}
 				}
 			});
