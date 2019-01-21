@@ -57,7 +57,7 @@
                                 <ul>
                                     <li class="l2">
                                         <el-upload class="avatar-uploader exampleh" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="handleSelfSuccess" :on-error="handleSelfSuccess" :before-upload="beforeAvatarUpload">
-                                            <img v-if="stepTwoForm.legalCardHandPic" :src="imageUrl.legalCardHandPic" class="avatar">
+                                            <img v-if="stepTwoForm.legalCardHandPic" :src="stepTwoForm.legalCardHandPic" class="avatar">
                                             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                         </el-upload>
                                     </li>

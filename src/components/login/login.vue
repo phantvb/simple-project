@@ -83,7 +83,7 @@
 					password: this.loginForm.pass,
 					imageCode: this.loginForm.code
 				}).then(resp => {
-					console.log(resp)
+					console.log(resp);
 					_this.loading = false;
 					this.$router.push('/accountingManage/accountingManage');
                     // this.$root.eventHub.$emit('getLoginInfo', resp);
