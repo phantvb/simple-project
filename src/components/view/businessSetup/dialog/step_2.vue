@@ -12,7 +12,7 @@
 					<ul>
 						<li class="l2">
 							<el-upload class="avatar-uploader examplew" :with-credentials="true" :action="$global.uploadUrl" :show-file-list="false" :on-success="uploaded1">
-								<img v-if="imageUrl.p1" :src="imageUrl.p1" class="avatar">
+								<img v-if="file.p1!=''" :src="imageUrl.p1" class="avatar">
 								<i v-else class="el-icon-plus avatar-uploader-icon"></i>
 							</el-upload>
 						</li>
@@ -38,13 +38,13 @@
 							<ul>
 								<li class="l2">
 									<el-upload class="avatar-uploader exampleh" :with-credentials="true" :action="$global.uploadUrl" :show-file-list="false" :on-success="uploaded2">
-										<img v-if="imageUrl.p2" :src="imageUrl.p2" class="avatar">
+										<img v-if="file.p2!=''" :src="imageUrl.p2" class="avatar">
 										<i v-else class="el-icon-plus avatar-uploader-icon"></i>
 									</el-upload>
 								</li>
 								<li class="l2">
 									<el-upload class="avatar-uploader exampleh" :with-credentials="true" :action="$global.uploadUrl" :show-file-list="false" :on-success="uploaded3">
-										<img v-if="imageUrl.p3" :src="imageUrl.p3" class="avatar">
+										<img v-if="file.p3!=''" :src="imageUrl.p3" class="avatar">
 										<i v-else class="el-icon-plus avatar-uploader-icon"></i>
 									</el-upload>
 								</li>
@@ -52,7 +52,7 @@
 							<ul>
 								<li class="l2">
 									<el-upload class="avatar-uploader exampleh" :with-credentials="true" :action="$global.uploadUrl" :show-file-list="false" :on-success="uploaded4">
-										<img v-if="imageUrl.p4" :src="imageUrl.p4" class="avatar">
+										<img v-if="file.p4!=''" :src="imageUrl.p4" class="avatar">
 										<i v-else class="el-icon-plus avatar-uploader-icon"></i>
 									</el-upload>
 								</li>

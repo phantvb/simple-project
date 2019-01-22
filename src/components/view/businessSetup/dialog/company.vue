@@ -35,7 +35,7 @@
 						if (res.code == 200) {
 							this.oldData = res.data.company;
 						}
-					})
+					});
 				}
 			}
 		},
