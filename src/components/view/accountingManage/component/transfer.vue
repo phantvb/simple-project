@@ -143,7 +143,7 @@
 		},
 		data() {
 			return {
-				dialogVisible: true,
+				dialogVisible: false,
 				recordData: [],
 				shouldReceiveData: [],
 				openTime: '',
