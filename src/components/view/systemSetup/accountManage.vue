@@ -376,12 +376,37 @@
 			},
 			// 新增用户
 			addUser() {
+				// if (
+
+				//     this.addTopForm.loginId== ""||
+				//     this.addTopForm.role== ""||
+				//     this.addTopForm.userName== ""||
+				//     this.addTopForm.phoneNum== ""||
+				//     this.addTopForm.sex== "man"||
+				//     this.addTopForm.status== "1"||
+				//     this.addTopForm.channel== ""||
+				//     this.addTopForm.province== ""|| //省
+				//     this.addTopForm.city== ""|| //市
+				//     this.addTopForm.district== ""|| //区
+				//     this.addTopForm.IDNo== ""|| //身份证号
+				//     this.addTopForm.mailbox== ""|| //邮箱
+				//     this.addTopForm.remark== "" //备注
+				// ) {
+				//     this.$message({
+				//         message: "存在空字段!",
+				//         type: "warning"
+				//     });
+				// } else {
+
+				// }
 				let provinceName;
 				let cityName;
 				let areaName;
 				let role;
 				for (let i = 0; i < this.options.province.length; i++) {
-					if (this.options.province[i].value == this.addTopForm.province) {
+					if (
+						this.options.province[i].value == this.addTopForm.province
+					) {
 						provinceName = this.options.province[i].label;
 					}
 				}
@@ -486,7 +511,10 @@
 				this.addTopForm.district = "";
 				this.options.area = [];
 				this.$ajax
-					.get("/vos/address/getAreasByCityId?cityId=" + this.addTopForm.city)
+					.get(
+						"/vos/address/getAreasByCityId?cityId=" +
+						this.addTopForm.city
+					)
 					.then(res => {
 						if (res.code == 200) {
 							for (let i = 0; i < res.data.length; i++) {
@@ -517,7 +545,9 @@
 							cancelButtonText: "取消"
 						})
 						.then(() => {
-							for (let i = 0; i < this.multipleSelection.length; i++) {
+							for (
+								let i = 0; i < this.multipleSelection.length; i++
+							) {
 								this.ids.push({
 									id: this.multipleSelection[i].id,
 									password: "123456"
@@ -548,33 +578,44 @@
 						});
 				}
 			},
-			methods: {
-				//重置
-				resetForm(form) {
-					this.$refs[form].resetFields();
-				},
-				//点击复选框调用的方法
-				handleSelectionChange(val) {
-					console.log(val);
-					this.multipleSelection = val;
-				},
-				// 分页
-				handleSizeChange(val) {
-					console.log(`每页 ${val} 条`);
-				},
-				handleCurrentChange(val) {
-					console.log(`当前页: ${val}`);
-				},
-				// 新增用户
-				addUser() {
-					this.dialogVisible = true;
-				},
 
-				//弹窗关闭按钮
-				handleClose(done) {
-					this.$confirm('确认关闭？')
-						.then(_ => {
-							done();
+			// 批量启用
+			batchStartAndStop(num) {
+				if (this.multipleSelection.length == 0) {
+					this.$message({
+						type: "info",
+						message: "您未选择!"
+					});
+				} else {
+					this.$confirm("此操作是批量操作, 是否继续?", "提示", {
+							confirmButtonText: "确定",
+							cancelButtonText: "取消"
+						})
+						.then(() => {
+							for (
+								let i = 0; i < this.multipleSelection.length; i++
+							) {
+								this.ids.push({
+									id: this.multipleSelection[i].id,
+									enabled: num
+								});
+							}
+							this.$ajax
+								.post("/vos/user/setEnabled", {
+									user: this.ids
+								})
+								.then(res => {
+									if (res.code == 200) {
+										this.$message({
+											message: "修改成功!",
+											type: "success"
+										});
+										this.changeTableData();
+									}
+									if (res.code == 4005) {
+										this.$message.error("您无权操作!");
+									}
+								});
 						})
 						.catch(() => {
 							this.$message({
@@ -598,7 +639,9 @@
 							cancelButtonText: "取消"
 						})
 						.then(() => {
-							for (let i = 0; i < this.multipleSelection.length; i++) {
+							for (
+								let i = 0; i < this.multipleSelection.length; i++
+							) {
 								this.ids.push({
 									id: this.multipleSelection[i].id
 								});

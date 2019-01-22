@@ -1,7 +1,7 @@
 <template>
 	<div id="portrait">
 		<el-dialog title="修改头像" :visible.sync="dialogVisible" @close="close">
-			<el-tabs v-model="active" @tab-click="handleClick">
+			<el-tabs v-model="active">
 				<el-tab-pane label="选择头像" name="1">
 					<ul class="portrait">
 						<li style="width:60%;border-right:1px solid #ccc;box-sizing: border-box;" class="left" @click="chooseImg">

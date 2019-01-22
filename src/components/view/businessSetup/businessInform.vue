@@ -83,7 +83,7 @@
 				</el-table-column>
 				<el-table-column prop="name" label="操作" min-width="200">
 					<template slot-scope="scope">
-						<el-button size="mini" type="text">详情</el-button>
+						<el-button size="mini" type="text" @click="checkDetail(scope.row)">详情</el-button>
 						<el-button size="mini" type="text" v-if="scope.row.status=='Wait_To_Audit'&&scope.row.creator==baseData.username" @click="addCompany(true,scope.row)">编辑送审</el-button>
 						<el-button size="mini" type="text" v-if="(scope.row.status=='Audit_Success'||scope.row.status=='Modify_Rejected')&&scope.row.creator==baseData.username" @click="editCompany(scope.row)">变更</el-button>
 						<el-button size="mini" type="text" v-if="(scope.row.status=='Audit_Success'||scope.row.status=='Modify_Rejected')&&scope.row.creator==baseData.username" @click="cancelCompany(scope.row)">注销</el-button>
@@ -158,6 +158,10 @@
 			this.fetchData();
 		},
 		methods: {
+			checkDetail(data) {
+				this.flowIdData = data;
+				this.$router.push({ path: '/businessInform/businessDetail', query: { flowId: data.flowId, status: data.status, creator: data.creator } });
+			},
 			closeCompany(bol) {
 				if (bol) {
 					this.fetchData();
@@ -264,7 +268,7 @@
 					pageNo: this.page.num,
 					pageSize: this.page.size
 				};
-				data.source = this.baseData.businessType;
+				data.source = this.baseData.businessType || '';
 				data.dateStart = this.form.time[0] || '';
 				data.dateEnd = this.form.time[1] || '';
 				data.type = 'Company';

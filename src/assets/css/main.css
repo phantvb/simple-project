@@ -93,9 +93,10 @@
 }
 
 /*账号管理*/
-.numForm{
-	margin:20px;
+.numForm {
+	margin: 20px;
 }
+
 .numForm .el-form .el-form-item {
 	width: 30%;
 	float: left;
@@ -119,7 +120,7 @@
 
 .accountTable .el-pagination {
 	float: right;
-	margin-top:20px;
+	margin-top: 20px;
 }
 
 /*全局弹窗头部背景*/
@@ -186,6 +187,7 @@
 	margin-left: 20px !important;
 	text-align: left;
 }
+
 .entireForm .el-range-editor--mini.el-input__inner,
 .handlingForm .el-range-editor--mini.el-input__inner {
 	width: 100%;
@@ -202,39 +204,48 @@
 	float: left;
 }
 
-.acceptMsg .firmName{
+.acceptMsg .firmName {
 	width: 33% !important;
 }
-.objCodeMsg .firmName{
-	width:90%;
+
+.objCodeMsg .firmName {
+	width: 90%;
 }
-.acceptMsg .indate{
-	width:60% !important;
+
+.acceptMsg .indate {
+	width: 60% !important;
 }
-.acceptMsg .indate .el-form-item__content{
-	margin-left:0 !important;
-	float:left;
+
+.acceptMsg .indate .el-form-item__content {
+	margin-left: 0 !important;
+	float: left;
 }
+
 .acceptMsg .stepTwoFirmName {
 	width: 50%;
-	float:left;
+	float: left;
 }
+
 .acceptMsg .identity {
 	width: 80%;
 }
+
 .acceptMsg .identity .el-select {
 	width: 20%;
 	float: left;
 	margin-right: 1%;
 }
+
 .objCodeMsg .identity .el-select {
 	width: 30%;
 	float: left;
 	margin-right: 1%;
 }
-.legalInfo .identity .el-select{
-	width:30%;
+
+.legalInfo .identity .el-select {
+	width: 30%;
 }
+
 .acceptMsg .identity .el-input {
 	width: 68%;
 	float: left;
@@ -243,16 +254,20 @@
 .acceptMsg .identity .el-select .el-input {
 	width: 100%;
 }
+
 .managerFormTitle .search .el-input {
 	width: auto;
 }
+
 .objCodeSearch .el-form-item {
 	margin-bottom: 0 !important;
 }
+
 .objCodeDialog .el-dialog {
 	width: 50% !important;
 	overflow: hidden;
 }
+
 .objCodeDialog .el-table .cell,
 .el-table th div,
 .el-table--border td:first-child .cell,
@@ -268,103 +283,131 @@
 .objCodeDialog .materials .el-form-item__content {
 	line-height: 23px;
 }
-.threeSelect .el-form-item,.legalInfo .el-form-item{
-	width:20%;
-	float:left;
+
+.threeSelect .el-form-item,
+.legalInfo .el-form-item {
+	width: 20%;
+	float: left;
 }
-.legalInfo .el-form-item{
-	width:76%;
-	margin-right:10px;
+
+.legalInfo .el-form-item {
+	width: 76%;
+	margin-right: 10px;
 }
-.threeSelect .el-form-item .el-select{
-	width:100%;
+
+.threeSelect .el-form-item .el-select {
+	width: 100%;
 }
-.regUrl .onlyInput ,.businessAddress .onlyInput{
-	margin-left:140px;
-	width:44%;
-	margin-bottom:22px;
+
+.regUrl .onlyInput,
+.businessAddress .onlyInput {
+	margin-left: 140px;
+	width: 44%;
+	margin-bottom: 22px;
 }
-.handleInfo .el-form-item{
-	width:33%;
-	margin-right:20px;
-	float:left;
+
+.handleInfo .el-form-item {
+	width: 33%;
+	margin-right: 20px;
+	float: left;
 }
-.handleInfo .identity{
-	width:66%;
+
+.handleInfo .identity {
+	width: 66%;
 }
-.handleInfo .identity .el-select{
+
+.handleInfo .identity .el-select {
 	float: left;
 	width: 30%;
 }
-.handleInfo .identity .handleIdentityNo{
+
+.handleInfo .identity .handleIdentityNo {
 	float: left;
 	width: 67%;
 	margin-left: 10px;
 }
-.voiceForm .voiceType .el-select,.voiceForm .el-button{
-	float:left;
+
+.voiceForm .voiceType .el-select,
+.voiceForm .el-button {
+	float: left;
 }
-.voiceForm .el-button{
-	margin-left:20px;
+
+.voiceForm .el-button {
+	margin-left: 20px;
 }
-.voiceForm .voiceType .el-form-item__content,.voiceForm .type .el-input{
+
+.voiceForm .voiceType .el-form-item__content,
+.voiceForm .type .el-input {
 	line-height: 0 !important;
 }
-.voiceForm .voiceType .el-input{
-	width:50%;
-	float:left;
+
+.voiceForm .voiceType .el-input {
+	width: 50%;
+	float: left;
 }
-.voiceForm .type .el-select{
-	float:left;
+
+.voiceForm .type .el-select {
+	float: left;
 }
+
 /*.voiceForm .objCodeMsg .input .el-form-item__content{*/
-	/*float:left;*/
-	/*width:50%;*/
-	/*margin-left:0 !important;*/
+/*float:left;*/
+/*width:50%;*/
+/*margin-left:0 !important;*/
 /*}*/
-.voiceForm .el-textarea__inner{
-	width:50%;
+.voiceForm .el-textarea__inner {
+	width: 50%;
 	min-height: 90px !important;
-	margin-left:90px;
+	margin-left: 90px;
 	overflow: auto;
 }
+
 /*.voiceForm .objCodeMsg .type .el-form-item__content{*/
-	/*text-align: left;*/
+/*text-align: left;*/
 /*}*/
-.setMeal .el-pagination{
+.setMeal .el-pagination {
 	text-align: right !important;
 }
-.objCodeBox .addObjCode .el-input{
-	width:35%;
+
+.objCodeBox .addObjCode .el-input {
+	width: 35%;
 }
-.QCellCore ul li{
-	float:unset !important;
+
+.QCellCore ul li {
+	float: unset !important;
 }
-.objCodeMsg .el-upload-list--text .el-upload-list__item is-success{
+
+.objCodeMsg .el-upload-list--text .el-upload-list__item is-success {
 	text-align: left !important;
 }
-.objCodeMsg .el-upload{
-	width:100% !important;
+
+.objCodeMsg .el-upload {
+	width: 100% !important;
 }
+
 /*.voiceUpload {*/
-	/*overflow: hidden;*/
-	/*text-align: left;*/
+/*overflow: hidden;*/
+/*text-align: left;*/
 /*}*/
-.voiceUpload p{
+.voiceUpload p {
 	margin-top: 35px;
 	text-align: left;
 	border-left: none !important;
 	font-weight: normal !important;
 }
-.voiceUpload .el-button{
-	margin-left:10px !important;
+
+.voiceUpload .el-button {
+	margin-left: 10px !important;
 }
-.addValueSelect div{
-	float:left;
+
+.addValueSelect div {
+	float: left;
 }
+
 .legalInfo .legalCard .el-select {
-	float:left;
+	float: left;
 }
+
 #customNavigation .el-tree-node .el-tree-node__content {
 	margin-bottom: 5px;
 	padding: 5px;
@@ -379,12 +422,19 @@
 #numSetAction .el-card {
 	background-color: #ecf5ff;
 }
-.addNumform .el-input{
-	width:50%;
+
+.addNumform .el-input {
+	width: 50%;
 }
-.addNumform .el-tabs--border-card{
-	border:1px solid #2596EF;
+
+.addNumform .el-tabs--border-card {
+	border: 1px solid #2596EF;
 }
-.busMaterForm .el-form-item .el-form-item__content{
+
+.busMaterForm .el-form-item .el-form-item__content {
 	text-align: left;
+}
+
+#app .el-menu .el-submenu__title {
+	padding-left: 0px !important;
 }
