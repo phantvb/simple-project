@@ -14,7 +14,8 @@
                             <el-input
                                     v-model="acceptForm.firmName"
                                     size="mini"
-                                    placeholder=" 营业执照上公司全称，个体工商户填写字号全称，组织机构上的机构全称" @input="searchFirm">
+                                    @input="searchFirm"
+                                    placeholder=" 营业执照上公司全称，个体工商户填写字号全称，组织机构上的机构全称">
                             </el-input>
                             <div id="firmNameList" v-if="firmNameShow">
                                 <ul>

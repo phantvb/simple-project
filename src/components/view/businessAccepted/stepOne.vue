@@ -4,23 +4,31 @@
             <div class="acceptMsg">
                 <p>企业基本信息</p>
                 <el-form-item label="企业名称：" class="identity" prop="companyName">
-                    <el-input v-model="acceptForm.companyName" size="mini" placeholder=" 营业执照上公司全称，个体工商户填写字号全称，组织机构上的机构全称"></el-input>
+                    <el-input v-model="acceptForm.companyName"
+                              size="mini"
+                              @input="searchFirm"
+                              placeholder=" 营业执照上公司全称，个体工商户填写字号全称，组织机构上的机构全称"></el-input>
+                    <div id="firmNameList" v-if="firmNameShow" style="margin-top:40px">
+                        <ul>
+                            <li v-for="(item,index) in firmNameList" :key="index" @click="firmNameLi(item)">{{item.companyName}}</li>
+                        </ul>
+                    </div>
                 </el-form-item>
 
                 <el-form-item label="证件编号：" class="identity" prop="companyCardNo">
-                    <el-select v-model="acceptForm.companyCardNo" @change="change123" placeholder="请选择" size="mini">
+                    <el-select v-model="acceptForm.companyCardType" @change="change123" placeholder="请选择" size="mini">
                         <el-option
                             v-for="item in companyCardNoList"
                             :label="item.dicValue"
                             :value="item.dicKey"
                             :key="item.dicKey"></el-option>
                     </el-select>
-                    <el-input v-model="acceptForm.identityNo" size="mini" placeholder="根据证件类型，填写相应的证件号码"></el-input>
+                    <el-input v-model="acceptForm.companyCardNo" size="mini" placeholder="根据证件类型，填写相应的证件号码"></el-input>
                 </el-form-item>
 
                 <div class="threeSelect">
                     <el-form-item label="企业性质：" class="identity" prop="companyCharacter">
-                        <el-select v-model="acceptForm.companyCharacter" @change="" placeholder="请选择" size="mini">
+                        <el-select v-model="acceptForm.companyCharacter" placeholder="请选择" size="mini">
                             <el-option v-for="item in companyCharacterList"
                                        :label="item.dicValue"
                                        :value="item.dicKey"
@@ -29,7 +37,7 @@
                     </el-form-item>
 
                     <el-form-item label="企业等级：" class="identity" prop="companyRank">
-                        <el-select v-model="acceptForm.companyRank" @change="" placeholder="请选择" size="mini">
+                        <el-select v-model="acceptForm.companyRank" placeholder="请选择" size="mini">
                             <el-option :label="item.dicValue" :value="item.dicKey" v-for="item in companyRankList" :key="item.dicKey"></el-option>
                         </el-select>
                     </el-form-item>
@@ -62,9 +70,9 @@
                         <el-select v-model="acceptForm.registArea" placeholder="请选择" size="mini" @change="areasChange">
                             <el-option
                                     v-for="item in registAreaList"
-                                    :key="item.id"
-                                    :label="item.concessionName"
-                                    :value="item.id">
+                                    :key="item.areaId"
+                                    :label="item.area"
+                                    :value="item.areaId">
                             </el-option>
                         </el-select>
                     </el-form-item>
@@ -75,14 +83,14 @@
 
                 <div class="businessAddress">
                     <el-form-item label="办公地址：" class="identity" prop="officeProvince">
-                        <el-select v-model="acceptForm.officeProvince" placeholder="请选择" size="mini">
-                            <el-option :label="item.label" :value="item.value" v-for="(item,index) in companyCardNoList" :key="index"></el-option>
+                        <el-select v-model="acceptForm.officeProvince" placeholder="请选择" size="mini" @change="busProChange">
+                            <el-option :label="item.province" :value="item.provinceId" v-for="item in busProvinceList" :key="item.provinceId"></el-option>
                         </el-select>
-                        <el-select v-model="acceptForm.officeCity" placeholder="请选择" size="mini" prop="officeCity">
-                            <el-option :label="item.label" :value="item.value" v-for="(item,index) in companyCardNoList" :key="index"></el-option>
+                        <el-select v-model="acceptForm.officeCity" placeholder="请选择" size="mini" prop="officeCity" @change="busCityChange">
+                            <el-option :label="item.city" :value="item.cityId" v-for="item in busCityList" :key="item.cityId"></el-option>
                         </el-select>
-                        <el-select v-model="acceptForm.officeArea" placeholder="请选择" size="mini" prop="officeArea">
-                            <el-option :label="item.label" :value="item.value" v-for="(item,index) in companyCardNoList" :key="index"></el-option>
+                        <el-select v-model="acceptForm.officeArea" placeholder="请选择" size="mini" prop="officeArea" @change="busAreasChange">
+                            <el-option :label="item.area" :value="item.areaId" v-for="item in busAreaList" :key="item.areaId"></el-option>
                         </el-select>
                     </el-form-item>
                     <div class="onlyInput" prop="officeAddress">
@@ -160,13 +168,11 @@
         props:[
             "actives"
         ],
-        created(){
-            console.log("actives",this.actives);
-        },
         data() {
             return {
                 acceptForm:{
                     companyName:'',
+                    companyCardType:'',
                     companyCardNo:'',
                     companyCharacter:'',
                     companyRank:'',
@@ -202,13 +208,13 @@
                         { required: true, message: '请填写证件编号', trigger: 'change' }
                     ],
                     companyCharacter: [
-                        { type: 'date', required: true, message: '请选择企业性质', trigger: 'change' }
+                        { type: 'string', required: true, message: '请选择企业性质', trigger: 'change' }
                     ],
                     companyRank: [
-                        { type: 'date', required: true, message: '请选择企业等级', trigger: 'change' }
+                        { type: 'string', required: true, message: '请选择企业等级', trigger: 'change' }
                     ],
                     industryType: [
-                        { type: 'date', required: true, message: '请选择行业类型', trigger: 'change' }
+                        { type: 'string', required: true, message: '请选择行业类型', trigger: 'change' }
                     ],
                     registProvince: [
                         { required: true, message: '请填写注册地址', trigger: 'change' }
@@ -251,11 +257,19 @@
                 registProvinceList:[],    //省列表
                 registCityList:[],        //市列表
                 registAreaList:[],        //区列表
+                busProvinceList:[],       //办公地址 --省
+                busCityList:[],           //办公地址 --市
+                busAreaList:[],           //办公地址 --区
                 legalCardTypeList:[],     //法人证件类型
-                provinceId:'', //省id
-                cityId:'',     //城市id
-                areasId:'',    //区id
-
+                provinceId:'',    //省id
+                busProvinceId:'', //省id
+                cityId:'',        //城市id
+                busCityId:'',     //城市id
+                areasId:'',       //区id
+                busAreasId:'',    //区id
+                companyInfo:'',
+                firmNameShow:false, //企业名称列表
+                firmNameList:[],  //公司名称数组
             };
         },
         created(){
@@ -279,6 +293,29 @@
             change123(event) {
                 console.log("event",event);
                 console.log("acceptForm.legalCard",this.acceptForm.legalCard);
+            },
+            //企业名称li
+            firmNameLi(val){
+                console.log(val);
+                this.acceptForm.companyName = val.companyName;
+                this.acceptForm = val;
+                this.firmNameShow = false;
+            },
+            // 企业模糊搜索
+            searchFirm(val){
+                console.log(val);
+                this.$ajax.get('/vos/company/fuzzySearch?company='+this.acceptForm.companyName).then((res)=>{
+                    console.log(res.data);
+                    this.firmNameList = res.data;
+                    if(this.acceptForm.companyName!='' && this.firmNameList.length!=0){
+                        this.firmNameShow = true;
+                    }
+                    this.firmNameList.map((zool)=>{
+                        if(zool.companyName==this.acceptForm.companyName){
+                            this.acceptForm = this.firmNameList;
+                        }
+                    })
+                })
             },
             // 证件类型
             companyCardTypeList(){
@@ -340,21 +377,30 @@
             getAllProvince(){
                 this.$ajax.get('/vos/address/getAllProvince').then((res)=>{
                     console.log(res.data);
-                    this.registProvinceList = res.data;
+                    if(res.code==200){
+                        this.registProvinceList = res.data;
+                        this.busProvinceList = res.data;
+                        this.getCitiesByProvinceId();
+                    }
                 })
             },
             // 市
             getCitiesByProvinceId(){
                 this.$ajax.get('/vos/address/getCitiesByProvinceId?provinceId='+this.provinceId).then((res)=>{
                     console.log(res.data);
-                    this.registCityList = res.data;
+                    if(res.code==200){
+                        this.registCityList = res.data;
+                        this.busCityList = res.data;
+                        this.getAreasByCityId();
+                    }
                 })
             },
             // 区
             getAreasByCityId(){
-                this.$ajax.get('/vos/address/getAreasByCityId?provinceId='+this.cityId).then((res)=>{
+                this.$ajax.get('/vos/address/getAreasByCityId?cityId='+this.cityId).then((res)=>{
                     console.log(res.data);
-                    this.concessionName = res.data;
+                    this.registAreaList = res.data;
+                    this.busAreaList = res.data;
                 })
             },
 
@@ -364,12 +410,28 @@
                 this.provinceId = val;
                 this.getCitiesByProvinceId();
             },
+            busProChange(val){
+                console.log(val);
+                this.provinceId = val;
+                this.getCitiesByProvinceId();
+            },
+            //市切换
             cityChange(val){
                 console.log(val);
                 this.cityId = val;
                 this.getAreasByCityId();
             },
+            busCityChange(val){
+                console.log(val);
+                this.cityId = val;
+                this.getAreasByCityId();
+            },
+            //区切换
             areasChange(val){
+                console.log(val);
+                this.areasId = val;
+            },
+            busAreasChange(val){
                 console.log(val);
                 this.areasId = val;
             },
