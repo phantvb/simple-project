@@ -3,15 +3,15 @@
         <div class="search">
             <el-form ref="auditNumForm" :model="auditNumForm">
                 <el-form-item style="float: left;margin-left: 10px;">
+                    <span class="demonstration">400号码：</span>
                     <el-input v-model="auditNumForm.number" placeholder="请输入内容" size="mini" style="width:300px;">
-                        <template slot="prepend" style="width:80px;">400号码：</template>
                     </el-input>
+                    <span class="demonstration">引示号码：</span>
                     <el-input v-model="auditNumForm.citationNumber" placeholder="请输入内容" size="mini"
                               style="width:300px;">
-                        <template slot="prepend" style="width:80px;">引示号码：</template>
                     </el-input>
+                    <span class="demonstration">企业名称：</span>
                     <el-input v-model="auditNumForm.companyName" placeholder="请输入内容" size="mini" style="width:300px;">
-                        <template slot="prepend" style="width:80px;">企业名称：</template>
                     </el-input>
                 </el-form-item>
 

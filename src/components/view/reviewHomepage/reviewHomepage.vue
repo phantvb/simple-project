@@ -113,7 +113,7 @@
         </div>
         <div style="width: 30%; float: right; overflow:auto;  height:832px;">
             <el-card class="right_card">
-                <div style="border-bottom: 1px solid #eee;text-align: left;line-height: 30px;">
+                <div class="right_card_title">
                     系统公告
                 </div>
                 <div v-for="(item,index) in systemNotice.tableData" :key='index' class="noticeItem">
@@ -123,7 +123,7 @@
                     <div class="text" style="float: left;">
                         <div class="content">{{item.title}}</div>
                         <div class="content grey">{{item.publishTime}}</div>
-                        <div class="content grey" v-html="item.content"></div>
+                        <div class="content grey text_overflow" v-html="item.content"></div>
                         <el-button type="text" style="padding: 0;" @click="gotoMessCenter">了解详情</el-button>
                     </div>
                     <div style="clear: both;"></div>

@@ -92,10 +92,6 @@
 	height: 120px;
 }
 
-/*账号管理*/
-.numForm{
-	margin:20px;
-}
 .numForm .el-form .el-form-item {
 	width: 30%;
 	float: left;
