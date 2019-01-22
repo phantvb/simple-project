@@ -41,7 +41,7 @@
 			<el-table v-show="billType==0" :data="tableData" style="width: 100%;margin-bottom:15px;">
 				<el-table-column type="selection" width="55"></el-table-column>
 				<el-table-column prop="month" label="月份" min-width="80">
-					<template slot-scope="scope">{{scope.row.year+'-'+scope.row.month}}</template>
+					<template slot-scope="scope">{{scope.row.monthTime.substring(0,7)}}</template>
 				</el-table-column>
 				<el-table-column prop="companyName" label="企业名称" min-width="100"></el-table-column>
 				<el-table-column prop="number400" label="400号码" min-width="120"></el-table-column>
@@ -50,7 +50,7 @@
 				<el-table-column prop="excessFee" label="超额计费" min-width="80"></el-table-column>
 				<el-table-column prop="excessMinute" label="时长包计费" min-width="80"></el-table-column>
 				<el-table-column prop="feeValueAdded" label="增值业务费用" min-width="100"></el-table-column>
-				<el-table-column prop="totalFee" label="费用合计" min-width="80"></el-table-column>
+				<el-table-column prop="totalFee" label="·费用合计" min-width="80"></el-table-column>
 				<el-table-column prop="name" label="操作" min-width="200">
 					<template slot-scope="scope">
 						<el-button size="mini" type="text" @click="showBillDetail(true,scope.row)">详情</el-button>
@@ -165,11 +165,24 @@
 					pageSize: this.page.size
 				};
 				data.channel = this.active;
+
+				function tob(num) {
+					var n = parseInt(num);
+					num++;
+					return n > 9 ? n : "0" + n;
+				}
 				if (this.billType == 0) {
 					data.numberMonthBill = Object.assign({}, this.form);
 					delete data.numberMonthBill["time"];
-					data.numberMonthBill.year = this.form.time.split("-")[0] || "";
-					data.numberMonthBill.month = this.form.time.split("-")[1] || "";
+					data.startTime = this.form.time ? this.form.time + "-01 0:00:00" : "";
+					// var e = this.form.time ? new Date((this.form.time + '-01 0:00:00').replace(/-/g, '/')) : "";
+					// if()
+					data.endTime = this.form.time ?
+						this.form.time.split("-")[0] +
+						"-" +
+						tob(this.form.time.split("-")[1]) +
+						"-01 0:00:00" :
+						"";
 					this.$ajax.post("/vos/monthBill/search", data).then(res => {
 						if (res.code == 200) {
 							this.loading = false;
@@ -178,10 +191,15 @@
 						}
 					});
 				} else {
-					data.yearStart = this.monthTotalBillForm.timeS.split("-")[0] || "";
-					data.monthStart = this.monthTotalBillForm.timeS.split("-")[1] || "";
-					data.yearEnd = this.monthTotalBillForm.timeE.split("-")[0] || "";
-					data.monthEnd = this.monthTotalBillForm.timeE.split("-")[1] || "";
+					data.startTime = this.monthTotalBillForm.timeS ?
+						this.monthTotalBillForm.timeS + "-01 0:00:00" :
+						"";
+					data.endTime = this.monthTotalBillForm.timeE ?
+						this.monthTotalBillForm.timeE.split("-")[0] +
+						"-" +
+						tob(this.monthTotalBillForm.timeE.split("-")[1]) +
+						"-01 0:00:00" :
+						"";
 					this.$ajax.post("/vos/monthTotalBill/search", data).then(res => {
 						if (res.code == 200) {
 							this.loading = false;

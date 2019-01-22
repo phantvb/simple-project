@@ -92,7 +92,7 @@
 				</el-table-column>
 				<el-table-column prop="name" label="操作" min-width="100">
 					<template slot-scope="scope">
-						<el-button size="mini" type="text" @click="addbollot(true)">添加开票</el-button>
+						<el-button size="mini" type="text" @click="addbollot(true,scope.row)">添加开票</el-button>
 						<el-button size="mini" type="text">修改</el-button>
 					</template>
 				</el-table-column>
@@ -100,18 +100,20 @@
 			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page.num" :page-sizes="$global.pageSize" :page-size="page.size" layout="total, sizes, prev, pager, next, jumper" :total="page.total">
 			</el-pagination>
 		</el-tabs>
-		<bollot :show="bollot" @close="addbollot(false)"></bollot>
+		<!-- <bollot :show="bollot" @close="addbollot(false)"></bollot> -->
+		<transfer :show="bollot" @close="closebollot" :transferType="transferType" :data="bollotData"></transfer>
 	</div>
 </template>
 <style lang="scss" scoped>
 	@import './common.scss';
 </style>
 <script>
-	import bollot from './component/bollot.vue'
+	// import bollot from './component/bollot.vue'
+	import transfer from './component/transfer.vue'
 	export default {
 		name: 'ballot',
 		components: {
-			bollot
+			transfer
 		},
 		data() {
 			return {
@@ -142,17 +144,29 @@
 					value: '选项5',
 					label: '被驳回'
 				}],
+				bollotData: {},
 				tableData: [],
 				page: {
 					num: 1,
 					size: 10,
 					total: 1
-				}
+				},
+				transferType: 2,
 			}
 		},
+		mounted() {
+			this.fetchData();
+		},
 		methods: {
-			addbollot(bol) {
+			addbollot(bol, data) {
+				this.bollotData = data || {};
 				this.bollot = bol;
+			},
+			closebollot(bol) {
+				if (bol) {
+					this.fetchData();
+				}
+				this.addbollot(false);
 			},
 			handleSizeChange() {
 				this.fetchData();
@@ -162,7 +176,7 @@
 			},
 			fetchData(pageNum) {
 				// this.loading = true;
-				//=pageNum || 1;
+				// this.page.num = pageNum || 1;
 				// var data = {};
 				// data.page = {
 				// 	pageNo: this.page.num,
@@ -180,6 +194,7 @@
 				// 		this.page.total = res.data.totalCount;
 				// 	}
 				// });
+
 			}
 		}
 	}

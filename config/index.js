@@ -19,11 +19,11 @@ module.exports = {
 			//   }
 			// },
 			'/vos': {
-				// target: 'http://172.20.10.3:5480',
-				// target: 'http://47.94.168.117:7070',
-				// target: 'http://192.168.0.117:5480',
-				target: 'http://192.168.0.154:5480',
-				//changeOrigin:true,
+				//target: 'http://47.94.168.117:7070',
+				//target: 'http://192.168.0.123:5480',
+				//target: 'http://192.168.0.154:5480',
+				target: 'http://192.168.0.117:5480',
+				changeOrigin: true,
 				pathRewrite: {
 					'^/vos': '/'
 				}

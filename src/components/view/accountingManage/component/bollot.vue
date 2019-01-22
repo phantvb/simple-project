@@ -115,7 +115,7 @@
 		},
 		data() {
 			return {
-				dialogVisible: true,
+				dialogVisible: false,
 				options: [{
 					value: '',
 					label: '全部'

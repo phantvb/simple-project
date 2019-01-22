@@ -1,34 +1,39 @@
 <template>
-	<div id="accountingManage" class="managerFormTitle">
-		<el-tabs v-model="active">
-			<el-tab-pane label="自助直销" name="1"></el-tab-pane>
-			<el-tab-pane label="渠道" name="2"></el-tab-pane>
+	<div id="accountingManage" class="managerFormTitle" v-loading="loading">
+		<el-tabs v-model="form.channel">
+			<el-tab-pane label="自助直销" name="self"></el-tab-pane>
+			<el-tab-pane label="渠道" name="channel"></el-tab-pane>
 			<div class="search">
 				<ul>
 					<li>
 						<span class="demonstration">400号码：</span>
-						<el-input v-model="form.name" placeholder="请输入内容" size="mini">
+						<el-input v-model="form.number400" placeholder="请输入内容" size="mini">
 						</el-input>
 					</li>
 					<li>
 						<span class="demonstration">企业名称：</span>
-						<el-input v-model="form.person" placeholder="请输入内容" size="mini">
+						<el-input v-model="form.companyName" placeholder="请输入内容" size="mini">
 						</el-input>
 					</li>
 					<li>
 						<span class="demonstration">套餐：</span>
-						<el-select v-model="form.number" placeholder="请选择" size="mini">
-							<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+						<el-select v-model="form.packageName" placeholder="请选择" size="mini">
+							<el-option v-for="item in packageOptions" :key="item.tariffName" :label="item.tariffName" :value="item.tariffName" @change="fetchData()">
 							</el-option>
 						</el-select>
 					</li>
 				</ul>
 				<div class="block left">
 					<span class="demonstration">起止时间：</span>
-					<el-date-picker style="margin-right:15px;" v-model="form.date" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" size="mini">
+					<el-date-picker style="margin-right:15px;" v-model="form.time" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" size="mini" format="yyyy 年 MM 月 dd日" value-format="yyyy-MM-dd 00:00:00" @change="fetchData()">
 					</el-date-picker>
-					<el-button type="primary" size="mini" style="width:80px;">搜索</el-button>
-					<el-button type="primary" plain size="mini" style="width:80px;">重置</el-button>
+					<span class="demonstration">到账状态：</span>
+					<el-select v-model="form.accountStatus" placeholder="请选择" size="mini" @change="fetchData()">
+						<el-option v-for="item in accountStatusOptions" :key="item.value" :label="item.label" :value="item.value">
+						</el-option>
+					</el-select>
+					<el-button type="primary" size="mini" style="width:80px;" @click="fetchData()">搜索</el-button>
+					<el-button type="primary" plain size="mini" style="width:80px;" @click="reset">重置</el-button>
 				</div>
 			</div>
 			<section class="right block lineTop">
@@ -38,68 +43,41 @@
 			<el-table :data="tableData" style="width: 100%;margin-bottom:15px;">
 				<el-table-column type="selection" width="55">
 				</el-table-column>
-				<el-table-column type="expand">
-					<template slot-scope="props">
-						<el-form label-position="left" inline class="demo-table-expand">
-							<el-form-item label="商品名称">
-								<span>{{ props.row.name }}</span>
-							</el-form-item>
-							<el-form-item label="所属店铺">
-								<span>{{ props.row.shop }}</span>
-							</el-form-item>
-							<el-form-item label="商品 ID">
-								<span>{{ props.row.id }}</span>
-							</el-form-item>
-							<el-form-item label="店铺 ID">
-								<span>{{ props.row.shopId }}</span>
-							</el-form-item>
-							<el-form-item label="商品分类">
-								<span>{{ props.row.category }}</span>
-							</el-form-item>
-							<el-form-item label="店铺地址">
-								<span>{{ props.row.address }}</span>
-							</el-form-item>
-							<el-form-item label="商品描述">
-								<span>{{ props.row.desc }}</span>
-							</el-form-item>
-						</el-form>
+				<el-table-column prop="number400" label="400号码" min-width="100">
+				</el-table-column>
+				<el-table-column prop="companyName" label="企业名称" min-width="100">
+				</el-table-column>
+				<el-table-column prop="packageName" label="基本套餐" min-width="120">
+				</el-table-column>
+				<el-table-column label="套餐时间" min-width="150">
+					<template slot-scope="scope">
+						{{scope.row.startTime?scope.row.startTime.substring(0,10):''}} 至 {{scope.row.endTime?scope.row.endTime.substring(0,10):'长期'}}
 					</template>
 				</el-table-column>
-
-				<el-table-column prop="type" label="400号码" min-width="80">
+				<el-table-column prop="shouldReceive" label="应收合计" min-width="80">
 				</el-table-column>
-				<el-table-column prop="name" label="企业名称" min-width="200">
+				<el-table-column prop="realReceive" label="实收合计" min-width="80">
 				</el-table-column>
-				<el-table-column prop="number" label="套餐" min-width="150">
-				</el-table-column>
-				<el-table-column prop="person" label="数量" min-width="80">
-				</el-table-column>
-				<el-table-column prop="date" label="单位" min-width="80">
-				</el-table-column>
-				<el-table-column prop="status" label="金额（元）" min-width="120">
-				</el-table-column>
-				<el-table-column prop="status" label="起止时间" min-width="80">
-				</el-table-column>
-				<el-table-column prop="status" label="实收" min-width="80">
-				</el-table-column>
-				<el-table-column prop="status" label="到账时间" min-width="80">
-				</el-table-column>
-				<el-table-column prop="status" label="备注" min-width="80">
+				<el-table-column prop="accountStatus" label="到账状态" min-width="80">
+					<template slot-scope="scope">
+						<span v-if="scope.row.accountStatus=='NotArrive'">未到账</span>
+						<span v-if="scope.row.accountStatus=='Cleared'">已清款</span>
+						<span v-if="scope.row.accountStatus=='PartArrive'">部分到账</span>
+					</template>
 				</el-table-column>
 				<el-table-column prop="name" label="操作" min-width="200">
 					<template slot-scope="scope">
-						<el-button size="mini" type="text" @click="addfavourable(true)">添加优惠</el-button>
-						<el-button size="mini" type="text" @click="addtransfer(true)">确认到账</el-button>
-						<el-button size="mini" type="text">修改</el-button>
-						<el-button size="mini" type="text">删除</el-button>
+						<el-button size="mini" type="text" @click="addfavourable(true,scope.row)">添加优惠</el-button>
+						<el-button size="mini" type="text" @click="addtransfer(true,scope.row,0)">确认到账</el-button>
+						<el-button size="mini" type="text" @click="addtransfer(true,scope.row,1)">详情</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
 			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page.num" :page-sizes="$global.pageSize" :page-size="page.size" layout="total, sizes, prev, pager, next, jumper" :total="page.total">
 			</el-pagination>
 		</el-tabs>
-		<favourable :show="favourable" @close="addfavourable(false)"></favourable>
-		<transfer :show="transfer" @close="addtransfer(false)"></transfer>
+		<favourable :show="favourable" @close="closefavourable" :data="favourableData" :active="this.form.channel"></favourable>
+		<transfer :show="transfer" @close="closetransfer" :transferType="transferType" :data="transferData"></transfer>
 	</div>
 </template>
 <style lang="scss" scoped>
@@ -116,55 +94,116 @@
 		},
 		data() {
 			return {
-				active: '1',
 				favourable: false,
+				transferType: 0, //0:编辑1查看
 				transfer: false,
 				form: {
-					name: '',
-					person: '',
-					number: '',
-					date: null,
-					status
+					number400: "",
+					companyName: "",
+					packageName: "",
+					accountStatus: "",
+					time: [],
+					channel: 'self'
 				},
-				options: [{
-					value: '',
-					label: '全部'
+				favourableData: {},
+				transferData: {},
+				accountStatusOptions: [{
+					value: "",
+					label: "全部"
 				}, {
-					value: '选项2',
-					label: '等待送审'
+					value: "NotArrive",
+					label: "未到账"
 				}, {
-					value: '选项3',
-					label: '待审核'
+					value: "Cleared",
+					label: "已清款"
 				}, {
-					value: '选项4',
-					label: '审核通过'
-				}, {
-					value: '选项5',
-					label: '被驳回'
+					value: "PartArrive",
+					label: "部分到账"
 				}],
+				packageOptions: [],
 				tableData: [],
 				page: {
 					num: 1,
 					size: 10,
 					total: 1
-				}
+				},
+				loading: false
 			}
 		},
 		mounted() {
-
+			this.getPackage();
+			this.fetchData();
 		},
 		methods: {
-			addfavourable(bol) {
+			addfavourable(bol, data) {
+				this.favourableData = data || {};
 				this.favourable = bol;
 			},
-			addtransfer(bol) {
+			addtransfer(bol, data, type) {
+				this.transferType = type;
+				this.transferData = data || {};
 				this.transfer = bol;
 			},
-			handleSizeChange() {
-
+			closefavourable(bol) {
+				if (bol) {
+					this.fetchData();
+				}
+				this.addfavourable(false);
 			},
-			handleCurrentChange() {
-
+			closetransfer(bol) {
+				if (bol) {
+					this.fetchData();
+				}
+				this.addtransfer(false);
+			},
+			handleSizeChange() {
+				this.fetchData();
+			},
+			handleCurrentChange(val) {
+				this.fetchData(val);
+			},
+			reset() {
+				this.$clear(this.form);
+				this.form.channel = 'self';
+				this.fetchData();
+			},
+			fetchData(pageNum) {
+				this.page.num = pageNum || 1;
+				this.loading = true;
+				var data = {};
+				data.page = {
+					pageNo: this.page.num,
+					pageSize: this.page.size
+				};
+				data.totalAccounts = Object.assign({}, this.form);
+				data.totalAccounts.packageName = data.totalAccounts.packageName == "全部" ? "" : data.totalAccounts.packageName;
+				delete data.totalAccounts["time"];
+				data.startTime = this.form.time[0] || "";
+				data.endTime = this.form.time[1] || "";
+				this.$ajax.post("/vos/accountsTotal/search", data).then(res => {
+					if (res.code == 200) {
+						this.loading = false;
+						this.tableData = res.data.accountsTotals;
+						this.page.total = res.data.totalCount;
+					}
+				});
+			},
+			getPackage() {
+				var data = {
+					id: "",
+					channel: this.form.channel
+				}
+				this.$ajax.post('/vos/tariffPackage/getTariff', { tariff: data }).then(res => {
+					if (res.code == 200) {
+						this.packageOptions = res.data.tariffPackageList;
+						this.packageOptions.unshift({
+							tariffName: '时长包'
+						});
+						this.packageOptions.unshift({
+							tariffName: '全部'
+						});
+					}
+				})
 			}
 		}
 	}

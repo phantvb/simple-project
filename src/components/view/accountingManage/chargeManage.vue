@@ -91,6 +91,9 @@
 		methods: {
 			showcharge(bol) {
 				this.addcharge = bol;
+				if (!bol) {
+					this.fetchData();
+				}
 			},
 			handleSizeChange() {
 				this.fetchData();

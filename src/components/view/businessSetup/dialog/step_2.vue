@@ -82,7 +82,7 @@
 		</div>
 		<footer class="right">
 			<el-button type="primary" size="mini" @click="next(1)" plain>上一步</el-button>
-			<el-button type="primary" size="mini" plain @click="submit(false)">暂存信息</el-button>
+			<el-button type="primary" size="mini" plain @click="submit(false)" v-if="editType==0">暂存信息</el-button>
 			<el-button type="primary" size="mini" @click="submit(true)">立刻送审</el-button>
 		</footer>
 	</div>
@@ -168,7 +168,7 @@
 				this.imageUrl.p4 = 'http://192.168.0.117:5480/vos/' + this.file.p4;
 			}
 		},
-		props: ['oneData', 'id'],
+		props: ['oneData', 'idData', 'isComplete', 'editType'],
 		methods: {
 			next(step) {
 				this.$emit('next', step);
@@ -182,14 +182,28 @@
 				data.company.legalCardBackPic = this.file.p3;
 				data.company.legalCardHandPic = this.file.p4;
 				data.companyFlow = {
-					flowId: this.id || ''
+					flowId: this.idData.id || ''
 				};
-				this.$ajax.post(url, data).then(res => {
-					if (res.code == 200) {
-						this.$message.success('操作成功');
-						this.$emit('complete');
+				if (!this.isComplete && bol) {
+					this.$message.error('请先返回上一步完善信息');
+				} else {
+					if (this.editType == 0) {
+						this.$ajax.post(url, data).then(res => {
+							if (res.code == 200) {
+								this.$message.success('操作成功');
+								this.$emit('complete', true);
+							}
+						});
+					} else if (this.editType == 1) {
+						data.companyFlow = this.idData;
+						this.$ajax.post('/vos/company/sendToModifyAudit', data).then(res => {
+							if (res.code == 200) {
+								this.$message.success('操作成功');
+								this.$emit('complete', true);
+							}
+						});
 					}
-				})
+				}
 			},
 			beforeAvatarUpload(file) {
 				const isLt10M = file.size / 1024 / 1024 < 10;

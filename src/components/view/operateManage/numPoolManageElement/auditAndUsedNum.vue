@@ -1,32 +1,22 @@
 <template>
-    <div id="freezingNum">
+    <div id="auditNum">
         <div class="search">
-            <el-form ref="freezingNumForm" :model="freezingNumForm">
+            <el-form ref="auditNumForm" :model="auditNumForm">
                 <el-form-item style="float: left;margin-left: 10px;">
-                    <el-input v-model="freezingNumForm.number" placeholder="请输入内容" size="mini" style="width:300px;">
+                    <el-input v-model="auditNumForm.number" placeholder="请输入内容" size="mini" style="width:300px;">
                         <template slot="prepend" style="width:80px;">400号码：</template>
                     </el-input>
-                    <el-input v-model="freezingNumForm.citationNumber" placeholder="请输入内容" size="mini"
+                    <el-input v-model="auditNumForm.citationNumber" placeholder="请输入内容" size="mini"
                               style="width:300px;">
                         <template slot="prepend" style="width:80px;">引示号码：</template>
                     </el-input>
-                    <el-input v-model="freezingNumForm.companyName" placeholder="请输入内容" size="mini"
-                              style="width:300px;">
+                    <el-input v-model="auditNumForm.companyName" placeholder="请输入内容" size="mini" style="width:300px;">
                         <template slot="prepend" style="width:80px;">企业名称：</template>
                     </el-input>
-                    <div class="block" style="display: inline-block;padding: 0;">
-                        <span class="demonstration">解冻时间：</span>
-                        <el-date-picker
-                            size="mini"
-                            v-model="freezingNumForm.date"
-                            type="date"
-                            placeholder="选择日期">
-                        </el-date-picker>
-                    </div>
                 </el-form-item>
 
-                <el-form-item label="可见渠道：" style="clear: both;margin-left: 15px;">
-                    <el-checkbox-group v-model="freezingNumForm.checkList" style=" float: left;margin-left: 15px">
+                <el-form-item label="受理渠道：" style="clear: both;margin-left: 15px;">
+                    <el-checkbox-group v-model="auditNumForm.checkList" style=" float: left;margin-left: 15px">
                         <el-checkbox label="自助直销"></el-checkbox>
                         <el-checkbox label="渠道"></el-checkbox>
                     </el-checkbox-group>
@@ -39,21 +29,14 @@
         </div>
 
         <div class="buttonDiv">
-            <div style="float: left;">
-                <el-button type="primary" size="mini" @click="batchThaw">解冻</el-button>
-            </div>
-            <div style="float: right;">
-                <el-button type="primary" plain size="mini" @click="exportInfo">导出</el-button>
-            </div>
+            <!--<a href="http://192.168.0.117:5480/vos/excel/number400" target="_blank" id="export"></a>-->
+            <el-button type="primary" plain size="mini" @click="exportInfo" style="float: right;">导出</el-button>
         </div>
 
         <div>
             <el-table
                 :data="tableData"
-                ref="multipleTable"
-                tooltip-effect="dark"
-                style="width: 100%;margin-bottom:15px;"
-                @selection-change="handleSelectionChange">
+                style="width: 100%;margin-bottom:15px;">
                 <el-table-column
                     type="selection"
                     min-width="100">
@@ -75,12 +58,7 @@
                 </el-table-column>
                 <el-table-column
                     prop="channel"
-                    label="可见渠道"
-                    min-width="100">
-                </el-table-column>
-                <el-table-column
-                    prop="thawTime"
-                    label="解冻时间"
+                    label="受理渠道"
                     min-width="100">
                 </el-table-column>
                 <el-table-column
@@ -88,24 +66,13 @@
                     label="状态"
                     min-width="100">
                 </el-table-column>
-                <el-table-column
-                    label="操作"
-                    min-width="100">
-                    <template slot-scope="scope">
-                        <el-button
-                            size="mini"
-                            type="text"
-                            @click="handleEdit(scope.$index, scope.row)">解冻
-                        </el-button>
-                    </template>
-                </el-table-column>
             </el-table>
             <div style="margin-top: 10px">
                 <el-pagination
                     style="float:right;"
                     @size-change="handleSizeChange"
                     @current-change="handleCurrentChange"
-                    :current-page="page.num"
+                    :current-page="page.currentPage"
                     :page-sizes="$global.pageSize"
                     :page-size="page.size"
                     layout="total, sizes, prev, pager, next, jumper"
@@ -121,22 +88,22 @@
     export default {
         data() {
             return {
-                freezingNumForm: {
+                auditNumForm: {
                     number: '',
                     citationNumber: '',
                     companyName: '',
-                    date: '',
                     checkList: []
                 },
                 tableData: [],
                 page: {
-                    num: 1,
+                    currentPage: 1,
                     size: 10,
                     total: 1
                 },
-                selectedItems: []
+                status: ''
             }
         },
+
         methods: {
             // 修改页面显示数据大小
             handleSizeChange(val) {
@@ -152,33 +119,31 @@
 
             search() {
                 let str = '';
-                if (this.freezingNumForm.checkList.length == 2) {
-                    str = "self,channel";
+                if (this.auditNumForm.checkList.length == 2) {
+                    str = "self+channel";
                 }
-                if (this.freezingNumForm.checkList.length == 1 && this.freezingNumForm.checkList[0] == "自助直销") {
+                if (this.auditNumForm.checkList.length == 1 && this.auditNumForm.checkList[0] == "自助直销") {
                     str = "self";
                 }
-                if (this.freezingNumForm.checkList.length == 1 && this.freezingNumForm.checkList[0] == "渠道") {
+                if (this.auditNumForm.checkList.length == 1 && this.auditNumForm.checkList[0] == "渠道") {
                     str = "channel";
                 }
-
                 this.$ajax.post('/vos/number400/search', {
                     "page": {
                         "pageNo": '1',
                         "pageSize": this.page.size
                     },
                     "number400": {
-                        "number400": this.freezingNumForm.number,
+                        "number400": this.auditNumForm.number,
                         "channel": str,
-                        "status": "Freezed",
-                        "companyName": this.freezingNumForm.companyName,
-                        "guideNumber": this.freezingNumForm.citationNumber
+                        "status": this.status,
+                        "companyName": this.auditNumForm.companyName,
+                        "guideNumber": this.auditNumForm.citationNumber
                     }
                 }).then((res) => {
                     if (res.code == 200) {
                         this.tableData = res.data.number400s;
                         this.page.total = res.data.totalCount;
-
                         for (let i = 0; i < this.tableData.length; i++) {
                             if (this.tableData[i].channel == 'self') {
                                 this.tableData[i].channel = '自助直销';
@@ -187,86 +152,32 @@
                                 this.tableData[i].channel = '渠道';
                             }
 
-                            if (this.tableData[i].status == 'Freezed') {
-                                this.tableData[i].status = '冷冻中';
+                            if (this.tableData[i].status == 'Auditing') {
+                                this.tableData[i].status = '审核中';
+                            }
+                            if (this.tableData[i].status == 'Used') {
+                                this.tableData[i].status = '使用中';
                             }
                         }
                     }
                 });
+            },
 
-            },
             reset() {
-                this.freezingNumForm.number = '';
-                this.freezingNumForm.citationNumber = '';
-                this.freezingNumForm.companyName = '';
-                this.freezingNumForm.date = '';
-                this.freezingNumForm.checkList = [];
+                this.auditNumForm.number = '';
+                this.auditNumForm.citationNumber = '';
+                this.auditNumForm.companyName = '';
+                this.auditNumForm.checkList = [];
             },
+
 
             exportInfo() {
                 this.$emit('exportNumber400');
             },
 
-            // 批量选择
-            handleSelectionChange(val) {
-                this.selectedItems = val;
-            },
-
-            batchThaw() {
-
-                this.$confirm('此操作将解冻这些信息, 是否继续?', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消'
-                }).then(() => {
-                    let number400 = [];
-                    for (let i = 0; i < this.selectedItems.length; i++) {
-                        number400.push({
-                            "id": this.selectedItems[i].id,
-                            "number400": this.selectedItems[i].number400,
-                            "guideNumber": this.selectedItems[i].guideNumber
-                        })
-                    }
-
-                    this.$ajax.post('/vos/number400/thaw', {
-                        "number400": number400
-                    }).then((res) => {
-                        if (res.code == 200) {
-                            this.$message({
-                                message: '解冻成功!',
-                                type: 'success'
-                            });
-                            this.loadData();
-                        }
-                    });
-
-                }).catch(() => {
-                    this.$message({
-                        type: 'info',
-                        message: '已取消删除!'
-                    });
-                });
-
-            },
-
-            // 解冻
-            handleEdit(index, row) {
-                this.$ajax.post('/vos/number400/thaw', {
-                    "number400": {
-                        "id": row.id,
-                        "number400": row.number400,
-                        "guideNumber": row.guideNumber
-                    }
-                }).then((res) => {
-                    if (res.code == 200) {
-                        this.$message({
-                            message: '解冻成功!',
-                            type: 'success'
-                        });
-                        this.loadData();
-                    }
-                });
-            },
-            loadData() {
+            loadData(status) {
+                this.reset();
+                this.status = status;
                 this.$ajax.post('/vos/number400/getAll', {
                     "page": {
                         "pageNo": this.page.currentPage,
@@ -275,7 +186,9 @@
                     "number400": {
                         "number400": "",
                         "channel": "",
-                        "status": "Freezed"
+                        "status": status,
+                        "companyName": "",
+                        "guideNumber": ""
                     }
                 }).then((res) => {
                     if (res.code == 200) {
@@ -289,9 +202,15 @@
                             if (this.tableData[i].channel == 'channel') {
                                 this.tableData[i].channel = '渠道';
                             }
+                            if (this.tableData[i].channel == 'self,channel') {
+                                this.tableData[i].channel = '自助直销,渠道';
+                            }
 
-                            if (this.tableData[i].status == 'Freezed') {
-                                this.tableData[i].status = '冷冻中';
+                            if (this.tableData[i].status == 'Used') {
+                                this.tableData[i].status = '使用中';
+                            }
+                            if (this.tableData[i].status == 'Auditing') {
+                                this.tableData[i].status = '审核中';
                             }
                         }
                     }
@@ -305,5 +224,5 @@
 </script>
 
 <style lang="scss" scoped>
-    @import "./citationNum";
+    @import "auditAndUsedNum";
 </style>
