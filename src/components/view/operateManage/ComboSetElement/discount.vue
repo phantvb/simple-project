@@ -12,16 +12,17 @@
                     <div>
                         <el-row>
                             <el-col
-                                :span="4"
+                                :md="11"
+                                :lg="7"
+                                :xl="5"
                                 v-for="(o, index) in cTotalCount1"
-                                :key="o"
+                                :key="index"
                                 :offset="1"
                                 style="margin-top: 10px;"
                             >
                                 <el-card
                                     :body-style="{ padding: '0px'}"
                                     shadow="hover"
-                                    style="width:300px;"
                                 >
                                     <div class="add-title">{{cTableData1[index].concessionName}}</div>
                                     <div class="add-body">
@@ -55,6 +56,7 @@
                                                 class="add-item"
                                                 v-if="cTableData1[index].concessionTime"
                                             >{{cTableData1[index].concessionTime}} {{cTableData1[index].units}}</el-form-item>
+                                            <div style="height:40px;" v-if="cTableData1[index].rechargeLimit"></div>
                                             <div style="border-top: 1px solid #f5f5f5;">
                                                 <div style="float: right;">
                                                     <el-button
@@ -80,16 +82,17 @@
                     <div>
                         <el-row>
                             <el-col
-                                :span="4"
+                                :md="11"
+                                :lg="7"
+                                :xl="5"
                                 v-for="(o, index) in cTotalCount2"
-                                :key="o"
+                                :key="index"
                                 :offset="1"
                                 style="margin-top: 10px;"
                             >
                                 <el-card
                                     :body-style="{ padding: '0px'}"
                                     shadow="hover"
-                                    style="width:300px;"
                                 >
                                     <div class="add-title">{{cTableData2[index].concessionName}}</div>
                                     <div class="add-body">
@@ -123,7 +126,7 @@
                                                 class="add-item"
                                                 v-if="cTableData2[index].concessionTime"
                                             >{{cTableData2[index].concessionTime}} {{cTableData2[index].units}}</el-form-item>
-
+                                            <div style="height:40px;" v-if="cTableData2[index].rechargeLimit"></div>
                                             <div style="border-top: 1px solid #f5f5f5;">
                                                 <div style="float: right;">
                                                     <el-button
@@ -601,16 +604,22 @@ export default {
 
         // 改变新增优惠方案的dialog样式
         changeStyle() {
-            if (
-                this.addDiscountForm.value == "1" ||
-                this.addDiscountForm.value == ""
-            ) {
+            if (this.addDiscountForm.value == "1" ||this.addDiscountForm.value == "") {
                 this.addDiscountForm.style1 = "block";
                 this.addDiscountForm.style2 = "none";
+
+                this.addDiscountForm.packageDeals = "" ;
+                this.addDiscountForm.availableTime = "" ;
+                this.addDiscountForm.concessionTime = "" ;
+                this.addDiscountForm.value2 = "";
+                
             }
             if (this.addDiscountForm.value == "2") {
                 this.addDiscountForm.style1 = "none";
                 this.addDiscountForm.style2 = "block";
+
+                this.addDiscountForm.rechargeLimit = "";
+                this.addDiscountForm.donationQuota = "";
             }
         },
 

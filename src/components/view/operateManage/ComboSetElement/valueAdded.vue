@@ -12,7 +12,9 @@
                     <div>
                         <el-row>
                             <el-col
-                                :span="4"
+                                :md="11"
+                                :lg="7"
+                                :xl="5"
                                 v-for="(o, index) in bTotalCount1"
                                 :key="o"
                                 :offset="1"
@@ -21,7 +23,6 @@
                                 <el-card
                                     :body-style="{ padding: '0px'}"
                                     shadow="hover"
-                                    style="width:300px;"
                                 >
                                     <div class="add-title">{{bTableData1[index].tariffName}}</div>
                                     <div class="add-body">
@@ -74,7 +75,9 @@
                     <div>
                         <el-row>
                             <el-col
-                                :span="4"
+                                :md="11"
+                                :lg="7"
+                                :xl="5"
                                 v-for="(o, index) in bTotalCount2"
                                 :key="o"
                                 :offset="1"
@@ -83,7 +86,6 @@
                                 <el-card
                                     :body-style="{ padding: '0px'}"
                                     shadow="hover"
-                                    style="width:300px;"
                                 >
                                     <div class="add-title">{{bTableData2[index].tariffName}}</div>
                                     <div class="add-body">

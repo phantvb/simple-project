@@ -95,7 +95,7 @@
                         <template slot-scope="props">
                             <el-form label-position="left" inline class="demo-table-expand">
                                 <el-form-item label="公告内容">
-                                    <span style="margin-left: 50px;" v-html="props.row.content"></span>
+                                    <span v-html="props.row.content"></span>
                                 </el-form-item>
                             </el-form>
                         </template>
@@ -465,4 +465,21 @@ export default {
 
 <style lang="scss" scoped>
 @import "./noticeManage.scss";
+</style>
+
+<style>
+.demo-table-expand{
+    font-size: 0;
+}
+
+.demo-table-expand label {
+    padding-top: 15px;
+	width: 90px;
+	color: #99a9bf;
+}
+
+.demo-table-expand .el-form-item {
+	margin-right: 0;
+	margin-bottom: 0;
+}
 </style>

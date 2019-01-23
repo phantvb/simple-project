@@ -12,17 +12,14 @@
                     <div>
                         <el-row>
                             <el-col
-                                :span="4"
+                                :md="11"
+                                :lg="7"
+                                :xl="5"
                                 v-for="(o, index) in aTotalCount1"
                                 :key="index"
                                 :offset="1"
-                                style="margin-top: 10px;"
-                            >
-                                <el-card
-                                    :body-style="{ padding: '0px'}"
-                                    shadow="hover"
-                                    style="width:300px;"
-                                >
+                                style="margin-top: 10px;">
+                                <el-card :body-style="{ padding: '0px'}" shadow="hover">
                                     <div class="add-title">{{aTableData1[index].tariffName}}</div>
                                     <div class="add-body">
                                         <el-form label-width="100px">
@@ -89,17 +86,16 @@
                     <div>
                         <el-row>
                             <el-col
-                                :span="4"
+                                :md="11"
+                                :lg="7"
+                                :xl="5"
                                 v-for="(o, index) in aTotalCount2"
-                                :key="o"
+                                :key="index"
                                 :offset="1"
-                                style="margin-top: 10px;"
-                            >
+                                style="margin-top: 10px;">
                                 <el-card
                                     :body-style="{ padding: '0px'}"
-                                    shadow="hover"
-                                    style="width:300px;"
-                                >
+                                    shadow="hover">
                                     <div class="add-title">{{aTableData2[index].tariffName}}</div>
                                     <div class="add-body">
                                         <el-form label-width="100px">

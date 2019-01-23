@@ -12,7 +12,9 @@
                     <div>
                         <el-row>
                             <el-col
-                                :span="4"
+                                :md="11"
+                                :lg="7"
+                                :xl="5"
                                 v-for="(o, index) in dTotalCount1"
                                 :key="o"
                                 :offset="1"
@@ -21,7 +23,6 @@
                                 <el-card
                                     :body-style="{ padding: '0px'}"
                                     shadow="hover"
-                                    style="width:300px;"
                                 >
                                     <div class="add-title">{{dTableData1[index].timePacketName}}</div>
                                     <div class="add-body">
@@ -59,7 +60,9 @@
                     <div>
                         <el-row>
                             <el-col
-                                :span="4"
+                                :md="11"
+                                :lg="7"
+                                :xl="5"
                                 v-for="(o, index) in dTotalCount2"
                                 :key="o"
                                 :offset="1"
@@ -68,7 +71,6 @@
                                 <el-card
                                     :body-style="{ padding: '0px'}"
                                     shadow="hover"
-                                    style="width:300px;"
                                 >
                                     <div class="add-title">{{dTableData2[index].timePacketName}}</div>
                                     <div class="add-body">
