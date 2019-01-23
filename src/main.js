@@ -47,24 +47,25 @@ Vue.prototype.$format = function (obj) {
 axios.defaults.withCredentials = true;
 axios.defaults.headers.common['Content-Type'] = 'application/json;charset=UTF-8';
 axios.defaults.baseURL = '/vos';
-//axios.defaults.baseURL = 'http://47.94.168.117:7070';
 axios.interceptors.response.use(res => {
-	switch (res.status) {
-	case 401:
-		//this.$router.push({ path: '/login'})
-		//location.href='#/login'
-		break
-	case 403:
-		//this.$router.push({ path: '/login'})
-		//location.href='#/login'
-		break
-	case 530:
-		//alert(res.data.message);
-		//this.$router.push({ path: '/login'})
-		//location.href='#/login?error_type=1'
-		break
-	}
+	// switch (res.status) {
+	// case 302:
+	// 	this.$router.push({ path: '/login' });
+	// 	break
+	// case 304:
+	// 	this.$router.push({ path: '/login' });
+	// 	break
+	// case 530:
+	// 	//location.href='#/login?error_type=1'
+	// 	break
+	// }
 	return res.data;
+}, err => {
+	//处理302
+	if (typeof err.response === 'undefined') {
+		location.href = '#/login';
+	}
+	return err;
 })
 
 Vue.config.productionTip = false;
@@ -77,11 +78,11 @@ Vue.prototype.$global = {
 new Vue({
 	el: '#app',
 	router,
-    store,
+	store,
 	components: { App },
 	template: '<App/>',
-    render: h => h(App),
-    data: {
-        eventHub: new Vue()
-    }
+	render: h => h(App),
+	data: {
+		eventHub: new Vue()
+	}
 });

@@ -887,5 +887,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "./accountManage.scss";
+	@import "./accountManage.scss";
 </style>
