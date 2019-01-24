@@ -67,14 +67,14 @@
 				<el-table-column prop="name" label="操作" min-width="200">
 					<template slot-scope="scope">
 						<el-button size="mini" type="text">试听{{scope.row.recordAddress}}</el-button>
-						<el-button size="mini" type="text" @click="showTicketDetail(true)">详情</el-button>
+						<el-button size="mini" type="text" @click="showTicketDetail(true,scope.row)">详情</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
 			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page.num" :page-sizes="$global.pageSize" :page-size="page.size" layout="total, sizes, prev, pager, next, jumper" :total="page.total">
 			</el-pagination>
 		</el-tabs>
-		<ticketDetail :show="ticketDetailShow" @close="showTicketDetail(false)"></ticketDetail>
+		<ticketDetail :show="ticketDetailShow" @close="showTicketDetail(false)" :data="ticketDetailData"></ticketDetail>
 
 	</div>
 </template>
@@ -103,6 +103,7 @@
 					time: []
 				},
 				ticketDetailShow: false,
+				ticketDetailData: {},
 				status: '',
 				options: [{
 					value: '',
@@ -132,7 +133,8 @@
 			this.fetchData();
 		},
 		methods: {
-			showTicketDetail(bol) {
+			showTicketDetail(bol, data) {
+				this.ticketDetailData = data || {};
 				this.ticketDetailShow = bol;
 			},
 			handleSizeChange() {

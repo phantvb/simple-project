@@ -4,12 +4,12 @@
 			<ul>
 				<li>
 					<span class="demonstration">企业名称：</span>
-					<el-input v-model="form.person" placeholder="请输入内容" size="mini">
+					<el-input v-model="form.companyName" placeholder="请输入内容" size="mini">
 					</el-input>
 				</li>
 				<li>
 					<span class="demonstration">400号码：</span>
-					<el-input v-model="form.person" placeholder="请输入内容" size="mini">
+					<el-input v-model="form.number400" placeholder="请输入内容" size="mini">
 					</el-input>
 				</li>
 				<li>
@@ -32,7 +32,7 @@
 			<el-button type="primary" size="mini"><i class="el-icon-plus"></i> 新增目的码</el-button>
 			<div style="float:right">
 				<span class="fmini">状态：</span>
-				<el-select v-model="status" placeholder="请选择" size="mini">
+				<el-select v-model="form.status" placeholder="请选择" size="mini">
 					<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
 					</el-option>
 				</el-select>
@@ -77,11 +77,10 @@
 		data() {
 			return {
 				form: {
-					name: '',
-					person: '',
-					number: '',
-					date: null,
-					status
+					type: 'Destnum',
+					companyName: '',
+					number400: '',
+					status: '',
 				},
 				status: '',
 				codeEditShow: false,
@@ -89,11 +88,11 @@
 					value: '',
 					label: '全部'
 				}, {
-					value: '选项2',
-					label: '启用'
+					value: 'DestNum_Auditing',
+					label: '目的码审核'
 				}, {
-					value: '选项3',
-					label: '停用'
+					value: 'Audit_Success',
+					label: '审核通过'
 				}],
 				tableData: [],
 				page: {

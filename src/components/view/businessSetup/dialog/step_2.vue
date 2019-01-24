@@ -182,7 +182,7 @@
 				data.company.legalCardBackPic = this.file.p3;
 				data.company.legalCardHandPic = this.file.p4;
 				data.companyFlow = {
-					flowId: this.idData.id || ''
+					flowId: this.idData.flowId || ''
 				};
 				if (!this.isComplete && bol) {
 					this.$message.error('请先返回上一步完善信息');
