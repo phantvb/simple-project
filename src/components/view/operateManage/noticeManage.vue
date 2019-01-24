@@ -1,5 +1,5 @@
 <template>
-    <div id="noticeManage">
+    <div id="noticeManage" v-loading="loading">
         <header>
             <el-breadcrumb separator-class="el-icon-arrow-right">
                 <el-breadcrumb-item :to="{ path: '/' }">运营管理</el-breadcrumb-item>
@@ -186,7 +186,8 @@ export default {
             ids: [],
 
             updateData: "none", // 编辑和新增公用一个弹窗控制按钮显示
-            submitData: "inline-block"
+            submitData: "inline-block",
+            loading:false
         };
     },
 
@@ -429,6 +430,7 @@ export default {
         },
 
         loadData() {
+            this.loading=true;
             // 加载el-table的数据
             this.$ajax
                 .post("/vos/announcement/getAll", {
@@ -443,6 +445,7 @@ export default {
                 })
                 .then(res => {
                     if (res.code == 200) {
+                        this.loading=false;
                         this.tableData = res.data.announcements;
                         this.page.total = res.data.totalCount;
                     }

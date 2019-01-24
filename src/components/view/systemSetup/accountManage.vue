@@ -1,5 +1,5 @@
 <template>
-    <div id="selfHelp">
+    <div id="selfHelp" v-loading="loading">
         <header>
 			<el-breadcrumb separator-class="el-icon-arrow-right">
 				<el-breadcrumb-item :to="{ path: '/systemSetup' }">系统设置</el-breadcrumb-item>
@@ -352,7 +352,8 @@ export default {
             multipleSelection: [], //选择复选框的信息数组
             ids: [], // 存放批量操作的id
             currentPage: 4, //分页
-            radio: "1" //单选按钮
+            radio: "1", //单选按钮
+            loading: false
         };
     },
     methods: {
@@ -837,6 +838,7 @@ export default {
             }
         },
         loadTableData(strURL, num) {
+            this.loading = true;
             let enabled;
             if (num == 1) {
                 enabled = "";
@@ -860,6 +862,7 @@ export default {
                 })
                 .then(res => {
                     if (res.code == 200) {
+                        this.loading = false;
                         this.tableData = res.data.users;
                         this.page.total = res.data.totalCount;
                         for (let i = 0; i < this.tableData.length; i++) {
