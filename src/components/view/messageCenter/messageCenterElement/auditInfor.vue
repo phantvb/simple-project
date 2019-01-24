@@ -14,6 +14,9 @@
                 prop="messageTitle"
                 label="标题"
                 min-width="150">
+                <template slot-scope="scope">
+                    <div style="cursor:pointer" @click="lcb(scope.row)">{{ scope.row.messageTitle }}</div>
+                </template>
             </el-table-column>
             <el-table-column
                 prop="createTime"
@@ -65,6 +68,9 @@
             }
         },
         methods: {
+            lcb(row){
+                this.$router.push({path:'/businessInform/businessDetail',query:{flowId:row.messageUrl}});
+            },
             // 修改页面显示数据大小
             handleSizeChange(val) {
                 this.page.size = val;

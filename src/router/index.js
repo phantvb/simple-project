@@ -154,10 +154,6 @@ export default new Router({
 				name: '公告管理',
 				component: noticeManage
 			}, {
-				path: 'lineCostSetting',
-				name: '线路成本设置',
-				component: lineCostSetting
-			}, {
 				path: 'numPoolManage',
 				name: '号码池管理',
 				component: numPoolManage

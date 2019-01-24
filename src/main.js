@@ -64,7 +64,6 @@ axios.interceptors.response.use(res => {
 			message: res.data.message,
 			type: 'warning'
 		});
-		return res.data;
 	}
 	return res.data;
 }, err => {
