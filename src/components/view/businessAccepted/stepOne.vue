@@ -170,6 +170,7 @@
         ],
         data() {
             return {
+                needCompanySave:false,
                 acceptForm:{
                     companyName:'',
                     companyCardType:'',
@@ -270,9 +271,21 @@
                 companyInfo:'',
                 firmNameShow:false, //企业名称列表
                 firmNameList:[],  //公司名称数组
+                flowId:'',
             };
         },
         created(){
+            this.$root.eventHub.$on('clearData', (resp)=>{
+                this.acceptForm={};
+            });
+
+            console.log(sessionStorage.getItem('entireFlowId'));
+            this.flowId = sessionStorage.getItem('entireFlowId');
+            console.log(sessionStorage.getItem('entrance'));
+            if(sessionStorage.getItem('entrance')==2){
+                this.getCacheData();
+            }
+
             this.companyCardTypeList();
             this.companyRankLists();
             this.industryTypeLists();
@@ -281,6 +294,7 @@
             this.getAllProvince();
             this.getCitiesByProvinceId();
             this.getAreasByCityId();
+
         },
         methods: {
             // 下一步
@@ -289,18 +303,19 @@
                 // 改变vuex的值
                 this.ChangeCompanyStatus(this.acceptForm);
                 console.log(this.company);
+                if(this.firmNameList.some((item)=>{
+                    return this.acceptForm.companyName==item.companyName;
+                })){
+                    this.$root.eventHub.$emit('needCompanySave',false);
+                }else{
+                    this.$root.eventHub.$emit('needCompanySave',true);
+                }
             },
             change123(event) {
                 console.log("event",event);
                 console.log("acceptForm.legalCard",this.acceptForm.legalCard);
             },
-            //企业名称li
-            firmNameLi(val){
-                console.log(val);
-                this.acceptForm.companyName = val.companyName;
-                this.acceptForm = val;
-                this.firmNameShow = false;
-            },
+
             // 企业模糊搜索
             searchFirm(val){
                 console.log(val);
@@ -316,6 +331,27 @@
                         }
                     })
                 })
+            },
+            //企业名称li
+            firmNameLi(val){
+                console.log(val);
+                this.$root.eventHub.$emit('companyMsg',val);
+                this.acceptForm.companyName = val.companyName;
+                this.acceptForm = val;
+                this.firmNameShow = false;
+                // this.firmNameList.map((zool)=>{
+                //     if(this.acceptForm.companyName==zool.companyName){
+                //         this.$root.eventHub.$emit('needCompanySave',false);
+                //         console.log("1111");
+                //         return
+                //     }
+                //     if(this.acceptForm.companyName!=zool.companyName){
+                //         // this.needCompanySave=true;
+                //         this.$root.eventHub.$emit('needCompanySave',true);
+                //         console.log("2222");
+                //         return
+                //     }
+                // })
             },
             // 证件类型
             companyCardTypeList(){
@@ -435,15 +471,44 @@
                 console.log(val);
                 this.areasId = val;
             },
+            //“全部”表格详情
+            getCacheData(){
+                this.$ajax.get('/vos/business/getCacheData?flowId='+this.flowId).then((res)=>{
+                    console.log("详情",res);
+                    this.ChangeCompanyStatus(res.data.company);
+                    this.acceptForm = res.data.company;
+                    this.ChangeBusinessStatus(res.data.business);
+                    // this.ChangeDestNumber(res.data.destNumber);
+                    this.ChangeNumber400ValueAdded(res.data.number400ValueAdded);
+                    this.ChangeNumber400Concession(res.data.number400Concession);
+
+                })
+            },
 
             // 存vuex更新企业信息模块入参
             ChangeCompanyStatus(val) {
                 return this.$store.dispatch("ChangeCompanyStatus", val);
             },
+            ChangeBusinessStatus(val) {
+                return this.$store.dispatch("ChangeBusinessStatus", val);
+            },
+            ChangeDestNumber(val) {
+                return this.$store.dispatch("ChangeDestNumberStatus", val);
+            },
+            ChangeNumber400ValueAdded(val) {
+                return this.$store.dispatch("ChangeNumber400ValueAddedStatus", val);
+            },
+            ChangeNumber400Concession(val) {
+                return this.$store.dispatch("ChangeNumber400ConcessionStatus", val);
+            },
         },
         computed: {
             ...mapState({
                 company: state => state.createActivities.company,
+                business: state => state.createActivities.business,
+                destNumber: state => state.createActivities.destNumber,
+                number400ValueAdded: state => state.createActivities.number400ValueAdded,
+                number400Concession: state => state.createActivities.number400Concession,
             })
         }
     }
