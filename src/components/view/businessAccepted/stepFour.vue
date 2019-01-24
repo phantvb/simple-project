@@ -23,7 +23,7 @@
                         <div style="float:left;">
                             <span class="grey fmini titleWidth">统一的标准协议：</span>
                         </div>
-                        <ul>
+                        <ul class="abc">
                             <li class="8">
                                 <el-upload class="avatar-uploader examplew" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="handleAvatarSuccess" :on-error="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
                                     <img v-if="stepFourForm.unionAgreementPic" :src="stepFourForm.unionAgreementPic" class="avatar">
@@ -37,7 +37,7 @@
                         <div style="float:left;">
                             <span class="grey fmini titleWidth">业务受理单：</span>
                         </div>
-                        <ul>
+                        <ul class="abc">
                             <li class="8">
                                 <el-upload class="avatar-uploader examplew" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="handlebussinSuccess" :on-error="handlebussinSuccess" :before-upload="beforeAvatarUpload">
                                     <img v-if="stepFourForm.businessHandlePic" :src="stepFourForm.businessHandlePic" class="avatar">
@@ -51,7 +51,7 @@
                         <div style="float:left;">
                             <span class="grey fmini titleWidth">办理授权书：</span>
                         </div>
-                        <ul>
+                        <ul class="abc">
                             <li class="8">
                                 <el-upload class="avatar-uploader examplew" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="handleAuthorSuccess" :on-error="handleAuthorSuccess" :before-upload="beforeAvatarUpload">
                                     <img v-if="stepFourForm.authorizationPic" :src="stepFourForm.authorizationPic" class="avatar">
@@ -65,7 +65,7 @@
                         <div style="float:left;">
                             <span class="grey fmini titleWidth">信息安全责任书：</span>
                         </div>
-                        <ul>
+                        <ul class="abc">
                             <li class="8">
                                 <el-upload class="avatar-uploader examplew" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="handleSafeSuccess" :on-error="handleSafeSuccess" :before-upload="beforeAvatarUpload">
                                     <img v-if="stepFourForm.safeAgreementPic" :src="stepFourForm.safeAgreementPic" class="avatar">
@@ -81,7 +81,7 @@
                         <div style="float:left;">
                             <span class="grey fmini titleWidth">目的码证明材料：</span>
                         </div>
-                        <ul>
+                        <ul class="abc">
                             <li class="8">
                                 <el-upload class="avatar-uploader examplew" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="handleDestNumSuccess" :on-error="handleDestNumSuccess" :before-upload="beforeAvatarUpload">
                                     <img v-if="stepFourForm.destNumProfPic" :src="stepFourForm.destNumProfPic" class="avatar">
@@ -96,7 +96,7 @@
                         <div style="float:left;">
                             <span class="grey fmini titleWidth">其他文件(非必传）：</span>
                         </div>
-                        <ul>
+                        <ul class="abc">
                             <li class="8">
                                 <el-upload class="avatar-uploader examplew" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="handleOtherSuccess" :on-error="handleOtherSuccess" :before-upload="beforeAvatarUpload">
                                     <img v-if="stepFourForm.otherPic" :src="stepFourForm.otherPic" class="avatar">
@@ -132,11 +132,21 @@
                     safeAgreementPic:'',
                     destNumProfPic:'',
                     otherPic:'',
+                    flowId:''
                 },
                 businessObj:{},  //业务参数对象
+                flowId:'',
             };
         },
         components: {},
+        created(){
+            console.log(sessionStorage.getItem('entrance'));
+            if(sessionStorage.getItem('entrance')==2){
+                this.stepFourForm = this.business;
+            }
+            // console.log(sessionStorage.getItem('entireFlowId'));
+            // this.flowId = sessionStorage.getItem('entireFlowId');
+        },
         methods: {
             // 图片上传
             handleAvatarSuccess(res, file) {
@@ -174,7 +184,6 @@
             },
             // 新增业务保存
             addBusinessSave(){
-                this.dialogVisible = false;
                 console.log("business:",this.business);
                 this.businessObj = Object.assign(this.business,this.stepFourForm);
                 this.ChangeBusinessStatus(this.businessObj);
@@ -196,12 +205,17 @@
                 }).then((res)=>{
                     if(res.code=='200'){
                         console.log(res);
+                        this.dialogVisible = false;
                     }else{
-
+                        this.$message.warning(res.message);
                     }
-
-                })
+                });
                 this.$root.eventHub.$emit('addAcceptSave');
+                this.$root.eventHub.$on('flowId',(resp)=>{
+                    console.log("flowId",resp);
+                    this.flowId = resp;
+                });
+                // this.stepFourForm.flowId = resp;
             },
             // 新增业务送审
             addBusinessSend(){
@@ -229,6 +243,7 @@
                 });
                 this.$root.eventHub.$emit('addAcceptSave',null);
             },
+
             // 存vuex更新企业信息模块入参
             ChangeBusinessStatus(val) {
                 return this.$store.dispatch("ChangeBusinessStatus", val);

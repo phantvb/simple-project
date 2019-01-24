@@ -10,7 +10,7 @@
                         <div style="float:left;">
                             <span class="grey fmini">企业资质证明文件：</span>
                         </div>
-                        <ul>
+                        <ul class="abc">
                             <li class="8">
                                 <el-upload class="avatar-uploader examplew" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="handleAvatarSuccess" :on-error="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
                                     <img v-if="stepTwoForm.companyProofPic" :src="stepTwoForm.companyProofPic" class="avatar">
@@ -38,9 +38,9 @@
                         <div style="float:left;">
                             <span class="grey fmini">法人身份证：</span>
                         </div>
-                        <ul>
+                        <ul class="abc">
                             <li class="l2">
-                                <ul>
+                                <ul class="abc">
                                     <li class="l2">
                                         <el-upload class="avatar-uploader exampleh" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="handleFrontSuccess" :on-error="handleFrontSuccess" :before-upload="beforeAvatarUpload">
                                             <img v-if="stepTwoForm.legalCardFrontPic" :src="stepTwoForm.legalCardFrontPic" class="avatar">
@@ -54,7 +54,7 @@
                                         </el-upload>
                                     </li>
                                 </ul>
-                                <ul>
+                                <ul class="abc">
                                     <li class="l2">
                                         <el-upload class="avatar-uploader exampleh" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="handleSelfSuccess" :on-error="handleSelfSuccess" :before-upload="beforeAvatarUpload">
                                             <img v-if="stepTwoForm.legalCardHandPic" :src="stepTwoForm.legalCardHandPic" class="avatar">
@@ -64,7 +64,7 @@
                                 </ul>
                             </li>
                             <li class="l2">
-                                <ul>
+                                <ul class="abc">
                                     <li class="l2 example">
                                         <img class="exampleh" src="../../../assets/example_2.png" alt="">
                                     </li>
@@ -72,7 +72,7 @@
                                         <img class="exampleh" src="../../../assets/example_3.png" alt="">
                                     </li>
                                 </ul>
-                                <ul>
+                                <ul class="abc">
                                     <li class="l2 example">
                                         <img class="exampleh" src="../../../assets/example_4.png" alt="">
                                     </li>
@@ -114,6 +114,12 @@
             };
         },
         components: {},
+        created(){
+            console.log(sessionStorage.getItem('entrance'));
+            if(sessionStorage.getItem('entrance')==2){
+                this.stepTwoForm = this.company;
+            }
+        },
         methods: {
             // 图片上传
             handleAvatarSuccess(res, file) {
@@ -154,6 +160,17 @@
                 this.campanyObj = Object.assign(this.company,this.stepTwoForm);
                 console.log(this.campanyObj);
                 this.ChangeCompanyStatus(this.campanyObj);
+                this.$ajax.post('/vos/business/startAndSave', {
+                    "company":this.campanyObj,
+                    "business":this.business,
+                    "number400ValueAdded":this.number400ValueAdded,
+                    "number400Concession":this.number400Concession,
+                    "companyFlow":{
+                        "flowId":""
+                    }
+                }).then((res)=>{
+                    console.log(res);
+                });
             },
             // 存vuex更新企业信息模块入参
             ChangeCompanyStatus(val) {
@@ -163,6 +180,10 @@
         computed: {
             ...mapState({
                 company: state => state.createActivities.company,
+                business: state => state.createActivities.business,
+                destNumber: state => state.createActivities.destNumber,
+                number400ValueAdded: state => state.createActivities.number400ValueAdded,
+                number400Concession: state => state.createActivities.number400Concession,
             })
         },
     }

@@ -196,8 +196,6 @@
                     }
                 ],
                 objCodeList:[], //目的码数组
-                firmNameList:[],  //公司名称数组
-                fourNumList:[],   //400号码列表
                 currentPage: 1,   //当前页
                 accountStatus:'',
                 addObjCode:'',  //添加目的码
@@ -280,59 +278,6 @@
             //点击详情
             details(scope){
                 console.log(scope);
-            },
-            // 企业模糊搜索
-            searchFirm(val){
-                console.log(val);
-                this.$ajax.get('/vos/company/fuzzySearch?company='+this.acceptForm.firmName).then((res)=>{
-                    console.log(res.data);
-                    this.firmNameList = res.data;
-                    if(this.acceptForm.firmName!='' && this.firmNameList.length!=0){
-                        this.firmNameShow = true;
-                    }
-                })
-            },
-            //400号码搜索
-            searchFourNum(){
-                this.$ajax.post('/vos/num400config/search',{
-                    "page":{
-                        "pageNo":"1",
-                        "pageSize":"50"
-                    },
-                    "number400":{
-                        "number400":this.acceptForm.fourNum,
-                    }
-                }).then((res)=>{
-                    console.log(res.data.number400s);
-                    this.fourNumList = res.data.number400s;
-                    if(this.acceptForm.fourNum!='' && this.fourNumList.length!=0){
-                        this.numShow = true;
-                    }
-                })
-            },
-            //企业名称li
-            firmNameLi(val){
-                console.log(val);
-                this.acceptForm.firmName = val.companyName;
-                this.companyInfo = val;
-                this.firmNameShow = false;
-            },
-            //400号码li
-            num400li(val){
-                console.log(val);
-                this.numShow = false;
-                this.acceptForm.fourNum = val.number400;
-                if(this.acceptForm.fourNum!=''){
-                    this.searchObjCode();
-                }
-
-            },
-            //目的码
-            searchObjCode(){
-                this.$ajax.get('/vos/destnum/getDestNumbersToModify?number400='+this.acceptForm.fourNum).then((res)=>{
-                    console.log(res.data.destNumber);
-                    this.objCodeList = res.data.destNumber;
-                })
             },
             // 目的码列表
             objCodeLists(){
@@ -436,7 +381,6 @@
                                 }
                             })
                         };
-                        // this.searchObjCode();
                         this.$ajax.post('/vos/destnum/startAndSave',{
                             "destNumber":paramList,
                             "number400": this.acceptForm.fourNum,

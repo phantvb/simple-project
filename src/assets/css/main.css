@@ -247,7 +247,8 @@
 }
 
 .acceptMsg .identity .el-input {
-	width: 68%;
+	/*width: 68%;*/
+	width: 100%;
 	float: left;
 }
 

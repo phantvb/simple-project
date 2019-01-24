@@ -53,7 +53,8 @@
         created(){
             console.log("unitMeal",this.unitMeal);
             console.log("unitIndex",this.unitIndex);
-            this.getAllByPackage();
+
+            this.getAllByPackage2();
             this.mealListInfo = this.unitMeal;
             this.mealIndex = this.unitIndex;
             this.$root.eventHub.$on('getLoginInfo', (resp)=>{
@@ -71,8 +72,8 @@
                 console.log(`当前页: ${val}`);
             },
             // 以套餐分类400号码
-            getAllByPackage(){
-                this.$ajax.post('/vos/number400/getAllByPackage',{
+            getAllByPackage2(){
+                this.$ajax.post('/vos/number400/searchByPackage',{
                     "num400Package":{
                         "number400":"",
                         "packgeId":this.mealIndex
@@ -83,8 +84,8 @@
                     }
 
                 }).then((res)=>{
-                    console.log(res.data);
-                    console.log(res.data.number400s);
+                    // console.log(res.data);
+                    // console.log(res.data.number400s);
                     this.numberList = res.data.number400s;
                     this.pageObj.total = res.data.totalCount;
                 })

@@ -73,7 +73,18 @@
             return {};
         },
         components: {},
-        methods: {},
+        created(){
+            this.getCacheData();
+        },
+        methods: {
+            getCacheData(){
+                this.$ajax.post('/vos/business/getCacheData',{
+                    flowId:''
+                }).then((res)=>{
+                    console.log(res);
+                })
+            }
+        },
         computed: {}
     }
 </script>
