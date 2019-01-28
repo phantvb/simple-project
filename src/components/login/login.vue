@@ -86,7 +86,9 @@
 					console.log(resp);
 					_this.loading = false;
 					this.$router.push('/accountingManage/accountingManage');
-                    // this.$root.eventHub.$emit('getLoginInfo', resp);
+                    for (let key in resp.data) {
+                        sessionStorage.setItem(key, resp.data[key]);
+                    }
 				});
 
 			},

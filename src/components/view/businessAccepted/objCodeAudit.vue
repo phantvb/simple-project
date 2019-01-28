@@ -79,15 +79,13 @@
                 prop="operation"
                 label="操作">
           <template slot-scope="scope">
-            <el-button size="mini" type="text" @click="details(scope.row),$router.push('/objCodeDetail/')">详情</el-button>
-            <!--<router-link :to="{path:'/addEvent/'+3+'/'+scope.row.contactEvtId}">-->
+            <el-button size="mini" type="text" @click="details(scope.row)">详情</el-button>
             <el-button size="mini" type="text">撤回</el-button>
             <el-button size="mini" type="text">变更</el-button>
             <el-button size="mini" type="text">注销</el-button>
             <el-button size="mini" type="text">通过审核</el-button>
             <el-button size="mini" type="text">驳回</el-button>
             <el-button size="mini" type="text" @click="objCodeEdit(scope.row)">编辑</el-button>
-            <!--</router-link>-->
             <el-button size="mini" type="text">送审</el-button>
             <el-button size="mini" type="text">删除</el-button>
           </template>
@@ -278,6 +276,13 @@
             //点击详情
             details(scope){
                 console.log(scope);
+                this.$router.push({
+                    path:'/objCodeDetail',   //跳转的路径
+                    query:{                  //路由传参时push和query搭配使用 ，作用时传递参数
+                        flowId:scope.flowId ,
+                        companyId:scope.companyId ,
+                    }
+                })
             },
             // 目的码列表
             objCodeLists(){

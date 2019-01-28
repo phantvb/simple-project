@@ -8,6 +8,8 @@ import systemLog from '@/components/view/systemSetup/systemLog';
 import roleManage from '@/components/view/systemSetup/roleManage';
 import businessInform from '@/components/view/businessSetup/businessInform';
 import businessDetail from '@/components/view/businessSetup/businessDetail';
+import businessData from '@/components/view/businessAccepted/businessData';
+import businessDetial from '@/components/view/businessAccepted/businessDetial';
 import accountingManage from '@/components/view/accountingManage/accountingManage';
 import billManage from '@/components/view/accountingManage/billManage';
 import chargeManage from '@/components/view/accountingManage/chargeManage';
@@ -138,6 +140,16 @@ export default new Router({
 				path: '/logoutDetail',
 				name: '注销审核详情',
 				component: logoutDetail,
+				hidden: true,
+			},{
+				path: '/businessData',
+				name: '业务详情',
+				component: businessData,
+				hidden: true,
+			},{
+				path: '/businessDetial',
+				name: '业务详情',
+				component: businessDetial,
 				hidden: true,
 			}]
 		},
