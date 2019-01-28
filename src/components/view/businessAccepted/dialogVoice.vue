@@ -47,9 +47,6 @@
                                                             :value="item.dicKey">
                                                     </el-option>
                                                 </el-select>
-                                                <!--<el-input v-model="scope.row.evtItemCode" placeholder="请输入内容" v-if="scope.row.isAdd"-->
-                                                          <!--v-on:blur="inputOnBlur(scope.row,scope.$index)"></el-input>-->
-                                                <!--<span v-if="!scope.row.isAdd">{{scope.row.evtItemCode}}</span>-->
                                             </div>
                                         </template>
                             </el-table-column>
@@ -60,9 +57,6 @@
                                         <template slot-scope="scope">
                                             <div>
                                                 <el-input v-model="voiceInfo.voiName" placeholder="请输入内容" size="mini"></el-input>
-                                                <!--<el-input v-model="scope.row.evtItemCode" placeholder="请输入内容" v-if="scope.row.isAdd"-->
-                                                          <!--v-on:blur="inputOnBlur(scope.row,scope.$index)" size="mini"></el-input>-->
-                                                <!--<span v-if="!scope.row.isAdd">{{scope.row.evtItemCode}}</span>-->
                                             </div>
                                         </template>
                             </el-table-column>
@@ -74,6 +68,7 @@
                                                        size="mini"
                                                        :on-change="handleChange"
                                                        :http-request="uploadFile"
+                                                       :before-upload ="beforeAvatarUpload"
                                                        :limit="1">
                                                 <el-button size="small" type="primary">点击上传</el-button>
 
@@ -81,14 +76,11 @@
                                         </template>
                             </el-table-column>
 
+
                             <el-table-column
                                     prop="operation"
                                     label="操作">
                                 <template slot-scope="scope">
-                                    <!--<div v-if="scope.row.isMainParam=='1' && $route.params.eventIn!=2">-->
-                                        <!--<el-button size="mini" type="text" @click="editParams(scope.row,scope.$index)">编辑</el-button>-->
-                                        <!--<el-button size="mini" type="text" @click="deleteParams(scope.$index)">删除</el-button>-->
-                                    <!--</div>-->
                                     <div>
                                         <el-button size="mini" type="text">删除</el-button>
                                         <el-button size="mini" type="text"></el-button>
@@ -97,32 +89,7 @@
                                 </template>
                             </el-table-column>
                         </el-table>
-                        <!--<el-form-item label="语音类型：" class="type">-->
-                            <!--<el-select v-model="voiceForm.voiceType" placeholder="请选择"  size="mini">-->
-                                <!--<el-option :label="item.title" :value="item.value" v-for="(item,index) in voiceList" :key="index"></el-option>-->
-                            <!--</el-select>-->
-                        <!--</el-form-item>-->
-
-                        <!--<el-form-item label="语音文件：">-->
-                            <!--<div class="voiceUpload">-->
-                                <!--<el-upload-->
-                                        <!--class="upload-demo"-->
-                                        <!--action="https://jsonplaceholder.typicode.com/posts/"-->
-                                        <!--:on-change="handleChange"-->
-                                        <!--:headers="{}"-->
-                                        <!--:file-list="fileList3">-->
-                                    <!--<el-button size="small" type="primary">点击上传</el-button>-->
-                                    <!--<p class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</p>-->
-                                <!--</el-upload>-->
-                            <!--</div>-->
-
-                        <!--</el-form-item>-->
-
-                        <!--<el-form-item label="语音名称：" class="input">-->
-                            <!--<el-input v-model="voiceForm.voiceName" size="mini"></el-input>-->
-                        <!--</el-form-item>-->
-
-
+                        <p style="text-align: left">注解：语音文件支持flv、mp3、wma、swf、wmv、mid、avi、mpg、asf、rm、rmvb格式，文件需小于10M</p>
 
                         <el-form-item label="增值资费：">
                             <div class="addValueSelect">
@@ -167,7 +134,6 @@
                 voiceIn:1,
                 voiceForm:{
                     firmName:'',
-                    fourNum:'',
                     voiceNum:'',
                     voiceFile:'',
                     voiceName:'',
@@ -179,14 +145,6 @@
                     voiName:'',
                 },
                 voiceList:[],
-                textarea2:'',
-                fileList3: [{
-                    name: 'food.jpeg',
-                    url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-                }, {
-                    name: 'food2.jpeg',
-                    url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-                }],
                 tableData:[{
                     voiceType:'',
                     voiceName:'',
@@ -201,20 +159,26 @@
                 num400Unit:'',
                 companyId:'',      //公司id
                 companyInfo:'',    //公司信息
+                busIdentity:'',     //登录信息channel
             }
         },
         created(){
+            console.log(sessionStorage.getItem('businessType'));
+            this.busIdentity = sessionStorage.getItem('businessType');
+            this.getValueAdded(this.busIdentity);
+            this.addValueChange(this.busIdentity);
+            this.voiceType();
             this.$root.eventHub.$on('dialog1VisibleVoice', (res)=>{
                 this.visibleVoice=res.visibleVoice;
+                this.voiceForm.firmName='';
+                this.voiceForm.voiceNum='';
+                this.voiceInfo.voiType='';
+                this.voiceInfo.voiName='';
+                this.voiceForm.addValueType='';
                 if(res.voiceIn){
                     this.voiceIn = res.voiceIn;
                 }
             } );
-            this.$root.eventHub.$on('getLoginInfo', (resp)=>{
-                this.getValueAdded(resp);
-                this.addValueChange(resp);
-            } );
-            this.voiceType();
         },
         components: {},
         methods: {
@@ -287,6 +251,20 @@
                     voiceFile:'',
                 })
             },
+            // 文件上传限制
+            beforeAvatarUpload(file){
+                console.log(file.type);
+                const isVoiceType = file.type === 'audio/flv'|| file.type ==='audio/mp3' || file.type ==='audio/wma' || file.type ==='audio/swf'|| file.type ==='audio/wmv' || file.type ==='audio/mid' || file.type ==='audio/avi' || file.type ==='audio/mpg' || file.type ==='audio/asf' || file.type ==='audio/rm' || file.type ==='audio/rmvb';
+                const isVoiceSize = file.size / 1024 / 1024 < 10;
+
+                if (!isVoiceType) {
+                    this.$message.error('上传的语音文件只能是 flv、mp3、wma、swf、wmv、mid、avi、mpg、asf、rm、rmvb 格式!');
+                }
+                if (!isVoiceSize) {
+                    this.$message.error('上传的语音文件大小不能超过 10MB!');
+                }
+                return isVoiceType && isVoiceSize;
+            },
             // 自定义上传
             uploadFile() {
                 let form=new FormData();
@@ -300,7 +278,7 @@
             // 增值资费列表
             getValueAdded(val){
                 console.log(val);
-                this.businessType = val.businessType;
+                this.businessType = val;
                 this.$ajax.post('/vos/tariffPackage/getValueAdded',{
                     "valueAdded":{
                         "id":"",
@@ -315,8 +293,8 @@
             },
             // 增值资费切换
             addValueChange(val){
-                this.businessType=val.businessType;
                 console.log(val);
+                this.businessType=val;
                 console.log(this.businessType);
                 this.$ajax.post('/vos/tariffPackage/getValueAdded',{
                     "valueAdded":{
@@ -367,7 +345,7 @@
                     console.log(res);
                     if(res.code==200){
                         this.visibleVoice = false;
-
+                        this.$root.eventHub.$emit('voiceList');
                     }else{
                         this.$message.warning(res.message);
                     }
@@ -375,7 +353,6 @@
             },
             // 语音送审
             voiveAudit(){
-
                 this.$ajax.post('/vos/voice/startAndSave',{
                     "number400":this.voiceForm.voiceNum,
                     "voice":[{
@@ -401,6 +378,17 @@
                     }
                 })
             },
+            // 语音详情
+            getDetail(){
+             this.$ajax.post('/vos/voice/getDetail',{
+                 "companyFlow":{
+                     "assigneeRole":"ROLE_city_admin"
+                 },
+                 "voiceId":19
+             }).then((res)=>{
+                 console.log(res);
+             })
+            }
         },
         computed: {},
         watch:{},

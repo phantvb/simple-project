@@ -191,6 +191,9 @@
         this.$root.eventHub.$on('addAcceptSave', (resp)=>{
             this.entireLists();
         });
+        this.$root.eventHub.$on('voiceList',(resp)=>{
+            this.voiceFileLists();
+        })
 
       },
     methods: {

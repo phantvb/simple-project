@@ -199,16 +199,19 @@
                 remarks:'',  //功能描述
                 flowId:'',
                 companyId:'',
+                busIdentity:'',  //登录信息channel
             };
         },
         created(){
+            console.log(sessionStorage.getItem('businessType'));
+            this.busIdentity = sessionStorage.getItem('businessType');
             this.$root.eventHub.$on('dialog1Visible', (res)=>{
                 this.visible=res.visible;
                 if(res.objCodeIn){
                     this.objCodeIn=res.objCodeIn;
                 }
             } );
-
+            this.addTariff(this.busIdentity);
         },
         components: {},
         methods: {
@@ -307,22 +310,25 @@
             // 增值资费
             addTariff(val){
                 console.log(val);
-                let businessType = val.businessType;
+                let businessType = val;
                 if(businessType=='self'){
                     businessType = 30;
                 }else if(businessType=='channel'){
                     businessType = 31;
                 }
+                console.log(businessType);
                 this.$ajax.get('/vos/blacklist/getValueAdded/'+businessType).then((res)=>{
-                    // console.log(res.data);
-                    this.tariffFee = res.data.tariffFee;
-                    this.presents = res.data.presents;
-                    if(this.presents=='1'){
-                        this.presents = '赠送';
-                    }else{
-                        this.presents = '付费';
+                    console.log(res);
+                    if(res.data!=null){
+                        this.tariffFee = res.data.tariffFee;
+                        this.presents = res.data.presents;
+                        if(this.presents=='1'){
+                            this.presents = '赠送';
+                        }else{
+                            this.presents = '付费';
+                        }
+                        this.remarks = res.data.remarks;
                     }
-                    this.remarks = res.data.remarks;
                 })
             },
 
@@ -422,6 +428,7 @@
     /*图片上传--start*/
     .avatar-uploader{
         text-align: left;
+        width:140px;
     }
     .avatar-uploader .el-upload {
         border: 1px dashed #d9d9d9;
