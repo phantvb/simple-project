@@ -12,7 +12,7 @@
 				</p>
 			</div>
 			<div class="part center portrait">
-				<img src="../../../assets/portrait_1.png">
+				<img :src="form.headPicture?$global.serverSrc+form.headPicture:''">
 				<el-button type="text" class="button" @click="editPortrait(true)">修改头像</el-button>
 			</div>
 			<div class="part message">

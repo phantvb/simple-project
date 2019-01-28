@@ -71,7 +71,7 @@
 				}
 			}
 		},
-		created(){
+		created() {
 
 		},
 		methods: {
@@ -83,12 +83,14 @@
 					password: this.loginForm.pass,
 					imageCode: this.loginForm.code
 				}).then(resp => {
-					console.log(resp);
 					_this.loading = false;
+					for (let key in resp.data) {
+						sessionStorage.setItem(key, resp.data[key]);
+					}
 					this.$router.push('/accountingManage/accountingManage');
-                    for (let key in resp.data) {
-                        sessionStorage.setItem(key, resp.data[key]);
-                    }
+					for (let key in resp.data) {
+						sessionStorage.setItem(key, resp.data[key]);
+					}
 				});
 
 			},
