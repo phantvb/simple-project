@@ -72,6 +72,9 @@
         created(){
             this.$root.eventHub.$on('dialogVisibleBusiness', (res)=>{
                 this.visibleBusiness=res.visibleBusiness;
+                console.log("asdasdas");
+                this.actives = 1;
+                this.active = 1;
                 if(res.businessIn){
                     this.businessIn = res.businessIn;
                 }

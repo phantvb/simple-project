@@ -115,6 +115,7 @@
 
   import Dialog1 from './dialog1';
   import DialogVoice from './dialogVoice';
+  import {mapState} from "vuex";
   export default {
     name: 'entire',
     data() {
@@ -190,17 +191,18 @@
         this.$root.eventHub.$on('addAcceptSave', (resp)=>{
             this.entireLists();
         });
+
       },
     methods: {
       handleSizeChange(val) {
           this.pageObj.pageSize=val;
           this.entireLists();
-        console.log(`每页 ${val} 条`);
+        // console.log(`每页 ${val} 条`);
       },
       handleCurrentChange(val) {
           this.pageObj.page=val;
           this.entireLists();
-        console.log(`当前页: ${val}`);
+        // console.log(`当前页: ${val}`);
       },
         // 全部表格
         entireLists(){
@@ -224,6 +226,7 @@
                     "pageSize":this.pageObj.pageSize,
                 }
             }).then((res)=>{
+                // console.log(res.data);
                 console.log(res.data.businessFlows);
                 this.tableData = res.data.businessFlows;
                 this.pageObj.total = res.data.totalCount;
@@ -239,7 +242,7 @@
                         }else{
                             item.btnList.push({label:'详情'});
                         }
-                        console.log("btnList",item.btnList);
+                        // console.log("btnList",item.btnList);
                     }else if(item.status=='Audit_Success'){
                         item.status='审核通过';
                         item.btnList=[];
@@ -307,7 +310,7 @@
             this.$root.eventHub.$emit('dialogVisibleBusiness',{visibleBusiness:true,businessIn:1});
             this.$root.eventHub.$emit('clearData');
             this.$root.eventHub.$on('active', (resp)=>{
-                this.active=resp
+                this.active=resp;
             })
         },
         // 编辑业务受理
@@ -317,10 +320,14 @@
           this.entireFlowId = objData.flowId;
           console.log(this.entireFlowId);
           if(val=='送审'){
-              this.$root.eventHub.$emit('dialogVisibleBusiness',{visibleBusiness:true,businessIn:1});
+              sessionStorage.setItem("entrance",2);
               sessionStorage.setItem('entireFlowId',this.entireFlowId);
+              this.getCacheData();
+          }else if(val=='详情'){
+              console.log('详情入口');
+              this.$router.push({path:'/businessDetial',query: { flowId: objData.flowId}});
+              this.getCacheData();
           }
-            sessionStorage.setItem("entrance",2);
         },
         //新增目的码按钮
         addObjCodeBtn(){
@@ -333,10 +340,50 @@
         // 状态改变
         statusChange(){
           this.entireLists();
-        }
+        },
+        //“全部”表格详情
+        getCacheData(){
+            this.$ajax.get('/vos/business/getCacheData?flowId='+this.entireFlowId).then((res)=>{
+                console.log("详情",res);
+                if(res.data!=null){
+                    this.ChangeCompanyStatus(res.data.company);
+                    console.log(this.company);
+                    this.ChangeBusinessStatus(res.data.business);
+                    // this.ChangeDestNumber(res.data.destNumber);
+                    this.ChangeNumber400ValueAdded(res.data.number400ValueAdded);
+                    this.ChangeNumber400Concession(res.data.number400Concession);
+                    this.$root.eventHub.$emit('dialogVisibleBusiness',{visibleBusiness:true,businessIn:1});
+                }
+            })
+        },
+
+
+        // 存vuex更新企业信息模块入参
+        ChangeCompanyStatus(val) {
+            return this.$store.dispatch("ChangeCompanyStatus", val);
+        },
+        ChangeBusinessStatus(val) {
+            return this.$store.dispatch("ChangeBusinessStatus", val);
+        },
+        ChangeDestNumber(val) {
+            return this.$store.dispatch("ChangeDestNumberStatus", val);
+        },
+        ChangeNumber400ValueAdded(val) {
+            return this.$store.dispatch("ChangeNumber400ValueAddedStatus", val);
+        },
+        ChangeNumber400Concession(val) {
+            return this.$store.dispatch("ChangeNumber400ConcessionStatus", val);
+        },
     },
-    computed: {
-    }
+      computed: {
+          ...mapState({
+              company: state => state.createActivities.company,
+              business: state => state.createActivities.business,
+              destNumber: state => state.createActivities.destNumber,
+              number400ValueAdded: state => state.createActivities.number400ValueAdded,
+              number400Concession: state => state.createActivities.number400Concession,
+          })
+      }
   }
 </script>
 <style lang="scss" scoped>

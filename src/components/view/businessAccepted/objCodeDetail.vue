@@ -12,13 +12,10 @@
                     </p>
                 </div>
                 <div class="block left">
-                    <p class="fmini">VSMS客户编码：</p>
-                    <p class="fmini">集团CRM客户编码： </p>
-                    <p class="fmini">省CRM客户编码：</p>
-                    <p class="fmini">企业名称： </p>
-                    <p class="fmini">证件编号： </p>
-                    <p class="fmini"><span>企业性质：</span><span>企业等级：</span><span>行业类型：</span></p>
-                    <p class="fmini">注册地址：</p>
+                    <p class="fmini">企业名称：{{companyInfo.companyName}} </p>
+                    <p class="fmini">证件编号： {{companyInfo.companyCardNo}}</p>
+                    <p class="fmini"><span>企业性质：{{companyInfo.companyCharacter}}</span><span>企业等级：{{companyInfo.companyRank}}</span><span>行业类型：{{companyInfo.industryType}}</span></p>
+                    <p class="fmini">注册地址：{{companyInfo.registProvince+companyInfo.registCity+companyInfo.registArea}}</p>
                     <p class="fmini">企业电话：</p>
                     <div>
                         <div style="float:left;">
@@ -26,7 +23,7 @@
                         </div>
                         <ul>
                             <li class="l2">
-                                <img class="examplew" src="../../../assets/example_1.png" alt="">
+                                <img class="examplew" :src="companyInfo.companyProofPic" alt="">
                             </li>
                         </ul>
                     </div>
@@ -107,6 +104,8 @@
         name: 'objCodeDetail',
         data() {
             return {
+                companyInfo:{},
+                destNumInfo:[],
                 objCodeTable: [{
                     number: '234567',
                     objCode: '',
@@ -114,7 +113,27 @@
             };
         },
         components: {},
-        methods: {},
+        created(){
+            console.log(this.$route.query.flowId);
+            console.log(this.$route.query.companyId);
+            this.getDetail();
+        },
+        methods: {
+            getDetail(){
+                this.$ajax.post('/vos/destnum/getDetail',{
+                    "companyFlow":{
+                        "flowId": this.$route.query.flowId,
+                        "companyId":this.$route.query.companyId
+                    }
+                }).then((res)=>{
+                    console.log(res.data);
+                    if(res.code==200){
+                        this.companyInfo = res.data.company;
+                        this.destNumInfo = res.data.destNumber;
+                    }
+                })
+            },
+        },
         computed: {}
     }
 </script>

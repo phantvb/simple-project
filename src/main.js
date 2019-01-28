@@ -77,9 +77,10 @@ axios.interceptors.response.use(res => {
 Vue.config.productionTip = false;
 Vue.prototype.$global = {
 	pageSize: [10, 20, 30, 50],
-	uploadUrl: '/vos/vos/common/uploadImg'
-}
-
+	uploadUrl: '/vos/vos/common/uploadImg',
+	uploadUrl2:' http://192.168.0.117:5480/vos/',
+    serverSrc:'http://47.94.168.117:5480/vos/',
+};
 /* eslint-disable no-new */
 new Vue({
 	el: '#app',

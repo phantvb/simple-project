@@ -8,22 +8,22 @@
                     </p>
                 </div>
                 <div class="block left">
-                    <p class="fmini">VSMS客户编码：</p>
-                    <p class="fmini">集团CRM客户编码： </p>
-                    <p class="fmini">省CRM客户编码：</p>
-                    <p class="fmini">企业名称： </p>
-                    <p class="fmini">证件编号： </p>
-                    <p class="fmini"><span>企业性质：</span><span>企业等级：</span><span>行业类型：</span></p>
-                    <p class="fmini">注册地址：</p>
-                    <p class="fmini">办公地址：</p>
-                    <p class="fmini">企业电话：</p>
+                    <p class="fmini">企业名称：{{this.company.companyName}} </p>
+                    <p class="fmini">证件编号： {{this.company.companyCardNo}}</p>
+                    <p class="fmini">
+                        <span>企业性质：{{this.company.companyCharacter}}</span>
+                        <span>企业等级：{{this.company.companyRank}}</span>
+                        <span>行业类型：{{this.company.industryType}}</span></p>
+                    <p class="fmini">注册地址：{{this.company.registProvince+this.company.registCity+this.company.registaArea}}</p>
+                    <p class="fmini">办公地址：{{this.company.officeProvince+this.company.officeCity+this.company.officeArea}}</p>
+                    <p class="fmini">企业电话：{{this.company.phone}}</p>
                     <div>
                         <div style="float:left;">
                             <span class="fmini">企业资质证明文件：</span>
                         </div>
                         <ul>
                             <li class="l2">
-                                <img class="examplew" src="../../../assets/example_1.png" alt="">
+                                <img class="examplew" :src="this.company.companyProofPic" alt="">
                             </li>
                         </ul>
                     </div>
@@ -36,27 +36,28 @@
                     </p>
                 </div>
                 <div class="block left">
-                    <p class="fmini">法人姓名： 华勇 法人电话： 15678987654</p>
-                    <p class="fmini">法人证件： 身份证 350203198505143020</p>
-                    <p class="fmini">身份证住址： 杭州拱墅区仓基新村9幢7单元601室</p>
-                    <p class="fmini">身份证有效期： 2011.5.5-2031.5.5</p>
+                    <p class="fmini">法人姓名： {{this.company.legalPerson}}</p>
+                    <p class="fmini"> 法人电话： {{this.company.legalPhone}}</p>
+                    <p class="fmini">法人证件： {{this.company.legalCard+" "+this.company.cardNum}} </p>
+                    <p class="fmini" v-if="this.company.idCardAddress">身份证住址： {{this.company.idCardAddress}}</p>
+                    <p class="fmini">证件有效期：{{this.company.cardStartDate+"-"+this.company.cardEndDate}}</p>
                     <div>
                         <!-- <div style="float:left;">
                             <span class="fmini">企业资质证明文件：</span>
                         </div> -->
                         <ul class="basedata">
                             <li>
-                                <img class="exampleh" src="../../../assets/example_2.png" alt="">
+                                <img class="exampleh" :src="this.company.legalCardFrontPic" alt="">
                                 <p class="fmini center">法人身份证（正面）</p>
                             </li>
                             <li>
-                                <img class="exampleh" src="../../../assets/example_3.png" alt="">
+                                <img class="exampleh" :src="this.company.legalCardBackPic" alt="">
                                 <p class="fmini center">法人身份证（反面）</p>
                             </li>
                         </ul>
                         <ul class="basedata">
                             <li>
-                                <img class="exampleh" src="../../../assets/example_4.png" alt="">
+                                <img class="exampleh" :src="this.company.legalCardHandPic" alt="">
                                 <p class="fmini center">法人手持身份证（正面）</p>
                             </li>
                         </ul>
@@ -67,6 +68,7 @@
     </div>
 </template>
 <script>
+    import {mapState} from "vuex";
     export default {
         name: 'firmBasicInfo',
         data() {
@@ -74,18 +76,40 @@
         },
         components: {},
         created(){
-            this.getCacheData();
+            // this.getCacheData();
+            console.log(this.company);
+            // console.log(this.business);
+            // console.log(this.destNumber);
+            // console.log(this.number400ValueAdded);
+            // console.log(this.number400Concession);
         },
         methods: {
-            getCacheData(){
-                this.$ajax.post('/vos/business/getCacheData',{
-                    flowId:''
-                }).then((res)=>{
-                    console.log(res);
-                })
-            }
+            // 存vuex更新企业信息模块入参
+            ChangeCompanyStatus(val) {
+                return this.$store.dispatch("ChangeCompanyStatus", val);
+            },
+            ChangeBusinessStatus(val) {
+                return this.$store.dispatch("ChangeBusinessStatus", val);
+            },
+            ChangeDestNumber(val) {
+                return this.$store.dispatch("ChangeDestNumberStatus", val);
+            },
+            ChangeNumber400ValueAdded(val) {
+                return this.$store.dispatch("ChangeNumber400ValueAddedStatus", val);
+            },
+            ChangeNumber400Concession(val) {
+                return this.$store.dispatch("ChangeNumber400ConcessionStatus", val);
+            },
         },
-        computed: {}
+        computed: {
+            ...mapState({
+                company: state => state.createActivities.company,
+                business: state => state.createActivities.business,
+                destNumber: state => state.createActivities.destNumber,
+                number400ValueAdded: state => state.createActivities.number400ValueAdded,
+                number400Concession: state => state.createActivities.number400Concession,
+            })
+        }
     }
 </script>
 <style lang="scss" scoped>
