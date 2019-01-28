@@ -59,6 +59,12 @@ axios.interceptors.response.use(res => {
 	// 	//location.href='#/login?error_type=1'
 	// 	break
 	// }
+	if (res.data.code != 200) {
+		Vue.prototype.$message({
+			message: res.data.message,
+			type: 'warning'
+		});
+	}
 	return res.data;
 }, err => {
 	//处理302

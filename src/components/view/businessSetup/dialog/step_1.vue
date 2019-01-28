@@ -32,7 +32,7 @@
 					<li class="l3">
 						<el-form-item label="行业类型" prop="industryType">
 							<el-select v-model="form.industryType" placeholder="请选择" size="mini">
-								<el-option v-for="item in industryTypeOptions" :key="item.id" :label="item.dicValue" :value="item.id"></el-option>
+								<el-option v-for="item in industryTypeOptions" :key="item.id" :label="item.dicValue" :value="item.dicValue"></el-option>
 							</el-select>
 						</el-form-item>
 					</li>

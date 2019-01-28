@@ -1,5 +1,81 @@
 <template>
-	<div id="selfHelp">
+	<div id="selfHelp" v-loading="loading">
+		<header>
+			<el-breadcrumb separator-class="el-icon-arrow-right">
+				<el-breadcrumb-item :to="{ path: '/systemSetup' }">系统设置</el-breadcrumb-item>
+				<el-breadcrumb-item>账号管理</el-breadcrumb-item>
+			</el-breadcrumb>
+		</header>
+		<!--搜索表单-->
+		<div class="numForm">
+			<el-form ref="form" :model="form" label-width="100px">
+				<div class="searchInput">
+					<el-form-item label="账号搜索：" prop="accountNumber">
+						<el-input v-model="form.accountNumber" size="mini"></el-input>
+					</el-form-item>
+					<el-form-item label="用户名称：" prop="userName">
+						<el-input v-model="form.userName" size="mini"></el-input>
+					</el-form-item>
+					<el-form-item class="searchBtn">
+						<el-button type="primary" size="mini" @click="searchMess('')">搜索</el-button>
+						<el-button type="primary" @click="resetForm('form')" size="mini" plain>重置</el-button>
+					</el-form-item>
+				</div>
+				<!--角色按钮-->
+				<div>
+					<el-form-item label="选择角色：">
+						<el-button size="mini" @click="searchMess('')">全部</el-button>
+						<el-button size="mini" v-for="(item,index) in this.allRoleTableData" :key="index" @click="searchMess(allRoleTableData[index].name)">{{allRoleTableData[index].nameZh}}</el-button>
+					</el-form-item>
+				</div>
+			</el-form>
+		</div>
+		<!--表格-->
+		<div class="accountTable">
+			<!--表格按钮和下拉框-->
+			<div class="BtnSelect">
+				<div class="accountBtn">
+					<el-button type="primary" size="mini" @click="showAddUser">+ 新增用户</el-button>
+					<el-button size="mini" @click="batchUpdatePass">批量重置密码</el-button>
+					<el-button size="mini" @click="batchStartAndStop(1)">启用</el-button>
+					<el-button size="mini" @click="batchStartAndStop(0)">停用</el-button>
+					<el-button size="mini" @click="batchDelete">删除</el-button>
+				</div>
+				<div class="accountSelect">
+					<el-select v-model="accountStatus" placeholder="请选择" size="mini" @change="changeTableData">
+						<el-option v-for="item in statusOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
+					</el-select>
+				</div>
+			</div>
+			<!--表格-->
+			<el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
+				<el-table-column type="selection"></el-table-column>
+
+				<el-table-column prop="username" label="账号"></el-table-column>
+
+				<el-table-column prop="nameZh" label="角色"></el-table-column>
+
+				<el-table-column prop="name" label="用户名称"></el-table-column>
+
+				<el-table-column prop="enabled" label="状态"></el-table-column>
+
+				<el-table-column prop="createTime" label="注册日期"></el-table-column>
+
+				<el-table-column prop="updateTime" label="最近登录"></el-table-column>
+
+				<el-table-column label="操作">
+					<template slot-scope="scope">
+						<!--<router-link :to="{path:'/addEvent/'+3+'/'+scope.row.contactEvtId}">-->
+						<el-button size="mini" type="text" @click="showDetails(scope.row)">详情</el-button>
+						<!--</router-link>-->
+						<el-button size="mini" type="text" @click="deleteItem(scope.row)">删除</el-button>
+					</template>
+				</el-table-column>
+			</el-table>
+			<!--分页-->
+			<el-pagination style="margin-top: 10px" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page.currentPage" :page-sizes="$global.pageSize" :page-size="page.size" layout="total, sizes, prev, pager, next, jumper" :total="page.total"></el-pagination>
+		</div>
+
 		<!--添加用户弹窗-->
 		<div class="addUserDialog">
 			<el-dialog title="新增用户" :visible.sync="dialogVisible" width="50%" :before-close="handleClose">
@@ -111,76 +187,6 @@
 				</span>
 			</el-dialog>
 		</div>
-
-		<!--搜索表单-->
-		<div class="numForm">
-			<el-form ref="form" :model="form" label-width="100px">
-				<div class="searchInput">
-					<el-form-item label="账号搜索：" prop="accountNumber">
-						<el-input v-model="form.accountNumber" size="mini"></el-input>
-					</el-form-item>
-					<el-form-item label="用户名称：" prop="userName">
-						<el-input v-model="form.userName" size="mini"></el-input>
-					</el-form-item>
-					<el-form-item class="searchBtn">
-						<el-button type="primary" size="mini" @click="searchMess('')">搜索</el-button>
-						<el-button type="primary" @click="resetForm('form')" size="mini" plain>重置</el-button>
-					</el-form-item>
-				</div>
-				<!--角色按钮-->
-				<div>
-					<el-form-item label="选择角色：">
-						<el-button size="mini" @click="searchMess('')">全部</el-button>
-						<el-button size="mini" v-for="(item,index) in this.allRoleTableData" :key="index" @click="searchMess(allRoleTableData[index].name)">{{allRoleTableData[index].nameZh}}</el-button>
-					</el-form-item>
-				</div>
-			</el-form>
-		</div>
-		<!--表格-->
-		<div class="accountTable">
-			<!--表格按钮和下拉框-->
-			<div class="BtnSelect">
-				<div class="accountBtn">
-					<el-button type="primary" size="mini" @click="showAddUser">+ 新增用户</el-button>
-					<el-button size="mini" @click="batchUpdatePass">批量重置密码</el-button>
-					<el-button size="mini" @click="batchStartAndStop(1)">启用</el-button>
-					<el-button size="mini" @click="batchStartAndStop(0)">停用</el-button>
-					<el-button size="mini" @click="batchDelete">删除</el-button>
-				</div>
-				<div class="accountSelect">
-					<el-select v-model="accountStatus" placeholder="请选择" size="mini" @change="changeTableData">
-						<el-option v-for="item in statusOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
-					</el-select>
-				</div>
-			</div>
-			<!--表格-->
-			<el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
-				<el-table-column type="selection"></el-table-column>
-
-				<el-table-column prop="username" label="账号"></el-table-column>
-
-				<el-table-column prop="nameZh" label="角色"></el-table-column>
-
-				<el-table-column prop="name" label="用户名称"></el-table-column>
-
-				<el-table-column prop="enabled" label="状态"></el-table-column>
-
-				<el-table-column prop="createTime" label="注册日期"></el-table-column>
-
-				<el-table-column prop="updateTime" label="最近登录"></el-table-column>
-
-				<el-table-column label="操作">
-					<template slot-scope="scope">
-						<!--<router-link :to="{path:'/addEvent/'+3+'/'+scope.row.contactEvtId}">-->
-						<el-button size="mini" type="text" @click="showDetails(scope.row)">详情</el-button>
-						<!--</router-link>-->
-						<el-button size="mini" type="text" @click="deleteItem(scope.row)">删除</el-button>
-					</template>
-				</el-table-column>
-			</el-table>
-			<!--分页-->
-			<el-pagination style="margin-top: 10px" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page.currentPage" :page-sizes="$global.pageSize" :page-size="page.size" layout="total, sizes, prev, pager, next, jumper" :total="page.total"></el-pagination>
-		</div>
 	</div>
 </template>
 
@@ -253,7 +259,8 @@
 				multipleSelection: [], //选择复选框的信息数组
 				ids: [], // 存放批量操作的id
 				currentPage: 4, //分页
-				radio: "1" //单选按钮
+				radio: "1", //单选按钮
+				loading: false
 			};
 		},
 		methods: {
@@ -376,90 +383,90 @@
 			},
 			// 新增用户
 			addUser() {
-				// if (
-
-				//     this.addTopForm.loginId== ""||
-				//     this.addTopForm.role== ""||
-				//     this.addTopForm.userName== ""||
-				//     this.addTopForm.phoneNum== ""||
-				//     this.addTopForm.sex== "man"||
-				//     this.addTopForm.status== "1"||
-				//     this.addTopForm.channel== ""||
-				//     this.addTopForm.province== ""|| //省
-				//     this.addTopForm.city== ""|| //市
-				//     this.addTopForm.district== ""|| //区
-				//     this.addTopForm.IDNo== ""|| //身份证号
-				//     this.addTopForm.mailbox== ""|| //邮箱
-				//     this.addTopForm.remark== "" //备注
-				// ) {
-				//     this.$message({
-				//         message: "存在空字段!",
-				//         type: "warning"
-				//     });
-				// } else {
-
-				// }
-				let provinceName;
-				let cityName;
-				let areaName;
-				let role;
-				for (let i = 0; i < this.options.province.length; i++) {
-					if (
-						this.options.province[i].value == this.addTopForm.province
-					) {
-						provinceName = this.options.province[i].label;
-					}
-				}
-				for (let i = 0; i < this.options.city.length; i++) {
-					if (this.options.city[i].value == this.addTopForm.city) {
-						cityName = this.options.city[i].label;
-					}
-				}
-				for (let i = 0; i < this.options.area.length; i++) {
-					if (this.options.area[i].value == this.addTopForm.district) {
-						areaName = this.options.area[i].label;
-					}
-				}
-
-				for (let i = 0; i < this.allRoleTableData.length; i++) {
-					if (this.allRoleTableData[i].id == this.addTopForm.role) {
-						role = this.allRoleTableData[i].name;
-					}
-				}
-				this.$ajax
-					.post("/vos/user/saveUser", {
-						user: {
-							id: "",
-							username: this.addTopForm.loginId,
-							password: "123456",
-							roleName: role,
-							roleId: this.addTopForm.role,
-							enabled: this.addTopForm.status,
-							name: this.addTopForm.userName,
-							phone: this.addTopForm.phoneNum,
-							sex: this.addTopForm.sex,
-							remark: this.addTopForm.remark,
-							province: provinceName,
-							provinceId: this.addTopForm.province,
-							city: cityName,
-							cityId: this.addTopForm.city,
-							area: areaName,
-							areaId: this.addTopForm.district,
-							email: this.addTopForm.mailbox,
-							idNo: this.addTopForm.IDNo,
-							headPicture: "",
-							businessType: this.addTopForm.channel
-						}
-					})
-					.then(res => {
-						if (res.code == 200) {
-							this.$message({
-								message: "新增成功!",
-								type: "success"
-							});
-							this.changeTableData();
-						}
+				if (
+					this.addTopForm.loginId == "" ||
+					this.addTopForm.role == "" ||
+					this.addTopForm.userName == "" ||
+					this.addTopForm.phoneNum == "" ||
+					this.addTopForm.channel == "" ||
+					this.addTopForm.province == "" ||
+					this.addTopForm.city == "" ||
+					this.addTopForm.district == "" ||
+					this.addTopForm.IDNo == "" ||
+					this.addTopForm.mailbox == "" ||
+					this.addTopForm.remark == ""
+				) {
+					this.$message({
+						message: "存在空字段!",
+						type: "warning"
 					});
+				} else {
+					let provinceName;
+					let cityName;
+					let areaName;
+					let role;
+					for (let i = 0; i < this.options.province.length; i++) {
+						if (
+							this.options.province[i].value ==
+							this.addTopForm.province
+						) {
+							provinceName = this.options.province[i].label;
+						}
+					}
+					for (let i = 0; i < this.options.city.length; i++) {
+						if (this.options.city[i].value == this.addTopForm.city) {
+							cityName = this.options.city[i].label;
+						}
+					}
+					for (let i = 0; i < this.options.area.length; i++) {
+						if (
+							this.options.area[i].value == this.addTopForm.district
+						) {
+							areaName = this.options.area[i].label;
+						}
+					}
+
+					for (let i = 0; i < this.allRoleTableData.length; i++) {
+						if (this.allRoleTableData[i].id == this.addTopForm.role) {
+							role = this.allRoleTableData[i].name;
+						}
+					}
+					this.$ajax
+						.post("/vos/user/saveUser", {
+							user: {
+								id: "",
+								username: this.addTopForm.loginId,
+								password: "123456",
+								roleName: role,
+								roleId: this.addTopForm.role,
+								enabled: this.addTopForm.status,
+								name: this.addTopForm.userName,
+								phone: this.addTopForm.phoneNum,
+								sex: this.addTopForm.sex,
+								remark: this.addTopForm.remark,
+								province: provinceName,
+								provinceId: this.addTopForm.province,
+								city: cityName,
+								cityId: this.addTopForm.city,
+								area: areaName,
+								areaId: this.addTopForm.district,
+								email: this.addTopForm.mailbox,
+								idNo: this.addTopForm.IDNo,
+								headPicture: "",
+								businessType: this.addTopForm.channel
+							}
+						})
+						.then(res => {
+							if (res.code == 200) {
+								this.$message({
+									message: "新增成功!",
+									type: "success"
+								});
+								this.changeTableData();
+							}
+						});
+				}
+
 				this.dialogVisible = false;
 			},
 
@@ -730,6 +737,7 @@
 				}
 			},
 			loadTableData(strURL, num) {
+				this.loading = true;
 				let enabled;
 				if (num == 1) {
 					enabled = "";
@@ -753,6 +761,7 @@
 					})
 					.then(res => {
 						if (res.code == 200) {
+							this.loading = false;
 							this.tableData = res.data.users;
 							this.page.total = res.data.totalCount;
 							for (let i = 0; i < this.tableData.length; i++) {

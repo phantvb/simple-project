@@ -126,17 +126,23 @@
 					value: '',
 					label: '全部'
 				}, {
-					value: '选项2',
+					value: 'Wait_To_Audit',
 					label: '等待送审'
 				}, {
-					value: '选项3',
-					label: '待审核'
+					value: 'Company_Auditing',
+					label: 'Company_Auditing'
 				}, {
-					value: '选项4',
+					value: 'Audit_Success',
 					label: '审核通过'
 				}, {
-					value: '选项5',
-					label: '被驳回'
+					value: 'Modify_Auditing',
+					label: '变更审核中'
+				}, {
+					value: 'Cancelled',
+					label: '已注销'
+				}, {
+					value: 'Modify_Rejected',
+					label: '变更审核驳回'
 				}],
 				tableData: [],
 				page: {
@@ -160,7 +166,7 @@
 		methods: {
 			checkDetail(data) {
 				this.flowIdData = data;
-				this.$router.push({ path: '/businessInform/businessDetail', query: { flowId: data.flowId, status: data.status, creator: data.creator } });
+				this.$router.push({ path: '/businessInform/businessDetail', query: { flowId: data.flowId, status: data.status, creator: data.creator, assigneeRole: data.assigneeRole } });
 			},
 			closeCompany(bol) {
 				if (bol) {
@@ -193,6 +199,7 @@
 					creator: data.creator,
 					assigneeRole: data.assigneeRole
 				}
+				obj.message = '';
 				this.$ajax.post(url, obj).then(res => {
 					if (res.code == 200) {
 						this.$message.success('操作成功');
@@ -214,7 +221,8 @@
 					flowId: data.flowId,
 					creator: data.creator,
 					assigneeRole: data.assigneeRole
-				}
+				};
+				obj.message = '';
 				this.$ajax.post(url, obj).then(res => {
 					if (res.code == 200) {
 						this.$message.success('操作成功');
@@ -229,8 +237,10 @@
 				obj.companyFlow = {
 					flowId: data.flowId,
 					creator: data.creator,
-					assigneeRole: data.assigneeRole
-				}
+					assigneeRole: data.assigneeRole,
+					assignee: data.assignee
+				};
+				obj.message = '';
 				this.$ajax.post(url, obj).then(res => {
 					if (res.code == 200) {
 						this.$message.success('操作成功');
@@ -246,7 +256,8 @@
 					flowId: data.flowId,
 					creator: data.creator,
 					assigneeRole: data.assigneeRole
-				}
+				};
+				obj.message = '';
 				this.$ajax.post(url, obj).then(res => {
 					if (res.code == 200) {
 						this.$message.success('操作成功');

@@ -58,17 +58,17 @@
 			SidebarItem
 		},
 		mounted() {
-			// this.$ajax.post('/vos/user/apiLogin', {
-			// 	username: 'admin',
-			// 	password: '123456'
-			// }).then(res => {
-			// 	if (res.code == 200) {
-			// 		for (let key in res.data) {
-			// 			sessionStorage.setItem(key, res.data[key]);
-			//             this.$root.eventHub.$emit('getLoginInfo', res.data);
-			// 		}
-			// 	}
-			// });
+			this.$ajax.post('/vos/user/apiLogin', {
+				username: 'admin',
+				password: '123456'
+			}).then(res => {
+				if (res.code == 200) {
+					for (let key in res.data) {
+						sessionStorage.setItem(key, res.data[key]);
+						this.$root.eventHub.$emit('getLoginInfo', res.data);
+					}
+				}
+			});
 			// this.$ajax.get('/vos/menu/getTreeMenu').then(res => {
 			// 	if (res.code == 200) {
 			// 		this.router = [{

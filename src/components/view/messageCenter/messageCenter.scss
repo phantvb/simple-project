@@ -1,34 +1,35 @@
 $padding: 15px;
 $blue: #409EFF;
+
 header {
-  padding: 0px $padding $padding;
-  border-bottom: 1px solid #eee;
-  text-align: left;
+	padding: 0px $padding $padding;
+	border-bottom: 1px solid #eee;
+	text-align: left;
 }
 
 .searchMessage el-input {
-  overflow: hidden;
-  padding: 15px;
-  margin: 0;
+	overflow: hidden;
+	padding: 15px;
+	margin: 0;
 }
 
 .batch-work {
-  position: relative;
-  float: left;
+	position: relative;
+	float: left;
 }
 
 .record {
-  float: right;
+	float: right;
 }
 
 .searchMessage {
-  position: absolute;
-  top: 0px;
-  right: 10px;
-  line-height: 39px;
-  margin-right: 5px;
+	position: absolute;
+	top: 0px;
+	right: 10px;
+	line-height: 39px;
+	margin-right: 5px;
 }
 
 #messageInform {
-  padding: $padding;
+	padding: $padding;
 }
