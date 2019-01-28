@@ -88,7 +88,9 @@
 						sessionStorage.setItem(key, resp.data[key]);
 					}
 					this.$router.push('/accountingManage/accountingManage');
-					// this.$root.eventHub.$emit('getLoginInfo', resp);
+					for (let key in resp.data) {
+						sessionStorage.setItem(key, resp.data[key]);
+					}
 				});
 
 			},

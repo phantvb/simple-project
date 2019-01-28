@@ -90,7 +90,7 @@
           prop="status"
           label="操作">
           <template slot-scope="scope">
-            <el-button size="mini" type="text" entrance="1" @click="details(scope.row),$router.push('/logoutDetail/')">详情</el-button>
+            <el-button size="mini" type="text" entrance="1" @click="details(scope.row),$router.push('/businessDetial/')">详情</el-button>
             <!--<router-link :to="{path:'/addEvent/'+3+'/'+scope.row.contactEvtId}">-->
             <el-button size="mini" type="text">撤回</el-button>
             <el-button size="mini" type="text">变更</el-button>

@@ -8,24 +8,24 @@
 							<p class="grey note">从个性头像库里选择一张图片作为头像</p>
 							<ul>
 								<li class="l3">
-									<img src="../../../../assets/portrait_1.png" alt="">
+									<img src="../../../../assets/portrait_1.png" alt="userHead1.png">
 								</li>
 								<li class="l3">
-									<img src="../../../../assets/portrait_2.png" alt="">
+									<img src="../../../../assets/portrait_2.png" alt="userHead2.png">
 								</li>
 								<li class="l3">
-									<img src="../../../../assets/portrait_3.png" alt="">
+									<img src="../../../../assets/portrait_3.png" alt="userHead3.png">
 								</li>
 							</ul>
 							<ul>
 								<li class="l3">
-									<img src="../../../../assets/portrait_4.png" alt="">
+									<img src="../../../../assets/portrait_4.png" alt="userHead4.png">
 								</li>
 								<li class="l3">
-									<img src="../../../../assets/portrait_5.png" alt="">
+									<img src="../../../../assets/portrait_5.png" alt="userHead5.png">
 								</li>
 								<li class="l3">
-									<img src="../../../../assets/portrait_6.png" alt="">
+									<img src="../../../../assets/portrait_6.png" alt="userHead6.png">
 								</li>
 							</ul>
 						</li>
@@ -69,6 +69,7 @@
 				active: "1",
 				dialogVisible: false,
 				fileList: [],
+				fileAlt: 'userHead1.png',
 				form: {
 					id: '',
 					username: '',
@@ -113,13 +114,28 @@
 			},
 			chooseImg(e) {
 				var src = e.target.getAttribute('src');
+				var alt = e.target.getAttribute('alt');
 				this.$refs.preview.setAttribute('src', src);
+				console.log(alt);
+				this.fileAlt = alt;
 			},
 			uploaded(res, file, fileList) {
 				this.fileList = fileList;
 			},
 			submit() {
-				this.form.headPicture = this.fileList[0].response;
+				if (this.active == 1) {
+					this.form.headPicture = this.fileAlt;
+				} else {
+					if (this.fileList.length == 0) {
+						this.$message({
+							message: '请先选择图片!',
+							type: 'error'
+						});
+						return;
+					} else {
+						this.form.headPicture = this.fileList[0].response;
+					}
+				}
 				this.$ajax.post('/vos/user/saveUser', { user: this.form }).then(res => {
 					if (res.code == 200) {
 						this.$message({

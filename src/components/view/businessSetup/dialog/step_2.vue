@@ -162,10 +162,10 @@
 				this.file.p2 = newV.legalCardFrontPic;
 				this.file.p3 = newV.legalCardBackPic;
 				this.file.p4 = newV.legalCardHandPic;
-				this.imageUrl.p1 = 'http://192.168.0.117:5480/vos/' + this.file.p1;
-				this.imageUrl.p2 = 'http://192.168.0.117:5480/vos/' + this.file.p2;
-				this.imageUrl.p3 = 'http://192.168.0.117:5480/vos/' + this.file.p3;
-				this.imageUrl.p4 = 'http://192.168.0.117:5480/vos/' + this.file.p4;
+				this.imageUrl.p1 = this.$global.serverSrc + this.file.p1;
+				this.imageUrl.p2 = this.$global.serverSrc + this.file.p2;
+				this.imageUrl.p3 = this.$global.serverSrc + this.file.p3;
+				this.imageUrl.p4 = this.$global.serverSrc + this.file.p4;
 			}
 		},
 		props: ['oneData', 'idData', 'isComplete', 'editType'],

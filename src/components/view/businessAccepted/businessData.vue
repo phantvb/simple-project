@@ -3,32 +3,32 @@
         <section>
             <div class="detailMsg">
                 <p>
-                    法人基本信息
+                    经办人基本信息
                 </p>
             </div>
             <div class="block left">
-                <p class="fmini">法人姓名： 华勇 法人电话： 15678987654</p>
-                <p class="fmini">法人证件： 身份证 350203198505143020</p>
-                <p class="fmini">身份证住址： 杭州拱墅区仓基新村9幢7单元601室</p>
-                <p class="fmini">身份证有效期： 2011.5.5-2031.5.5</p>
+                <p class="fmini">经办人姓名： {{this.business.agentName}} </p>
+                <p class="fmini">经办人电话：{{this.business.agentMobilePhone}} </p>
+                <p class="fmini">经办人证件： {{this.business.agentDocumentType+""+this.business.agentDocumentNum}}</p>
+                <!--<p class="fmini">证件有效期： 2011.5.5-2031.5.5</p>-->
                 <div>
                     <!-- <div style="float:left;">
                         <span class="fmini">企业资质证明文件：</span>
                     </div> -->
-                    <ul class="basedata">
+                    <ul class="abc">
                         <li>
-                            <img class="exampleh" src="../../../assets/example_2.png" alt="">
-                            <p class="fmini center">法人身份证（正面）</p>
+                            <img class="exampleh" :src="this.business.agentCardFront" alt="">
+                            <p class="fmini center">经办人身份证（正面）</p>
                         </li>
                         <li>
-                            <img class="exampleh" src="../../../assets/example_3.png" alt="">
-                            <p class="fmini center">法人身份证（反面）</p>
+                            <img class="exampleh" :src="this.business.agentCardBack" alt="">
+                            <p class="fmini center">经办人身份证（反面）</p>
                         </li>
                     </ul>
-                    <ul class="basedata">
+                    <ul class="abc">
                         <li>
-                            <img class="exampleh" src="../../../assets/example_4.png" alt="">
-                            <p class="fmini center">法人手持身份证（正面）</p>
+                            <img class="exampleh" :src="this.business.agentCardWIthHand" alt="">
+                            <p class="fmini center">经办人手持身份证（正面）</p>
                         </li>
                     </ul>
                 </div>
@@ -45,38 +45,83 @@
                     <div style="float:left;">
                         <span class="fmini">400号码：</span>
                     </div>
-                    <ul>
-                        <li class="l2">
+                    <!--<ul class="abc">-->
+                        <!--<li class="12">-->
                             <el-table :data="objCodeTable"
                                       border
-                                      style="width: 100%">
+                                      style="width: 90%">
 
                                 <el-table-column
-                                        prop="number"
+                                        prop="number400"
                                         label="400号码">
                                 </el-table-column>
 
                                 <el-table-column
-                                        prop="objCode"
-                                        label="目的码">
+                                        prop="tariffName"
+                                        label="套餐">
                                 </el-table-column>
 
                                 <el-table-column
-                                        prop="pilotCode"
-                                        label="引示码">
+                                        prop="bottomFee"
+                                        label="最低年消费">
                                 </el-table-column>
 
                                 <el-table-column
-                                        prop="operator"
-                                        label="所属运营商">
+                                        prop="durationPresentation"
+                                        label="预存话费">
+                                </el-table-column>
+
+                                <el-table-column
+                                        prop="units"
+                                        label='单位'>
+                                </el-table-column>
+
+                                <el-table-column
+                                        prop="packageContent"
+                                        label='套餐详情'>
                                 </el-table-column>
                             </el-table>
-                        </li>
-                    </ul>
+                        <!--</li>-->
+                    <!--</ul>-->
                 </div>
-                <p class="fmini">归属地区： 业务身份： </p>
-                <p class="fmini">受理人：</p>
-                <p class="fmini">资费套餐： 优惠：</p>
+                <p class="fmini">归属地区： {{this.business.provinceBelong+this.business.cityBelong+this.business.cityBelong}}</p>
+                <p class="fmini">业务身份： {{this.business.channel}} </p>
+                <p class="fmini"> 优惠：{{this.business.discounts}}</p>
+                <div>
+                    <div style="float:left;">
+                        <span class="fmini">增值服务：</span>
+                    </div>
+                    <el-table :data="addValueList"
+                              border
+                              style="width: 90%">
+
+                        <el-table-column
+                                prop="tariffName"
+                                label="增值服务名称">
+                        </el-table-column>
+
+                        <el-table-column
+                                prop="tariffName"
+                                label="数量">
+                        </el-table-column>
+
+                        <el-table-column
+                                prop="units"
+                                label="资费/单位">
+                        </el-table-column>
+
+                        <el-table-column
+                                prop="remarks"
+                                label="备注">
+                        </el-table-column>
+
+                        <el-table-column
+                                prop="presents"
+                                label='是否赠送'>
+                        </el-table-column>
+
+                    </el-table>
+                </div>
             </div>
         </section>
         <section>
@@ -91,11 +136,9 @@
                     <div style="float:left;">
                         <span class="fmini">统一的标准协议：</span>
                     </div>
-                    <ul class="businessDataUl">
+                    <ul class="abc">
                         <li class="l2">
-                            <img class="examplew" src="../../../assets/example_1.png" alt="">
-                            <img class="examplew" src="../../../assets/example_1.png" alt="">
-                            <img class="examplew" src="../../../assets/example_1.png" alt="">
+                            <img class="imgSize" :src="this.business.unionAgreementPic" alt="">
                         </li>
                     </ul>
                 </div>
@@ -103,9 +146,9 @@
                     <div style="float:left;">
                         <span class="fmini">业务受理单：</span>
                     </div>
-                    <ul>
+                    <ul class="abc">
                         <li class="l2">
-                            <img class="examplew" src="../../../assets/example_1.png" alt="">
+                            <img class="imgSize" :src="this.business.businessHandlePic" alt="">
                         </li>
                     </ul>
                 </div>
@@ -113,9 +156,9 @@
                     <div style="float:left;">
                         <span class="fmini">办理授权书：</span>
                     </div>
-                    <ul class="businessDataUl">
+                    <ul class="abc">
                         <li class="l2">
-                            <img class="examplew" src="../../../assets/example_1.png" alt="">
+                            <img class="imgSize" :src="this.business.authorizationPic" alt="">
                         </li>
                     </ul>
                 </div>
@@ -123,9 +166,9 @@
                     <div style="float:left;">
                         <span class="fmini">信息安全责任书：</span>
                     </div>
-                    <ul>
+                    <ul class="abc">
                         <li class="l2">
-                            <img class="examplew" src="../../../assets/example_1.png" alt="">
+                            <img class="imgSize" :src="this.business.safeAgreementPic" alt="">
                         </li>
                     </ul>
                 </div>
@@ -133,35 +176,84 @@
                     <div style="float:left;">
                         <span class="fmini">目的码证明材料：</span>
                     </div>
-                    <ul>
+                    <ul class="abc">
                         <li class="l2">
-                            <img class="examplew" src="../../../assets/example_1.png" alt="">
+                            <img class="imgSize" :src="this.business.destNumProfPic" alt="">
                         </li>
                     </ul>
                 </div>
-                <p class="fmini">其他文件(非必传）：</p>
+                <!--<p class="fmini">其他文件(非必传）：</p>-->
+                <div>
+                    <div style="float:left;">
+                        <span class="fmini">其他文件(非必传）：</span>
+                    </div>
+                    <ul class="abc">
+                        <li class="l2">
+                            <img class="imgSize" :src="this.business.otherPic" alt="">
+                        </li>
+                    </ul>
+                </div>
             </div>
         </section>
     </div>
 </template>
 <script>
+    import {mapState} from "vuex";
     export default {
         name: 'businessData',
         data() {
             return {
-                objCodeTable: [{
-                    number: '234567',
-                    objCode: '057189087171',
-                    pilotCode:'057189087171',
-                    operator:'中国电信'
-                }],
+                objCodeTable: [],
+                addValueList:[],
             };
         },
         components: {},
-        methods: {},
-        computed: {}
+        created(){
+            console.log(this.company);
+            console.log(this.business);
+            console.log(this.destNumber);
+            console.log(this.number400ValueAdded);
+            console.log(this.number400Concession);
+
+            let num400Obj = {};
+                num400Obj.number400 = this.business.number400;
+                num400Obj.tariffName = this.business.tariffName;
+                num400Obj.bottomFee = this.business.bottomFee;
+                num400Obj.durationPresentation = this.business.durationPresentation;
+                num400Obj.units = this.business.units;
+                num400Obj.packageContent = this.business.packageContent;
+                this.objCodeTable.push(num400Obj);
+        },
+        methods: {
+            // 存vuex更新企业信息模块入参
+            ChangeCompanyStatus(val) {
+                return this.$store.dispatch("ChangeCompanyStatus", val);
+            },
+            ChangeBusinessStatus(val) {
+                return this.$store.dispatch("ChangeBusinessStatus", val);
+            },
+            ChangeDestNumber(val) {
+                return this.$store.dispatch("ChangeDestNumberStatus", val);
+            },
+            ChangeNumber400ValueAdded(val) {
+                return this.$store.dispatch("ChangeNumber400ValueAddedStatus", val);
+            },
+            ChangeNumber400Concession(val) {
+                return this.$store.dispatch("ChangeNumber400ConcessionStatus", val);
+            },
+        },
+        computed: {
+            ...mapState({
+                company: state => state.createActivities.company,
+                business: state => state.createActivities.business,
+                destNumber: state => state.createActivities.destNumber,
+                number400ValueAdded: state => state.createActivities.number400ValueAdded,
+                number400Concession: state => state.createActivities.number400Concession,
+            })
+        }
     }
 </script>
 <style lang="scss" scoped>
+    @import './stepTwo.scss';
     @import './400businessManage.scss';
 </style>

@@ -25,8 +25,11 @@
                         </div>
                         <ul class="abc">
                             <li class="8">
-                                <el-upload class="avatar-uploader examplew" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="handleAvatarSuccess" :on-error="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
-                                    <img v-if="stepFourForm.unionAgreementPic" :src="stepFourForm.unionAgreementPic" class="avatar">
+                                <el-upload class="avatar-uploader examplew" :action="$global.uploadUrl"
+                                           :show-file-list="false" :on-success="handleAvatarSuccess"
+                                           :on-error="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
+                                    <img v-if="stepFourForm.unionAgreementPic" :src="stepFourForm.unionAgreementPic"
+                                         class="avatar">
                                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                 </el-upload>
                             </li>
@@ -39,8 +42,11 @@
                         </div>
                         <ul class="abc">
                             <li class="8">
-                                <el-upload class="avatar-uploader examplew" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="handlebussinSuccess" :on-error="handlebussinSuccess" :before-upload="beforeAvatarUpload">
-                                    <img v-if="stepFourForm.businessHandlePic" :src="stepFourForm.businessHandlePic" class="avatar">
+                                <el-upload class="avatar-uploader examplew" :action="$global.uploadUrl"
+                                           :show-file-list="false" :on-success="handlebussinSuccess"
+                                           :on-error="handlebussinSuccess" :before-upload="beforeAvatarUpload">
+                                    <img v-if="stepFourForm.businessHandlePic" :src="stepFourForm.businessHandlePic"
+                                         class="avatar">
                                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                 </el-upload>
                             </li>
@@ -53,8 +59,11 @@
                         </div>
                         <ul class="abc">
                             <li class="8">
-                                <el-upload class="avatar-uploader examplew" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="handleAuthorSuccess" :on-error="handleAuthorSuccess" :before-upload="beforeAvatarUpload">
-                                    <img v-if="stepFourForm.authorizationPic" :src="stepFourForm.authorizationPic" class="avatar">
+                                <el-upload class="avatar-uploader examplew" :action="$global.uploadUrl"
+                                           :show-file-list="false" :on-success="handleAuthorSuccess"
+                                           :on-error="handleAuthorSuccess" :before-upload="beforeAvatarUpload">
+                                    <img v-if="stepFourForm.authorizationPic" :src="stepFourForm.authorizationPic"
+                                         class="avatar">
                                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                 </el-upload>
                             </li>
@@ -67,8 +76,11 @@
                         </div>
                         <ul class="abc">
                             <li class="8">
-                                <el-upload class="avatar-uploader examplew" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="handleSafeSuccess" :on-error="handleSafeSuccess" :before-upload="beforeAvatarUpload">
-                                    <img v-if="stepFourForm.safeAgreementPic" :src="stepFourForm.safeAgreementPic" class="avatar">
+                                <el-upload class="avatar-uploader examplew" :action="$global.uploadUrl"
+                                           :show-file-list="false" :on-success="handleSafeSuccess"
+                                           :on-error="handleSafeSuccess" :before-upload="beforeAvatarUpload">
+                                    <img v-if="stepFourForm.safeAgreementPic" :src="stepFourForm.safeAgreementPic"
+                                         class="avatar">
                                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                 </el-upload>
                                 <div class="explain">说明：合同业务单据渠道由地市下载PDF打印盖章后上传。自助受理用户下载PDF并盖章后寄往信产，由工作人员盖章上传</div>
@@ -83,8 +95,11 @@
                         </div>
                         <ul class="abc">
                             <li class="8">
-                                <el-upload class="avatar-uploader examplew" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="handleDestNumSuccess" :on-error="handleDestNumSuccess" :before-upload="beforeAvatarUpload">
-                                    <img v-if="stepFourForm.destNumProfPic" :src="stepFourForm.destNumProfPic" class="avatar">
+                                <el-upload class="avatar-uploader examplew" :action="$global.uploadUrl"
+                                           :show-file-list="false" :on-success="handleDestNumSuccess"
+                                           :on-error="handleDestNumSuccess" :before-upload="beforeAvatarUpload">
+                                    <img v-if="stepFourForm.destNumProfPic" :src="stepFourForm.destNumProfPic"
+                                         class="avatar">
                                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                 </el-upload>
                                 <div class="explain">说明：目的码证明材料可以是缴费材料，也可以是自助平台相关截图</div>
@@ -98,7 +113,9 @@
                         </div>
                         <ul class="abc">
                             <li class="8">
-                                <el-upload class="avatar-uploader examplew" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="handleOtherSuccess" :on-error="handleOtherSuccess" :before-upload="beforeAvatarUpload">
+                                <el-upload class="avatar-uploader examplew" :action="$global.uploadUrl"
+                                           :show-file-list="false" :on-success="handleOtherSuccess"
+                                           :on-error="handleOtherSuccess" :before-upload="beforeAvatarUpload">
                                     <img v-if="stepFourForm.otherPic" :src="stepFourForm.otherPic" class="avatar">
                                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                 </el-upload>
@@ -118,54 +135,95 @@
 </template>
 <script>
     import {mapState} from "vuex";
+
     export default {
         name: 'stepFour',
         data() {
             return {
-                busMaterForm:{
-
+                busMaterForm: {},
+                stepFourForm: {
+                    unionAgreementPic: '',
+                    businessHandlePic: '',
+                    authorizationPic: '',
+                    safeAgreementPic: '',
+                    destNumProfPic: '',
+                    otherPic: '',
+                    flowId: ''
                 },
-                stepFourForm:{
-                    unionAgreementPic:'',
-                    businessHandlePic:'',
-                    authorizationPic:'',
-                    safeAgreementPic:'',
-                    destNumProfPic:'',
-                    otherPic:'',
-                    flowId:''
-                },
-                businessObj:{},  //业务参数对象
-                flowId:'',
+                businessObj: {},  //业务参数对象
+                flowId: '',
             };
         },
         components: {},
-        created(){
+        created() {
             console.log(sessionStorage.getItem('entrance'));
-            if(sessionStorage.getItem('entrance')==2){
-                this.stepFourForm = this.business;
+
+            //新增受理
+            if (sessionStorage.getItem('entrance') == 1) {
+                this.$root.eventHub.$on('flowId', (resp) => {
+                    console.log("flowId", resp);
+                    this.flowId = resp;
+                });
             }
-            // console.log(sessionStorage.getItem('entireFlowId'));
-            // this.flowId = sessionStorage.getItem('entireFlowId');
+            this.$root.eventHub.$on('entireFlowId', (resp) => {
+                console.log("entireFlowId", resp);
+                this.flowId = resp;
+                if (sessionStorage.getItem('entrance') == 2) {
+                    this.stepFourForm = this.business;
+
+                }
+            });
+            //编辑受理
+
+
+            //详情
+            if (sessionStorage.getItem('entrance') == 2) {
+                console.log(this.business);
+                this.stepFourForm = this.business;
+
+            }
         },
         methods: {
             // 图片上传
             handleAvatarSuccess(res, file) {
-                this.stepFourForm.unionAgreementPic = URL.createObjectURL(file.raw);
+                console.log(res);
+                console.log(this.$global.serverSrc + res);
+                if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {
+                    this.stepFourForm.unionAgreementPic = 'http://192.168.0.117:5480/vos/' + res;
+                }
+                // this.stepFourForm.unionAgreementPic = URL.createObjectURL(file.raw);
+                console.log("file.raw", file.raw);
             },
             handlebussinSuccess(res, file) {
-                this.stepFourForm.businessHandlePic = URL.createObjectURL(file.raw);
+                if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {
+                    this.stepFourForm.businessHandlePic = this.$global.serverSrc + res;
+                }
+                // this.stepFourForm.businessHandlePic = URL.createObjectURL(file.raw);
             },
             handleAuthorSuccess(res, file) {
-                this.stepFourForm.authorizationPic = URL.createObjectURL(file.raw);
+                if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {
+                    this.stepFourForm.authorizationPic = this.$global.serverSrc + res;
+                }
+                // this.stepFourForm.authorizationPic = URL.createObjectURL(file.raw);
             },
+
             handleSafeSuccess(res, file) {
-                this.stepFourForm.safeAgreementPic = URL.createObjectURL(file.raw);
+                if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {
+                    this.stepFourForm.safeAgreementPic = this.$global.serverSrc + res;
+                }
+                // this.stepFourForm.safeAgreementPic = URL.createObjectURL(file.raw);
             },
             handleDestNumSuccess(res, file) {
-                this.stepFourForm.destNumProfPic = URL.createObjectURL(file.raw);
+                if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {
+                    this.stepFourForm.destNumProfPic = this.$global.serverSrc + res;
+                }
+                // this.stepFourForm.destNumProfPic = URL.createObjectURL(file.raw);
             },
             handleOtherSuccess(res, file) {
-                this.stepFourForm.otherPic = URL.createObjectURL(file.raw);
+                if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {
+                    this.stepFourForm.otherPic = this.$global.serverSrc + res;
+                }
+                // this.stepFourForm.otherPic = URL.createObjectURL(file.raw);
             },
             beforeAvatarUpload(file) {
                 const isJPG = file.type === 'image/jpeg';
@@ -179,69 +237,68 @@
                 }
                 return isJPG && isLt2M;
             },
-            next(val){
+            next(val) {
                 this.$emit('childNext', val);
             },
             // 新增业务保存
-            addBusinessSave(){
-                console.log("business:",this.business);
-                this.businessObj = Object.assign(this.business,this.stepFourForm);
+            addBusinessSave() {
+                console.log("business:", this.business);
+                this.businessObj = Object.assign(this.business, this.stepFourForm);
                 this.ChangeBusinessStatus(this.businessObj);
                 // 打印business入参对象
-                console.log("businessObj:",this.businessObj);
+                console.log("businessObj:", this.businessObj);
                 //打印compang入参对像
-                console.log("company",this.company);
-                console.log("destNumber",this.destNumber);
-                console.log("number400ValueAdded",this.number400ValueAdded);
-                console.log("number400Concession",this.number400Concession);
+                console.log("company", this.company);
+                console.log("destNumber", this.destNumber);
+                console.log("number400ValueAdded", this.number400ValueAdded);
+                console.log("number400Concession", this.number400Concession);
                 this.$ajax.post('/vos/business/startAndSave', {
-                    "company":this.company,
-                    "business":this.businessObj,
-                    "number400ValueAdded":this.number400ValueAdded,
-                    "number400Concession":this.number400Concession,
-                    "companyFlow":{
-                        "flowId":""
+                    "company": this.company,
+                    "business": this.businessObj,
+                    "destNumber": this.destNumber,
+                    "number400ValueAdded": this.number400ValueAdded,
+                    "number400Concession": this.number400Concession,
+                    "companyFlow": {
+                        "flowId": this.flowId
                     }
-                }).then((res)=>{
-                    if(res.code=='200'){
+                }).then((res) => {
+                    if (res.code == '200') {
                         console.log(res);
                         this.dialogVisible = false;
-                    }else{
+                    } else {
                         this.$message.warning(res.message);
                     }
                 });
                 this.$root.eventHub.$emit('addAcceptSave');
-                this.$root.eventHub.$on('flowId',(resp)=>{
-                    console.log("flowId",resp);
-                    this.flowId = resp;
-                });
+
                 // this.stepFourForm.flowId = resp;
             },
             // 新增业务送审
-            addBusinessSend(){
+            addBusinessSend() {
                 this.dialogVisible = false;
-                console.log("business:",this.business);
-                this.businessObj = Object.assign(this.business,this.stepFourForm);
+                console.log("business:", this.business);
+                this.businessObj = Object.assign(this.business, this.stepFourForm);
                 this.ChangeBusinessStatus(this.businessObj);
                 // 打印business入参对象
-                console.log("businessObj:",this.businessObj);
+                console.log("businessObj:", this.businessObj);
                 //打印compang入参对像
-                console.log("company",this.company);
-                console.log("destNumber",this.destNumber);
-                console.log("number400ValueAdded",this.number400ValueAdded);
-                console.log("number400Concession",this.number400Concession);
+                console.log("company", this.company);
+                console.log("destNumber", this.destNumber);
+                console.log("number400ValueAdded", this.number400ValueAdded);
+                console.log("number400Concession", this.number400Concession);
                 this.$ajax.post('/vos/business/startAndSave', {
-                    "company":this.company,
-                    "business":this.businessObj,
-                    "number400ValueAdded":this.number400ValueAdded,
-                    "number400Concession":this.number400Concession,
-                    "companyFlow":{
-                        "flowId":""
+                    "company": this.company,
+                    "business": this.businessObj,
+                    "destNumber": this.destNumber,
+                    "number400ValueAdded": this.number400ValueAdded,
+                    "number400Concession": this.number400Concession,
+                    "companyFlow": {
+                        "flowId": this.flowId
                     }
-                }).then((res)=>{
+                }).then((res) => {
                     console.log(res);
                 });
-                this.$root.eventHub.$emit('addAcceptSave',null);
+                this.$root.eventHub.$emit('addAcceptSave', null);
             },
 
             // 存vuex更新企业信息模块入参
@@ -301,6 +358,7 @@
         color: #8c939d;
         text-align: center;
     }
+
     .avatar {
         display: block;
     }
