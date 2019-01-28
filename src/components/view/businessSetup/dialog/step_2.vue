@@ -11,7 +11,7 @@
 					</div>
 					<ul>
 						<li class="l2">
-							<el-upload class="avatar-uploader examplew" :with-credentials="true" :action="$global.uploadUrl" :show-file-list="false" :on-success="uploaded1">
+							<el-upload class="avatar-uploader examplew" :with-credentials="true" :action="$global.uploadUrl" :show-file-list="false" :on-success="uploaded1" :before-upload="beforeAvatarUpload">
 								<img v-if="file.p1!=''" :src="imageUrl.p1" class="avatar">
 								<i v-else class="el-icon-plus avatar-uploader-icon"></i>
 							</el-upload>
@@ -37,13 +37,13 @@
 						<li class="l2">
 							<ul>
 								<li class="l2">
-									<el-upload class="avatar-uploader exampleh" :with-credentials="true" :action="$global.uploadUrl" :show-file-list="false" :on-success="uploaded2">
+									<el-upload class="avatar-uploader exampleh" :with-credentials="true" :action="$global.uploadUrl" :show-file-list="false" :on-success="uploaded2" :before-upload="beforeAvatarUpload">
 										<img v-if="file.p2!=''" :src="imageUrl.p2" class="avatar">
 										<i v-else class="el-icon-plus avatar-uploader-icon"></i>
 									</el-upload>
 								</li>
 								<li class="l2">
-									<el-upload class="avatar-uploader exampleh" :with-credentials="true" :action="$global.uploadUrl" :show-file-list="false" :on-success="uploaded3">
+									<el-upload class="avatar-uploader exampleh" :with-credentials="true" :action="$global.uploadUrl" :show-file-list="false" :on-success="uploaded3" :before-upload="beforeAvatarUpload">
 										<img v-if="file.p3!=''" :src="imageUrl.p3" class="avatar">
 										<i v-else class="el-icon-plus avatar-uploader-icon"></i>
 									</el-upload>
@@ -51,7 +51,7 @@
 							</ul>
 							<ul>
 								<li class="l2">
-									<el-upload class="avatar-uploader exampleh" :with-credentials="true" :action="$global.uploadUrl" :show-file-list="false" :on-success="uploaded4">
+									<el-upload class="avatar-uploader exampleh" :with-credentials="true" :action="$global.uploadUrl" :show-file-list="false" :on-success="uploaded4" :before-upload="beforeAvatarUpload">
 										<img v-if="file.p4!=''" :src="imageUrl.p4" class="avatar">
 										<i v-else class="el-icon-plus avatar-uploader-icon"></i>
 									</el-upload>
@@ -209,8 +209,10 @@
 				const isLt10M = file.size / 1024 / 1024 < 10;
 				if (!isLt10M) {
 					this.$message.error('上传头像图片大小不能超过 10MB!');
+					return false;
+				} else {
+					return true;
 				}
-				return true;
 			},
 			uploaded1(res, files, fileList) {
 				if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {

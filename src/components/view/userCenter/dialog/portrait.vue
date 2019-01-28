@@ -36,13 +36,18 @@
 					</ul>
 				</el-tab-pane>
 				<el-tab-pane label="本地上传" name="2">
-					<p class="grey note">从电脑里挑选一张好图作为头像吧</p>
-					<p class="grey note">支持jpg/png格式图片，文件需小于2M</p>
+					<el-upload class="upload-demo" :with-credentials="true" :action="$global.uploadUrl" :on-success="uploaded" :limit="1" :before-upload="beforeAvatarUpload">
+						<el-button size="small" type="primary">点击上传</el-button>
+						<div slot="tip" class="el-upload__tip">
+							<p class="grey note">从电脑里挑选一张好图作为头像吧</p>
+							<p class="grey note">支持jpg/png格式图片，文件需小于2M</p>
+						</div>
+					</el-upload>
 				</el-tab-pane>
 			</el-tabs>
 			<div slot="footer" class="dialog-footer">
 				<el-button @click="dialogVisible = false" size="mini">取 消</el-button>
-				<el-button type="primary" @click="dialogVisible = false" size="mini">确 定</el-button>
+				<el-button type="primary" @click="submit" size="mini">确 定</el-button>
 			</div>
 		</el-dialog>
 	</div>
@@ -63,12 +68,43 @@
 			return {
 				active: "1",
 				dialogVisible: false,
+				fileList: [],
+				form: {
+					id: '',
+					username: '',
+					password: '',
+					roleName: '',
+					roleId: '',
+					enabled: '',
+					name: '',
+					phone: '',
+					sex: '',
+					remark: '',
+					province: '',
+					provinceId: '',
+					city: '',
+					cityId: '',
+					area: '',
+					areaId: '',
+					email: '',
+					idNo: '',
+					headPicture: '',
+					businessType: '',
+					remark: ''
+				},
 			}
 		},
-		props: ['show'],
+		props: ['show', 'data'],
 		watch: {
 			show(newV, oldV) {
 				this.dialogVisible = newV;
+			},
+			data(n, o) {
+				for (let key in n) {
+					if (key in this.form) {
+						this.form[key] = n[key];
+					}
+				};
 			}
 		},
 		methods: {
@@ -78,7 +114,31 @@
 			chooseImg(e) {
 				var src = e.target.getAttribute('src');
 				this.$refs.preview.setAttribute('src', src);
-			}
+			},
+			uploaded(res, file, fileList) {
+				this.fileList = fileList;
+			},
+			submit() {
+				this.form.headPicture = this.fileList[0].response;
+				this.$ajax.post('/vos/user/saveUser', { user: this.form }).then(res => {
+					if (res.code == 200) {
+						this.$message({
+							message: '编辑成功!',
+							type: 'success'
+						});
+						this.close();
+					}
+				});
+			},
+			beforeAvatarUpload(file) {
+				const isLt2M = file.size / 1024 / 1024 < 2;
+				if (!isLt2M) {
+					this.$message.error('上传头像图片大小不能超过 2MB!');
+					return false;
+				} else {
+					return true;
+				}
+			},
 		}
 	}
 </script>

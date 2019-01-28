@@ -46,7 +46,6 @@ Vue.prototype.$format = function (obj) {
 };
 axios.defaults.withCredentials = true;
 axios.defaults.headers.common['Content-Type'] = 'application/json;charset=UTF-8';
-axios.defaults.baseURL = '/vos';
 axios.interceptors.response.use(res => {
 	// switch (res.status) {
 	// case 302:
@@ -77,7 +76,7 @@ axios.interceptors.response.use(res => {
 Vue.config.productionTip = false;
 Vue.prototype.$global = {
 	pageSize: [10, 20, 30, 50],
-	uploadUrl: '/vos/vos/common/uploadImg'
+	uploadUrl: 'vos/common/uploadImg'
 }
 
 /* eslint-disable no-new */
