@@ -3,20 +3,19 @@
 		<div id="base">
 			<header class="left">企业管理 > 详情</header>
 			<section>
-				<div class="block left">
+				<!-- <div class="block left">
 					<button class="fleft passgo">新增角色</button>
-				</div>
+        </div>-->
 				<div class="block left">
 					<el-tree highlight-current :data="roledata" :props="defaultProps" default-expand-all ref="roles" node-key="id" @node-click="handleNodeClick"></el-tree>
 				</div>
-
 			</section>
 		</div>
 		<div id="progress">
 			<header class="left">省级管理员权限配置</header>
 			<div class="block left">
 				<el-button type="primary" size="small" @click="submit">{{isEdit?'保存':'编辑'}}</el-button>
-				<el-button size="small">删除</el-button>
+				<!-- <el-button size="small">删除</el-button> -->
 			</div>
 			<div class="block" :class="{'isedit':!isEdit}">
 				<el-tabs v-model="active" type="card">
@@ -58,27 +57,7 @@
 		data() {
 			return {
 				chooseData: {},
-				roledata: [{
-					id: 1,
-					nameZh: "管理员",
-					children: [{
-							id: 4,
-							nameZh: "审核员",
-							children: [{
-								id: 9,
-								nameZh: "业务员"
-							}]
-						},
-						{
-							id: 5,
-							nameZh: "运营人员"
-						},
-						{
-							id: 6,
-							nameZh: "财务人员"
-						}
-					]
-				}],
+				roledata: [],
 				defaultProps: {
 					children: "children",
 					label: "nameZh"
@@ -122,10 +101,43 @@
 				}
 			},
 			handleNodeClick(data, node, el) {
-				console.log(data, node, el)
+				console.log(data);
+				var _this = this;
 				this.isEdit = false;
 				this.chooseData = data;
 				node.expanded = true;
+				this.$ajax.get("/vos/menu/getTreeMenu?roleId=" + data.id).then(res => {
+					if (res.code == 200) {
+						for (let key in this.form) {
+							if (this.form[key] === true) {
+								this.$set(this.form, key, false);
+							}
+						}
+						for (let key in this.form1) {
+							this.$set(this.form1, key, []);
+						}
+
+						function format(arrData, parentName) {
+							var op = [];
+							arrData.map(item => {
+								//有下级列表
+								if (item.url !== "/") {
+									const name = item.url.replace("/", "");
+									_this.$set(_this.form, name + "manage", true);
+									format(item.children, name);
+								} else {
+									for (let value of _this.options[parentName]) {
+										if (value.value == item.id) {
+											_this.form1[parentName].push(value);
+											return;
+										}
+									}
+								}
+							});
+						}
+						format(res.data.menuList);
+					}
+				});
 			},
 			submit() {
 				if (!this.isEdit) {
@@ -133,21 +145,30 @@
 				} else {
 					var data = {};
 					data.roleId = this.chooseData.id;
-					data.menuIds = '';
+					data.menuIds = "";
 					for (let key in this.form1) {
 						if (this.form[key + "manage"]) {
 							this.form1[key].map(item => {
-								data.menuIds += item.value + ',';
-							})
+								data.menuIds += item.value + ",";
+							});
 						}
-					};
+					}
+					for (let key in this.form) {
+						if (this.form[key] === true && this.form[key + "Id"] != undefined) {
+							data.menuIds += this.form[key + "Id"] + ",";
+						}
+					}
 					data.menuIds = data.menuIds.substr(0, data.menuIds.length - 1);
-					this.$ajax.post('/vos/menu/addMenuRole', { roleId: data.roleId, menuIds: data.menuIds }).then(res => {
-						if (res.code == 200) {
-							this.$message.success('保存成功');
-						}
-					})
-
+					this.$ajax
+						.post("/vos/menu/addMenuRole", {
+							roleId: data.roleId,
+							menuIds: data.menuIds
+						})
+						.then(res => {
+							if (res.code == 200) {
+								this.$message.success("保存成功");
+							}
+						});
 				}
 			},
 			getMenu() {
@@ -159,6 +180,7 @@
 							if (item.url !== "/") {
 								const name = item.url.replace("/", "");
 								_this.$set(_this.form, name + "manage", true);
+								_this.$set(_this.form, name + "manageId", item.id);
 								format(item.children, name);
 							} else {
 								const obj = {
@@ -183,11 +205,11 @@
 			getRole() {
 				this.$ajax.get("/vos/role/getAllRole").then(res => {
 					this.roledata = res.data.data;
-					var obj = res.data.data.filter(item => item.name == 'ROLE_admin');
+					this.chooseData = res.data.data[0];
+					var obj = res.data.data.filter(item => item.name == "ROLE_admin");
 					this.$nextTick(() => {
 						this.$refs.roles.setCurrentKey(obj[0].id);
-					})
-
+					});
 				});
 			}
 		}

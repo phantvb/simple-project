@@ -6,7 +6,7 @@
 		<el-container class="page-component__scroll">
 			<!--左侧导航栏-->
 			<el-aside width="210px">
-				<el-menu default-active="1-4-1" class="el-menu-vertical" @open="handleOpen" @close="handleClose" :collapse="isCollapse">
+				<el-menu default-active="1-4-1" class="el-menu-vertical" @open="handleOpen" @close="handleClose" :collapse="isCollapse" background-color="#111A2B" text-color="#fff" active-text-color="#ffd04b">
 					<SidebarItem :data='router' :base-path="router.url"></SidebarItem>
 				</el-menu>
 			</el-aside>
@@ -58,17 +58,6 @@
 			SidebarItem
 		},
 		mounted() {
-			// this.$ajax.post('/vos/user/apiLogin', {
-			// 	username: 'admin',
-			// 	password: '123456'
-			// }).then(res => {
-			// 	if (res.code == 200) {
-			// 		for (let key in res.data) {
-			// 			sessionStorage.setItem(key, res.data[key]);
-			// 			this.$root.eventHub.$emit('getLoginInfo', res.data);
-			// 		}
-			// 	}
-			// });
 			this.$ajax.get('/vos/menu/getTreeMenu?roleId=' + sessionStorage.getItem('roleId')).then(res => {
 				if (res.code == 200) {
 					this.router = res.data.menuList;
@@ -99,31 +88,6 @@
 				}
 				return nobj;
 			}
-		},
-		// computed: {
-		// 	router() {
-		// 		var format = function (fdata) {
-		// 			fdata.url = fdata.path;
-		// 			if (fdata.children) {
-		// 				fdata.children.map((item, index) => {
-		// 					item.url = item.path;
-		// 					if (item.hidden) {
-		// 						fdata.children.splice(index, 1);
-		// 					} else {
-		// 						if (item.children) {
-		// 							format(item)
-		// 						}
-		// 					}
-		// 				})
-		// 			}
-		// 		}
-		// 		var routerData = this.deepClone(this.$router.options.routes);
-
-		// 		for (let key in routerData) {
-		// 			format(routerData[key])
-		// 		}
-		// 		return routerData;
-		// 	}
-		// }
+		}
 	}
 </script>

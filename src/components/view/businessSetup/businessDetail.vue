@@ -1,7 +1,7 @@
 <template>
-	<div id="businessDetail" class="managerFormTitle">
+	<div id="businessDetail" class="managerFormTitle" v-loading="loading">
 		<div id="base">
-			<header class="left">
+			<header class="left" @click="back">
 				企业管理 > 详情
 			</header>
 			<section>
@@ -72,7 +72,7 @@
 				</div>
 				<button class="pass"><i class="el-icon-circle-check" style="color:#67C23A;font-size:16px;transform: translateY(1px);" v-if="$route.query.status=='Audit_Success'"></i> 审核通过</button>
 			</div>
-			<el-input v-if="($route.query.status=='Company_Auditing'||$route.query.status=='Canceling_Auditing'||$route.query.status=='Modify_Auditing')&&baseData.roleName=='ROLE_admin'" type="textarea" :rows="6" placeholder="请输入审核意见" v-model="desc">
+			<el-input class="block" v-if="($route.query.status=='Company_Auditing'||$route.query.status=='Canceling_Auditing'||$route.query.status=='Modify_Auditing')&&baseData.roleName=='ROLE_admin'" type="textarea" :rows="6" placeholder="请输入审核意见" v-model="desc">
 			</el-input>
 			<div class="block">
 				<div>
@@ -98,14 +98,17 @@
 				detail: {},
 				desc: '',
 				baseData: {},
-				record: {}
+				record: {},
+				loading: false
 			}
 		},
 		mounted() {
 			this.baseData.username = sessionStorage.getItem("username");
 			this.baseData.roleName = sessionStorage.getItem("roleName");
+			this.loading = true;
 			this.$ajax.get('/vos/company/getCacheData?flowId=' + this.$route.query.flowId).then(res => {
 				if (res.code == 200) {
+					this.loading = false;
 					const companyCharacterOptions = [{
 						value: 'state-owned',
 						label: '国有'

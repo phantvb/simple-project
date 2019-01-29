@@ -1,6 +1,7 @@
 <template>
 	<div id="ticketDetail" class="numDialog">
 		<el-dialog title="话单详情" class="left" :visible.sync="dialogVisible" @close="close" v-if="dialogVisible">
+			<Aplayer name="Aplayer" model="auto" :music_url="$global.serverSrc+data.recordAddress" v-if="player"></Aplayer>
 			<div class="block">
 				<ul>
 					<li class="l2">
@@ -37,7 +38,7 @@
 				</ul>
 			</div>
 			<div class="block">
-				录音文件地址:{{data.recordAddress}} &#12288;<el-button type="text">试听</el-button>
+				录音文件地址:{{data.recordAddress}} &#12288;<el-button type="text" @click="listen">试听</el-button>
 			</div>
 			<div class="block">
 				<ul>
@@ -59,8 +60,12 @@
 </style>
 
 <script>
+	import Aplayer from '@/components/view/component/Aplayer/a_player.vue'
 	export default {
 		name: "ticketDetail",
+		components: {
+			Aplayer
+		},
 		props: ["show", "data"],
 		watch: {
 			show(newV, oldV) {
@@ -69,13 +74,17 @@
 		},
 		data() {
 			return {
-				dialogVisible: false
+				dialogVisible: false,
+				player: false
 			};
 		},
 		methods: {
 			close() {
 				this.$emit("close");
-			}
+			},
+			listen(src) {
+				this.player = !this.player;
+			},
 		}
 	};
 </script>

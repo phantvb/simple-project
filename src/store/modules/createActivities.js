@@ -9,7 +9,9 @@ const createActivities = {
 		number400Concession: [], //优惠信息
 		permission: {}, //当前路由信息
 
-        flowRecord:[]  // 全部详情右侧信息
+        flowRecord:[], // 全部详情右侧信息
+		permission: {}, //当前路由信息
+		routes: []
 	},
 	//更新状态
 	mutations: {
@@ -36,13 +38,29 @@ const createActivities = {
 		changePermission(state, data) {
 			state.permission = data;
 		},
-        changeFlowRecord(state, flowRecord){
-            state.flowRecord = flowRecord
-		}
+        addRoute(state, data) {
+            let r = [];
+
+            function format(data, parentPath) {
+                var parentPath = parentPath || '';
+                data.map(item => {
+                    if (item.children.length > 0 && item.children[0].type != 'b') {
+                        format(item.children, parentPath + item.url);
+                    } else {
+                        r.push(parentPath + item.url);
+                    }
+                })
+            };
+            format(data);
+            state.routes = r;
+        }
 	},
 	getters: {
 		getPermission: state => {
 			return state.permission.children;
+		},
+		getRoute: state => {
+			return state.routes;
 		}
 	},
 	actions: {
