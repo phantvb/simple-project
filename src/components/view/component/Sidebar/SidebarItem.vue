@@ -7,7 +7,7 @@
 			<div v-else-if="item.type=='h'&&!item.children"></div>
 			<el-submenu v-else-if="item.children&&item.children.length>0&&item.children[0].type!='b'" :index="resolvePath(item.url)">
 				<template slot="title">
-					<i class="el-icon-menu"></i>
+					<!-- <i class="el-icon-menu"></i> -->
 					<span slot="title">{{item.name}}</span>
 				</template>
 				<template v-if="item.children">
@@ -16,7 +16,7 @@
 			</el-submenu>
 			<app-link v-else-if="!item.children||item.children.length==0||item.children[0].type=='b'" :to="resolvePath(item.url)" @click.native="getPermission(item)">
 				<el-menu-item :index="resolvePath(item.url)">
-					<i class="el-icon-location"></i>
+					<!-- <i class="el-icon-location"></i> -->
 					<span slot="title">{{item.name}}</span>
 				</el-menu-item>
 			</app-link>

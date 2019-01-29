@@ -7,7 +7,8 @@ const createActivities = {
 		destNumber: [], //目的码
 		number400ValueAdded: [], //增值服务
 		number400Concession: [], //优惠信息
-		permission: {} //当前路由信息
+		permission: {}, //当前路由信息
+		routes: []
 	},
 	//更新状态
 	mutations: {
@@ -33,11 +34,30 @@ const createActivities = {
 		},
 		changePermission(state, data) {
 			state.permission = data;
+		},
+		addRoute(state, data) {
+			let r = [];
+
+			function format(data, parentPath) {
+				var parentPath = parentPath || '';
+				data.map(item => {
+					if (item.children.length > 0 && item.children[0].type != 'b') {
+						format(item.children, parentPath + item.url);
+					} else {
+						r.push(parentPath + item.url);
+					}
+				})
+			};
+			format(data);
+			state.routes = r;
 		}
 	},
 	getters: {
 		getPermission: state => {
 			return state.permission.children;
+		},
+		getRoute: state => {
+			return state.routes;
 		}
 	},
 	actions: {

@@ -217,7 +217,7 @@
 			uploaded1(res, files, fileList) {
 				if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {
 					this.file.p1 = res;
-					this.imageUrl.p1 = 'http://192.168.0.117:5480/vos/' + res;
+					this.imageUrl.p1 = URL.createObjectURL(files.raw);
 				}
 				// let file = files.raw;
 				// let param = new FormData(); //创建form对象
@@ -232,19 +232,19 @@
 			uploaded2(res, files, fileList) {
 				if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {
 					this.file.p2 = res;
-					this.imageUrl.p2 = 'http://192.168.0.117:5480/vos/' + res;
+					this.imageUrl.p2 = URL.createObjectURL(files.raw);
 				}
 			},
 			uploaded3(res, files, fileList) {
 				if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {
 					this.file.p3 = res;
-					this.imageUrl.p3 = 'http://192.168.0.117:5480/vos/' + res;
+					this.imageUrl.p3 = URL.createObjectURL(files.raw);
 				}
 			},
 			uploaded4(res, files, fileList) {
 				if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {
 					this.file.p4 = res;
-					this.imageUrl.p4 = 'http://192.168.0.117:5480/vos/' + res;
+					this.imageUrl.p4 = URL.createObjectURL(files.raw);
 				}
 			},
 

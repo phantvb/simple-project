@@ -58,7 +58,7 @@ export default new Router({
 			}]
 		},
 		{
-			path: '/accountingManage',
+			path: '/AccountingManage',
 			name: '账务管理',
 			component: layout,
 			children: [{
@@ -80,7 +80,7 @@ export default new Router({
 			}]
 		},
 		{
-			path: '/numManage',
+			path: '/NumManage',
 			name: '号码管理',
 			component: layout,
 			children: [{
@@ -106,7 +106,7 @@ export default new Router({
 			}]
 		},
 		{
-			path: '/systemSetup',
+			path: '/SystemSetup',
 			name: '系统设置',
 			component: layout,
 			children: [{
@@ -124,7 +124,7 @@ export default new Router({
 			}]
 		},
 		{
-			path: '/businessAccepted',
+			path: '/BusinessAccepted',
 			name: '业务受理',
 			component: layout,
 			children: [{
@@ -141,12 +141,12 @@ export default new Router({
 				name: '注销审核详情',
 				component: logoutDetail,
 				hidden: true,
-			},{
+			}, {
 				path: '/businessData',
 				name: '业务详情',
 				component: businessData,
 				hidden: true,
-			},{
+			}, {
 				path: '/businessDetial',
 				name: '业务详情',
 				component: businessDetial,
@@ -154,7 +154,7 @@ export default new Router({
 			}]
 		},
 		{
-			path: '/operateManage',
+			path: '/OperateManage',
 			name: '运营管理',
 			component: layout,
 			children: [{
