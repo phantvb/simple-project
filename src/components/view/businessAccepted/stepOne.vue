@@ -323,6 +323,8 @@
                 // 改变vuex的值
                 this.ChangeCompanyStatus(this.acceptForm);
                 console.log(this.company);
+                // this.business.companyName = this.acceptForm.companyName;
+                console.log(this.business);
                 if (this.firmNameList.some((item) => {
                     return this.acceptForm.companyName == item.companyName;
                 })) {

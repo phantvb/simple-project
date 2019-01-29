@@ -165,14 +165,23 @@
                     this.flowId = resp;
                 });
             }
-            this.$root.eventHub.$on('entireFlowId', (resp) => {
-                console.log("entireFlowId", resp);
-                this.flowId = resp;
+            // this.$root.eventHub.$on('entireFlowId', (resp) => {
+            //     console.log("entireFlowId", resp);
+            //     this.flowId = resp;
+            //     if (sessionStorage.getItem('entrance') == 2) {
+            //         this.stepFourForm = this.business;
+            //
+            //     }
+            // });
+            if(sessionStorage.getItem('entireFlowId')){
+                console.log("entireFlowId", sessionStorage.getItem('entireFlowId'));
+                this.flowId = sessionStorage.getItem('entireFlowId');
                 if (sessionStorage.getItem('entrance') == 2) {
+                    console.log("flowId", '123123123123123213');
                     this.stepFourForm = this.business;
 
                 }
-            });
+            }
             //编辑受理
 
 
@@ -286,7 +295,7 @@
                 console.log("destNumber", this.destNumber);
                 console.log("number400ValueAdded", this.number400ValueAdded);
                 console.log("number400Concession", this.number400Concession);
-                this.$ajax.post('/vos/business/startAndSave', {
+                this.$ajax.post('/vos/business/sendToBusinessAudit', {
                     "company": this.company,
                     "business": this.businessObj,
                     "destNumber": this.destNumber,

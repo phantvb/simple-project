@@ -176,6 +176,10 @@
         currentPage: 4,   //分页
         accountStatus:'',
         entireFlowId:'', //表格的flowId
+        entireStatus:'', //表格的状态
+        entireAssigneeRole:'',  //表格的角色
+        entireCreator:'',       //表格creator
+        entireType:'',          //表格业务类型
       };
     },
     components: {
@@ -191,6 +195,9 @@
         this.$root.eventHub.$on('addAcceptSave', (resp)=>{
             this.entireLists();
         });
+        this.$root.eventHub.$on('voiceList',(resp)=>{
+            this.voiceFileLists();
+        })
 
       },
     methods: {
@@ -318,15 +325,30 @@
           console.log(val);
           console.log(objData);
           this.entireFlowId = objData.flowId;
+          this.entireStatus = objData.status;
+          this.entireCreator = objData.creator;
+          this.entireAssigneeRole = objData.assigneeRole;
+          this.entireType = objData.type;
           console.log(this.entireFlowId);
+            sessionStorage.setItem('entireFlowId',this.entireFlowId);
           if(val=='送审'){
               sessionStorage.setItem("entrance",2);
-              sessionStorage.setItem('entireFlowId',this.entireFlowId);
               this.getCacheData();
           }else if(val=='详情'){
               console.log('详情入口');
-              this.$router.push({path:'/businessDetial',query: { flowId: objData.flowId}});
+              console.log(this.entireStatus);
+              this.$router.push({
+                  path:'/businessDetial',
+                  query: {
+                      flowId: this.entireFlowId,
+                      status:this.entireStatus,
+                      assigneeRole:this.entireAssigneeRole,
+                      creators:this.entireCreator,
+                      type:this.entireType ,
+                  }
+              });
               this.getCacheData();
+
           }
         },
         //新增目的码按钮
@@ -352,7 +374,18 @@
                     // this.ChangeDestNumber(res.data.destNumber);
                     this.ChangeNumber400ValueAdded(res.data.number400ValueAdded);
                     this.ChangeNumber400Concession(res.data.number400Concession);
-                    this.$root.eventHub.$emit('dialogVisibleBusiness',{visibleBusiness:true,businessIn:1});
+                    console.log("entireType",this.entireType);
+                    if(this.entireType=='业务'){
+                        this.$root.eventHub.$emit('dialogVisibleBusiness',{visibleBusiness:true,businessIn:1});
+                    }else if(this.entireType=='目的码'){
+                        console.log("目的码送审");
+                        this.$root.eventHub.$emit('dialog1Visible',{visible:true,objCodeIn:1});
+                    }else if(this.entireType=='语音'){
+                        this.$root.eventHub.$emit('dialog1VisibleVoice',{visibleVoice:true,voiceIn:1});
+                    }
+
+                }else{
+                    this.$message.warning("data为空null")
                 }
             })
         },
@@ -374,6 +407,9 @@
         ChangeNumber400Concession(val) {
             return this.$store.dispatch("ChangeNumber400ConcessionStatus", val);
         },
+        // ChangeFlowRecord(val) {
+        //     return this.$store.dispatch("ChangeFlowRecord", val);
+        // },
     },
       computed: {
           ...mapState({
@@ -382,6 +418,7 @@
               destNumber: state => state.createActivities.destNumber,
               number400ValueAdded: state => state.createActivities.number400ValueAdded,
               number400Concession: state => state.createActivities.number400Concession,
+              // flowRecord: state => state.createActivities.flowRecord,
           })
       }
   }
