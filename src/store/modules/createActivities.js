@@ -7,7 +7,9 @@ const createActivities = {
 		destNumber: [], //目的码
 		number400ValueAdded: [], //增值服务
 		number400Concession: [], //优惠信息
-		permission: {} //当前路由信息
+		permission: {}, //当前路由信息
+
+        flowRecord:[]  // 全部详情右侧信息
 	},
 	//更新状态
 	mutations: {
@@ -33,6 +35,9 @@ const createActivities = {
 		},
 		changePermission(state, data) {
 			state.permission = data;
+		},
+        changeFlowRecord(state, flowRecord){
+            state.flowRecord = flowRecord
 		}
 	},
 	getters: {
@@ -60,6 +65,10 @@ const createActivities = {
 		//控制优惠信息的变化
 		ChangeNumber400ConcessionStatus({ commit }, number400Concession) {
 			commit("changeNumber400Concession", number400Concession)
+		},
+		//控制详情右侧信息栏
+        ChangeFlowRecord({ commit }, flowRecord) {
+			commit("changeFlowRecord", flowRecord)
 		},
 	}
 }

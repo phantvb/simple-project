@@ -3,7 +3,7 @@
         <div id="base">
             <header class="left">
                 业务受理> 400业务> 业务详情
-                <div style="float:right;color:#FF6600">【待审核】</div>
+                <div style="float:right;color:#FF6600">{{"【"+this.$route.query.status+"】"}}</div>
             </header>
             <div class="logoutDetailTab">
                 <el-tabs type="border-card">
@@ -23,19 +23,28 @@
             <div class="block underline">
                 <div class="step">
                     <el-steps direction="vertical" :active="1">
-                        <el-step title="业务员(姚明)" description="递交 12月08日 16:59"></el-step>
-                        <el-step title="管理员" description="审批 12月08日 16:59"></el-step>
+                        <el-step :title="item.assginee" :description="'递交'+item.operateTime" v-for="item in flowRecordList"></el-step>
                     </el-steps>
                 </div>
-                <button class="pass"><i class="el-icon-circle-check"
-                                        style="color:#67C23A;font-size:16px;transform: translateY(1px);"></i> 审核通过
-                </button>
+                <button class="pass" v-if="passShow"><i class="el-icon-circle-check" style="color:#67C23A;font-size:16px;transform: translateY(1px);"></i> 审核通过</button>
             </div>
+            <!--v-if="($route.query.status=='Company_Auditing'||$route.query.status=='Canceling_Auditing'||$route.query.status=='Modify_Auditing')&&baseData.roleName=='ROLE_admin'"-->
+            <el-input v-model="desc"
+                      v-if="($route.query.status=='审核中'||$route.query.status=='变更审核中'||$route.query.status=='注销审核')&&baseData.roleName=='ROLE_admin'"
+                      type="textarea"
+                      :rows="6"
+                      placeholder="请输入审核意见"
+                      >
+
+            </el-input>
             <div class="block">
-                <button class="pass passback">撤回</button>
+                <router-link :to="{path:'/businessAccepted/400businessManage'}">
+                    <button class="pass passback">返回</button>
+                </router-link>
                 <div>
-                    <button class="fleft passgo">送审</button>
-                    <button class="fright passback">删除</button>
+                    <button class="fleft passgo" style="width:100%" v-if="this.$route.query.status=='等待送审'" @click="submit()">送审</button>
+                    <button class="fleft passgo" v-if="this.$route.query.status=='审核中'" @click="businessAuditPass()">通过审核</button>
+                    <button class="fright passback" v-if="this.$route.query.status=='审核中'">驳回</button>
                 </div>
             </div>
         </div>
@@ -49,6 +58,14 @@
         name: 'businessDetial',
         data() {
             return {
+                passShow:false,
+                entireFlowId:'',
+                flowRecordList:[],
+                desc:'',
+                baseData:{
+                    roleName:'',
+                    username:'',
+                },
             };
         },
         components: {
@@ -56,13 +73,61 @@
             BusinessData
         },
         created(){
+            this.baseData.roleName = sessionStorage.getItem("roleName");
+            this.baseData.username = sessionStorage.getItem("username");
+            console.log("roleName",this.baseData.roleName);
+            console.log("username",this.baseData.username);
+            console.log(sessionStorage.getItem('entireFlowId'));
+            console.log("this.$route.query",this.$route.query);
+            console.log(this.$route.query.status);
 
+            console.log(this.$route.query.type);
+
+            console.log(this.$route.query.creators);
+
+            this.entireFlowId = sessionStorage.getItem('entireFlowId');
+            console.log(this.entireFlowId);
+            this.getCacheData()
         },
         methods: {
+            getCacheData(){
+                this.$ajax.get('/vos/business/getCacheData?flowId='+this.entireFlowId).then((res)=>{
+                    console.log("详情",res);
+                    if(res.data!=null){
+                        console.log("flowRecord",res.data.flowRecord);
+                        this.flowRecordList = res.data.flowRecord;
+                    }
+                })
+            },
+            //通过审核
+            businessAuditPass(){
+                this.$ajax.post('/vos/business/businessAuditPass',{
+                    "companyFlow":{
+                        "flowId":this.entireFlowId,
+                        "assigneeRole": this.$route.query.assigneeRole,
+                        "creator":this.$route.query.creators,
+                    },
+                    "message":this.desc   //输入框信息
+                }).then((res)=>{
+                    if(res.code == 200){
+                        this.passShow = true;
+                        console.log(res);
+                    }
+                })
+            },
+            // 各种送审
+            submit(){
+                if(this.$route.query.type=='业务'){
+
+                }else if(this.$route.query.type=='目的码'){
+
+                }else if(this.$route.query.type=='目的码'){
+
+                }
+            }
         },
         computed: {
             ...mapState({
-
             })
         }
     }

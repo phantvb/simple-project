@@ -6,112 +6,6 @@
                 :visible.sync="visibleVoice"
                 width="55%"
                 :before-close="handleClose">
-            <div>
-                <el-form ref="voiceForm" :model="voiceForm" label-width="90px" class="voiceForm">
-                    <div class="voiceMsg">
-                        <el-form-item label="企业名称：" class="input">
-                            <el-input v-model="voiceForm.firmName" size="mini" @input="searchFirm"></el-input>
-                            <div id="firmNameList" v-if="firmNameShow">
-                                <ul>
-                                    <li v-for="(item,index) in firmNameList" :key="index" @click="firmNameLi(item)">{{item.companyName}}</li>
-                                </ul>
-                            </div>
-                        </el-form-item>
-
-                        <el-form-item label="400号码：" class="type">
-                            <el-input v-model="voiceForm.voiceNum" size="mini" @input="searchNum400"></el-input>
-                            <div id="numList" v-if="numShow">
-                                <ul>
-                                    <li v-for="(item,index) in num400List" :key="index" @click="num400Lists(item)">{{item.number400 +"("+item.companyName+")"}}</li>
-                                </ul>
-                            </div>
-                        </el-form-item>
-
-                        <el-table
-                                :data="tableData"
-                                border
-                                @row-click="rowInfo"
-                                style="width: 100%;margin-bottom:30px;">
-
-                            <el-table-column
-                                    prop="voiceType"
-                                    label="语音类型"
-                                    width="180">
-                                        <template slot-scope="scope">
-                                            <div>
-                                                <el-select v-model="voiceInfo.voiType" placeholder="请选择" size="mini">
-                                                    <el-option
-                                                            v-for="item in voiceTypeList"
-                                                            :key="item.dicKey"
-                                                            :label="item.dicValue"
-                                                            :value="item.dicKey">
-                                                    </el-option>
-                                                </el-select>
-                                            </div>
-                                        </template>
-                            </el-table-column>
-                            <el-table-column
-                                    prop="voiceName"
-                                    label="语音名称"
-                                    width="180">
-                                        <template slot-scope="scope">
-                                            <div>
-                                                <el-input v-model="voiceInfo.voiName" placeholder="请输入内容" size="mini"></el-input>
-                                            </div>
-                                        </template>
-                            </el-table-column>
-                            <el-table-column
-                                    prop="voiceFile"
-                                    label="语音文件">
-                                        <template slot-scope="scope">
-                                            <el-upload action=""
-                                                       size="mini"
-                                                       :on-change="handleChange"
-                                                       :http-request="uploadFile"
-                                                       :before-upload ="beforeAvatarUpload"
-                                                       :limit="1">
-                                                <el-button size="small" type="primary">点击上传</el-button>
-
-                                            </el-upload>
-                                        </template>
-                            </el-table-column>
-
-
-                            <el-table-column
-                                    prop="operation"
-                                    label="操作">
-                                <template slot-scope="scope">
-                                    <div>
-                                        <el-button size="mini" type="text">删除</el-button>
-                                        <el-button size="mini" type="text"></el-button>
-                                        <el-button size="mini" type="text" @click="add(scope)" v-if="tableData.length-1 == scope.$index">添加</el-button>
-                                    </div>
-                                </template>
-                            </el-table-column>
-                        </el-table>
-                        <p style="text-align: left">注解：语音文件支持flv、mp3、wma、swf、wmv、mid、avi、mpg、asf、rm、rmvb格式，文件需小于10M</p>
-
-                        <el-form-item label="增值资费：">
-                            <div class="addValueSelect">
-                                <!--<el-select v-model="voiceForm.addValueType" placeholder="请选择"  size="mini" @change="addValueChange">-->
-                                    <!--<el-option :label="item.tariffName" :value="item.id" v-for="item in voiceList" :key="item.id"></el-option>-->
-                                <!--</el-select>-->
-                                <span>彩铃制作</span>
-                            </div>
-                                <div class="objCodeBox">
-                                    <div class="valAddSer">
-                                        <div v-for="item in valueAddedList">
-                                            <p>功能资费：{{item.tariffFee}}</p>
-                                            <p v-if="item.presents==1">是否赠送：赠送</p>
-                                            <p v-if="item.presents==2">是否赠送：付费</p>
-                                            <p>功能备注：{{item.remarks}}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                        </el-form-item>
-                    </div>
-                </el-form>
-            </div>
             <span slot="footer" class="dialog-footer">
             <el-button size="mini" @click="voiceSave()">暂存信息</el-button>
             <el-button type="primary" @click="voiveAudit()" size="mini">送 审</el-button>
@@ -121,7 +15,7 @@
 </template>
 <script>
     export default {
-        name: 'dialogVoice',
+        name: 'dialogAuditing',
         props:[
         ],
         data() {
@@ -159,7 +53,7 @@
                 num400Unit:'',
                 companyId:'',      //公司id
                 companyInfo:'',    //公司信息
-                busIdentity:'',     //登录信息channel
+                busIdentity:'',    //登录信息channel
             }
         },
         created(){
@@ -198,8 +92,8 @@
                 console.log(file);
             },
             rowInfo(val,event){
-              console.log("rowInfo",val);
-              console.log("event",event);
+                console.log("rowInfo",val);
+                console.log("event",event);
             },
             // 企业模糊搜索
             searchFirm(val){
@@ -272,8 +166,8 @@
                 let form=new FormData();
                 form.append('voice',this.file);
                 this.$ajax.post('/vos/common/uploadVoice',form).then((res)=>{
-                  console.log(res);
-                  this.voicefile = res;
+                    console.log(res);
+                    this.voicefile = res;
                 })
 
             },
@@ -386,14 +280,14 @@
             },
             // 语音详情
             getDetail(){
-             this.$ajax.post('/vos/voice/getDetail',{
-                 "companyFlow":{
-                     "assigneeRole":"ROLE_city_admin"
-                 },
-                 "voiceId":19
-             }).then((res)=>{
-                 console.log(res);
-             })
+                this.$ajax.post('/vos/voice/getDetail',{
+                    "companyFlow":{
+                        "assigneeRole":"ROLE_city_admin"
+                    },
+                    "voiceId":19
+                }).then((res)=>{
+                    console.log(res);
+                })
             }
         },
         computed: {},

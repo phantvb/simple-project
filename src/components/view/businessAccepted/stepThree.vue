@@ -121,10 +121,10 @@
                                         label="预存话费">
                                 </el-table-column>
 
-                                <!--<el-table-column-->
-                                <!--prop="unit"-->
-                                <!--label="单位">-->
-                                <!--</el-table-column>-->
+                                <el-table-column
+                                prop="unit"
+                                label="单位">
+                                </el-table-column>
 
                                 <el-table-column
                                         prop="packageContent"
@@ -350,7 +350,7 @@
                 <div style="float:left;">
                     <span class="fmini">增值服务：</span>
                 </div>
-                <div style="overflow: hidden">
+                <div style="overflow: hidden" class="addValueTable">
                     <ul class="abc">
                         <li style="float:unset">
                             <el-table ref="addValueTable"
@@ -362,14 +362,26 @@
                                         type="selection"
                                         width="55">
                                 </el-table-column>
+
                                 <el-table-column
                                         prop="tariffName"
                                         label="增值服务名称">
                                 </el-table-column>
 
                                 <el-table-column
-                                        prop="presents"
-                                        label='数量'>
+                                        label='数量'
+                                        width="200">
+                                        <template slot-scope="scope">
+                                            <el-input-number
+                                                    size="mini"
+                                                    v-model="scope.row.amount"
+                                                    @change="handleChange(scope.row)"
+                                                    :min="1"
+                                                    :max="10"
+                                                    label="描述文字">
+                                            </el-input-number>
+                                            <span>{{scope.row.cost}}</span>
+                                        </template>
                                 </el-table-column>
 
                                 <el-table-column
@@ -393,7 +405,7 @@
                                 </el-table-column>
 
                                 <el-table-column
-                                        prop="presents"
+                                        prop="presentsName"
                                         label='是否赠送'>
                                 </el-table-column>
 
@@ -448,8 +460,9 @@
                     basicFunctionFee: '',      //低消
                     durationPresentation: '',  //预存话费
                     units: '',                 //单位
-                    amount: '',                //数量
+                    amount: 1,                 //数量
                     packageContent: '',        //套餐详情
+                    type: '',                  //1是月，2是年
 
                     // 归属地入参
                     provinceBelong: '',        //归属地(省)
@@ -459,7 +472,6 @@
                     discounts: '',
                     //套餐id
                     tariffPackageId: '',
-                    packageRules: '',
                     excessTariff: '',
                     unitPriceType: '',
                     excessPriceType: '',
@@ -529,9 +541,11 @@
             setMeal
         },
         beforeUpdate(){
+            //复选框回显
             if (sessionStorage.getItem('entrance') == 2) {
                 console.log('asdasdasdasddasd');
                 this.objCodeTable.map((item)=>{
+                    item.amount = 1;
                     console.log(1111,this.objCodeTable);
                     if(this.number400ValueAdded.some((item1)=>{
                         return item1.id==item.id;
@@ -542,7 +556,8 @@
                 });
             }
         },
-        async mounted(){
+
+         mounted(){
             if (sessionStorage.getItem('entrance') == 2) {
                 //详情
                 console.log(this.business);
@@ -594,21 +609,19 @@
             this.stepThreeForm.channel = this.busIdentity;
             this.getConcessionScheme(this.busIdentity);
 
-
             this.$root.eventHub.$on('needCompanySave', (resp) => {
                 console.log("needCompanySave", resp);
-                this.needCompanySave = resp;
+                this.stepThreeForm.needCompanySave = resp;
             });
-            this.$root.eventHub.$on('companyMsg', (resp) => {
-                console.log(resp);
-                this.stepThreeForm.companyName = resp.companyName;
-                this.stepThreeForm.companyId = resp.id;
-            });
-
-
+            // this.$root.eventHub.$on('companyMsg', (resp) => {
+            //     console.log(resp);
+            //     this.stepThreeForm.companyName = resp.companyName;
+            //     this.stepThreeForm.companyId = resp.id;
+            // });
 
         },
         methods: {
+            // 分页
             handleSizeChange(val) {
                 this.pageObj.pageSize = val;
                 console.log(`每页 ${val} 条`);
@@ -616,6 +629,11 @@
             handleCurrentChange(val) {
                 this.pageObj.page = val;
                 console.log(`当前页: ${val}`);
+            },
+            // 数量变化
+            handleChange(value) {
+                console.log(value);
+                // this.stepThreeForm.amount = value;
             },
             lalalal(val) {
                 console.log(val);
@@ -714,13 +732,23 @@
                 }).then((res) => {
                     console.log(res.data.valueAddedList);
                     this.objCodeTable = res.data.valueAddedList;
-
                     this.objCodeTable.map((item) => {
+                        item.amount=1;
+                        if(item.units=='perMonth'){
+                            item.cost = "月"
+                            item.units = (item.tariffFee/item.amount)+'元/月'
+                        }else if(item.units=='perOne'){
+                            item.cost = "个"
+                            item.units = (item.tariffFee/item.amount)+'元/个'
+                        }else if(item.units=='perMonthOne'){
+                            item.cost = "月/个"
+                            item.units = (item.tariffFee/item.amount)+'元/月/个'
+                        }
                         if (item.presents == '1') {
-                            item.presents = "赠送";
+                            item.presentsName = "赠送";
                             this.valueAdd.push(item);
                         } else {
-                            item.presents = "付费"
+                            item.presentsName = "付费"
                         }
                     });
                     return new Promise(resolve => {
@@ -880,7 +908,19 @@
                     })
                 }
             },
+            // 暂存
+
             addBusinessSave() {
+                console.log("第三步获取flowed",sessionStorage.getItem('entireFlowId'));
+                console.log("入口：",sessionStorage.getItem('entrance'));
+                this.stepThreeForm.companyName = this.company.companyName;
+                this.stepThreeForm.companyId = this.company.companyId;
+                console.log("selectedNum",this.selectedNum);
+                this.stepThreeForm.number400 = this.selectedNum[0].number400;
+                this.stepThreeForm.tariffName = this.selectedNum[0].tariffName;
+                this.stepThreeForm.packageContent = this.selectedNum[0].packageContent;
+                this.stepThreeForm.type = this.selectedNum[0].type;
+                this.stepThreeForm.tariffPackageId = this.selectedNum[0].packgeId;
                 console.log(this.stepThreeForm);
                 console.log(this.disList);
                 this.ChangeBusinessStatus(this.stepThreeForm);
@@ -898,13 +938,14 @@
                     "number400ValueAdded": this.valueAdd,
                     "number400Concession": this.number400Concession,
                     "companyFlow": {
-                        "flowId": this.stepThreeFlowId
+                        "flowId": sessionStorage.getItem('entrance')==2?sessionStorage.getItem('entireFlowId'):this.stepThreeFlowId
                     }
                 }).then((res) => {
                     if (res.code == '200') {
                         console.log(res);
                         this.$root.eventHub.$emit('flowId', res.data);
                         this.stepThreeFlowId = res.data;
+                        console.log(this.stepThreeFlowId = res.data);
                     } else {
                         this.$message.warning(res.message);
                     }

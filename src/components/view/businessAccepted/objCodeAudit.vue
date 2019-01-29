@@ -285,8 +285,9 @@
             //点击详情
             details(scope){
                 console.log(scope);
+                //objCodeDetail
                 this.$router.push({
-                    path:'/objCodeDetail',   //跳转的路径
+                    path:'/voiceDetial/',   //跳转的路径
                     query:{                  //路由传参时push和query搭配使用 ，作用时传递参数
                         flowId:scope.flowId ,
                         companyId:scope.companyId ,

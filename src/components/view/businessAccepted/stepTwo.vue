@@ -144,6 +144,7 @@
         methods: {
             // 图片上传
             handleAvatarSuccess(res, file) {
+                console.log(res);
                 if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {
                     this.stepTwoForm.companyProofPic = this.$global.serverSrc + res;
                 }

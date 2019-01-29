@@ -78,7 +78,7 @@ Vue.prototype.$global = {
 	pageSize: [10, 20, 30, 50],
 	uploadUrl: '/vos/common/uploadImg',
 	uploadUrl2: ' http://192.168.0.117:5480/vos/',
-	serverSrc: 'http://47.94.168.117:5480/vos/',
+	serverSrc: 'http://192.168.0.117:5480/vos/',
 };
 /* eslint-disable no-new */
 new Vue({
