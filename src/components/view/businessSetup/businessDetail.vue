@@ -76,9 +76,9 @@
 			</el-input>
 			<div class="block">
 				<div>
-					<button class="fleft passgo" v-if="scope.row.status=='Wait_To_Audit'&&(scope.row.creator==baseData.username||baseData.roleName=='ROLE_admin')" @click="submit">送审</button>
-					<button class="fleft passgo" v-if="(scope.row.status=='Company_Auditing'||scope.row.status=='Canceling_Auditing'||scope.row.status=='Modify_Auditing')&&(baseData.roleName==scope.row.assigneeRole||baseData.roleName=='ROLE_admin')" @click="passCompany">通过审核</button>
-					<button class="fright passback" v-if="(scope.row.status=='Company_Auditing'||scope.row.status=='Canceling_Auditing'||scope.row.status=='Modify_Auditing')&&(baseData.roleName==scope.row.assigneeRole||baseData.roleName=='ROLE_admin')" @click="backCompany">驳回</button>
+					<button class="fleft passgo" v-if="$route.query.status=='Wait_To_Audit'&&($route.query.creator==baseData.username||baseData.roleName=='ROLE_admin')" @click="submit">送审</button>
+					<button class="fleft passgo" v-if="($route.query.status=='Company_Auditing'||$route.query.status=='Canceling_Auditing'||$route.query.status=='Modify_Auditing')&&(baseData.roleName==$route.query.assigneeRole||baseData.roleName=='ROLE_admin')" @click="passCompany">通过审核</button>
+					<button class="fright passback" v-if="($route.query.status=='Company_Auditing'||$route.query.status=='Canceling_Auditing'||$route.query.status=='Modify_Auditing')&&(baseData.roleName==$route.query.assigneeRole||baseData.roleName=='ROLE_admin')" @click="backCompany">驳回</button>
 					<button class="fright passback" style="width:100%" v-if="$route.query.status=='Audit_Success'" @click="back">返回</button>
 
 				</div>
@@ -208,7 +208,7 @@
 		},
 		methods: {
 			back() {
-				this.$router.push({ path: "/layout/businessInform" });
+				this.$router.push({ path: "/Layout/businessInform" });
 			},
 			passCompany() {
 				var obj = {};
@@ -228,7 +228,7 @@
 				obj.message = this.desc;
 				this.$ajax.post(url, obj).then(res => {
 					if (res.code == 200) {
-						this.$router.push({ path: '/businessInform/businessDetail', query: { flowId: this.$route.query.flowId, status: res.data, creator: this.$route.query.creator, assigneeRole: this.$route.query.assigneeRole } });
+						this.$router.push({ path: '/BusinessInform/businessDetail', query: { flowId: this.$route.query.flowId, status: res.data, creator: this.$route.query.creator, assigneeRole: this.$route.query.assigneeRole } });
 						this.$message.success('操作成功');
 					}
 				});
@@ -251,7 +251,7 @@
 				obj.message = this.desc;
 				this.$ajax.post(url, obj).then(res => {
 					if (res.code == 200) {
-						this.$router.push({ path: '/businessInform/businessDetail', query: { flowId: this.$route.query.flowId, status: res.data, creator: this.$route.query.creator, assigneeRole: this.$route.query.assigneeRole } });
+						this.$router.push({ path: '/BusinessInform/businessDetail', query: { flowId: this.$route.query.flowId, status: res.data, creator: this.$route.query.creator, assigneeRole: this.$route.query.assigneeRole } });
 						this.$message.success('操作成功');
 					}
 				});

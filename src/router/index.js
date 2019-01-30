@@ -47,7 +47,7 @@ export default new Router({
 			hidden: true
 		},
 		{
-			path: '/businessInform',
+			path: '/BusinessInform',
 			name: 'layout',
 			component: layout,
 			hidden: true,
@@ -152,11 +152,11 @@ export default new Router({
 				name: '业务详情',
 				component: businessDetial,
 				hidden: true,
-			},{
-				path:'/voiceDetial',
-				name:'语音详情',
-				component:voiceDetial,
-				hidden:true
+			}, {
+				path: '/voiceDetial',
+				name: '语音详情',
+				component: voiceDetial,
+				hidden: true
 			}]
 		},
 		{
@@ -182,7 +182,7 @@ export default new Router({
 			}]
 		},
 		{
-			path: '/layout',
+			path: '/Layout',
 			name: 'layouts',
 			component: layout,
 			hidden: true,

@@ -167,7 +167,7 @@
 		methods: {
 			checkDetail(data) {
 				this.flowIdData = data;
-				this.$router.push({ path: '/businessInform/businessDetail', query: { flowId: data.flowId, status: data.status, creator: data.creator, assigneeRole: data.assigneeRole } });
+				this.$router.push({ path: '/BusinessInform/businessDetail', query: { flowId: data.flowId, status: data.status, creator: data.creator, assigneeRole: data.assigneeRole } });
 			},
 			closeCompany(bol) {
 				if (bol) {
