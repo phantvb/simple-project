@@ -119,13 +119,6 @@
                     time:'',
                     receiver:'',
                 },
-                // voiceForm:{
-                //     firmName:'',
-                //     fourNum:'',
-                //     voiceType:'',
-                //     voiceFile:'',
-                //     voiceName:'',
-                // },
                 tableData: [],
                 statusOptions: [
                     {
@@ -143,13 +136,6 @@
                         label: '受理终止'
                     }
                 ],
-                // voiceList:[{
-                 //    value:'1',
-                 //    title:'彩铃',
-				// },{
-                 //    value:'2',
-                 //    title:'导航音',
-				// }],
                 pageObj:{
                     total:0,
                     page:1,
@@ -157,18 +143,13 @@
                 },
                 accountStatus:'',
                 currentPage: 1,   //当前页
-                // textarea2:'',
-                // fileList3: [{
-                //     name: 'food.jpeg',
-                //     url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-                // }, {
-                //     name: 'food2.jpeg',
-                //     url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-                // }]
 			};
 		},
 		created(){
 		    this.voiceFileLists();
+            this.$root.eventHub.$on('voiceList',(resp)=>{
+                this.voiceFileLists();
+			})
 		},
 		components: {
             DialogVoice
@@ -203,6 +184,7 @@
             voiceDetial(scope){
                console.log(scope);
 			},
+			// 语音列表
             voiceFileLists(){
                 // console.log(this.form.time[0]);
                 // console.log(this.form.time[1]);

@@ -267,7 +267,9 @@
 	width: 50% !important;
 	overflow: hidden;
 }
-
+.addValueTable .el-input-number{
+	width:150px;
+}
 .objCodeDialog .el-table .cell,
 .el-table th div,
 .el-table--border td:first-child .cell,

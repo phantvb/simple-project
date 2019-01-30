@@ -78,7 +78,7 @@
         created(){
             // this.getCacheData();
             console.log(this.company);
-            // console.log(this.business);
+
             // console.log(this.destNumber);
             // console.log(this.number400ValueAdded);
             // console.log(this.number400Concession);
@@ -100,6 +100,9 @@
             ChangeNumber400Concession(val) {
                 return this.$store.dispatch("ChangeNumber400ConcessionStatus", val);
             },
+            ChangeFlowRecord(val) {
+                return this.$store.dispatch("ChangeFlowRecord", val);
+            },
         },
         computed: {
             ...mapState({
@@ -108,6 +111,7 @@
                 destNumber: state => state.createActivities.destNumber,
                 number400ValueAdded: state => state.createActivities.number400ValueAdded,
                 number400Concession: state => state.createActivities.number400Concession,
+                flowRecord: state => state.createActivities.flowRecord,
             })
         }
     }

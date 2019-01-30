@@ -82,17 +82,18 @@
         <el-table-column
                 label="操作">
           <template slot-scope="scope">
-            <el-button size="mini" type="text">详情</el-button>
-            <!--<router-link :to="{path:'/addEvent/'+3+'/'+scope.row.contactEvtId}">-->
-            <el-button size="mini" type="text">撤回</el-button>
-            <el-button size="mini" type="text">变更</el-button>
-            <el-button size="mini" type="text">注销</el-button>
-            <el-button size="mini" type="text">通过审核</el-button>
-            <el-button size="mini" type="text">驳回</el-button>
-            <el-button size="mini" type="text" @click="businessIn=2,acceptSave()">编辑</el-button>
+            <el-button size="mini" type="text" v-for="(item,index) in scope.row.btnList" :key="index" @click="details(item.label,scope.row)">{{item.label}}</el-button>
+            <!--<el-button size="mini" type="text">详情</el-button>-->
+            <!--&lt;!&ndash;<router-link :to="{path:'/addEvent/'+3+'/'+scope.row.contactEvtId}">&ndash;&gt;-->
+            <!--<el-button size="mini" type="text">撤回</el-button>-->
+            <!--<el-button size="mini" type="text">变更</el-button>-->
+            <!--<el-button size="mini" type="text">注销</el-button>-->
+            <!--<el-button size="mini" type="text">通过审核</el-button>-->
+            <!--<el-button size="mini" type="text">驳回</el-button>-->
+            <!--<el-button size="mini" type="text" @click="businessIn=2,acceptSave()">编辑</el-button>-->
             <!--</router-link>-->
-            <el-button size="mini" type="text">送审</el-button>
-            <el-button size="mini" type="text">删除</el-button>
+            <!--<el-button size="mini" type="text">送审</el-button>-->
+            <!--<el-button size="mini" type="text">删除</el-button>-->
           </template>
         </el-table-column>
       </el-table>
@@ -199,9 +200,17 @@
           },
         currentPage: 1,   //当前页
         loginResp:{},     //登录接口返回值
+          baseData:{
+              roleName:'',
+              username:'',
+          },
       };
     },
     created(){
+        this.baseData.roleName = sessionStorage.getItem("roleName");
+        this.baseData.username = sessionStorage.getItem("username");
+        console.log("roleName",this.baseData.roleName);
+        console.log("username",this.baseData.username);
         this.businessLists();
         this.$root.eventHub.$on('getLoginInfo', (resp)=>{
             console.log(resp);
@@ -226,28 +235,21 @@
           .catch(_ => {
           });
       },
+        //点击详情
+        details(scope){
+            console.log(scope);
+            this.$router.push({
+                path:'/businessDetial',   //跳转的路径
+                query:{                   //路由传参时push和query搭配使用 ，作用时传递参数
+                    flowId:scope.flowId ,
+                    companyId:scope.companyId ,
+                }
+            })
+        },
         //新增业务受理
         businessAdd(){
             this.$root.eventHub.$emit('dialogVisibleBusiness',{visibleBusiness:true,businessIn:1});
         },
-
-        // step(val){
-        //   console.log(val);
-        //   this.active = val;
-        //   this.actives = val;
-        // },
-      // rankType(item){
-      //   console.log("12343",item)
-      //   // this.identityTypeList.map((items)=> {
-      //   //   if (item.identityType == items.value) {
-      //   //     item.identityType = items.label;
-      //   //   }
-      //   // })
-      // },
-      //新增/编辑受理
-      // acceptSave(){
-      //   this.dialogVisible = true;
-      // },
 
         // 业务受理表格
         businessLists(){
@@ -275,23 +277,67 @@
                 this.tableData = res.data.businessFlows;
                 this.pageObj.total = res.data.totalCount;
                 this.tableData.map((item)=>{
+
+                    //判断操作
                     if(item.status=='Wait_To_Audit'){
-                        item.status='等待送审'
+                        item.status='等待送审';
+                        item.btnList=[];
+                        if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
+                            item.btnList.push({label:'送审'},{label:'详情'});
+                        }else{
+                            item.btnList.push({label:'详情'});
+                        }
+                        // console.log("btnList",item.btnList);
                     }else if(item.status=='Audit_Success'){
-                        item.status='审核通过'
+                        item.status='审核通过';
+                        item.btnList=[];
+                        if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
+                            item.btnList.push({label:'变更'},{label:'注销'},{label:'详情'});
+                        }else{
+                            item.btnList.push({label:'详情'});
+                        }
                     }else if(item.status=='Business_Auditing'){
-                        item.status='审核中'
+                        item.status='审核中';
+                        item.btnList=[];
+                        if(this.baseData.roleName=='ROLE_admin' || item.assigneeRole==this.baseData.roleName){
+                            item.btnList.push({label:'审核通过'},{label:'驳回'},{label:'详情'});
+                        }else{
+                            item.btnList.push({label:'详情'});
+                        }
                     }else if(item.status=='Modify_Auditing'){
-                        item.status='变更审核中'
+                        item.status='变更审核中';
+                        item.btnList=[];
+                        if(this.baseData.roleName=='ROLE_admin' || item.assigneeRole==this.baseData.roleName){
+                            item.btnList.push({label:'变更审核通过'},{label:'驳回'},{label:'终止'},{label:'详情'});
+                        }else{
+                            item.btnList.push({label:'详情'});
+                        }
                     }else if(item.status=='Modify_Rejected'){
-                        item.status='变更审核驳回'
+                        item.status='变更审核驳回';
+                        item.btnList=[];
+                        if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
+                            item.btnList.push({label:'变更'},{label:'注销'},{label:'详情'});
+                        }else{
+                            item.btnList.push({label:'详情'});
+                        }
                     }else if(item.status=='Canceling_Auditing'){
-                        item.status='注销审核'
+                        item.status='注销审核';
+                        item.btnList=[];
+                        if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
+                            item.btnList.push({label:'审核通过'},{label:'终止'},{label:'详情'});
+                        }else{
+                            item.btnList.push({label:'详情'});
+                        }
                     }else if(item.status=='Cancelled'){
-                        item.status='已注销'
+                        item.status='已注销';
+                        item.btnList=[];
+                        item.btnList.push({label:'详情'});
                     }else if(item.status=='Terminate_Flow'){
-                        item.status='受理终止'
+                        item.status='受理终止';
+                        item.btnList=[];
+                        item.btnList.push({label:'详情'});
                     }
+
                 })
             })
         },

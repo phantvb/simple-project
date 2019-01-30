@@ -14,9 +14,11 @@
                 <div class="block left">
                     <p class="fmini">企业名称：{{companyInfo.companyName}} </p>
                     <p class="fmini">证件编号： {{companyInfo.companyCardNo}}</p>
-                    <p class="fmini"><span>企业性质：{{companyInfo.companyCharacter}}</span><span>企业等级：{{companyInfo.companyRank}}</span><span>行业类型：{{companyInfo.industryType}}</span></p>
+                    <p class="fmini"><span>企业性质：{{companyInfo.companyCharacter}}</span></p>
+                    <p class="fmini"><span>企业等级：{{companyInfo.companyRank}}</span></p>
+                    <p class="fmini"><span>行业类型：{{companyInfo.industryType}}</span></p>
                     <p class="fmini">注册地址：{{companyInfo.registProvince+companyInfo.registCity+companyInfo.registArea}}</p>
-                    <p class="fmini">企业电话：</p>
+                    <p class="fmini">企业电话：{{companyInfo.phone}}</p>
                     <div>
                         <div style="float:left;">
                             <span class="fmini">企业资质证明文件：</span>
@@ -36,15 +38,14 @@
                     </p>
                 </div>
                 <div class="block left">
-                    <p class="fmini">使用用途：</p>
-                    <p class="fmini">目的码证明材料：</p>
+                    <p class="fmini">使用用途：{{destNumInfo.destnumUsage}}</p>
                     <div>
                         <div style="float:left;">
-                            <span class="fmini">目的码：</span>
+                            <span class="fmini">目的码证明材料：</span>
                         </div>
                         <ul>
                             <li class="l2">
-                                <img class="examplew" src="../../../assets/example_1.png" alt="">
+                                <img class="examplew" :src="destNumInfo.destNumProfPic" alt="">
                             </li>
                         </ul>
                     </div>
@@ -59,13 +60,16 @@
                                           style="width: 100%">
 
                                     <el-table-column
-                                            prop="number"
+                                            prop="number400"
                                             label="400号码">
                                     </el-table-column>
 
                                     <el-table-column
-                                            prop="objCode"
+                                            prop="destnumber"
                                             label='目的码 (填入目的码，多个请用","隔开)'>
+                                        <template slot-scope="scope">
+                                            <span v-for="(item,index) in destNumInfo" :key="index">{{item.destnumber}}<span v-if="index!=destNumInfo.length-1">,</span></span>
+                                        </template>
                                     </el-table-column>
                                 </el-table>
                             </li>
@@ -106,10 +110,11 @@
             return {
                 companyInfo:{},
                 destNumInfo:[],
-                objCodeTable: [{
-                    number: '234567',
-                    objCode: '',
-                }],
+                objCodeTable: [],
+                baseData:{
+                    roleName:'',
+                    username:'',
+                },
             };
         },
         components: {},
@@ -130,6 +135,10 @@
                     if(res.code==200){
                         this.companyInfo = res.data.company;
                         this.destNumInfo = res.data.destNumber;
+                        let objCodeTableObj = {};
+                        objCodeTableObj.number400 = this.destNumInfo[0].number400;
+                        this.objCodeTable.push(objCodeTableObj);
+
                     }
                 })
             },

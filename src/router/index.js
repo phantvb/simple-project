@@ -30,6 +30,7 @@ import messageCenter from '@/components/view/messageCenter/messageCenter';
 import numPoolManage from '@/components/view/operateManage/numPoolManage';
 import customNavigation from '@/components/view/customNavigation/customNavigation';
 import reviewHomepage from '@/components/view/reviewHomepage/reviewHomepage';
+import voiceDetial from '@/components/view/businessAccepted/voiceDetial';
 
 Vue.use(Router);
 
@@ -151,6 +152,11 @@ export default new Router({
 				name: '业务详情',
 				component: businessDetial,
 				hidden: true,
+			},{
+				path:'/voiceDetial',
+				name:'语音详情',
+				component:voiceDetial,
+				hidden:true
 			}]
 		},
 		{
