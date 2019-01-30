@@ -131,7 +131,7 @@
 			},
 			close() {
 				this.showBillDetail(false, {});
-				this.fetchData();
+				//this.fetchData();
 			},
 			showBillDetail(bol, data) {
 				if (data.id) {

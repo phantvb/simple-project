@@ -81,33 +81,34 @@ Vue.prototype.$global = {
 	serverSrc: 'http://192.168.0.117:5480/vos/',
 };
 router.beforeEach((to, from, next) => {
-	var allPath = store.getters.getRoute;
-	let currentPath = to.path;
-	if (currentPath == '/login') {
-		next();
-	};
-	if (allPath.length == 0) {
-		axios.get('/vos/menu/getTreeMenu?roleId=' + sessionStorage.getItem('roleId')).then(res => {
-			if (res.code == 200) {
-				store.commit('addRoute', res.data.menuList);
-				allPath = store.getters.getRoute;
-				for (let i = 0; i < allPath.length; i++) {
-					if (allPath[i] == currentPath) {
-						next();
-						return;
-					}
-				};
-			}
-		});
-	} else {
-		for (let i = 0; i < allPath.length; i++) {
-			if (allPath[i] == currentPath) {
-				next();
-				return;
-			}
-		};
-	}
-
+	// var allPath = store.getters.getRoute;
+	// let currentPath = to.path;
+	// if (currentPath == '/login') {
+	// 	next();
+	// };
+	// if (allPath.length == 0) {
+	// 	axios.get('/vos/menu/getTreeMenu?roleId=' + sessionStorage.getItem('roleId')).then(res => {
+	// 		if (res.code == 200) {
+	// 			store.commit('addRoute', res.data.menuList);
+	// 			allPath = store.getters.getRoute;
+	// 			for (let i = 0; i < allPath.length; i++) {
+	// 				if (allPath[i].trim() == currentPath) {
+	// 					next();
+	// 					return;
+	// 				}
+	// 			};
+	// 		}
+	// 	});
+	// } else {
+	// 	for (let i = 0; i < allPath.length; i++) {
+	// 		console.log(allPath[i].trim() == currentPath, currentPath)
+	// 		if (allPath[i].trim() == currentPath) {
+	// 			next();
+	// 			return;
+	// 		}
+	// 	};
+	// }
+	next()
 })
 /* eslint-disable no-new */
 new Vue({

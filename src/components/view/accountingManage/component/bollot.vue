@@ -19,7 +19,7 @@
 				</ul>
 			</div>
 			<div class="title">
-				账务信息
+				账务详情
 			</div>
 			<div class="block">
 				<div style="border-bottom:1px solid #ccc;margin-bottom:15px;padding-bottom:15px;">
@@ -81,7 +81,7 @@
 					</el-table-column>
 					<el-table-column prop="money" label="快递编号" min-width="120">
 						<template slot-scope="scope">
-							<el-select v-model="money" placeholder="请选择" size="mini">
+							<el-select v-model="scope.row.money" placeholder="请选择" size="mini">
 								<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
 								</el-option>
 							</el-select>

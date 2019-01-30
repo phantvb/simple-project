@@ -32,8 +32,8 @@
 				<span class="demonstration">提交日期：</span>
 				<el-date-picker style="margin-right:15px;" v-model="form.time" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" size="mini">
 				</el-date-picker>
-				<el-button type="primary" size="mini" style="width:80px;">搜索</el-button>
-				<el-button type="primary" plain size="mini" style="width:80px;">重置</el-button>
+				<el-button type="primary" size="mini" style="width:80px;" @click="fetchData()">搜索</el-button>
+				<el-button type="primary" plain size="mini" style="width:80px;" @click="reset">重置</el-button>
 			</div>
 		</div>
 		<section class="addCompany left">
@@ -329,6 +329,10 @@
 					}
 				});
 			},
+			reset() {
+				this.$clear(this.form);
+				this.fetchData();
+			}
 		}
 	}
 </script>

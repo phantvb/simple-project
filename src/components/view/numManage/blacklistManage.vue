@@ -28,7 +28,7 @@
 						</el-input>
 					</div>
 					<el-button type="primary" size="mini" style="width:80px;" @click="fetchData()">搜索</el-button>
-					<el-button type="primary" plain size="mini" style="width:80px;">重置</el-button>
+					<el-button type="primary" plain size="mini" style="width:80px;" @click="reset">重置</el-button>
 				</div>
 			</div>
 			<section class="left block lineTop">
@@ -174,6 +174,10 @@
 						this.fetchData(this.page.num);
 					}
 				})
+			},
+			reset() {
+				this.$clear(this.form);
+				this.fetchData();
 			}
 		}
 	}

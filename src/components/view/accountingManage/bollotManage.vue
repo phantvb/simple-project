@@ -1,6 +1,6 @@
 <template>
 	<div id="bollotManage" class="managerFormTitle" v-loading="loading">
-		<el-tabs v-model="active">
+		<el-tabs v-model="form.channel">
 			<el-tab-pane label="自助直销" name="self"></el-tab-pane>
 			<el-tab-pane label="渠道" name="channel"></el-tab-pane>
 			<div class="search">
@@ -18,17 +18,17 @@
 				</ul>
 				<div class="block left">
 					<span class="demonstration">到账状态：</span>
-					<el-select v-model="status" placeholder="请选择" size="mini" style="width:23%;max-width:150px;">
-						<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+					<el-select v-model="form.accountStatus" placeholder="请选择" size="mini" style="width:23%;max-width:150px;">
+						<el-option v-for="item in accountStatusOptions" :key="item.value" :label="item.label" :value="item.value">
 						</el-option>
 					</el-select>
 					<span class="demonstration">开票状态：</span>
-					<el-select v-model="status" placeholder="请选择" size="mini" style="width:23%;max-width:150px;">
-						<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+					<el-select v-model="form.bollotStatus" placeholder="请选择" size="mini" style="width:23%;max-width:150px;">
+						<el-option v-for="item in bollotOptions" :key="item.value" :label="item.label" :value="item.value">
 						</el-option>
 					</el-select>
 					<el-button type="primary" size="mini" style="width:80px;">搜索</el-button>
-					<el-button type="primary" plain size="mini" style="width:80px;">重置</el-button>
+					<el-button type="primary" plain size="mini" style="width:80px;" @click="reset">重置</el-button>
 				</div>
 			</div>
 			<section class="right block lineTop">
@@ -38,34 +38,6 @@
 			<el-table :data="tableData" style="width: 100%;margin-bottom:15px;">
 				<el-table-column type="selection" width="30">
 				</el-table-column>
-				<el-table-column type="expand">
-					<template slot-scope="props">
-						<el-form label-position="left" inline class="demo-table-expand">
-							<el-form-item label="商品名称">
-								<span>{{ props.row.name }}</span>
-							</el-form-item>
-							<el-form-item label="所属店铺">
-								<span>{{ props.row.shop }}</span>
-							</el-form-item>
-							<el-form-item label="商品 ID">
-								<span>{{ props.row.id }}</span>
-							</el-form-item>
-							<el-form-item label="店铺 ID">
-								<span>{{ props.row.shopId }}</span>
-							</el-form-item>
-							<el-form-item label="商品分类">
-								<span>{{ props.row.category }}</span>
-							</el-form-item>
-							<el-form-item label="店铺地址">
-								<span>{{ props.row.address }}</span>
-							</el-form-item>
-							<el-form-item label="商品描述">
-								<span>{{ props.row.desc }}</span>
-							</el-form-item>
-						</el-form>
-					</template>
-				</el-table-column>
-
 				<el-table-column prop="type" label="400号码" min-width="80">
 				</el-table-column>
 				<el-table-column prop="name" label="企业名称" min-width="200">
@@ -117,32 +89,40 @@
 		},
 		data() {
 			return {
-				active: 'self',
-				status: '',
 				bollot: false,
 				form: {
-					name: '',
-					person: '',
-					number: '',
-					date: null,
-					status
+					number400: "",
+					companyName: "",
+					accountStatus: "",
+					bollotStatus: "",
+					channel: 'self'
 				},
 				loading: false,
-				options: [{
-					value: '',
-					label: '全部'
+				accountStatusOptions: [{
+					value: "",
+					label: "全部"
 				}, {
-					value: '选项2',
-					label: '等待送审'
+					value: "NotArrive",
+					label: "未到账"
 				}, {
-					value: '选项3',
-					label: '待审核'
+					value: "Cleared",
+					label: "已清款"
 				}, {
-					value: '选项4',
-					label: '审核通过'
+					value: "PartArrive",
+					label: "部分到账"
+				}],
+				bollotOptions: [{
+					value: "",
+					label: "全部"
 				}, {
-					value: '选项5',
-					label: '被驳回'
+					value: "NotArrive",
+					label: "未开票"
+				}, {
+					value: "Cleared",
+					label: "全部开票"
+				}, {
+					value: "PartArrive",
+					label: "部分开票"
 				}],
 				bollotData: {},
 				tableData: [],
@@ -158,6 +138,11 @@
 			this.fetchData();
 		},
 		methods: {
+			reset() {
+				this.$clear(this.form);
+				this.form.channel = 'self';
+				this.fetchData();
+			},
 			addbollot(bol, data) {
 				this.bollotData = data || {};
 				this.bollot = bol;
@@ -175,25 +160,21 @@
 				this.fetchData(val);
 			},
 			fetchData(pageNum) {
-				// this.loading = true;
-				// this.page.num = pageNum || 1;
-				// var data = {};
-				// data.page = {
-				// 	pageNo: this.page.num,
-				// 	pageSize: this.page.size
-				// };
-				// data.number400TimePacket = Object.assign({}, this.form);
-				// data.number400TimePacket.channel = this.active;
-				// delete data.number400TimePacket["time"];
-				// data.beforeTime = this.form.time[0] || '';
-				// data.afterTime = this.form.time[1] || '';
-				// this.$ajax.post("/vos/number400TimePacket/search", data).then(res => {
-				// 	if (res.code == 200) {
-				// 		this.loading = false;
-				// 		this.tableData = res.data.number400TimePackets;
-				// 		this.page.total = res.data.totalCount;
-				// 	}
-				// });
+				this.page.num = pageNum || 1;
+				this.loading = true;
+				var data = {};
+				data.page = {
+					pageNo: this.page.num,
+					pageSize: this.page.size
+				};
+				data.totalAccounts = Object.assign({}, this.form);
+				this.$ajax.post("/vos/accountsTotal/search", data).then(res => {
+					if (res.code == 200) {
+						this.loading = false;
+						this.tableData = res.data.accountsTotals;
+						this.page.total = res.data.totalCount;
+					}
+				});
 
 			}
 		}
