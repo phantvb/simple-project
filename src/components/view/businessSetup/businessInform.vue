@@ -84,13 +84,13 @@
 			<el-table-column prop="name" label="操作" min-width="200">
 				<template slot-scope="scope">
 					<el-button size="mini" type="text" @click="checkDetail(scope.row)">详情</el-button>
-					<el-button size="mini" type="text" v-if="scope.row.status=='Wait_To_Audit'&&scope.row.creator==baseData.username" @click="addCompany(true,scope.row)">编辑送审</el-button>
-					<el-button size="mini" type="text" v-if="(scope.row.status=='Audit_Success'||scope.row.status=='Modify_Rejected')&&scope.row.creator==baseData.username" @click="editCompany(scope.row)">变更</el-button>
-					<el-button size="mini" type="text" v-if="(scope.row.status=='Audit_Success'||scope.row.status=='Modify_Rejected')&&scope.row.creator==baseData.username" @click="cancelCompany(scope.row)">注销</el-button>
-					<el-button size="mini" type="text" v-if="(scope.row.status=='Company_Auditing'||scope.row.status=='Canceling_Auditing'||scope.row.status=='Modify_Auditing')&&baseData.roleName=='ROLE_admin'" @click="passCompany(scope.row)">通过审核</el-button>
-					<el-button size="mini" type="text" v-if="(scope.row.status=='Company_Auditing'||scope.row.status=='Canceling_Auditing'||scope.row.status=='Modify_Auditing')&&baseData.roleName=='ROLE_admin'" @click="backCompany(scope.row)">驳回</el-button>
-					<el-button size="mini" type="text" v-if="scope.row.status=='Canceling_Auditing'||scope.row.status=='Modify_Auditing'" @click="endCompany(scope.row)">终止</el-button>
-					<el-button size="mini" type="text" v-if="scope.row.status=='Wait_To_Audit'&&scope.row.creator==baseData.username" @click="removeCompany(scope.row)">删除</el-button>
+					<el-button size="mini" type="text" v-if="scope.row.status=='Wait_To_Audit'&&(scope.row.creator==baseData.username||baseData.roleName=='ROLE_admin')" @click="addCompany(true,scope.row)">编辑送审</el-button>
+					<el-button size="mini" type="text" v-if="(scope.row.status=='Audit_Success'||scope.row.status=='Modify_Rejected')&&(scope.row.assignee==baseData.username||baseData.roleName=='ROLE_admin')" @click="editCompany(scope.row)">变更</el-button>
+					<el-button size="mini" type="text" v-if="(scope.row.status=='Audit_Success'||scope.row.status=='Modify_Rejected')&&(scope.row.assignee==baseData.username||baseData.roleName=='ROLE_admin')" @click="cancelCompany(scope.row)">注销</el-button>
+					<el-button size="mini" type="text" v-if="(scope.row.status=='Company_Auditing'||scope.row.status=='Canceling_Auditing'||scope.row.status=='Modify_Auditing')&&(baseData.roleName==scope.row.assigneeRole||baseData.roleName=='ROLE_admin')" @click="passCompany(scope.row)">通过审核</el-button>
+					<el-button size="mini" type="text" v-if="(scope.row.status=='Company_Auditing'||scope.row.status=='Canceling_Auditing'||scope.row.status=='Modify_Auditing')&&(baseData.roleName==scope.row.assigneeRole||baseData.roleName=='ROLE_admin')" @click="backCompany(scope.row)">驳回</el-button>
+					<!-- <el-button size="mini" type="text" v-if="scope.row.status=='Canceling_Auditing'||scope.row.status=='Modify_Auditing'" @click="endCompany(scope.row)">终止</el-button> -->
+					<el-button size="mini" type="text" v-if="scope.row.status=='Wait_To_Audit'&&(scope.row.creator==baseData.username||baseData.roleName=='ROLE_admin')" @click="removeCompany(scope.row)">删除</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
