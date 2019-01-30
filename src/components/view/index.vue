@@ -1,7 +1,10 @@
 <template>
 	<el-container>
 		<el-header style="padding:0px;float:left;">
-			<div class="header"></div>
+			<div class="header fmd">
+				{{'您好, '+userName}}
+				<button class="fmd" @click="logout">[ 退出 ]</button>
+			</div>
 		</el-header>
 		<el-container class="page-component__scroll">
 			<!--左侧导航栏-->
@@ -37,6 +40,18 @@
 		background-color: #111A2B;
 		background-image: url('../../assets/logo.png');
 		background-repeat: no-repeat;
+		color: #fff;
+		line-height: 60px;
+		text-align: right;
+		padding-right: 20px;
+		box-sizing: border-box;
+	}
+
+	.header button {
+		color: #409EFF;
+		cursor: pointer;
+		background-color: transparent;
+		border: none;
 	}
 
 	body {
@@ -51,6 +66,7 @@
 		data() {
 			return {
 				isCollapse: false,
+				userName: '',
 				router: {}
 			};
 		},
@@ -58,6 +74,7 @@
 			SidebarItem
 		},
 		mounted() {
+			this.userName = sessionStorage.getItem('username');
 			this.$ajax.get('/vos/menu/getTreeMenu?roleId=' + sessionStorage.getItem('roleId')).then(res => {
 				if (res.code == 200) {
 					this.router = res.data.menuList;
@@ -87,6 +104,13 @@
 					}
 				}
 				return nobj;
+			},
+			logout() {
+				this.$ajax.get('/vos/user/logout').then(res => {
+					if (res.code == 200) {
+						this.$router.push({ path: '/login' });
+					}
+				});
 			}
 		}
 	}

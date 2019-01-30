@@ -91,7 +91,7 @@
 					_this.$ajax.get('/vos/menu/getTreeMenu?roleId=' + sessionStorage.getItem('roleId')).then(res => {
 						if (res.code == 200) {
 							_this.$store.commit('addRoute', res.data.menuList);
-							_this.$router.push('/NumManage/numManage');
+							_this.$router.push('/Layout/userCenter');
 						}
 					});
 				});

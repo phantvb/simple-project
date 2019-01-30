@@ -5,7 +5,7 @@
 				<sidebar-item :data="item.children" :key="item.path" :base-path="resolvePath(item.path)" />
 			</template>
 			<div v-else-if="item.type=='h'&&!item.children"></div>
-			<el-submenu v-else-if="item.children&&item.children.length>0&&item.children[0].type!='b'" :index="resolvePath(item.url)">
+			<el-submenu class="targetMenu" v-else-if="item.children&&item.children.length>0&&item.children[0].type!='b'" :index="resolvePath(item.url)">
 				<template slot="title">
 					<!-- <i class="el-icon-menu"></i> -->
 					<span slot="title">{{item.name}}</span>

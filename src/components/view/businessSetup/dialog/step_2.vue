@@ -184,6 +184,10 @@
 				data.companyFlow = {
 					flowId: this.idData.flowId || ''
 				};
+				if (this.file.p1 == '' || this.file.p2 == '' || this.file.p3 == '' || this.file.p4 == '') {
+					this.$message.error('请先完善图片信息');
+					return;
+				};
 				if (!this.isComplete && bol) {
 					this.$message.error('请先返回上一步完善信息');
 				} else {

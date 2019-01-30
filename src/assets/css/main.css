@@ -3,9 +3,8 @@
 	background-color: #172138;
 }
 
-#app .el-menu .el-menu-item,
-#app .el-menu .el-submenu__title {
-	color: #ffffff;
+#app .targetMenu .el-menu-item {
+	background-color: #424242 !important;
 }
 
 /*右侧内容区域*/
