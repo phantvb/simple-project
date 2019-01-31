@@ -81,34 +81,49 @@ Vue.prototype.$global = {
 	serverSrc: 'http://192.168.0.117:5480/vos/',
 };
 router.beforeEach((to, from, next) => {
-	// var allPath = store.getters.getRoute;
-	// let currentPath = to.path;
-	// if (currentPath == '/login') {
-	// 	next();
-	// };
-	// if (allPath.length == 0) {
-	// 	axios.get('/vos/menu/getTreeMenu?roleId=' + sessionStorage.getItem('roleId')).then(res => {
-	// 		if (res.code == 200) {
-	// 			store.commit('addRoute', res.data.menuList);
-	// 			allPath = store.getters.getRoute;
-	// 			for (let i = 0; i < allPath.length; i++) {
-	// 				if (allPath[i].trim() == currentPath) {
-	// 					next();
-	// 					return;
-	// 				}
-	// 			};
-	// 		}
-	// 	});
-	// } else {
-	// 	for (let i = 0; i < allPath.length; i++) {
-	// 		console.log(allPath[i].trim() == currentPath, currentPath)
-	// 		if (allPath[i].trim() == currentPath) {
-	// 			next();
-	// 			return;
-	// 		}
-	// 	};
-	// }
-	next()
+	var allPath = store.getters.getRoute;
+    let currentPath = to.path;
+    var isPass=false;
+	if (currentPath == '/login') {
+        isPass=true;
+		next();
+	};
+	if (allPath.length == 0) {
+		axios.get('/vos/menu/getTreeMenu?roleId=' + sessionStorage.getItem('roleId')).then(res => {
+			if (res.code == 200) {
+				store.commit('addRoute', res.data.menuList);
+				allPath = store.getters.getRoute;
+				for (let i = 0; i < allPath.length; i++) {
+					if (allPath[i].trim() == currentPath) {
+                        isPass=true;
+						next();
+						return;
+					}
+                };
+                if(!isPass){
+                    Vue.prototype.$message({
+                        message: '权限错误',
+                        type: 'warning'
+                    });
+                }
+			}
+		});
+	} else {
+		for (let i = 0; i < allPath.length; i++) {
+			if (allPath[i].trim() == currentPath) {
+                isPass=true;
+				next();
+				return;
+			}
+        };
+        if(!isPass){
+            Vue.prototype.$message({
+                message: '权限错误',
+                type: 'warning'
+            });
+        }
+    };
+    
 })
 /* eslint-disable no-new */
 new Vue({

@@ -23,8 +23,8 @@
 						</el-option>
 					</el-select>
 					<span class="demonstration">开票状态：</span>
-					<el-select v-model="form.bollotStatus" placeholder="请选择" size="mini" style="width:23%;max-width:150px;">
-						<el-option v-for="item in bollotOptions" :key="item.value" :label="item.label" :value="item.value">
+					<el-select v-model="form.invoiceStatus" placeholder="请选择" size="mini" style="width:23%;max-width:150px;">
+						<el-option v-for="item in invoiceOptions" :key="item.value" :label="item.label" :value="item.value">
 						</el-option>
 					</el-select>
 					<el-button type="primary" size="mini" style="width:80px;">搜索</el-button>
@@ -38,54 +38,58 @@
 			<el-table :data="tableData" style="width: 100%;margin-bottom:15px;">
 				<el-table-column type="selection" width="30">
 				</el-table-column>
-				<el-table-column prop="type" label="400号码" min-width="80">
+				<el-table-column prop="number400" label="400号码" min-width="110">
 				</el-table-column>
-				<el-table-column prop="name" label="企业名称" min-width="200">
+				<el-table-column prop="companyName" label="企业名称" min-width="150">
 				</el-table-column>
-				<el-table-column prop="number" label="应收款金额" min-width="100">
+				<el-table-column prop="shouldReceive" label="应收款金额" min-width="100">
 				</el-table-column>
 				<el-table-column prop="person" label="未收款金额" min-width="100">
-				</el-table-column>
-				<el-table-column prop="date" label="已收款金额" min-width="100">
-				</el-table-column>
-				<el-table-column prop="status" label="到账编号/时间" min-width="120">
-				</el-table-column>
-				<el-table-column prop="status" label="到账状态 " min-width="80">
-				</el-table-column>
-				<el-table-column prop="status" label="到账未开票金额" min-width="120">
-				</el-table-column>
-				<el-table-column prop="status" label="已开票金额" min-width="100">
-				</el-table-column>
-				<el-table-column prop="status" label="发票编号" min-width="100">
-				</el-table-column>
-				<el-table-column prop="status" label="剩余未开票金额" min-width="140">
-				</el-table-column>
-				<el-table-column prop="status" label="开票状态" min-width="120">
-				</el-table-column>
-				<el-table-column prop="name" label="操作" min-width="100">
 					<template slot-scope="scope">
-						<el-button size="mini" type="text" @click="addbollot(true,scope.row)">添加开票</el-button>
-						<el-button size="mini" type="text">修改</el-button>
+						{{scope.row.shouldReceive-scope.row.realReceive}}
+					</template>
+				</el-table-column>
+				<el-table-column prop="realReceive" label="已收款金额" min-width="100">
+				</el-table-column>
+				<el-table-column prop="status" label="到账状态" min-width="120">
+					<template slot-scope="scope">
+						<span v-for="item in accountStatusOptions" :key="item.value" v-show="item.value==scope.row.accountStatus">{{item.label}}</span>
+					</template>
+				</el-table-column>
+				<el-table-column prop="arrivedNoInvoice" label="到账未开票金额" min-width="120">
+				</el-table-column>
+				<el-table-column prop="haveInvoiced" label="已开票金额" min-width="100">
+				</el-table-column>
+				<el-table-column prop="leftNoInvoice" label="剩余未开票金额" min-width="140">
+				</el-table-column>
+				<el-table-column prop="invoiceStatus" label="开票状态" min-width="80">
+					<template slot-scope="scope">
+						<span v-for="item in invoiceOptions" :key="item.value" v-show="item.value==scope.row.invoiceStatus">{{item.label}}</span>
+					</template>
+				</el-table-column>
+				<el-table-column prop="name" label="操作" min-width="200">
+					<template slot-scope="scope">
+						<el-button size="mini" type="text" v-if="scope.row.invoiceStatus!='TotalInvoiced'" @click="addbollot(true,scope.row,0)">添加开票</el-button>
+						<el-button size="mini" type="text" v-if="scope.row.invoiceStatus=='TotalInvoiced'" @click="addbollot(true,scope.row,0)">修改</el-button>
+						<el-button size="mini" type="text" @click="addbollot(true,scope.row,1)">详情</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
 			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page.num" :page-sizes="$global.pageSize" :page-size="page.size" layout="total, sizes, prev, pager, next, jumper" :total="page.total">
 			</el-pagination>
 		</el-tabs>
-		<!-- <bollot :show="bollot" @close="addbollot(false)"></bollot> -->
-		<transfer :show="bollot" @close="closebollot" :transferType="transferType" :data="bollotData"></transfer>
+		<bollot :show="bollot" @close="addbollot(false)" :data="bollotData" :type="bollotType"></bollot>
 	</div>
 </template>
 <style lang="scss" scoped>
 	@import './common.scss';
 </style>
 <script>
-	// import bollot from './component/bollot.vue'
-	import transfer from './component/transfer.vue'
+	import bollot from './component/bollot.vue'
 	export default {
 		name: 'ballot',
 		components: {
-			transfer
+			bollot
 		},
 		data() {
 			return {
@@ -94,7 +98,7 @@
 					number400: "",
 					companyName: "",
 					accountStatus: "",
-					bollotStatus: "",
+					invoiceStatus: "",
 					channel: 'self'
 				},
 				loading: false,
@@ -111,27 +115,28 @@
 					value: "PartArrive",
 					label: "部分到账"
 				}],
-				bollotOptions: [{
+				invoiceOptions: [{
 					value: "",
 					label: "全部"
 				}, {
-					value: "NotArrive",
+					value: "NotInvoice",
 					label: "未开票"
 				}, {
-					value: "Cleared",
+					value: "TotalInvoiced",
 					label: "全部开票"
 				}, {
-					value: "PartArrive",
+					value: "PartInvoiced",
 					label: "部分开票"
 				}],
 				bollotData: {},
+				transferData: {},
 				tableData: [],
 				page: {
 					num: 1,
 					size: 10,
 					total: 1
 				},
-				transferType: 2,
+				bollotType: 0,
 			}
 		},
 		mounted() {
@@ -143,15 +148,20 @@
 				this.form.channel = 'self';
 				this.fetchData();
 			},
-			addbollot(bol, data) {
+			addbollot(bol, data, type) {
 				this.bollotData = data || {};
+				this.bollotType = type;
 				this.bollot = bol;
 			},
-			closebollot(bol) {
+			addtransfer(bol, data) {
+				this.transferData = data || {};
+				this.transfer = bol;
+			},
+			closetransfer(bol) {
 				if (bol) {
 					this.fetchData();
 				}
-				this.addbollot(false);
+				this.addtransfer(false);
 			},
 			handleSizeChange() {
 				this.fetchData();
@@ -168,6 +178,8 @@
 					pageSize: this.page.size
 				};
 				data.totalAccounts = Object.assign({}, this.form);
+				data.startTime = '';
+				data.endTime = '';
 				this.$ajax.post("/vos/accountsTotal/search", data).then(res => {
 					if (res.code == 200) {
 						this.loading = false;

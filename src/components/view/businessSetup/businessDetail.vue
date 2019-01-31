@@ -72,7 +72,7 @@
 				</div>
 				<button class="pass"><i class="el-icon-circle-check" style="color:#67C23A;font-size:16px;transform: translateY(1px);" v-if="$route.query.status=='Audit_Success'"></i> 审核通过</button>
 			</div>
-			<el-input class="block" v-if="($route.query.status=='Company_Auditing'||$route.query.status=='Canceling_Auditing'||$route.query.status=='Modify_Auditing')&&baseData.roleName=='ROLE_admin'" type="textarea" :rows="6" placeholder="请输入审核意见" v-model="desc">
+			<el-input class="block" v-if="($route.query.status=='Company_Auditing'||$route.query.status=='Canceling_Auditing'||$route.query.status=='Modify_Auditing')&&(baseData.roleName==$route.query.assigneeRole||baseData.roleName=='ROLE_admin')" type="textarea" :rows="6" placeholder="请输入审核意见" v-model="desc">
 			</el-input>
 			<div class="block">
 				<div>

@@ -294,8 +294,6 @@
 				data.cardEndDate = this.form.cardDate[1];
 				delete data.cardDate;
 				this.$refs.form.validate((valid) => {
-					this.$emit('next', 2, data);
-					//this.$emit('isComplete', valid);
 					if (valid) {
 						this.$emit('next', 2, data);
 					} else {

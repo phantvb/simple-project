@@ -12,13 +12,13 @@
 					<!-- <el-input type="password" v-model="loginForm.name" autocomplete="off"></el-input> -->
 				</el-form-item>
 				<el-form-item prop="pass">
-					<el-input placeholder="请输入密码" v-model="loginForm.pass" type="password">
+					<el-input placeholder="请输入密码" v-model="loginForm.pass" type="password" @keyup.enter="submitForm">
 						<template slot="prepend">密码</template>
 					</el-input>
 					<!-- <el-input type="password" v-model="loginForm.pass" autocomplete="off"></el-input> -->
 				</el-form-item>
 				<el-form-item prop="code">
-					<el-input placeholder="请输入验证码" v-model="loginForm.code">
+					<el-input placeholder="请输入验证码" v-model="loginForm.code" @keyup.enter="submitForm">
 						<template slot="append"><img v-if="codeImg" :src='$global.serverSrc+url' id="code" @click="changeImg" />
 						</template>
 					</el-input>
