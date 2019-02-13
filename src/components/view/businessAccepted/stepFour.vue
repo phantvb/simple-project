@@ -25,9 +25,12 @@
                         </div>
                         <ul class="abc">
                             <li class="8">
-                                <el-upload class="avatar-uploader examplew" :action="$global.uploadUrl"
-                                           :show-file-list="false" :on-success="handleAvatarSuccess"
-                                           :on-error="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
+                                <el-upload class="avatar-uploader examplew"
+                                           :action="$global.uploadUrl"
+                                           :show-file-list="false"
+                                           :on-success="handleAvatarSuccess"
+                                           :on-error="handleAvatarSuccess"
+                                           :before-upload="beforeAvatarUpload">
                                     <img v-if="stepFourForm.unionAgreementPic" :src="stepFourForm.unionAgreementPic"
                                          class="avatar">
                                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -152,31 +155,24 @@
                 },
                 businessObj: {},  //业务参数对象
                 flowId: '',
+                businessIn:'',
             };
         },
         components: {},
         created() {
-            console.log(sessionStorage.getItem('entrance'));
-
+            console.log(sessionStorage.getItem('businessIn'));
+            this.businessIn = sessionStorage.getItem('businessIn');
             //新增受理
-            if (sessionStorage.getItem('entrance') == 1) {
+            if (sessionStorage.getItem('businessIn') == 1) {
                 this.$root.eventHub.$on('flowId', (resp) => {
                     console.log("flowId", resp);
                     this.flowId = resp;
                 });
             }
-            // this.$root.eventHub.$on('entireFlowId', (resp) => {
-            //     console.log("entireFlowId", resp);
-            //     this.flowId = resp;
-            //     if (sessionStorage.getItem('entrance') == 2) {
-            //         this.stepFourForm = this.business;
-            //
-            //     }
-            // });
             if(sessionStorage.getItem('entireFlowId')){
                 console.log("entireFlowId", sessionStorage.getItem('entireFlowId'));
                 this.flowId = sessionStorage.getItem('entireFlowId');
-                if (sessionStorage.getItem('entrance') == 2) {
+                if (this.businessIn==2) {
                     console.log("flowId", '123123123123123213');
                     this.stepFourForm = this.business;
 
@@ -186,7 +182,7 @@
 
 
             //详情
-            if (sessionStorage.getItem('entrance') == 2) {
+            if (sessionStorage.getItem('businessIn') == 2) {
                 console.log(this.business);
                 this.stepFourForm = this.business;
 
@@ -198,7 +194,7 @@
                 console.log(res);
                 console.log(this.$global.serverSrc + res);
                 if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {
-                    this.stepFourForm.unionAgreementPic = 'http://192.168.0.117:5480/vos/' + res;
+                    this.stepFourForm.unionAgreementPic = this.$global.serverSrc + res;
                 }
                 // this.stepFourForm.unionAgreementPic = URL.createObjectURL(file.raw);
                 console.log("file.raw", file.raw);
@@ -235,11 +231,11 @@
                 // this.stepFourForm.otherPic = URL.createObjectURL(file.raw);
             },
             beforeAvatarUpload(file) {
-                const isJPG = file.type === 'image/jpeg';
+                const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
                 const isLt2M = file.size / 1024 / 1024 < 2;
 
                 if (!isJPG) {
-                    this.$message.error('上传头像图片只能是 JPG 格式!');
+                    this.$message.error('上传头像图片只能是 JPG、PNG格式!');
                 }
                 if (!isLt2M) {
                     this.$message.error('上传头像图片大小不能超过 2MB!');
@@ -282,7 +278,7 @@
 
                 // this.stepFourForm.flowId = resp;
             },
-            // 新增业务送审
+            //业务送审
             addBusinessSend() {
                 this.dialogVisible = false;
                 console.log("business:", this.business);
@@ -295,7 +291,13 @@
                 console.log("destNumber", this.destNumber);
                 console.log("number400ValueAdded", this.number400ValueAdded);
                 console.log("number400Concession", this.number400Concession);
-                this.$ajax.post('/vos/business/sendToBusinessAudit', {
+                var url;
+                if(this.businessIn==1){
+                    url = '/vos/business/sendToBusinessAudit';
+                }else if(this.businessIn==2){
+                    url = '/vos/business/sendToModifyAudit';
+                }
+                this.$ajax.post(url, {
                     "company": this.company,
                     "business": this.businessObj,
                     "destNumber": this.destNumber,

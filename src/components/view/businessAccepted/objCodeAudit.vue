@@ -79,16 +79,7 @@
                 prop="operation"
                 label="操作">
           <template slot-scope="scope">
-            <!--<el-button size="mini" type="text" @click="details(scope.row)">详情</el-button>-->
             <el-button size="mini" type="text" v-for="(item,index) in scope.row.btnList" :key="index" @click="details(item.label,scope.row)">{{item.label}}</el-button>
-            <!--<el-button size="mini" type="text">撤回</el-button>-->
-            <!--<el-button size="mini" type="text">变更</el-button>-->
-            <!--<el-button size="mini" type="text">注销</el-button>-->
-            <!--<el-button size="mini" type="text">通过审核</el-button>-->
-            <!--<el-button size="mini" type="text">驳回</el-button>-->
-            <!--<el-button size="mini" type="text" @click="objCodeEdit(scope.row)">编辑</el-button>-->
-            <!--<el-button size="mini" type="text">送审</el-button>-->
-            <!--<el-button size="mini" type="text">删除</el-button>-->
           </template>
         </el-table-column>
       </el-table>
@@ -106,7 +97,7 @@
   </div>
 </template>
 <script>
-    import Dialog1 from './dialog1';
+    import Dialog1 from './dialogObjCode';
     export default {
         name: 'objCodeAudit',
         data() {
@@ -131,40 +122,7 @@
                     delObjCode:'',  //删减目的码
                 },
                 companyInfo:{   //企业信息
-                    // companyName: "",
-                    // companyCardType: "",
-                    // companyCardNo: "",
-                    // companyCharacter: "",
-                    // companyRank: "",
-                    // industryType: "",
-                    // registProvince: "",
-                    // registProvinceId: null,
-                    // registCity: null,
-                    // registCityId: null,
-                    // registArea: null,
-                    // registaAreaId: null,
-                    // registAddress: null,
-                    // officeCity: "",
-                    // officeCityId: "",
-                    // officeProvince: null,
-                    // officeProvinceId: null,
-                    // officeArea: null,
-                    // officeAreaId: null,
-                    // officeAddress: null,
-                    // phone: "",
-                    // legalPerson: "",
-                    // legalPhone: null,
-                    // legalCard: null,
-                    // cardNum: "",
-                    // idCardAddress: null,
-                    // cardStartDate: null,
-                    // cardEndDate: null,
-                    // companyProofPic: "",
-                    // legalCardFrontPic: "",
-                    // legalCardBackPic: null,
-                    // legalCardHandPic: null,
-                    // usable: "",
-                    // source: ""
+
                 },
                 rules:{
                     firmName: [
@@ -217,6 +175,11 @@
                     roleName:'',
                     username:'',
                 },
+                objFlowId:'',  //目的码表格id
+                objStatus:'',  //目的码表格状态
+                objCreator:'', //目的码表格creator
+                objCompanyId:'', //目的码表格companyId
+                objAssigneeRole:'', //目的码表格assigneeRole
             };
         },
         components: {
@@ -256,22 +219,7 @@
             addObjCodeBtn(){
                 this.$root.eventHub.$emit('dialog1Visible',{visible:true,objCodeIn:1});
             },
-            // 图片上传
-            handleAvatarSuccess(res, file) {
-                this.acceptForm.imageUrl = URL.createObjectURL(file.raw);
-            },
-            beforeAvatarUpload(file) {
-                const isJPG = file.type === 'image/jpeg';
-                const isLt2M = file.size / 1024 / 1024 < 2;
 
-                if (!isJPG) {
-                    this.$message.error('上传头像图片只能是 JPG 格式!');
-                }
-                if (!isLt2M) {
-                    this.$message.error('上传头像图片大小不能超过 2MB!');
-                }
-                return isJPG && isLt2M;
-            },
             //新增目的码
             addObjCodes(){
                 let unit = {};
@@ -282,18 +230,72 @@
                 console.log(index);
                 this.objCodeList.splice(index,1);
             },
+
             //点击详情
-            details(scope){
-                console.log(scope);
-                //objCodeDetail
-                this.$router.push({
-                    path:'/voiceDetial/',   //跳转的路径
-                    query:{                  //路由传参时push和query搭配使用 ，作用时传递参数
-                        flowId:scope.flowId ,
-                        companyId:scope.companyId ,
+            details(val,objData){
+                console.log(val);
+                console.log(objData);
+                let objCodeMsg = objData;
+                this.objFlowId = objCodeMsg.flowId;
+                this.objStatus = objCodeMsg.status;
+                this.objCreator = objCodeMsg.creator;
+                this.objCompanyId = objCodeMsg.companyId;
+                this.objAssigneeRole = objCodeMsg.assigneeRole;
+                sessionStorage.setItem('objFlowId',this.objFlowId);
+                if(val=='送审'){
+                    sessionStorage.setItem("objCodeIn",2);
+                    this.getCacheData(val);
+                }else if(val=='详情'){
+                    console.log('详情入口');
+                    console.log(this.objStatus);
+                    // 详情接口
+                    this.getCacheData(val);
+
+                }else if(val=='通过审核'){
+                    console.log("11111");
+                    this.passCompany(val,objMsg);
+                }else if(val=='驳回'){
+                    console.log("22222");
+                    this.backCompany(val,objMsg);
+                }
+
+            },
+            //详情接口
+            getCacheData(val){
+                console.log(val);
+                this.$ajax.get('/vos/destnum/getCacheData?flowId='+this.objFlowId).then((res)=>{
+                    console.log(res.data);
+                    if(res.code==200){
+                        // this.companyInfo = res.data.company;
+                        // this.destNumInfo = res.data.destNumber;
+                        // let objCodeTableObj = {};
+                        // objCodeTableObj.number400 = res.data.number400;
+                        if(val=='详情'){
+                            this.$router.push({
+                                path:'/BusinessAccepted/objCodeDetail',   //跳转的路径
+                                query:{                                   //路由传参时push和query搭配使用 ，作用时传递参数
+                                    flowId:this.objFlowId ,
+                                }
+                            })
+                        }else if(val=='送审'){
+                            // console.log(res.data);
+                            // console.log(res.data.destNumber);
+                            // console.log(res.data.company);
+                            // this.acceptForm.firmName = res.data.company.companyName;
+                            // this.acceptForm.imageUrl = res.data.company.companyProofPic;
+                            // this.acceptForm.fourNum = res.data.number400;
+                            // res.data.destNumber.map((item)=>{
+                            //     this.acceptForm.firmName = item.companyName;
+                            //     this.acceptForm.imageUrl = item.companyProofPic;
+                            //     this.acceptForm.fourNum = item.number400;
+                            //     this.acceptForm.usage = item.destnumUsage;
+                            // })
+                            this.$root.eventHub.$emit('dialog1Visible',{visible:true,objCodeIn:2,flowId:this.objFlowId});
+                        }
                     }
                 })
             },
+
             // 目的码列表
             objCodeLists(){
                 // console.log(this.form.time[0]);
@@ -304,6 +306,8 @@
                 let dateEnd_value=dateEnd.getFullYear() + '-' + (dateEnd.getMonth() + 1) + '-' + dateEnd.getDate();
                 // console.log(dateStart_value);
                 // console.log(dateEnd_value);
+                console.log("companyName",this.form.firmName);
+
                 this.$ajax.post('/vos/business/getBusinessFlowList',{
                     "type":"Destnum",
                     "dateStart":this.form.time[0]==undefined?'':dateStart_value,
@@ -471,31 +475,7 @@
                     }
                 });
             },
-            // 目的码详情
-            objCodeDetail(data){
-                this.$ajax.post('/vos/destnum/getDetail',{
-                    "companyFlow":{
-                        "flowId": data.flowId,
-                        "companyId":data.companyId,
-                    },
-                }).then((res)=>{
-                    if(res.code==200){
-                        console.log(res.data);
-                        console.log(res.data.destNumber);
-                        console.log(res.data.company);
-                        this.acceptForm.firmName = res.data.company.companyName;
-                        this.acceptForm.imageUrl = res.data.company.companyProofPic;
-                        this.acceptForm.fourNum = res.data.number400;
-                        res.data.destNumber.map((item)=>{
-                            this.acceptForm.firmName = item.companyName;
-                            this.acceptForm.imageUrl = item.companyProofPic;
-                            this.acceptForm.fourNum = item.number400;
-                            this.acceptForm.usage = item.destnumUsage;
-                        })
 
-                    }
-                })
-            },
             //目的码编辑
             objCodeEdit(val){
                 this.$root.eventHub.$emit('dialog1Visible',{visible:true,objCodeIn:2});

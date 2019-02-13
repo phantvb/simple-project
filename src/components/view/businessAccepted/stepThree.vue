@@ -269,17 +269,17 @@
                                 </el-table-column>
 
                                 <el-table-column
-                                        prop="bottomFee"
+                                        prop="bottomFeeCopy"
                                         label='最低年消费'>
                                 </el-table-column>
 
                                 <el-table-column
-                                        prop="durationPresentation"
+                                        prop="durationPresentationCopy"
                                         label='预存话费'>
                                 </el-table-column>
 
                                 <el-table-column
-                                        prop="units"
+                                        prop="unitsCopy"
                                         label='单位'>
                                 </el-table-column>
 
@@ -370,22 +370,30 @@
 
                                 <el-table-column
                                         label='数量'
-                                        width="200">
+                                        width="250">
                                         <template slot-scope="scope">
                                             <el-input-number
                                                     size="mini"
                                                     v-model="scope.row.amount"
-                                                    @change="handleChange(scope.row)"
+                                                    @change="handleChange(scope.row,scope.$index)"
                                                     :min="1"
-                                                    :max="10"
                                                     label="描述文字">
                                             </el-input-number>
                                             <span>{{scope.row.cost}}</span>
+                                            <el-input-number
+                                                    v-if="scope.row.units=='perMonthOne'"
+                                                    size="mini"
+                                                    v-model="scope.row.numOfone"
+                                                    @change="handleChange(scope.row)"
+                                                    :min="1"
+                                                    label="描述文字">
+                                            </el-input-number>
+                                            <span v-if="scope.row.units=='perMonthOne'">{{scope.row.cost2}}</span>
                                         </template>
                                 </el-table-column>
 
                                 <el-table-column
-                                        prop="units"
+                                        prop="unitsName"
                                         label='资费/单位'>
                                 </el-table-column>
 
@@ -439,6 +447,7 @@
                     activeName: '',
                 },
                 stepThreeForm: {
+                    source:"self",
                     //是否需要保存公司到后台
                     needCompanySave: false,
                     //公司信息
@@ -460,7 +469,6 @@
                     basicFunctionFee: '',      //低消
                     durationPresentation: '',  //预存话费
                     units: '',                 //单位
-                    amount: 1,                 //数量
                     packageContent: '',        //套餐详情
                     type: '',                  //1是月，2是年
 
@@ -542,23 +550,25 @@
         },
         beforeUpdate(){
             //复选框回显
-            if (sessionStorage.getItem('entrance') == 2) {
+            if (sessionStorage.getItem('businessIn') == 2) {
                 console.log('asdasdasdasddasd');
                 this.objCodeTable.map((item)=>{
-                    item.amount = 1;
                     console.log(1111,this.objCodeTable);
                     if(this.number400ValueAdded.some((item1)=>{
                         return item1.id==item.id;
                     })){
                         console.log(item);
-                        this.$refs.addValueTable.toggleRowSelection(item);
+                        if(item.presents==1){
+                            this.$refs.addValueTable.toggleRowSelection(item,true);
+                        }
+                        this.$refs.addValueTable.toggleRowSelection(item,true);
                     }
                 });
             }
         },
 
          mounted(){
-            if (sessionStorage.getItem('entrance') == 2) {
+            if (sessionStorage.getItem('businessIn') == 2) {
                 //详情
                 console.log(this.business);
                 console.log(this.destNumber);
@@ -581,6 +591,7 @@
                 selectedNumCopy.bottomFee = this.business.bottomFee;
                 selectedNumCopy.packageContent = this.business.packageContent;
                 selectedNumCopy.durationPresentation = this.business.durationPresentation;
+                selectedNumCopy.durationPresentation = this.business.durationPresentation;
                 this.selectedNum.push(selectedNumCopy);
 
                 this.getAllProvince();
@@ -590,15 +601,19 @@
             console.log(this.number400ValueAdded);
             console.log(this.valueAdd);
             this.getValueAdded(this.busIdentity);
-            this.objCodeTable.map((item)=>{
-                console.log(3333,this.objCodeTable);
-                if(this.number400ValueAdded.some((item1)=>{
-                    return item1.id==item.id
-                })){
-                    console.log(item);
-                    this.$refs.addValueTable.toggleRowSelection(item);
-                }
-            });
+            // this.objCodeTable.map((item)=>{
+            //     console.log(3333,this.objCodeTable);
+            //     if(this.number400ValueAdded&&this.number400ValueAdded.length==1){
+            //         if(this.number400ValueAdded.some((item1)=>{
+            //             return item1.id==item.id
+            //         })){
+            //             this.$refs.addValueTable.toggleRowSelection(item);
+            //         }
+            //     }else{
+            //
+            //     }
+            //
+            // });
 
 
 
@@ -613,11 +628,6 @@
                 console.log("needCompanySave", resp);
                 this.stepThreeForm.needCompanySave = resp;
             });
-            // this.$root.eventHub.$on('companyMsg', (resp) => {
-            //     console.log(resp);
-            //     this.stepThreeForm.companyName = resp.companyName;
-            //     this.stepThreeForm.companyId = resp.id;
-            // });
 
         },
         methods: {
@@ -631,13 +641,32 @@
                 console.log(`当前页: ${val}`);
             },
             // 数量变化
-            handleChange(value) {
+            handleChange(value,index) {
                 console.log(value);
+                console.log(this.objCodeTable);
+                this.$set(this.objCodeTable,index,value);
                 // this.stepThreeForm.amount = value;
             },
             lalalal(val) {
                 console.log(val);
-                this.valueAdd = val;
+                let newValueAdd=[];
+                val.map((item)=>{
+                    let obj ={};
+                    obj.number400 = this.selectedNum&&this.selectedNum.length!=0?this.selectedNum[0].number400:null,
+                    obj.valueAddedName = item.tariffName;
+                    obj.valueAddedId = item.id;
+                    obj.presents = item.presents;
+                    obj.remarks = item.remarks;
+                    obj.valueAddedFee = item.tariffFee;
+                    obj.units = item.units;
+                    obj.numOfMonth = item.amount;
+                    obj.numOfone = item.numOfone;
+                    if(item.units=='perMonthOne'){
+                        obj.numOfone = item.numOfone;
+                    }
+                    newValueAdd.push(obj);
+                });
+                this.valueAdd=newValueAdd;
             },
             // 图片上传
             handleAvatarSuccess(res, file) {
@@ -735,14 +764,15 @@
                     this.objCodeTable.map((item) => {
                         item.amount=1;
                         if(item.units=='perMonth'){
-                            item.cost = "月"
-                            item.units = (item.tariffFee/item.amount)+'元/月'
+                            item.cost = "月";
+                            item.unitsName = (item.tariffFee/item.amount)+'元/月'
                         }else if(item.units=='perOne'){
-                            item.cost = "个"
-                            item.units = (item.tariffFee/item.amount)+'元/个'
+                            item.cost = "个";
+                            item.unitsName = (item.tariffFee/item.amount)+'元/个'
                         }else if(item.units=='perMonthOne'){
-                            item.cost = "月/个"
-                            item.units = (item.tariffFee/item.amount)+'元/月/个'
+                            item.cost = "月";
+                            item.cost2 = "个";
+                            item.unitsName = (item.tariffFee/item.amount)+'元/月/个'
                         }
                         if (item.presents == '1') {
                             item.presentsName = "赠送";
@@ -751,6 +781,24 @@
                             item.presentsName = "付费"
                         }
                     });
+                    console.log('aaa',this.objCodeTable);
+                    console.log('bbb',this.number400ValueAdded);
+                    this.objCodeTable.map((item)=>{
+                        console.log(1111,this.objCodeTable);
+                        if(this.number400ValueAdded&&this.number400ValueAdded.length!=0){
+                            if(this.number400ValueAdded.some((item1)=>{
+                                return item1.id==item.id;
+                            })){
+                                this.$refs.addValueTable.toggleRowSelection(item,true);
+                            }
+                        }else{
+                            if(item.presents==1){
+                                this.$refs.addValueTable.toggleRowSelection(item,true);
+                            }
+                        }
+
+                    });
+                    this.$set(this.objCodeTable);
                     return new Promise(resolve => {
                         resolve();
                     })
@@ -775,7 +823,7 @@
                 this.$ajax.get('/vos/address/getAllProvince').then((res) => {
                     console.log(res.data);
                     this.provinceList = res.data;
-                    if(sessionStorage.getItem('entrance') == 2){
+                    if(sessionStorage.getItem('businessIn') == 2){
                         console.log(this.stepThreeForm.provinceBelong);
                         this.getCitiesByProvinceId(this.stepThreeForm.provinceBelong);
                     }
@@ -851,6 +899,15 @@
                     console.log(res.data.number400s);
                     console.log(res.data.number400s[0]);
                     this.selectedNum = res.data.number400s;
+                    this.selectedNum.map((item)=>{
+                        item.bottomFeeCopy=item.bottomFee+'元';
+                        item.durationPresentationCopy=item.durationPresentation+'元';
+                        if(item.type==1){
+                            item.unitsCopy=item.units+"月"
+                        }else if(item.type==2){
+                            item.unitsCopy=item.units+"年"
+                        }
+                    })
                     this.pageObj.total = res.data.totalCount;
                     this.sealInfo = res.data.number400s[0];
 
@@ -896,23 +953,12 @@
                     console.log("business", this.business);
                     console.log("destNumber", this.destNumber);
                     console.log("number400Concession", this.number400Concession);
-                    //第三步点击下一步之前检查number400是否绑定了引示号
-                    this.$ajax.post('/vos/business/matchGuideNumber', {
-                        "number400": this.titleNum,
-                    }).then((res) => {
-                        if (res.code == 200) {
-                            console.log(res);
-                        } else {
-                            this.$message({type: 'warning', message: res.message});
-                        }
-                    })
                 }
             },
             // 暂存
-
             addBusinessSave() {
                 console.log("第三步获取flowed",sessionStorage.getItem('entireFlowId'));
-                console.log("入口：",sessionStorage.getItem('entrance'));
+                console.log("入口：",sessionStorage.getItem('businessIn'));
                 this.stepThreeForm.companyName = this.company.companyName;
                 this.stepThreeForm.companyId = this.company.companyId;
                 console.log("selectedNum",this.selectedNum);
@@ -938,7 +984,7 @@
                     "number400ValueAdded": this.valueAdd,
                     "number400Concession": this.number400Concession,
                     "companyFlow": {
-                        "flowId": sessionStorage.getItem('entrance')==2?sessionStorage.getItem('entireFlowId'):this.stepThreeFlowId
+                        "flowId": sessionStorage.getItem('businessIn')==2?sessionStorage.getItem('entireFlowId'):this.stepThreeFlowId
                     }
                 }).then((res) => {
                     if (res.code == '200') {
@@ -946,6 +992,16 @@
                         this.$root.eventHub.$emit('flowId', res.data);
                         this.stepThreeFlowId = res.data;
                         console.log(this.stepThreeFlowId = res.data);
+                        //第三步点击下一步之前检查number400是否绑定了引示号
+                        this.$ajax.post('/vos/business/matchGuideNumber', {
+                            "number400": this.titleNum,
+                        }).then((res) => {
+                            if (res.code == 200) {
+                                console.log(res);
+                            } else {
+                                this.$message({type: 'warning', message: res.message});
+                            }
+                        })
                     } else {
                         this.$message.warning(res.message);
                     }

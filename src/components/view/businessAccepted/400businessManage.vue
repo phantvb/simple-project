@@ -33,7 +33,7 @@
     import LogoutAudit from './logoutAudit';
     import ChangeAudit from './changeAudit';
     import VoiceFile from './voiceFile';
-    import Dialog1 from './dialog1';
+    import Dialog1 from './dialogObjCode';
     import DialogVoice from "./dialogVoice";
     import DialogBusiness from "./dialogBusiness";
     export default {

@@ -33,21 +33,21 @@
                         <el-select v-model="acceptForm.companyCharacter" placeholder="请选择" size="mini">
                             <el-option v-for="item in companyCharacterList"
                                        :label="item.dicValue"
-                                       :value="item.dicKey"
+                                       :value="item.dicValue"
                                        :key="item.dicKey"></el-option>
                         </el-select>
                     </el-form-item>
 
                     <el-form-item label="企业等级：" class="identity" prop="companyRank">
                         <el-select v-model="acceptForm.companyRank" placeholder="请选择" size="mini">
-                            <el-option :label="item.dicValue" :value="item.dicKey" v-for="item in companyRankList"
+                            <el-option :label="item.dicValue" :value="item.dicValue" v-for="item in companyRankList"
                                        :key="item.dicKey"></el-option>
                         </el-select>
                     </el-form-item>
 
                     <el-form-item label="行业类型：" class="identity" prop="industryType">
                         <el-select v-model="acceptForm.industryType" @change="change123" placeholder="请选择" size="mini">
-                            <el-option :label="item.dicValue" :value="item.dicKey" v-for="item in industryTypeList"
+                            <el-option :label="item.dicValue" :value="item.dicValue" v-for="item in industryTypeList"
                                        :key="item.dicKey"></el-option>
                         </el-select>
                     </el-form-item>
@@ -296,7 +296,7 @@
             });
 
             console.log(sessionStorage.getItem('entireFlowId'));
-            console.log(sessionStorage.getItem('entrance'));
+            console.log(sessionStorage.getItem('businessIn'));
             this.companyCardTypeList();
             this.companyRankLists();
             this.industryTypeLists();
@@ -306,7 +306,7 @@
             this.getCitiesByProvinceId();
             this.getAreasByCityId();
 
-            if (sessionStorage.getItem('entrance') == 2) {
+            if (sessionStorage.getItem('businessIn') == 2) {
                 this.stepTwoDetail();
             }
 
@@ -412,7 +412,7 @@
             industryTypeLists() {
                 this.$ajax.post('/vos/dic/getDicsByType', {
                     "dicType": "industry_category",
-                    "status": "1"
+                    "status": "show"
                 }).then((res) => {
                     console.log(res.data);
                     console.log(res.data.dicList);

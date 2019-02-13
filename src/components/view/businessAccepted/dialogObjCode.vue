@@ -33,11 +33,11 @@
                         <el-form-item label="目的码证明材料：" class="materials" prop="imageUrl">
                             <el-upload
                                     class="avatar-uploader"
-                                    action="https://jsonplaceholder.typicode.com/posts/"
+                                    :action="$global.uploadUrl"
                                     :show-file-list="false"
                                     :on-success="handleAvatarSuccess"
                                     :before-upload="beforeAvatarUpload">
-                                <img v-if="acceptForm.imageUrl" :src="acceptForm.imageUrl" class="avatar">
+                                <img v-if="acceptForm.imageUrl" :src="acceptForm.imageUrl" class="avatar" style="width: 120px;height: auto;">
                                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                             </el-upload>
                             <div class="uploadTips"><p>说明：目的码证明材料可以是缴费材料，也可以是自助平台相关截图</p></div>
@@ -74,7 +74,7 @@
                                 <div class="objCodeBox">
                                     <span>增加目的码</span>
                                     <div class="valAddSer">
-                                        <p>功能资费：{{tariffFee}}</p>
+                                        <p>功能资费：{{tariffFee+'元'}}</p>
                                         <p>是否赠送：{{presents}}</p>
                                         <p>功能备注：{{remarks}}</p>
                                     </div>
@@ -115,40 +115,7 @@
                     delObjCode:'',  //删减目的码
                 },
                 companyInfo:{   //企业信息
-                    // companyName: "",
-                    // companyCardType: "",
-                    // companyCardNo: "",
-                    // companyCharacter: "",
-                    // companyRank: "",
-                    // industryType: "",
-                    // registProvince: "",
-                    // registProvinceId: null,
-                    // registCity: null,
-                    // registCityId: null,
-                    // registArea: null,
-                    // registaAreaId: null,
-                    // registAddress: null,
-                    // officeCity: "",
-                    // officeCityId: "",
-                    // officeProvince: null,
-                    // officeProvinceId: null,
-                    // officeArea: null,
-                    // officeAreaId: null,
-                    // officeAddress: null,
-                    // phone: "",
-                    // legalPerson: "",
-                    // legalPhone: null,
-                    // legalCard: null,
-                    // cardNum: "",
-                    // idCardAddress: null,
-                    // cardStartDate: null,
-                    // cardEndDate: null,
-                    // companyProofPic: "",
-                    // legalCardFrontPic: "",
-                    // legalCardBackPic: null,
-                    // legalCardHandPic: null,
-                    // usable: "",
-                    // source: ""
+
                 },
                 rules:{
                     firmName: [
@@ -194,24 +161,38 @@
                     page:1,
                     pageSize:10,
                 },
-                tariffFee:0, //功能资费
-                presents:'1',  //是否赠送;1 赠送；2 付费
+                tariffFee:'', //功能资费
+                presents:'',  //是否赠送;1 赠送；2 付费
                 remarks:'',  //功能描述
-                flowId:'',
+                objFlowId:'',
+                objEntrance:'',
                 companyId:'',
                 busIdentity:'',  //登录信息channel
             };
         },
         created(){
             console.log(sessionStorage.getItem('businessType'));
+            console.log(sessionStorage.getItem('objFlowId'));
+            console.log(sessionStorage.getItem('objCodeIn'));
+            this.objFlowId = sessionStorage.getItem('objFlowId');
             this.busIdentity = sessionStorage.getItem('businessType');
             this.$root.eventHub.$on('dialog1Visible', (res)=>{
                 this.visible=res.visible;
                 if(res.objCodeIn){
                     this.objCodeIn=res.objCodeIn;
+                    if(this.objCodeIn==1){
+                        this.acceptForm.firmName='';
+                        this.acceptForm.usage='';
+                        this.acceptForm.imageUrl='';
+                        this.acceptForm.fourNum='';
+                        this.objCodeList=[];
+                    }
                 }
+                this.objFlowId=res.objCodeIn==2?res.flowId:sessionStorage.getItem('objCodeIn');
+                this.objCodeDetail();
             } );
             this.addTariff(this.busIdentity);
+
         },
         components: {},
         methods: {
@@ -226,14 +207,20 @@
             },
             // 图片上传
             handleAvatarSuccess(res, file) {
-                this.acceptForm.imageUrl = URL.createObjectURL(file.raw);
+                console.log(res);
+                console.log(this.$global.serverSrc + res);
+                if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {
+                    this.acceptForm.imageUrl = this.$global.serverSrc + res;
+                }
+                // this.acceptForm.imageUrl = URL.createObjectURL(file.raw);
+                console.log("file.raw", file.raw);
             },
             beforeAvatarUpload(file) {
-                const isJPG = file.type === 'image/jpeg';
+                const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
                 const isLt2M = file.size / 1024 / 1024 < 2;
 
                 if (!isJPG) {
-                    this.$message.error('上传头像图片只能是 JPG 格式!');
+                    this.$message.error('上传头像图片只能是 JPG、PNG格式!');
                 }
                 if (!isLt2M) {
                     this.$message.error('上传头像图片大小不能超过 2MB!');
@@ -250,10 +237,6 @@
                 console.log(index);
                 this.objCodeList.splice(index,1);
             },
-            //点击详情
-            // details(scope){
-            //     console.log(scope);
-            // },
             // 企业模糊搜索
             searchFirm(val){
                 console.log(val);
@@ -347,31 +330,20 @@
                             param.companyid=this.acceptForm.firmId;
                             paramList.push(param);
                         });
-                        // if(this.objCodeList.length==0){
-                        //     this.$message({type:'warning',message:'请新增目的码'});
-                        //     return
-                        // }else{
-                        //     this.objCodeList.map((item)=>{
-                        //         if(item.destnumber==''){
-                        //             this.$message({type:'warning',message:'请填写或删除空的目的码'});
-                        //             return
-                        //         }
-                        //     });
-                        //     return
-                        // };
                         this.searchObjCode();
                         this.$ajax.post('/vos/destnum/startAndSave',{
                             "destNumber":paramList,
                             "number400": this.acceptForm.fourNum,
                             "company":this.companyInfo,
                             "companyFlow":{
-                                "flowId":""
+                                "flowId":this.objCodeIn=='2'?this.objFlowId:'',
                             }
                         }).then((res)=>{
                             console.log(res);
                             if(res.code==200){
                                 this.dialogVisible = false;
                                 this.objCodeLists();
+                                this.$root.eventHub.$emit('addAcceptSave', null);
                             }else{
                                 this.$message({type:'warning',message:res.message});
                             }
@@ -403,7 +375,7 @@
                             "number400": this.acceptForm.fourNum,
                             "company":this.companyInfo,
                             "companyFlow":{
-                                "flowId":""
+                                "flowId":this.objEntrance=='2'?this.objFlowId:'',
                             }
                         }).then((res)=>{
                             console.log(res);
@@ -419,7 +391,29 @@
                         return false;
                     }
                 });
-            }
+            },
+            // 目的码详情
+            objCodeDetail(){
+                console.log("目的码详情");
+                this.$ajax.get('/vos/destnum/getCacheData?flowId='+this.objFlowId).then((res)=>{
+                    if(res.code==200){
+                        console.log(res.data);
+                        console.log(res.data.destNumber);
+                        console.log(res.data.company);
+                        console.log(res.data.company.companyName);
+                        this.acceptForm.firmName = res.data.company.companyName;
+                        this.acceptForm.imageUrl = res.data.company.companyProofPic;
+                        this.acceptForm.fourNum = res.data.number400;
+                        res.data.destNumber.map((item)=>{
+                            this.acceptForm.firmName = item.companyName;
+                            this.acceptForm.imageUrl = item.companyProofPic;
+                            this.acceptForm.fourNum = item.number400;
+                            this.acceptForm.usage = item.destnumUsage;
+                        })
+
+                    }
+                })
+            },
         },
         computed: {}
     }

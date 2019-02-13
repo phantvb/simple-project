@@ -133,27 +133,26 @@ export default new Router({
 				name: '400业务管理',
 				component: fourBusinessManage
 			}, {
-				path: '/objCodeDetail',
+				path: 'objCodeDetail',
 				name: '目的码详情',
 				component: objCodeDetail,
 				hidden: true,
 			}, {
-				path: '/logoutDetail',
+				path: 'logoutDetail',
 				name: '注销审核详情',
 				component: logoutDetail,
 				hidden: true,
-			}, {
-				path: '/businessData',
+			},{
+				path: 'businessData',
 				name: '业务详情',
 				component: businessData,
 				hidden: true,
-			}, {
-				path: '/businessDetial',
+			},{
+				path: 'businessDetial',
 				name: '业务详情',
 				component: businessDetial,
-				hidden: true,
 			},{
-				path:'/voiceDetial',
+				path:'voiceDetial',
 				name:'语音详情',
 				component:voiceDetial,
 				hidden:true

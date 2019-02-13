@@ -78,7 +78,7 @@
         </el-table-column>
 
         <el-table-column
-          prop="status"
+          prop="busStatus"
           label="状态">
         </el-table-column>
 
@@ -113,7 +113,7 @@
 </template>
 <script>
 
-  import Dialog1 from './dialog1';
+  import Dialog1 from './dialogObjCode';
   import DialogVoice from './dialogVoice';
   import {mapState} from "vuex";
   export default {
@@ -130,7 +130,7 @@
           phoneNum:'',
           time:'',
         },
-        entrance:1,    //新增，详情入口区分
+        businessIn:1,    //新增，详情入口区分
         tableData: [],
         statusOptions: [
             {
@@ -141,7 +141,7 @@
                 label: '审核中'
             },{
                 value: 'Audit_Success',
-                label: '审核通过'
+                label: '通过审核'
             },
             {
                 value: 'Modify_Auditing',
@@ -242,7 +242,7 @@
 
                     //判断操作
                     if(item.status=='Wait_To_Audit'){
-                        item.status='等待送审';
+                        item.busStatus='等待送审';
                         item.btnList=[];
                         if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
                             item.btnList.push({label:'送审'},{label:'详情'});
@@ -251,7 +251,7 @@
                         }
                         // console.log("btnList",item.btnList);
                     }else if(item.status=='Audit_Success'){
-                        item.status='审核通过';
+                        item.busStatus='通过审核';
                         item.btnList=[];
                         if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
                             item.btnList.push({label:'变更'},{label:'注销'},{label:'详情'});
@@ -259,15 +259,15 @@
                             item.btnList.push({label:'详情'});
                         }
                     }else if(item.status=='Business_Auditing'){
-                        item.status='审核中';
+                        item.busStatus='审核中';
                         item.btnList=[];
                         if(this.baseData.roleName=='ROLE_admin' || item.assigneeRole==this.baseData.roleName){
-                            item.btnList.push({label:'审核通过'},{label:'驳回'},{label:'详情'});
+                            item.btnList.push({label:'通过审核'},{label:'驳回'},{label:'详情'});
                         }else{
                             item.btnList.push({label:'详情'});
                         }
                     }else if(item.status=='Modify_Auditing'){
-                        item.status='变更审核中';
+                        item.busStatus='变更审核中';
                         item.btnList=[];
                         if(this.baseData.roleName=='ROLE_admin' || item.assigneeRole==this.baseData.roleName){
                             item.btnList.push({label:'变更审核通过'},{label:'驳回'},{label:'终止'},{label:'详情'});
@@ -275,7 +275,7 @@
                             item.btnList.push({label:'详情'});
                         }
                     }else if(item.status=='Modify_Rejected'){
-                        item.status='变更审核驳回';
+                        item.busStatus='变更审核驳回';
                         item.btnList=[];
                         if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
                             item.btnList.push({label:'变更'},{label:'注销'},{label:'详情'});
@@ -283,19 +283,19 @@
                             item.btnList.push({label:'详情'});
                         }
                     }else if(item.status=='Canceling_Auditing'){
-                        item.status='注销审核';
+                        item.busStatus='注销审核';
                         item.btnList=[];
                         if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
-                            item.btnList.push({label:'审核通过'},{label:'终止'},{label:'详情'});
+                            item.btnList.push({label:'通过审核'},{label:'终止'},{label:'详情'});
                         }else{
                             item.btnList.push({label:'详情'});
                         }
                     }else if(item.status=='Cancelled'){
-                        item.status='已注销';
+                        item.busStatus='已注销';
                         item.btnList=[];
                         item.btnList.push({label:'详情'});
                     }else if(item.status=='Terminate_Flow'){
-                        item.status='受理终止';
+                        item.busStatus='受理终止';
                         item.btnList=[];
                         item.btnList.push({label:'详情'});
                     }
@@ -313,17 +313,36 @@
         },
         //新增业务受理
         businessAdd(){
-            sessionStorage.setItem("entrance",1);
+            sessionStorage.setItem("businessIn",1);
+            this.ChangeCompanyStatus(null);
+            this.ChangeBusinessStatus(null);
+            this.ChangeDestNumber(null);
+            this.ChangeNumber400ValueAdded(null);
+            this.ChangeNumber400Concession(null);
+
             this.$root.eventHub.$emit('dialogVisibleBusiness',{visibleBusiness:true,businessIn:1});
             this.$root.eventHub.$emit('clearData');
             this.$root.eventHub.$on('active', (resp)=>{
                 this.active=resp;
             })
         },
+        //新增目的码按钮
+        addObjCodeBtn(){
+            this.$root.eventHub.$emit('dialog1Visible',{visible:true,objCodeIn:1});
+        },
+        //新增语音
+        voiceAdd(){
+            this.$root.eventHub.$emit('dialog1VisibleVoice',{visibleVoice:true,voiceIn:1});
+        },
+        // 状态改变
+        statusChange(){
+            this.entireLists();
+        },
         // 编辑业务受理
         businessEdit(val,objData){
           console.log(val);
           console.log(objData);
+          let objMsg = objData;
           this.entireFlowId = objData.flowId;
           this.entireStatus = objData.status;
           this.entireCreator = objData.creator;
@@ -332,40 +351,37 @@
           console.log(this.entireFlowId);
             sessionStorage.setItem('entireFlowId',this.entireFlowId);
           if(val=='送审'){
-              sessionStorage.setItem("entrance",2);
-              this.getCacheData();
+              sessionStorage.setItem("businessIn",2);
+              this.getCacheData(val);
           }else if(val=='详情'){
               console.log('详情入口');
               console.log(this.entireStatus);
-              this.$router.push({
-                  path:'/businessDetial',
-                  query: {
-                      flowId: this.entireFlowId,
-                      status:this.entireStatus,
-                      assigneeRole:this.entireAssigneeRole,
-                      creators:this.entireCreator,
-                      type:this.entireType ,
-                  }
-              });
-              this.getCacheData();
+              this.getCacheData(val);
 
+          }else if(val=='通过审核'){
+              console.log("11111");
+              this.passCompany(val,objMsg);
+          }else if(val=='变更'){
+              this.getCacheData(val);
+          }else if(val=='驳回'){
+              console.log("22222");
+              this.backCompany(val,objMsg);
           }
-        },
-        //新增目的码按钮
-        addObjCodeBtn(){
-            this.$root.eventHub.$emit('dialog1Visible',{visible:true,objCodeIn:1});
-        },
-        //新增语音
-        voiceAdd(){
-          this.$root.eventHub.$emit('dialog1VisibleVoice',{visibleVoice:true,voiceIn:1});
-        },
-        // 状态改变
-        statusChange(){
-          this.entireLists();
+
         },
         //“全部”表格详情
-        getCacheData(){
-            this.$ajax.get('/vos/business/getCacheData?flowId='+this.entireFlowId).then((res)=>{
+        getCacheData(val){
+          console.log(val);
+          var url;
+          if(this.entireType=='业务'){
+              url = '/vos/business/getCacheData?flowId=';
+          }else if(this.entireType=='目的码'){
+              url = '/vos/destnum/getCacheData?flowId=';
+          }else if(this.entireType=='语音'){
+              url = '/vos/voice/getCacheData?flowId=';
+          }
+          console.log(url);
+            this.$ajax.get(url+this.entireFlowId).then((res)=>{
                 console.log("详情",res);
                 if(res.data!=null){
                     this.ChangeCompanyStatus(res.data.company);
@@ -375,21 +391,144 @@
                     this.ChangeNumber400ValueAdded(res.data.number400ValueAdded);
                     this.ChangeNumber400Concession(res.data.number400Concession);
                     console.log("entireType",this.entireType);
-                    if(this.entireType=='业务'){
-                        this.$root.eventHub.$emit('dialogVisibleBusiness',{visibleBusiness:true,businessIn:1});
-                    }else if(this.entireType=='目的码'){
-                        console.log("目的码送审");
-                        this.$root.eventHub.$emit('dialog1Visible',{visible:true,objCodeIn:1});
-                    }else if(this.entireType=='语音'){
-                        this.$root.eventHub.$emit('dialog1VisibleVoice',{visibleVoice:true,voiceIn:1});
+                    if(val=='送审'){
+                        if(this.entireType=='业务'){
+                            this.$root.eventHub.$emit('dialogVisibleBusiness',{visibleBusiness:true,businessIn:2});
+                        }else if(this.entireType=='目的码'){
+                            this.$root.eventHub.$emit('dialog1Visible',{visible:true,objCodeIn:2});
+                        }else if(this.entireType=='语音'){
+                            this.$root.eventHub.$emit('dialog1VisibleVoice',{visibleVoice:true,voiceIn:2});
+                        }
+                    }else if(val=='变更'){
+                        this.$root.eventHub.$emit('dialogVisibleBusiness',{visibleBusiness:true,businessIn:3});
+                    }else if(val=='详情'){
+                        if(this.entireType=='业务'){
+                            this.$router.push({
+                                path:'/BusinessAccepted/businessDetial',
+                                query: {
+                                    flowId: this.entireFlowId,
+                                    status:this.entireStatus,
+                                    assigneeRole:this.entireAssigneeRole,
+                                    creators:this.entireCreator,
+                                    type:this.entireType ,
+                                }
+                            });
+                        }else if(this.entireType=='目的码'){
+                            this.$router.push({
+                                path:'/BusinessAccepted/objCodeDetail',
+                                query: {
+                                    flowId: this.entireFlowId,
+                                    status:this.entireStatus,
+                                    assigneeRole:this.entireAssigneeRole,
+                                    creators:this.entireCreator,
+                                    type:this.entireType ,
+                                }
+                            });
+                        }else if(this.entireType=='语音'){
+                            this.$router.push({
+                                path:'/BusinessAccepted/voiceDetial',
+                                query: {
+                                    flowId: this.entireFlowId,
+                                    status:this.entireStatus,
+                                    assigneeRole:this.entireAssigneeRole,
+                                    creators:this.entireCreator,
+                                    type:this.entireType ,
+                                }
+                            });
+                        }
                     }
-
                 }else{
-                    this.$message.warning("data为空null")
+                    this.$message.warning("data为空null");
                 }
             })
         },
 
+        //通过审核和驳回弹窗
+        prompt(data) {
+            return this.$prompt('请输入审核意见', data, {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消'
+            }).then(({ value }) => {
+                return value || '';
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '取消输入'
+                });
+                return false;
+            });
+        },
+        async passCompany(val,data) {
+            var obj = {};
+            var url;
+            if (data.status == 'Business_Auditing') {
+                url = '/vos/business/businessAuditPass';
+            }
+            // else if (data.status == 'Modify_Auditing') {
+            //     url = '/vos/company/modifyAuditPass';
+            // } else if (data.status == 'Canceling_Auditing') {
+            //     url = '/vos/company/cancelAuditPass';
+            // };
+            obj.companyFlow = {
+                flowId: data.flowId,
+                creator: data.creator,
+                assigneeRole: data.assigneeRole
+            };
+            obj.message = await this.prompt(val);
+            if (obj.message === false) {
+                return;
+            }
+            this.$ajax.post(url, obj).then(res => {
+                if (res.code == 200) {
+                    this.$message.success('操作成功');
+                    this.fetchData(this.page.num);
+                }
+            });
+        },
+        async backCompany(val,data) {
+            var obj = {};
+            var url;
+            if (data.status == 'Company_Auditing') {
+                url = '/vos/company/companyAuditReject';
+            } else if (data.status == 'Modify_Auditing') {
+                url = '/vos/company/modifyAuditReject';
+            } else if (data.status == 'Canceling_Auditing') {
+                url = '/vos/company/cancelAuditReject';
+            };
+            obj.companyFlow = {
+                flowId: data.flowId,
+                creator: data.creator,
+                assigneeRole: data.assigneeRole
+            };
+            obj.message = await this.prompt(val);
+            if (obj.message === false) {
+                return;
+            }
+            this.$ajax.post(url, obj).then(res => {
+                if (res.code == 200) {
+                    this.$message.success('操作成功');
+                    this.fetchData(this.page.num);
+                }
+            });
+        },
+        cancelCompany(data) {
+            var obj = {};
+            var url;
+            url = '/vos/company/sendToCancelAudit';
+            obj.companyFlow = {
+                flowId: data.flowId,
+                creator: data.creator,
+                assigneeRole: data.assigneeRole,
+                assignee: data.assignee
+            };
+            obj.message = '';
+            this.$ajax.post(url, obj).then(res => {
+                if (res.code == 200) {
+                    this.$message.success('操作成功');
+                    this.fetchData(this.page.num);
+                }
+            });
+        },
 
         // 存vuex更新企业信息模块入参
         ChangeCompanyStatus(val) {
@@ -407,9 +546,6 @@
         ChangeNumber400Concession(val) {
             return this.$store.dispatch("ChangeNumber400ConcessionStatus", val);
         },
-        // ChangeFlowRecord(val) {
-        //     return this.$store.dispatch("ChangeFlowRecord", val);
-        // },
     },
       computed: {
           ...mapState({
@@ -418,7 +554,6 @@
               destNumber: state => state.createActivities.destNumber,
               number400ValueAdded: state => state.createActivities.number400ValueAdded,
               number400Concession: state => state.createActivities.number400Concession,
-              // flowRecord: state => state.createActivities.flowRecord,
           })
       }
   }
