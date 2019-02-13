@@ -77,6 +77,11 @@
                 this.active = 1;
                 if(res.businessIn){
                     this.businessIn = res.businessIn;
+                    if(this.businessIn==1){       //新增
+
+                    }else if(this.businessIn==3){  //变更
+
+                    }
                 }
             } );
             this.$root.eventHub.$on('addAcceptSave', (resp)=>{

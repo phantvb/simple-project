@@ -45,7 +45,7 @@
                         </div>
                         <ul>
                             <li class="l2">
-                                <img class="examplew" :src="destNumInfo.destNumProfPic" alt="">
+                                <img class="examplew" :src="destNumInfo.destnumproofpic" alt="">
                             </li>
                         </ul>
                     </div>
@@ -120,25 +120,27 @@
         components: {},
         created(){
             console.log(this.$route.query.flowId);
-            console.log(this.$route.query.companyId);
+            // console.log(this.$route.query.companyId);
             this.getDetail();
         },
         methods: {
             getDetail(){
-                this.$ajax.post('/vos/destnum/getDetail',{
-                    "companyFlow":{
-                        "flowId": this.$route.query.flowId,
-                        "companyId":this.$route.query.companyId
-                    }
-                }).then((res)=>{
+                this.$ajax.get('/vos/destnum/getCacheData?flowId='+this.$route.query.flowId).then((res)=>{
                     console.log(res.data);
                     if(res.code==200){
                         this.companyInfo = res.data.company;
                         this.destNumInfo = res.data.destNumber;
                         let objCodeTableObj = {};
-                        objCodeTableObj.number400 = this.destNumInfo[0].number400;
+                        if(this.destNumInfo.length!=0){
+                            objCodeTableObj.number400 = this.destNumInfo[0].number400;
+                            this.destNumInfo.destnumUsage = this.destNumInfo[0].destnumUsage;
+                            this.destnumproofpic = this.destNumInfo[0].destnumproofpic;
+                            this.destNumInfo.destnumproofpic = this.destNumInfo[0].destnumproofpic;
+                        }
                         this.objCodeTable.push(objCodeTableObj);
 
+                    }else{
+                        this.$message.warning(res.message);
                     }
                 })
             },

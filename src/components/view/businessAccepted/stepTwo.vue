@@ -130,13 +130,13 @@
         },
         components: {},
         created() {
-            console.log(sessionStorage.getItem('entrance'));
+            console.log(sessionStorage.getItem('businessIn'));
             this.$root.eventHub.$on('flowId', (resp) => {
                 console.log("flowId", resp);
                 this.flowId = resp;
             });
 
-            if (sessionStorage.getItem('entrance') == 2) {
+            if (sessionStorage.getItem('businessIn') == 2) {
                 console.log(this.company);
                 this.stepTwoForm = this.company;
             }
