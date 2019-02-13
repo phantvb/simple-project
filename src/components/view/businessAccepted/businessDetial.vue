@@ -23,8 +23,8 @@
             <div class="block underline">
                 <div class="step">
                     <el-steps direction="vertical" :active="1">
-                        <el-step :title="item.assginee" :description="'递交'+item.operateTime" v-for="item in flowRecordList"></el-step>
-                    </el-steps>
+						<el-step :title="item.assginee" :description="'递交'+item.operateTime" v-for="item in flowRecordList" :key="item.operateTime"></el-step>
+					</el-steps>
                 </div>
                 <button class="pass" v-if="passShow"><i class="el-icon-circle-check" style="color:#67C23A;font-size:16px;transform: translateY(1px);"></i> 审核通过</button>
             </div>
@@ -133,9 +133,9 @@
                     break;
             }
 
-            console.log(this.$route.query.type);
+			console.log(this.$route.query.type);
 
-            console.log(this.$route.query.creators);
+			console.log(this.$route.query.creators);
 
             this.entireFlowId = sessionStorage.getItem('entireFlowId');
             console.log(this.entireFlowId);
@@ -167,5 +167,5 @@
     }
 </script>
 <style lang="scss" scoped>
-    @import './400businessManage.scss';
+	@import './400businessManage.scss';
 </style>

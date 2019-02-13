@@ -294,15 +294,11 @@
 				data.cardEndDate = this.form.cardDate[1];
 				delete data.cardDate;
 				this.$refs.form.validate((valid) => {
-					this.$emit('next', 2, data);
-					this.$emit('isComplete', valid);
-					// if (valid) {
-					//     this.$emit('next', 2, data);
-					//     this.$emit('next', 2, data);
-					// } else {
-					//     this.$emit('next', 2, data);
-					// 	return false;
-					// }
+					if (valid) {
+						this.$emit('next', 2, data);
+					} else {
+						this.$message.error('请先完善信息再进行下一步操作');
+					}
 				});
 			},
 			checkValue(value, options, oldId) {

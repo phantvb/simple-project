@@ -168,7 +168,7 @@
 				this.imageUrl.p4 = this.$global.serverSrc + this.file.p4;
 			}
 		},
-		props: ['oneData', 'idData', 'isComplete', 'editType'],
+		props: ['oneData', 'idData', 'editType'],
 		methods: {
 			next(step) {
 				this.$emit('next', step);
@@ -184,25 +184,25 @@
 				data.companyFlow = {
 					flowId: this.idData.flowId || ''
 				};
-				if (!this.isComplete && bol) {
-					this.$message.error('请先返回上一步完善信息');
-				} else {
-					if (this.editType == 0) {
-						this.$ajax.post(url, data).then(res => {
-							if (res.code == 200) {
-								this.$message.success('操作成功');
-								this.$emit('complete', true);
-							}
-						});
-					} else if (this.editType == 1) {
-						data.companyFlow = this.idData;
-						this.$ajax.post('/vos/company/sendToModifyAudit', data).then(res => {
-							if (res.code == 200) {
-								this.$message.success('操作成功');
-								this.$emit('complete', true);
-							}
-						});
-					}
+				if (this.file.p1 == '' || this.file.p2 == '' || this.file.p3 == '' || this.file.p4 == '') {
+					this.$message.error('请先完善图片信息');
+					return;
+				};
+				if (this.editType == 0) {
+					this.$ajax.post(url, data).then(res => {
+						if (res.code == 200) {
+							this.$message.success('操作成功');
+							this.$emit('complete', true);
+						}
+					});
+				} else if (this.editType == 1) {
+					data.companyFlow = this.idData;
+					this.$ajax.post('/vos/company/sendToModifyAudit', data).then(res => {
+						if (res.code == 200) {
+							this.$message.success('操作成功');
+							this.$emit('complete', true);
+						}
+					});
 				}
 			},
 			beforeAvatarUpload(file) {

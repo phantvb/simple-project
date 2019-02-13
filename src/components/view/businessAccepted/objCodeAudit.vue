@@ -1,79 +1,56 @@
 <template>
-  <div id="objCodeAudit">
-    <!--搜索-->
-    <div class="handlingForm">
-      <el-form ref="form" :model="form" label-width="100px">
-        <div class="objCodeSearch">
-          <el-form-item label="企业名称：">
-            <el-input v-model="form.firmName" size="mini"></el-input>
-          </el-form-item>
-          <el-form-item label="创建时间：">
-            <el-date-picker
-                    size="mini"
-                    v-model="form.time"
-                    type="daterange"
-                    range-separator="至"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期">
-            </el-date-picker>
-          </el-form-item>
+	<div id="objCodeAudit">
+		<!--搜索-->
+		<div class="handlingForm">
+			<el-form ref="form" :model="form" label-width="100px">
+				<div class="objCodeSearch">
+					<el-form-item label="企业名称：">
+						<el-input v-model="form.firmName" size="mini"></el-input>
+					</el-form-item>
+					<el-form-item label="创建时间：">
+						<el-date-picker size="mini" v-model="form.time" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+						</el-date-picker>
+					</el-form-item>
 
-          <el-form-item class="searchBtn">
-            <el-button type="primary" size="mini" @click="objCodeLists()">搜索</el-button>
-            <el-button @click="resetForm('form')" size="mini">重置</el-button>
-          </el-form-item>
-        </div>
-      </el-form>
-    </div>
-    <!--表格-->
-    <div class="entireTable">
-      <!--表格按钮和下拉框-->
-      <div class="BtnSelect">
-        <div class="accountBtn">
-          <el-button type="primary" size="mini" @click="addObjCodeBtn()">+新增目的码</el-button>
-        </div>
-        <div class="accountSelect">
-          <span style="font-size:12px">状态:</span>
-          <el-select v-model="accountStatus" placeholder="请选择" size="mini" @change="statusChange">
-            <el-option
-                    v-for="item in statusOptions"
-                    :key="item.dicKey"
-                    :label="item.dicValue"
-                    :value="item.dicKey">
-            </el-option>
-          </el-select>
-          <el-button type="primary" plain size="mini">导出</el-button>
-        </div>
-      </div>
+					<el-form-item class="searchBtn">
+						<el-button type="primary" size="mini" @click="objCodeLists()">搜索</el-button>
+						<el-button @click="resetForm('form')" size="mini">重置</el-button>
+					</el-form-item>
+				</div>
+			</el-form>
+		</div>
+		<!--表格-->
+		<div class="entireTable">
+			<!--表格按钮和下拉框-->
+			<div class="BtnSelect">
+				<div class="accountBtn">
+					<el-button type="primary" size="mini" @click="addObjCodeBtn()">+新增目的码</el-button>
+				</div>
+				<div class="accountSelect">
+					<span style="font-size:12px">状态:</span>
+					<el-select v-model="accountStatus" placeholder="请选择" size="mini" @change="statusChange">
+						<el-option v-for="item in statusOptions" :key="item.dicKey" :label="item.dicValue" :value="item.dicKey">
+						</el-option>
+					</el-select>
+					<el-button type="primary" plain size="mini">导出</el-button>
+				</div>
+			</div>
 
-      <el-table
-              :data="tableData"
-              style="width: 100%">
-        <el-table-column
-                prop="business.companyName"
-                label="企业名称"
-                width="200">
-        </el-table-column>
+			<el-table :data="tableData" style="width: 100%">
+				<el-table-column prop="business.companyName" label="企业名称" width="200">
+				</el-table-column>
 
-        <el-table-column
-                prop="business.number400"
-                label="400电话">
-        </el-table-column>
+				<el-table-column prop="business.number400" label="400电话">
+				</el-table-column>
 
-        <el-table-column
-                prop="assignee"
-                label="受理人">
-        </el-table-column>
+				<el-table-column prop="assignee" label="受理人">
+				</el-table-column>
 
-        <el-table-column
-                prop="createTime"
-                label="创建时间">
-        </el-table-column>
+				<el-table-column prop="createTime" label="创建时间">
+				</el-table-column>
 
-        <el-table-column
-                prop="status"
-                label="状态">
-        </el-table-column>
+				<el-table-column prop="status" label="状态">
+				</el-table-column>
 
         <el-table-column
                 prop="operation"
@@ -97,7 +74,7 @@
   </div>
 </template>
 <script>
-    import Dialog1 from './dialogObjCode';
+    import DialogObjCode from './dialogObjCode';
     export default {
         name: 'objCodeAudit',
         data() {
@@ -183,7 +160,7 @@
             };
         },
         components: {
-            Dialog1
+            DialogObjCode
         },
         created(){
             this.baseData.roleName = sessionStorage.getItem("roleName");
@@ -527,5 +504,5 @@
 </script>
 
 <style lang="scss" scoped>
-  @import './400businessManage.scss';
+	@import './400businessManage.scss';
 </style>

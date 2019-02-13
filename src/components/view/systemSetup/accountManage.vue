@@ -168,6 +168,9 @@
 						<el-form-item label="性别：">{{detailsDialogForm.sex}}</el-form-item>
 
 						<el-form-item label="手机号：">{{detailsDialogForm.phone}}</el-form-item>
+						<el-form-item label="业务身份：" prop="channel">
+							{{detailsDialogForm.channel=="channel"?'渠道':'自助'}}
+						</el-form-item>
 
 						<el-form-item label="归属地区：">{{detailsDialogForm.province}}{{detailsDialogForm.city}}{{detailsDialogForm.area}}</el-form-item>
 
@@ -383,8 +386,7 @@
 			},
 			// 新增用户
 			addUser() {
-				if (
-					this.addTopForm.loginId == "" ||
+				if (this.addTopForm.loginId == "" ||
 					this.addTopForm.role == "" ||
 					this.addTopForm.userName == "" ||
 					this.addTopForm.phoneNum == "" ||
@@ -463,11 +465,11 @@
 									type: "success"
 								});
 								this.changeTableData();
+								this.dialogVisible = false;
 							}
 						});
-				}
 
-				this.dialogVisible = false;
+				}
 			},
 
 			// 加载下拉列表框的所有角色
@@ -775,7 +777,7 @@
 					});
 
 				// 获取所有角色
-				this.$ajax.get("/vos/role/getAllRole").then(res => {
+				this.$ajax.get("/vos/role/getAllRoleWithoutAdmin").then(res => {
 					if (res.code == 200) {
 						this.allRoleTableData = res.data.data;
 					}

@@ -28,7 +28,7 @@
 						</el-input>
 					</div>
 					<el-button type="primary" size="mini" style="width:80px;" @click="fetchData()">搜索</el-button>
-					<el-button type="primary" plain size="mini" style="width:80px;">重置</el-button>
+					<el-button type="primary" plain size="mini" style="width:80px;" @click="reset">重置</el-button>
 				</div>
 			</div>
 			<section class="left block lineTop">
@@ -59,7 +59,7 @@
 			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page.num" :page-sizes="$global.pageSize" :page-size="page.size" layout="total, sizes, prev, pager, next, jumper" :total="page.total">
 			</el-pagination>
 		</el-tabs>
-		<blackEdit :type="active" :data="editData" :show="blackEditShow" @close="showblackEdit(false,{})"></blackEdit>
+		<blackEdit :type="active" :data="editData" :show="blackEditShow" @close="close"></blackEdit>
 	</div>
 </template>
 <style lang="scss" scoped>
@@ -114,14 +114,18 @@
 			}
 		},
 		mounted() {
-			console.log(this)
 			this.fetchData();
 		},
 		methods: {
+			close(bol) {
+				if (bol === true) {
+					this.fetchData(this.page.num);
+				};
+				this.blackEditShow = false;
+			},
 			showblackEdit(bol, data) {
 				this.editData = data;
 				this.blackEditShow = bol;
-				this.fetchData(this.page.num);
 			},
 			handleSizeChange() {
 				this.fetchData();
@@ -174,6 +178,10 @@
 						this.fetchData(this.page.num);
 					}
 				})
+			},
+			reset() {
+				this.$clear(this.form);
+				this.fetchData();
 			}
 		}
 	}

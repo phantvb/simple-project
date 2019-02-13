@@ -83,8 +83,10 @@ Vue.prototype.$global = {
 };
 router.beforeEach((to, from, next) => {
 	var allPath = store.getters.getRoute;
-	let currentPath = to.path;
+    let currentPath = to.path;
+    var isPass=false;
 	if (currentPath == '/login') {
+        isPass=true;
 		next();
 	};
 	if (allPath.length == 0) {
@@ -94,21 +96,35 @@ router.beforeEach((to, from, next) => {
 				allPath = store.getters.getRoute;
 				for (let i = 0; i < allPath.length; i++) {
 					if (allPath[i].trim() == currentPath) {
+                        isPass=true;
 						next();
 						return;
 					}
-				};
+                };
+                if(!isPass){
+                    Vue.prototype.$message({
+                        message: '权限错误',
+                        type: 'warning'
+                    });
+                }
 			}
 		});
 	} else {
 		for (let i = 0; i < allPath.length; i++) {
 			if (allPath[i].trim() == currentPath) {
+                isPass=true;
 				next();
 				return;
 			}
-		};
-	}
-
+        };
+        if(!isPass){
+            Vue.prototype.$message({
+                message: '权限错误',
+                type: 'warning'
+            });
+        }
+    };
+    
 })
 /* eslint-disable no-new */
 new Vue({

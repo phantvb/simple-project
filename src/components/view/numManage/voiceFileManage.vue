@@ -49,7 +49,7 @@
 			</el-table-column>
 			<el-table-column prop="name" label="操作" min-width="200">
 				<template slot-scope="scope">
-					<el-button size="mini" type="text">停用</el-button>
+					<el-button size="mini" type="text" :data="scope.row">停用</el-button>
 					<el-button size="mini" type="text">注销</el-button>
 					<el-button size="mini" type="text">号码设置</el-button>
 					<el-button size="mini" type="text">详情</el-button>

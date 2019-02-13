@@ -17,8 +17,8 @@
 					<div class="form_con">
 						<div v-for="(item,index) in blackList" :key="index" style="margin-bottom:10px;">
 							<el-input v-model="item.num" size="mini" placeholder="请输入黑名单号码"></el-input>
-							<el-button v-if="type=='all'&&!data.id&&index==0" type="primary" icon="el-icon-plus" size="mini" @click="addBlack(true)"></el-button>
-							<el-button v-if="type=='all'&&!data.id&&index>0" type="primary" icon="el-icon-minus" size="mini" @click="addBlack(false,index)"></el-button>
+							<el-button v-if="type=='all'&&index==0" type="primary" icon="el-icon-plus" size="mini" @click="addBlack(true)"></el-button>
+							<el-button v-if="type=='all'&&index>0" type="primary" icon="el-icon-minus" size="mini" @click="addBlack(false,index)"></el-button>
 						</div>
 					</div>
 				</div>
@@ -53,6 +53,7 @@
 			show(newV, oldV) {
 				this.dialogVisible = newV;
 				if (this.data.id) {
+					this.getValueAdded();
 					this.number400 = this.data.number400;
 					this.blackList[0].num = this.data.blackNumber;
 				} else {
@@ -74,10 +75,7 @@
 				loading: false,
 			};
 		},
-		mounted() {
-			this.getValueAdded();
-			//this.$ajax.get('/vos/number400/getAll')
-		},
+		mounted() {},
 		methods: {
 			submit() {
 				var data = {};
@@ -137,12 +135,12 @@
 				this.$ajax.post(url, data).then(res => {
 					if (res.code == 200) {
 						this.dialogVisible = false;
-						this.close();
+						this.close(true);
 					}
 				})
 			},
-			close() {
-				this.$emit("close");
+			close(bol) {
+				this.$emit("close", bol);
 			},
 			addBlack(bol, index) {
 				if (bol) {
@@ -154,9 +152,9 @@
 				}
 			},
 			getValueAdded() {
-				this.$ajax.get('/vos/blacklist/getValueAdded/' + 8).then(res => {
+				this.$ajax.get('/vos/blacklist/getValueAdded/' + this.data.valueAddedId).then(res => {
 					if (res.code == 200) {
-						this.valueAdded = res.data;
+						this.valueAdded = res.data || {};
 					}
 				})
 			},

@@ -101,7 +101,7 @@
 				}
 			},
 			handleNodeClick(data, node, el) {
-				console.log(data);
+				console.log(123);
 				var _this = this;
 				this.isEdit = false;
 				this.chooseData = data;
@@ -206,6 +206,7 @@
 				this.$ajax.get("/vos/role/getAllRole").then(res => {
 					this.roledata = res.data.data;
 					this.chooseData = res.data.data[0];
+					this.handleNodeClick(res.data.data[0], {});
 					var obj = res.data.data.filter(item => item.name == "ROLE_admin");
 					this.$nextTick(() => {
 						this.$refs.roles.setCurrentKey(obj[0].id);

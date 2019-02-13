@@ -45,7 +45,7 @@
 						<span class="demonstration"> 秒</span>
 					</div>
 					<el-button type="primary" size="mini" style="width:80px;" @click="fetchData()">搜索</el-button>
-					<el-button type="primary" plain size="mini" style="width:80px;">重置</el-button>
+					<el-button type="primary" plain size="mini" style="width:80px;" @click="reset">重置</el-button>
 				</div>
 			</div>
 			<section class="right block lineTop">
@@ -66,7 +66,7 @@
 				</el-table-column>
 				<el-table-column prop="name" label="操作" min-width="200">
 					<template slot-scope="scope">
-						<el-button size="mini" type="text" @click="listen(scope.row.recordAddress)">试听{{scope.row.recordAddress}}</el-button>
+						<el-button size="mini" type="text" @click="listen(scope.row.recordAddress)">试听</el-button>
 						<el-button size="mini" type="text" @click="showTicketDetail(true,scope.row)">详情</el-button>
 					</template>
 				</el-table-column>
@@ -135,6 +135,10 @@
 			this.fetchData();
 		},
 		methods: {
+			reset() {
+				this.$clear(this.form);
+				this.fetchData();
+			},
 			listen(src) {
 				if (this.voiceSrc != src) {
 					this.voiceSrc = src;
