@@ -62,23 +62,14 @@
 				<el-table-column prop="createTime" label="日期">
 				</el-table-column>
 
-        <el-table-column
-          prop="busStatus"
-          label="状态">
-        </el-table-column>
+                <el-table-column
+                prop="busStatus"
+                label="状态">
+                </el-table-column>
 
 				<el-table-column label="操作">
 					<template slot-scope="scope">
-						<!--<router-link :to="{path:'businessData'}">-->
-						<!--<router-link :to="{path:'/addEvent/'+scope.row.contactEvtId}">-->
 						<el-button size="mini" type="text" v-for="(item,index) in scope.row.btnList" :key="index" @click="businessEdit(item.label,scope.row)">{{item.label}}</el-button>
-						<!--</router-link>-->
-						<!--<el-button size="mini" type="text">变更</el-button>-->
-						<!--<el-button size="mini" type="text">注销</el-button>-->
-						<!--<el-button size="mini" type="text">通过审核</el-button>-->
-						<!--<el-button size="mini" type="text">驳回</el-button>-->
-						<!--<el-button size="mini" type="text" @click="businessEdit(scope.row)">送审</el-button>-->
-						<!--<el-button size="mini" type="text">删除</el-button>-->
 					</template>
 				</el-table-column>
 			</el-table>
@@ -158,7 +149,7 @@
 			};
 		},
 		components: {
-            DialogObjCode,
+			DialogObjCode,
 			DialogVoice,
 		},
 		created() {
@@ -213,74 +204,13 @@
 					this.tableData = res.data.businessFlows;
 					this.pageObj.total = res.data.totalCount;
 					this.tableData.map((item) => {
-						// console.log("每一条的信息",item);
-
-						//判断操作
-						if (item.status == 'Wait_To_Audit') {
-							item.status = '等待送审';
-							item.btnList = [];
-							if (this.baseData.roleName == 'ROLE_admin' || item.assignee == this.baseData.username) {
-								item.btnList.push({ label: '送审' }, { label: '详情' });
-							} else {
-								item.btnList.push({ label: '详情' });
-							}
-							// console.log("btnList",item.btnList);
-						} else if (item.status == 'Audit_Success') {
-							item.status = '审核通过';
-							item.btnList = [];
-							if (this.baseData.roleName == 'ROLE_admin' || item.assignee == this.baseData.username) {
-								item.btnList.push({ label: '变更' }, { label: '注销' }, { label: '详情' });
-							} else {
-								item.btnList.push({ label: '详情' });
-							}
-						} else if (item.status == 'Business_Auditing') {
-							item.status = '审核中';
-							item.btnList = [];
-							if (this.baseData.roleName == 'ROLE_admin' || item.assigneeRole == this.baseData.roleName) {
-								item.btnList.push({ label: '审核通过' }, { label: '驳回' }, { label: '详情' });
-							} else {
-								item.btnList.push({ label: '详情' });
-							}
-						} else if (item.status == 'Modify_Auditing') {
-							item.status = '变更审核中';
-							item.btnList = [];
-							if (this.baseData.roleName == 'ROLE_admin' || item.assigneeRole == this.baseData.roleName) {
-								item.btnList.push({ label: '变更审核通过' }, { label: '驳回' }, { label: '终止' }, { label: '详情' });
-							} else {
-								item.btnList.push({ label: '详情' });
-							}
-						} else if (item.status == 'Modify_Rejected') {
-							item.status = '变更审核驳回';
-							item.btnList = [];
-							if (this.baseData.roleName == 'ROLE_admin' || item.assignee == this.baseData.username) {
-								item.btnList.push({ label: '变更' }, { label: '注销' }, { label: '详情' });
-							} else {
-								item.btnList.push({ label: '详情' });
-							}
-						} else if (item.status == 'Canceling_Auditing') {
-							item.status = '注销审核';
-							item.btnList = [];
-							if (this.baseData.roleName == 'ROLE_admin' || item.assignee == this.baseData.username) {
-								item.btnList.push({ label: '审核通过' }, { label: '终止' }, { label: '详情' });
-							} else {
-								item.btnList.push({ label: '详情' });
-							}
-						} else if (item.status == 'Cancelled') {
-							item.status = '已注销';
-							item.btnList = [];
-							item.btnList.push({ label: '详情' });
-						} else if (item.status == 'Terminate_Flow') {
-							item.status = '受理终止';
-							item.btnList = [];
-							item.btnList.push({ label: '详情' });
-						}
 
                     //判断操作
                     if(item.status=='Wait_To_Audit'){
                         item.busStatus='等待送审';
                         item.btnList=[];
                         if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
-                            item.btnList.push({label:'送审'},{label:'详情'});
+                            item.btnList.push({label:'送审'},{label:'详情'},{label:'删除'});
                         }else{
                             item.btnList.push({label:'详情'});
                         }
@@ -386,7 +316,7 @@
           console.log(this.entireFlowId);
             sessionStorage.setItem('entireFlowId',this.entireFlowId);
           if(val=='送审'){
-              sessionStorage.setItem("businessIn",2);
+              sessionStorage.setItem("businessIn",1);
               this.getCacheData(val);
           }else if(val=='详情'){
               console.log('详情入口');
@@ -524,11 +454,11 @@
             var obj = {};
             var url;
             if (data.status == 'Company_Auditing') {
-                url = '/vos/company/companyAuditReject';
+                url = '/vos/business/businessAuditReject';
             } else if (data.status == 'Modify_Auditing') {
-                url = '/vos/company/modifyAuditReject';
+                url = '/vos/destnum/auditReject';
             } else if (data.status == 'Canceling_Auditing') {
-                url = '/vos/company/cancelAuditReject';
+                url = '/vos/voice/auditReject';
             };
             obj.companyFlow = {
                 flowId: data.flowId,

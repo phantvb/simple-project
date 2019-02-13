@@ -7,6 +7,7 @@
                     <el-input v-model="acceptForm.companyName"
                               size="mini"
                               @input="searchFirm"
+                              @blur = 'nameListHidden'
                               placeholder=" 营业执照上公司全称，个体工商户填写字号全称，组织机构上的机构全称"></el-input>
                     <div id="firmNameList" v-if="firmNameShow" style="margin-top:40px">
                         <ul>
@@ -111,7 +112,7 @@
                 </div>
 
                 <el-form-item label="企业电话：" class="identity" prop="phone">
-                    <el-input v-model="acceptForm.phone" size="mini" placeholder="填入企业办公所在地址"></el-input>
+                    <el-input v-model="acceptForm.phone" size="mini" placeholder="填入企业电话"></el-input>
                 </el-form-item>
 
             </div>
@@ -353,6 +354,9 @@
                         }
                     })
                 })
+            },
+            nameListHidden(){
+                this.firmNameShow = false;
             },
             //企业名称li
             firmNameLi(val) {
