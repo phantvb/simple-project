@@ -58,7 +58,7 @@
 		</div>
 
 		<div class="addTimePacketDialog">
-			<el-dialog title="新增/编辑时长包方案" :visible.sync="addTimePacketFormDialogVisible" width="30%" :before-close="handleClose">
+			<el-dialog title="新增/编辑时长包方案" :visible.sync="addTimePacketFormDialogVisible" width="30%">
 				<div>
 					<el-form ref="addTimePacketForm" :model="addTimePacketForm" label-width="100px">
 						<el-form-item label="时长包名：">
@@ -119,8 +119,8 @@
 				submitData: "inline-block",
 
 				disabledSelf: false,
-                disabledChannel: false,
-                loading:false
+				disabledChannel: false,
+				loading: false
 			};
 		},
 		methods: {
@@ -315,20 +315,10 @@
 						});
 					});
 			},
-
-			//关闭确认
-			handleClose(done) {
-				this.$confirm("确认关闭？")
-					.then(_ => {
-						done();
-					})
-					.catch(_ => {});
-			},
-
 			handleChange() {},
 
 			loadData() {
-                this.loading=true;
+				this.loading = true;
 				this.$ajax
 					.post("/vos/tariffPackage/getTimePacket", {
 						timePacket: {
@@ -349,7 +339,7 @@
 					})
 					.then(res => {
 						if (res.code == 200) {
-                            this.loading=false;
+							this.loading = false;
 							this.dTotalCount2 = res.data.timePacketList.length;
 							this.dTableData2 = res.data.timePacketList;
 						}

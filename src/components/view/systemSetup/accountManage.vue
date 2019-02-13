@@ -438,7 +438,7 @@
 							user: {
 								id: "",
 								username: this.addTopForm.loginId,
-								password: "123456",
+								password: "",
 								roleName: role,
 								roleId: this.addTopForm.role,
 								enabled: this.addTopForm.status,

@@ -25,38 +25,33 @@
 			<div class="form_item">
 				<div class="form_title right">规则类型：</div>
 				<div class="form_con">
-					<el-select v-model="allData.actionSet.ruleType" placeholder="请选择" size="mini">
+					<el-select v-model="allData.actionSet.ruleType" placeholder="请选择" size="mini" multiple collapse-tags>
 						<el-option v-for="item in ruleOptions" :key="item.value" :label="item.label" :value="item.value">
 						</el-option>
 					</el-select>
-					<el-date-picker v-if="allData.actionSet.ruleType=='specificDate'" v-model="allData.actionSet.ruleConfig.date" type="date" placeholder="选择日期" size="mini">
-					</el-date-picker>
 				</div>
 			</div>
-			<div v-if="allData.actionSet.ruleType=='week'" class="form_item">
-				<div class="form_con">
-					<el-checkbox-group v-model="allData.actionSet.ruleConfig.time" size="mini">
-						<div v-for="item in dayOptions" :key="item.value" style="float:left;">
-							<el-checkbox-button size="mini" :label="item.value">{{item.label}}</el-checkbox-button>&#12288;
-						</div>
-					</el-checkbox-group>
-				</div>
-			</div>
-			<div v-if="allData.actionSet.ruleType=='month'" class="form_item">
-				<div class="form_con">
-					<el-checkbox-group v-model="allData.actionSet.ruleConfig.time" size="mini" @change="test">
-						<!-- <div style="overflow: hidden; margin-bottom:15px;"> -->
-						<div v-for="(item,index) in monthOptions" :key="item.value" style="float:left;">
-							<el-checkbox-button v-if="index<6" size="mini" :label="item.value">{{item.label}}</el-checkbox-button>&#12288;
-						</div>
-						<!-- </div> -->
-						<!-- <div style="overflow: hidden; margin-bottom:15px;"> -->
-						<div v-for="(item,index) in monthOptions" :key="item.value" style="float:left;">
-							<el-checkbox-button v-if="index>5" size="mini" :label="item.value">{{item.label}}</el-checkbox-button>&#12288;
-						</div>
-						<!-- </div> -->
-					</el-checkbox-group>
-				</div>
+			<div class="form_item">
+				<el-tabs v-model="actionSetActiveName" type="card" size="small" class="form_con">
+					<el-tab-pane label="每周设置" name="week" v-if="allData.actionSet.ruleType.indexOf('week')!=-1">
+						<el-checkbox-group v-model="allData.actionSet.ruleConfig.weekTime" size="mini">
+							<div v-for="item in dayOptions" :key="item.value" style="float:left;">
+								<el-checkbox-button size="mini" :label="item.value">{{item.label}}</el-checkbox-button>&#12288;
+							</div>
+						</el-checkbox-group>
+					</el-tab-pane>
+					<el-tab-pane label="每月设置" name="month" v-if="allData.actionSet.ruleType.indexOf('month')!=-1">
+						<el-checkbox-group v-model="allData.actionSet.ruleConfig.monthTime" size="mini">
+							<div v-for="(item,index) in monthOptions" :key="item.value" style="float:left;">
+								<el-checkbox-button size="mini" :label="item.value">{{item.label}}</el-checkbox-button>&#12288;
+							</div>
+						</el-checkbox-group>
+					</el-tab-pane>
+					<el-tab-pane label="特定日期" name="specificDate" v-if="allData.actionSet.ruleType.indexOf('specificDate')!=-1">
+						<el-date-picker v-model="allData.actionSet.ruleConfig.date" type="date" placeholder="选择日期" size="mini">
+						</el-date-picker>
+					</el-tab-pane>
+				</el-tabs>
 			</div>
 			<div class="srearch">
 				<div class="form_item">
@@ -148,39 +143,35 @@
 			<div class="form_item">
 				<div class="form_title right">规则类型：</div>
 				<div class="form_con">
-					<el-select v-model="allData.hookSet.ruleType" placeholder="请选择" size="mini">
+					<el-select v-model="allData.hookSet.ruleType" placeholder="请选择" size="mini" multiple collapse-tags>
 						<el-option v-for="item in ruleOptions" :key="item.value" :label="item.label" :value="item.value">
 						</el-option>
 					</el-select>
-					<el-date-picker v-if="allData.hookSet.ruleType=='specificDate'" v-model="allData.hookSet.ruleConfig.date" type="date" placeholder="选择日期" size="mini">
-					</el-date-picker>
 				</div>
 			</div>
-			<div v-if="allData.hookSet.ruleType=='week'" class="form_item">
-				<div class="form_con">
-					<el-checkbox-group v-model="allData.hookSet.ruleConfig.time" size="mini">
-						<div v-for="item in dayOptions" :key="item.value" style="float:left;">
-							<el-checkbox-button size="mini" :label="item.value">{{item.label}}</el-checkbox-button>&#12288;
-						</div>
-					</el-checkbox-group>
-				</div>
-			</div>
-			<div v-if="allData.hookSet.ruleType=='month'" class="form_item">
-				<div class="form_con">
-					<el-checkbox-group v-model="allData.hookSet.ruleConfig.time" size="mini">
-						<div style="overflow: hidden; margin-bottom:15px;">
-							<div v-for="(item,index) in monthOptions" :key="item.value" style="float:left;">
-								<el-checkbox-button v-if="index<6" size="mini" :label="item.value">{{item.label}}</el-checkbox-button>&#12288;
+			<div class="form_item">
+				<el-tabs v-model="hookSetActiveName" type="card" size="small" class="form_con">
+					<el-tab-pane label="每周设置" name="week" v-if="allData.hookSet.ruleType.indexOf('week')!=-1">
+						<el-checkbox-group v-model="allData.hookSet.ruleConfig.weekTime" size="mini">
+							<div v-for="item in dayOptions" :key="item.value" style="float:left;">
+								<el-checkbox-button size="mini" :label="item.value">{{item.label}}</el-checkbox-button>&#12288;
 							</div>
-						</div>
-						<div style="overflow: hidden; margin-bottom:15px;">
+						</el-checkbox-group>
+					</el-tab-pane>
+					<el-tab-pane label="每月设置" name="month" v-if="allData.hookSet.ruleType.indexOf('month')!=-1">
+						<el-checkbox-group v-model="allData.hookSet.ruleConfig.monthTime" size="mini">
 							<div v-for="(item,index) in monthOptions" :key="item.value" style="float:left;">
-								<el-checkbox-button v-if="index>5" size="mini" :label="item.value">{{item.label}}</el-checkbox-button>&#12288;
+								<el-checkbox-button size="mini" :label="item.value">{{item.label}}</el-checkbox-button>&#12288;
 							</div>
-						</div>
-					</el-checkbox-group>
-				</div>
+						</el-checkbox-group>
+					</el-tab-pane>
+					<el-tab-pane label="特定日期" name="specificDate" v-if="allData.hookSet.ruleType.indexOf('specificDate')!=-1">
+						<el-date-picker v-model="allData.hookSet.ruleConfig.date" type="date" placeholder="选择日期" size="mini">
+						</el-date-picker>
+					</el-tab-pane>
+				</el-tabs>
 			</div>
+
 			<div class="srearch">
 				<div class="form_item">
 					<div class="form_title right">播放时间：</div>
@@ -218,38 +209,33 @@
 			<div class="form_item">
 				<div class="form_title right">规则类型：</div>
 				<div class="form_con">
-					<el-select v-model="allData.ivrSet.ruleType" placeholder="请选择" size="mini">
+					<el-select v-model="allData.ivrSet.ruleType" placeholder="请选择" size="mini" multiple collapse-tags>
 						<el-option v-for="item in ruleOptions" :key="item.value" :label="item.label" :value="item.value">
 						</el-option>
 					</el-select>
-					<el-date-picker v-if="allData.ivrSet.ruleType=='specificDate'" v-model="allData.ivrSet.ruleConfig.date" type="date" placeholder="选择日期" size="mini">
-					</el-date-picker>
 				</div>
 			</div>
-			<div v-if="allData.ivrSet.ruleType=='week'" class="form_item">
-				<div class="form_con">
-					<el-checkbox-group v-model="allData.ivrSet.ruleConfig.time" size="mini">
-						<div v-for="item in dayOptions" :key="item.value" style="float:left;">
-							<el-checkbox-button size="mini" :value='item.value' :label="item.label"></el-checkbox-button>&#12288;
-						</div>
-					</el-checkbox-group>
-				</div>
-			</div>
-			<div v-if="allData.ivrSet.ruleType=='month'" class="form_item">
-				<div class="form_con">
-					<el-checkbox-group v-model="allData.ivrSet.ruleConfig.time" size="mini">
-						<div style="overflow: hidden; margin-bottom:15px;">
-							<div v-for="(item,index) in monthOptions" :key="item.value" style="float:left;">
-								<el-checkbox-button v-if="index<6" size="mini" :value='item.value' :label="item.label"></el-checkbox-button>&#12288;
+			<div class="form_item">
+				<el-tabs v-model="ivrSetActiveName" type="card" size="small" class="form_con">
+					<el-tab-pane label="每周设置" name="week" v-if="allData.ivrSet.ruleType.indexOf('week')!=-1">
+						<el-checkbox-group v-model="allData.ivrSet.ruleConfig.weekTime" size="mini">
+							<div v-for="item in dayOptions" :key="item.value" style="float:left;">
+								<el-checkbox-button size="mini" :label="item.value">{{item.label}}</el-checkbox-button>&#12288;
 							</div>
-						</div>
-						<div style="overflow: hidden; margin-bottom:15px;">
+						</el-checkbox-group>
+					</el-tab-pane>
+					<el-tab-pane label="每月设置" name="month" v-if="allData.ivrSet.ruleType.indexOf('month')!=-1">
+						<el-checkbox-group v-model="allData.ivrSet.ruleConfig.monthTime" size="mini">
 							<div v-for="(item,index) in monthOptions" :key="item.value" style="float:left;">
-								<el-checkbox-button v-if="index>5" size="mini" :value='item.value' :label="item.label"></el-checkbox-button>&#12288;
+								<el-checkbox-button size="mini" :label="item.value">{{item.label}}</el-checkbox-button>&#12288;
 							</div>
-						</div>
-					</el-checkbox-group>
-				</div>
+						</el-checkbox-group>
+					</el-tab-pane>
+					<el-tab-pane label="特定日期" name="specificDate" v-if="allData.ivrSet.ruleType.indexOf('specificDate')!=-1">
+						<el-date-picker v-model="allData.ivrSet.ruleConfig.date" type="date" placeholder="选择日期" size="mini">
+						</el-date-picker>
+					</el-tab-pane>
+				</el-tabs>
 			</div>
 			<div class="srearch">
 				<div class="form_item">
@@ -369,6 +355,9 @@
 		data() {
 			return {
 				//allData: {},
+				actionSetActiveName: 'week',
+				hookSetActiveName: 'week',
+				ivrSetActiveName: 'week',
 				treeData: [],
 				numSetActionIndex: 0,
 				defaultProps: {
@@ -539,9 +528,10 @@
 						temName: '转接',
 						actionName: '一级 11',
 						actionSet: {
-							ruleType: 'ignore',
+							ruleType: ['ignore'],
 							ruleConfig: {
-								time: [],
+								weekTime: [],
+								monthTime: [],
 								date: ''
 							},
 							workTime: [''],
@@ -550,19 +540,19 @@
 						},
 						hookSet: {
 							voiceType: 0,
-							ruleType: 'ignore',
+							ruleType: ['ignore'],
 							ruleConfig: {
-								time: [],
-								date: ''
+								weekTime: [],
+								monthTime: [],
 							},
 							workTime: ['']
 						},
 						ivrSet: {
 							voiceType: 0,
-							ruleType: 'ignore',
+							ruleType: ['ignore'],
 							ruleConfig: {
-								time: [],
-								date: ''
+								weekTime: [],
+								monthTime: [],
 							},
 							workTime: ['']
 						},
@@ -592,7 +582,7 @@
 					});
 					postdata.ruleType = objData.actionSet.ruleType;
 					if (objData.actionSet.ruleType == 'week' || objData.actionSet.ruleType == 'month') {
-						postdata.specificDate = objData.actionSet.ruleConfig.time.join(',');
+						postdata.specificDate = objData.actionSet.ruleConfig[objData.actionSet.ruleType + 'Time'].join(',');
 					} else if (objData.actionSet.ruleType == 'specificDate') {
 						postdata.specificDate = objData.actionSet.ruleConfig.date;
 					}
@@ -604,7 +594,7 @@
 					});
 					postdata.ruleType = objData.hookSet.ruleType;
 					if (objData.hookSet.ruleType == 'week' || objData.hookSet.ruleType == 'month') {
-						postdata.specificDate = objData.hookSet.ruleConfig.time.join(',');
+						postdata.specificDate = objData.hookSet.ruleConfig[objData.hookSet.ruleType + 'Time'].join(',');
 					} else if (objData.hookSet.ruleType == 'specificDate') {
 						postdata.specificDate = objData.hookSet.ruleConfig.date;
 					}
@@ -617,7 +607,7 @@
 					});
 					postdata.ruleType = objData.ivrSet.ruleType;
 					if (objData.ivrSet.ruleType == 'week' || objData.ivrSet.ruleType == 'month') {
-						postdata.specificDate = objData.ivrSet.ruleConfig.time.join(',');
+						postdata.specificDate = objData.ivrSet.ruleConfig[objData.ivrSet.ruleType + 'Time'].join(',');
 					} else if (objData.ivrSet.ruleType == 'specificDate') {
 						postdata.specificDate = objData.ivrSet.ruleConfig.date;
 					}

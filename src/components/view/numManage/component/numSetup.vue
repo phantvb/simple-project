@@ -184,9 +184,10 @@
 							order: 0,
 							actionName: '一级',
 							actionSet: {
-								ruleType: 'ignore',
+								ruleType: ['ignore'],
 								ruleConfig: {
-									time: [],
+									weekTime: [],
+									monthTime: [],
 									date: ''
 								},
 								workTime: [''],
@@ -195,18 +196,20 @@
 							},
 							hookSet: {
 								voiceType: 0,
-								ruleType: 'ignore',
+								ruleType: ['ignore'],
 								ruleConfig: {
-									time: [],
+									weekTime: [],
+									monthTime: [],
 									date: ''
 								},
 								workTime: ['']
 							},
 							ivrSet: {
 								voiceType: 0,
-								ruleType: 'ignore',
+								ruleType: ['ignore'],
 								ruleConfig: {
-									time: [],
+									weekTime: [],
+									monthTime: [],
 									date: ''
 								},
 								workTime: ['']
@@ -300,9 +303,10 @@
 					order: numSetAction.order,
 					actionName: numSetAction.actionName,
 					actionSet: {
-						ruleType: 'ignore',
+						ruleType: ['ignore'],
 						ruleConfig: {
-							time: [],
+							weekTime: [],
+							monthTime: [],
 							date: ''
 						},
 						workTime: [''],
@@ -311,18 +315,20 @@
 					},
 					hookSet: {
 						voiceType: 0,
-						ruleType: 'ignore',
+						ruleType: ['ignore'],
 						ruleConfig: {
-							time: [],
+							weekTime: [],
+							monthTime: [],
 							date: ''
 						},
 						workTime: ['']
 					},
 					ivrSet: {
 						voiceType: 0,
-						ruleType: 'ignore',
+						ruleType: ['ignore'],
 						ruleConfig: {
-							time: [],
+							weekTime: [],
+							monthTime: [],
 							date: ''
 						},
 						workTime: ['']

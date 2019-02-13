@@ -68,7 +68,7 @@
 		</div>
 
 		<div class="addComboDialog">
-			<el-dialog title="新增增值套餐" :visible.sync="addComboFromDialogVisible" width="30%" :before-close="handleClose">
+			<el-dialog title="新增增值套餐" :visible.sync="addComboFromDialogVisible" width="30%">
 				<div>
 					<el-form ref="AddComboForm" :model="AddComboForm" label-width="100px">
 						<el-form-item label="套餐名称：">
@@ -160,8 +160,8 @@
 				submitData: "inline-block",
 
 				disabledSelf: false,
-                disabledChannel: false,
-                loading:false
+				disabledChannel: false,
+				loading: false
 			};
 		},
 		methods: {
@@ -381,19 +381,11 @@
 					});
 			},
 
-			//关闭确认
-			handleClose(done) {
-				this.$confirm("确认关闭？")
-					.then(_ => {
-						done();
-					})
-					.catch(_ => {});
-			},
 
 			handleChange() {},
 
 			loadData() {
-                this.loading=true;
+				this.loading = true;
 				this.$ajax
 					.post("/vos/tariffPackage/getValueAdded", {
 						valueAdded: {
@@ -434,7 +426,7 @@
 					})
 					.then(res => {
 						if (res.code == 200) {
-                            this.loading = false;
+							this.loading = false;
 							this.bTotalCount2 = res.data.valueAddedList.length;
 							this.bTableData2 = res.data.valueAddedList;
 							for (var i = 0; i < this.bTotalCount2; i++) {
