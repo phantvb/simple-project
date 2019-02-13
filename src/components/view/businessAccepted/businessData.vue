@@ -221,11 +221,11 @@
             this.addValueList.map((item)=>{
                 item.amount = item.numOfMonth;
                 if(item.units=="perMonth"){
-                    item.unit="月"
+                    item.unit=item.valueAddedFee+"元/月"
                 }else if(item.units=="perOne"){
-                    item.unit="个"
+                    item.unit="元/个"
                 }else if(item.units=="perMonthOne"){
-                    item.unit="月/个"
+                    item.unit="元/月/个"
                 }
                 item.amounts = item.amount + item.unit;
                 if(item.presents==1){

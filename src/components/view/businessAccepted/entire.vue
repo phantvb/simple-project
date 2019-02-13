@@ -451,14 +451,22 @@
             });
         },
         async backCompany(val,data) {
+			    console.log(val);
+			    console.log(data);
             var obj = {};
             var url;
-            if (data.status == 'Company_Auditing') {
+            if (data.status == 'Business_Auditing' || data.type == '业务') {
+                //业务受理驳回
                 url = '/vos/business/businessAuditReject';
-            } else if (data.status == 'Modify_Auditing') {
+            } else if (data.status == 'Modify_Auditing' || data.type == '目的码') {
+                //目的码驳回
                 url = '/vos/destnum/auditReject';
-            } else if (data.status == 'Canceling_Auditing') {
+            } else if (data.status == 'Canceling_Auditing' || data.type == '语音') {
+                //语音驳回
                 url = '/vos/voice/auditReject';
+            }else if (data.status == 'Modify_Auditing') {
+                //变更审核驳回
+                url = '/vos/company/modifyAuditReject';
             };
             obj.companyFlow = {
                 flowId: data.flowId,
