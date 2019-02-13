@@ -89,7 +89,7 @@
 	</div>
 </template>
 <script>
-	import Dialog1 from './dialog1';
+	import DialogObjCode from './dialogObjCode';
 	import DialogVoice from './dialogVoice';
 	import { mapState } from "vuex";
 	export default {
@@ -158,7 +158,7 @@
 			};
 		},
 		components: {
-			Dialog1,
+            DialogObjCode,
 			DialogVoice,
 		},
 		created() {
