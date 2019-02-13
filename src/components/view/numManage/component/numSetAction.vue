@@ -3,20 +3,20 @@
 		<div class="form_item" v-if="!isFirst">
 			<div class="form_title right">动作名称：</div>
 			<div class="form_con">
-				<el-input v-model="data.actionName" size="mini"></el-input>
+				<el-input v-model="allData.actionName" size="mini"></el-input>
 			</div>
 		</div>
 		<div class="form_item" v-if="!isFirst">
 			<div class="form_title right">按键设置：</div>
 			<div class="form_con">
-				<div class="pributton">{{data.keyNumber}}</div>
+				<div class="pributton">{{allData.keyNumber}}</div>
 			</div>
 		</div>
-		<div v-if="serverType=='transfer'">
+		<div v-if="allData.businessType=='transfer'">
 			<div class="form_item">
 				<div class="form_title right">业务类型：</div>
 				<div class="form_con">
-					<el-select v-model="serverType" placeholder="请选择" size="mini">
+					<el-select v-model="allData.businessType" placeholder="请选择" size="mini">
 						<el-option v-for="item in (isFirst?options:optionscopy)" :disabled="allType?allType.indexOf(item.value)!=-1:false" :key="item.value" :label="item.label" :value="item.value">
 						</el-option>
 					</el-select>
@@ -25,26 +25,26 @@
 			<div class="form_item">
 				<div class="form_title right">规则类型：</div>
 				<div class="form_con">
-					<el-select v-model="data.actionSet.ruleType" placeholder="请选择" size="mini">
+					<el-select v-model="allData.actionSet.ruleType" placeholder="请选择" size="mini">
 						<el-option v-for="item in ruleOptions" :key="item.value" :label="item.label" :value="item.value">
 						</el-option>
 					</el-select>
-					<el-date-picker v-if="data.actionSet.ruleType=='specificDate'" v-model="data.actionSet.ruleConfig.date" type="date" placeholder="选择日期" size="mini">
+					<el-date-picker v-if="allData.actionSet.ruleType=='specificDate'" v-model="allData.actionSet.ruleConfig.date" type="date" placeholder="选择日期" size="mini">
 					</el-date-picker>
 				</div>
 			</div>
-			<div v-if="data.actionSet.ruleType=='week'" class="form_item">
+			<div v-if="allData.actionSet.ruleType=='week'" class="form_item">
 				<div class="form_con">
-					<el-checkbox-group v-model="data.actionSet.ruleConfig.time" size="mini">
+					<el-checkbox-group v-model="allData.actionSet.ruleConfig.time" size="mini">
 						<div v-for="item in dayOptions" :key="item.value" style="float:left;">
 							<el-checkbox-button size="mini" :label="item.value">{{item.label}}</el-checkbox-button>&#12288;
 						</div>
 					</el-checkbox-group>
 				</div>
 			</div>
-			<div v-if="data.actionSet.ruleType=='month'" class="form_item">
+			<div v-if="allData.actionSet.ruleType=='month'" class="form_item">
 				<div class="form_con">
-					<el-checkbox-group v-model="data.actionSet.ruleConfig.time" size="mini" @change="test">
+					<el-checkbox-group v-model="allData.actionSet.ruleConfig.time" size="mini" @change="test">
 						<!-- <div style="overflow: hidden; margin-bottom:15px;"> -->
 						<div v-for="(item,index) in monthOptions" :key="item.value" style="float:left;">
 							<el-checkbox-button v-if="index<6" size="mini" :label="item.value">{{item.label}}</el-checkbox-button>&#12288;
@@ -62,8 +62,8 @@
 				<div class="form_item">
 					<div class="form_title right">工作时间：</div>
 					<div class="form_con">
-						<div v-for="(item,index) in data.actionSet.workTime" :key="index" style="margin-bottom:10px">
-							<el-time-picker value-format="HH:mm:ss" is-range v-model="data.actionSet.workTime[index]" range-separator="至" start-placeholder="开始时间" end-placeholder="结束时间" placeholder="选择时间范围" size="mini" style="margin-bottom:10px;">
+						<div v-for="(item,index) in allData.actionSet.workTime" :key="index" style="margin-bottom:10px">
+							<el-time-picker value-format="HH:mm:ss" is-range v-model="allData.actionSet.workTime[index]" range-separator="至" start-placeholder="开始时间" end-placeholder="结束时间" placeholder="选择时间范围" size="mini" style="margin-bottom:10px;">
 							</el-time-picker>
 							<el-button v-if="index==0" type="primary" size="mini" icon="el-icon-plus" @click="addactTime(true)"></el-button>
 							<el-button v-if="index>0" type="primary" size="mini" icon="el-icon-minus" @click="addactTime(false)"></el-button>
@@ -73,10 +73,10 @@
 				<div class="form_item">
 					<div class="form_title right">工作时间&#12288;<br>目的码：</div>
 					<div class="form_con">
-						<el-table :data="data.actionSet.codeWork" border style="width: 50%" :header-row-class-name="'lightblue'">
+						<el-table :data="allData.actionSet.codeWork" border :header-row-class-name="'lightblue'">
 							<el-table-column prop="code" label="目的码" min-width="150">
 								<template slot-scope="scope">
-									<el-select v-model="data.actionSet.codeWork[scope.$index]" placeholder="请选择" size="mini">
+									<el-select v-model="allData.actionSet.codeWork[scope.$index]" placeholder="请选择" size="mini">
 										<el-option v-for="item in codeOptions" :key="item.value" :value="item.label">
 										</el-option>
 									</el-select>
@@ -88,7 +88,7 @@
 								</template>
 							</el-table-column>
 						</el-table>
-						<div class="lightblue center" style="width:50%">
+						<div class="lightblue center" style="width:100%">
 							<el-button size="mini" type="text" @click="codeWorkadd">添加目的码</el-button>
 						</div>
 					</div>
@@ -96,10 +96,10 @@
 				<div class="form_item">
 					<div class="form_title right">非工作时间&#12288;<br>目的码：</div>
 					<div class="form_con">
-						<el-table :data="data.actionSet.codeUnWork" border style="width: 50%" :header-row-class-name="'lightblue'">
+						<el-table :data="allData.actionSet.codeUnWork" border :header-row-class-name="'lightblue'">
 							<el-table-column prop="code" label="目的码" min-width="150">
 								<template slot-scope="scope">
-									<el-select v-model="data.actionSet.codeUnWork[scope.$index]" placeholder="请选择" size="mini">
+									<el-select v-model="allData.actionSet.codeUnWork[scope.$index]" placeholder="请选择" size="mini">
 										<el-option v-for="item in codeOptions" :key="item.value" :value="item.label">
 										</el-option>
 									</el-select>
@@ -111,7 +111,7 @@
 								</template>
 							</el-table-column>
 						</el-table>
-						<div class="lightblue center" style="width:50%">
+						<div class="lightblue center" style="width:100%">
 							<el-button size="mini" type="text" @click="codeUnWorkadd">添加目的码</el-button>
 						</div>
 					</div>
@@ -125,11 +125,11 @@
 				</div>
 			</div>
 		</div>
-		<div v-if="serverType=='playback'">
+		<div v-if="allData.businessType=='playback'">
 			<div class="form_item">
 				<div class="form_title right">业务类型：</div>
 				<div class="form_con">
-					<el-select v-model="serverType" placeholder="请选择" size="mini">
+					<el-select v-model="allData.businessType" placeholder="请选择" size="mini">
 						<el-option v-for="item in (isFirst?options:optionscopy)" :disabled="allType?allType.indexOf(item.value)!=-1:false" :key="item.value" :label="item.label" :value="item.value">
 						</el-option>
 					</el-select>
@@ -138,7 +138,7 @@
 			<div class="form_item">
 				<div class="form_title right">语音选择：</div>
 				<div class="form_con">
-					<el-select v-model="data.hookSet.voiceType" placeholder="请选择" size="mini">
+					<el-select v-model="allData.hookSet.voiceType" placeholder="请选择" size="mini">
 						<el-option v-for="item in (isFirst?options:optionscopy)" :key="item.value" :label="item.label" :value="item.value">
 						</el-option>
 					</el-select>
@@ -148,26 +148,26 @@
 			<div class="form_item">
 				<div class="form_title right">规则类型：</div>
 				<div class="form_con">
-					<el-select v-model="data.hookSet.ruleType" placeholder="请选择" size="mini">
+					<el-select v-model="allData.hookSet.ruleType" placeholder="请选择" size="mini">
 						<el-option v-for="item in ruleOptions" :key="item.value" :label="item.label" :value="item.value">
 						</el-option>
 					</el-select>
-					<el-date-picker v-if="data.hookSet.ruleType=='specificDate'" v-model="data.hookSet.ruleConfig.date" type="date" placeholder="选择日期" size="mini">
+					<el-date-picker v-if="allData.hookSet.ruleType=='specificDate'" v-model="allData.hookSet.ruleConfig.date" type="date" placeholder="选择日期" size="mini">
 					</el-date-picker>
 				</div>
 			</div>
-			<div v-if="data.hookSet.ruleType=='week'" class="form_item">
+			<div v-if="allData.hookSet.ruleType=='week'" class="form_item">
 				<div class="form_con">
-					<el-checkbox-group v-model="data.hookSet.ruleConfig.time" size="mini">
+					<el-checkbox-group v-model="allData.hookSet.ruleConfig.time" size="mini">
 						<div v-for="item in dayOptions" :key="item.value" style="float:left;">
 							<el-checkbox-button size="mini" :label="item.value">{{item.label}}</el-checkbox-button>&#12288;
 						</div>
 					</el-checkbox-group>
 				</div>
 			</div>
-			<div v-if="data.hookSet.ruleType=='month'" class="form_item">
+			<div v-if="allData.hookSet.ruleType=='month'" class="form_item">
 				<div class="form_con">
-					<el-checkbox-group v-model="data.hookSet.ruleConfig.time" size="mini">
+					<el-checkbox-group v-model="allData.hookSet.ruleConfig.time" size="mini">
 						<div style="overflow: hidden; margin-bottom:15px;">
 							<div v-for="(item,index) in monthOptions" :key="item.value" style="float:left;">
 								<el-checkbox-button v-if="index<6" size="mini" :label="item.value">{{item.label}}</el-checkbox-button>&#12288;
@@ -185,8 +185,8 @@
 				<div class="form_item">
 					<div class="form_title right">播放时间：</div>
 					<div class="form_con">
-						<div v-for="(item,index) in data.hookSet.workTime" :key="index" style="margin-bottom:10px">
-							<el-time-picker value-format="HH:mm:ss" is-range v-model="data.hookSet.workTime[index]" range-separator="至" start-placeholder="开始时间" end-placeholder="结束时间" placeholder="选择时间范围" size="mini" style="margin-bottom:10px;">
+						<div v-for="(item,index) in allData.hookSet.workTime" :key="index" style="margin-bottom:10px">
+							<el-time-picker value-format="HH:mm:ss" is-range v-model="allData.hookSet.workTime[index]" range-separator="至" start-placeholder="开始时间" end-placeholder="结束时间" placeholder="选择时间范围" size="mini" style="margin-bottom:10px;">
 							</el-time-picker>
 							<el-button v-if="index==0" type="primary" size="mini" icon="el-icon-plus" @click="addactTime(true)"></el-button>
 							<el-button v-if="index>0" type="primary" size="mini" icon="el-icon-minus" @click="addactTime(false)"></el-button>
@@ -195,11 +195,11 @@
 				</div>
 			</div>
 		</div>
-		<div v-if="serverType=='IVR'">
+		<div v-if="allData.businessType=='IVR'">
 			<div class="form_item">
 				<div class="form_title right">业务类型：</div>
 				<div class="form_con">
-					<el-select v-model="serverType" placeholder="请选择" size="mini">
+					<el-select v-model="allData.businessType" placeholder="请选择" size="mini">
 						<el-option v-for="item in (isFirst?options:optionscopy)" :disabled="allType?allType.indexOf(item.value)!=-1:false" :key="item.value" :label="item.label" :value="item.value">
 						</el-option>
 					</el-select>
@@ -208,7 +208,7 @@
 			<div class="form_item">
 				<div class="form_title right">语音选择：</div>
 				<div class="form_con">
-					<el-select v-model="data.ivrSet.voiceType" placeholder="请选择" size="mini">
+					<el-select v-model="allData.ivrSet.voiceType" placeholder="请选择" size="mini">
 						<el-option v-for="item in (isFirst?options:optionscopy)" :key="item.value" :label="item.label" :value="item.value">
 						</el-option>
 					</el-select>
@@ -218,26 +218,26 @@
 			<div class="form_item">
 				<div class="form_title right">规则类型：</div>
 				<div class="form_con">
-					<el-select v-model="data.ivrSet.ruleType" placeholder="请选择" size="mini">
+					<el-select v-model="allData.ivrSet.ruleType" placeholder="请选择" size="mini">
 						<el-option v-for="item in ruleOptions" :key="item.value" :label="item.label" :value="item.value">
 						</el-option>
 					</el-select>
-					<el-date-picker v-if="data.ivrSet.ruleType=='specificDate'" v-model="data.ivrSet.ruleConfig.date" type="date" placeholder="选择日期" size="mini">
+					<el-date-picker v-if="allData.ivrSet.ruleType=='specificDate'" v-model="allData.ivrSet.ruleConfig.date" type="date" placeholder="选择日期" size="mini">
 					</el-date-picker>
 				</div>
 			</div>
-			<div v-if="data.ivrSet.ruleType=='week'" class="form_item">
+			<div v-if="allData.ivrSet.ruleType=='week'" class="form_item">
 				<div class="form_con">
-					<el-checkbox-group v-model="data.ivrSet.ruleConfig.time" size="mini">
+					<el-checkbox-group v-model="allData.ivrSet.ruleConfig.time" size="mini">
 						<div v-for="item in dayOptions" :key="item.value" style="float:left;">
 							<el-checkbox-button size="mini" :value='item.value' :label="item.label"></el-checkbox-button>&#12288;
 						</div>
 					</el-checkbox-group>
 				</div>
 			</div>
-			<div v-if="data.ivrSet.ruleType=='month'" class="form_item">
+			<div v-if="allData.ivrSet.ruleType=='month'" class="form_item">
 				<div class="form_con">
-					<el-checkbox-group v-model="data.ivrSet.ruleConfig.time" size="mini">
+					<el-checkbox-group v-model="allData.ivrSet.ruleConfig.time" size="mini">
 						<div style="overflow: hidden; margin-bottom:15px;">
 							<div v-for="(item,index) in monthOptions" :key="item.value" style="float:left;">
 								<el-checkbox-button v-if="index<6" size="mini" :value='item.value' :label="item.label"></el-checkbox-button>&#12288;
@@ -255,8 +255,8 @@
 				<div class="form_item">
 					<div class="form_title right">播放时间：</div>
 					<div class="form_con">
-						<div v-for="(item,index) in data.ivrSet.workTime" :key="index" style="margin-bottom:10px">
-							<el-time-picker value-format="HH:mm:ss" is-range v-model="data.ivrSet.workTime[index]" range-separator="至" start-placeholder="开始时间" end-placeholder="结束时间" placeholder="选择时间范围" size="mini" style="margin-bottom:10px;">
+						<div v-for="(item,index) in allData.ivrSet.workTime" :key="index" style="margin-bottom:10px">
+							<el-time-picker value-format="HH:mm:ss" is-range v-model="allData.ivrSet.workTime[index]" range-separator="至" start-placeholder="开始时间" end-placeholder="结束时间" placeholder="选择时间范围" size="mini" style="margin-bottom:10px;">
 							</el-time-picker>
 							<el-button v-if="index==0" type="primary" size="mini" icon="el-icon-plus" @click="addactTime(true)"></el-button>
 							<el-button v-if="index>0" type="primary" size="mini" icon="el-icon-minus" @click="addactTime(false)"></el-button>
@@ -266,7 +266,7 @@
 				<div class="form_item" v-if="isFirst">
 					<div class="form_title right">动作名称：</div>
 					<div class="form_con">
-						<el-input v-model="data.actionName" size="mini"></el-input>
+						<el-input v-model="allData.actionName" size="mini"></el-input>
 					</div>
 				</div>
 			</div>
@@ -303,22 +303,22 @@
 				</ul>
 			</div>
 		</div>
-		<div v-if="serverType=='returnLast'">
+		<div v-if="allData.businessType=='returnLast'">
 			<div class="form_item">
 				<div class="form_title right">业务类型：</div>
 				<div class="form_con">
-					<el-select v-model="serverType" placeholder="请选择" size="mini">
+					<el-select v-model="allData.businessType" placeholder="请选择" size="mini">
 						<el-option v-for="item in (isFirst?options:optionscopy)" :key="item.value" :label="item.label" :value="item.value">
 						</el-option>
 					</el-select>
 				</div>
 			</div>
 		</div>
-		<div v-if="serverType=='reListen'">
+		<div v-if="allData.businessType=='reListen'">
 			<div class="form_item">
 				<div class="form_title right">业务类型：</div>
 				<div class="form_con">
-					<el-select v-model="serverType" placeholder="请选择" size="mini">
+					<el-select v-model="allData.businessType" placeholder="请选择" size="mini">
 						<el-option v-for="item in (isFirst?options:optionscopy)" :key="item.value" :label="item.label" :value="item.value">
 						</el-option>
 					</el-select>
@@ -326,10 +326,10 @@
 			</div>
 		</div>
 		<el-dialog title="按键规则设置" :visible.sync="dialogVisible" width="50%" :modal="false">
-			<numSetAction :type="data.children[numSetActionData]?data.children[numSetActionData].businessType:'transfer'" :parentId="data.id" :number400Data="number400Data" :data="data.children[numSetActionData]" :isFirst="false"></numSetAction>
+			<numSetAction :number400Data="number400Data" :allData="allData.children[numSetActionIndex]" :isFirst="false"></numSetAction>
 			<span slot="footer" class="dialog-footer">
-				<el-button @click="dialogVisible = false">取 消</el-button>
-				<el-button type="primary" @click="submit">确 定</el-button>
+				<el-button @click="dialogVisible = false" size="mini">取 消</el-button>
+				<el-button type="primary" @click="submit(allData.children[numSetActionIndex])" size="mini">确 定</el-button>
 			</span>
 		</el-dialog>
 	</div>
@@ -341,44 +341,36 @@
 	export default {
 		name: 'numSetAction',
 		props: [
-			'type', 'data', 'order', 'isFirst', 'number400Data', 'index', 'parentId', 'allType'
+			'allData', 'order', 'isFirst', 'number400Data', 'index', 'allType'
 		],
 		watch: {
-			type(newV, oldV) {
-				this.serverType = newV;
-			},
-			serverType(newV, oldV) {
-				this.data.businessType = newV;
-				if (this.data.businessType == "IVR") {
-					this.updata(this.data, true);
+			"allData.businessType": {
+				handler: function (newV, oldV) {
+					if (this.allData.businessType == "IVR") {
+						this.updata(this.allData, true);
+					}
+					if (this.isFirst) {
+						this.options.map(item => {
+							if (item.value == newV) {
+								this.allData.temName = item.label;
+							}
+						});
+					} else {
+						this.optionscopy.map(item => {
+							if (item.value == newV) {
+								this.allData.temName = item.label;
+							}
+						});
+					}
+					this.$emit('typeChange', newV, this.index, this.allData.temName);
 				}
-				if (this.isFirst) {
-					this.options.map(item => {
-						if (item.value == newV) {
-							this.data.temName = item.label;
-						}
-					});
-				} else {
-					this.optionscopy.map(item => {
-						if (item.value == newV) {
-							this.data.temName = item.label;
-						}
-					});
-				}
-				this.$emit('typeChange', newV, this.index);
 			}
-		},
-		mounted() {
-			//this.allType = this.allType ? this.allType : [];
-			this.serverType = this.type;
-			this.$emit('typeChange', this.serverType, this.index);
-			this.treeData.push(this.data);
 		},
 		data() {
 			return {
+				//allData: {},
 				treeData: [],
-				numSetActionData: -1,
-				serverType: 0,
+				numSetActionIndex: 0,
 				defaultProps: {
 					children: 'children',
 					label: 'actionName'
@@ -517,28 +509,29 @@
 				}, ]
 			}
 		},
+		created() {
+			this.treeData.push(this.allData);
+		},
 		methods: {
-			test() {
-				console.log(this.data.actionSet.ruleConfig.time)
-			},
-			submit() {
-				this.updata(this.data.children[this.numSetActionData], false);
+			submit(data) {
+				this.$emit('fetch', data);
+				//this.updata(data, false);
 				this.dialogVisible = false;
 			},
 			editKey(keycode) {
 				var isrequire = false;
 				var index = -1;
-				this.data.children.map((item, _index) => {
+				this.allData.children.map((item, _index) => {
 					if (item.keyNumber == keycode) {
 						isrequire = true;
 						index = _index;
 					}
 				});
 				if (isrequire) {
-					this.numSetActionData = index;
+					this.numSetActionIndex = index;
 					this.dialogVisible = true;
 				} else {
-					this.data.children.push({
+					this.allData.children.push({
 						id: "",
 						keyNumber: keycode,
 						number400Data: this.number400Data,
@@ -575,7 +568,7 @@
 						},
 						children: []
 					});
-					this.numSetActionData = this.data.children.length - 1;
+					this.numSetActionIndex = this.allData.children.length - 1;
 					this.dialogVisible = true;
 				}
 			},
@@ -585,7 +578,7 @@
 				if (this.isFirst && bol) {
 					postdata.parentId = '';
 				} else {
-					postdata.parentId = this.data.id || this.parentId;
+					postdata.parentId = this.data.id;
 				}
 				postdata.keyNumber = objData.keyNumber;
 				postdata.number400 = this.number400Data.number400;
@@ -667,54 +660,52 @@
 						});
 					}
 				}
-
-
 			},
 			handleNodeClick(data) {
-				console.log(data);
+				console.log(this.treeData);
 			},
 			addactTime(bol) {
-				if (bol) {
-					this.data.actionSet.workTime.push('');
+				if (bol && this.allData.actionSet.workTime.length < 2) {
+					this.allData.actionSet.workTime.push('');
 				} else {
-					if (this.data.actionSet.workTime.length > 1) {
-						this.data.actionSet.workTime.pop();
+					if (this.allData.actionSet.workTime.length > 1) {
+						this.allData.actionSet.workTime.pop();
 					}
 				}
 			},
 			addWorkTime(bol) {
 				if (bol) {
-					this.data.hookSet.workTime.push('');
+					this.allData.hookSet.workTime.push('');
 				} else {
-					if (this.data.hookSet.workTime.length > 1) {
-						this.data.hookSet.workTime.pop();
+					if (this.allData.hookSet.workTime.length > 1) {
+						this.allData.hookSet.workTime.pop();
 					}
 				}
 			},
 			addIvrTime(bol) {
 				if (bol) {
-					this.data.ivrSet.workTime.push('');
+					this.allData.ivrSet.workTime.push('');
 				} else {
-					if (this.data.ivrSet.workTime.length > 1) {
-						this.data.ivrSet.workTime.pop();
+					if (this.allData.ivrSet.workTime.length > 1) {
+						this.allData.ivrSet.workTime.pop();
 					}
 				}
 			},
 			codeWorkDelete(index) {
-				if (this.data.actionSet.codeWork.length > 1) {
-					this.data.actionSet.codeWork.splice(index, 1);
+				if (this.allData.actionSet.codeWork.length > 1) {
+					this.allData.actionSet.codeWork.splice(index, 1);
 				}
 			},
 			codeUnWorkDelete(index) {
-				if (this.data.actionSet.codeWork.length > 1) {
-					this.data.actionSet.codeUnWork.splice(index, 1);
+				if (this.allData.actionSet.codeWork.length > 1) {
+					this.allData.actionSet.codeUnWork.splice(index, 1);
 				}
 			},
 			codeWorkadd() {
-				this.data.actionSet.codeWork.push('');
+				this.allData.actionSet.codeWork.push('');
 			},
 			codeUnWorkadd() {
-				this.data.actionSet.codeUnWork.push('');
+				this.allData.actionSet.codeUnWork.push('');
 			}
 		}
 	}
