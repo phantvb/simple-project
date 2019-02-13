@@ -42,7 +42,7 @@
                                                 </el-table-column>
 
                                                 <el-table-column
-                                                        prop="unit"
+                                                        prop="unitsCopy"
                                                         label="单位">
                                                 </el-table-column>
 
@@ -384,7 +384,7 @@
                                                     v-if="scope.row.units=='perMonthOne'"
                                                     size="mini"
                                                     v-model="scope.row.numOfone"
-                                                    @change="handleChange(scope.row)"
+                                                    @change="handleChange(scope.row,scope.$index)"
                                                     :min="1"
                                                     label="描述文字">
                                             </el-input-number>
@@ -471,6 +471,7 @@
                     units: '',                 //单位
                     packageContent: '',        //套餐详情
                     type: '',                  //1是月，2是年
+                    amount:1,                  //数量
 
                     // 归属地入参
                     provinceBelong: '',        //归属地(省)
@@ -486,6 +487,9 @@
 
                     //登录信息
                     channel: '',
+
+
+
 
                 },
                 valueAdd: [],       // 选中的增值业务数组
@@ -601,22 +605,6 @@
             console.log(this.number400ValueAdded);
             console.log(this.valueAdd);
             this.getValueAdded(this.busIdentity);
-            // this.objCodeTable.map((item)=>{
-            //     console.log(3333,this.objCodeTable);
-            //     if(this.number400ValueAdded&&this.number400ValueAdded.length==1){
-            //         if(this.number400ValueAdded.some((item1)=>{
-            //             return item1.id==item.id
-            //         })){
-            //             this.$refs.addValueTable.toggleRowSelection(item);
-            //         }
-            //     }else{
-            //
-            //     }
-            //
-            // });
-
-
-
         },
         created() {
             console.log(sessionStorage.getItem('businessType'));
@@ -649,10 +637,11 @@
             },
             lalalal(val) {
                 console.log(val);
+                console.log(this.selectedNum);
                 let newValueAdd=[];
                 val.map((item)=>{
                     let obj ={};
-                    obj.number400 = this.selectedNum&&this.selectedNum.length!=0?this.selectedNum[0].number400:null,
+                    obj.number400 = this.selectedNum && this.selectedNum.length!=0?this.selectedNum[0].number400:null;
                     obj.valueAddedName = item.tariffName;
                     obj.valueAddedId = item.id;
                     obj.presents = item.presents;
@@ -763,6 +752,7 @@
                     this.objCodeTable = res.data.valueAddedList;
                     this.objCodeTable.map((item) => {
                         item.amount=1;
+                        item.numOfone=1;
                         if(item.units=='perMonth'){
                             item.cost = "月";
                             item.unitsName = (item.tariffFee/item.amount)+'元/月'
@@ -783,21 +773,39 @@
                     });
                     console.log('aaa',this.objCodeTable);
                     console.log('bbb',this.number400ValueAdded);
-                    this.objCodeTable.map((item)=>{
-                        console.log(1111,this.objCodeTable);
-                        if(this.number400ValueAdded&&this.number400ValueAdded.length!=0){
-                            if(this.number400ValueAdded.some((item1)=>{
-                                return item1.id==item.id;
-                            })){
-                                this.$refs.addValueTable.toggleRowSelection(item,true);
+                    let newValueAdd=[];
+                    this.$nextTick(()=>{
+                        console.log(this.selectedNum);
+                        this.objCodeTable.map((item)=>{
+                            console.log(1111,this.objCodeTable);
+                            if(this.number400ValueAdded&&this.number400ValueAdded.length!=0){
+                                if(this.number400ValueAdded.some((item1)=>{
+                                    return item1.id==item.id;
+                                })){
+                                    this.$refs.addValueTable.toggleRowSelection(item,true);   //默认勾选的
+                                    let obj ={};
+                                    obj.number400 = this.selectedNum[0].number400;
+                                    obj.valueAddedName = item.tariffName;
+                                    obj.valueAddedId = item.id;
+                                    obj.presents = item.presents;
+                                    obj.remarks = item.remarks;
+                                    obj.valueAddedFee = item.tariffFee;
+                                    obj.units = item.units;
+                                    obj.numOfMonth = item.amount;
+                                    obj.numOfone = item.numOfone;
+                                    if(item.units=='perMonthOne'){
+                                        obj.numOfone = item.numOfone;
+                                    }
+                                    newValueAdd.push(obj);
+                                }
+                            }else{
+                                if(item.presents==1){
+                                    this.$refs.addValueTable.toggleRowSelection(item,true);
+                                }
                             }
-                        }else{
-                            if(item.presents==1){
-                                this.$refs.addValueTable.toggleRowSelection(item,true);
-                            }
-                        }
-
+                        });
                     });
+                    this.valueAdd=newValueAdd;
                     this.$set(this.objCodeTable);
                     return new Promise(resolve => {
                         resolve();
@@ -921,7 +929,6 @@
                     this.stepThreeForm.unitPrice = this.sealInfo.unitPrice;
                     this.stepThreeForm.unitPriceType = this.sealInfo.unitPriceType;
                     this.stepThreeForm.units = this.sealInfo.units;
-
                 })
             },
 

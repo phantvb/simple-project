@@ -218,7 +218,7 @@
                             item.busStatus='等待送审';
                             item.btnList=[];
                             if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
-                                item.btnList.push({label:'送审'},{label:'详情'});
+                                item.btnList.push({label:'送审'},{label:'详情'},{label:'删除'});
                             }else{
                                 item.btnList.push({label:'详情'});
                             }

@@ -47,7 +47,7 @@
 			var validatePass = (rule, value, callback) => {
 				if (value === '') {
 					callback(new Error('请输入密码'));
-				} else if (value.length < 8) {
+				} else if (value.length < 6) {
 					callback(new Error('密码长度不足'));
 				} else if (!(/[a-z]/.test(value) && /[a-zA-Z]/.test(value) && /\W/.test(value))) {
 					callback(new Error('密码强度弱，须包含数字、字母及特殊字符'));
@@ -80,8 +80,8 @@
 		methods: {
 			submitForm() {
 				var _this = this;
-				this.$refs['loginForm'].validate((valid) => {
-					if (valid) {
+				// this.$refs['loginForm'].validate((valid) => {
+				// 	if (valid) {
 						this.loading = true;
 						_this.$ajax.post('/vos/user/apiLogin', {
 							username: this.loginForm.name,
@@ -99,10 +99,10 @@
 								}
 							});
 						});
-					} else {
-						return false;
-					}
-				});
+					// } else {
+					// 	return false;
+					// }
+				// });
 			},
 
 			changeImg() {

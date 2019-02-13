@@ -10,6 +10,18 @@
                 <el-form ref="acceptForm" :rules="rules" :model="acceptForm" label-width="140px">
                     <div class="objCodeMsg">
 
+                        <el-form-item label="400号码：" class="firmName" prop="fourNum">
+                            <el-input
+                                    v-model="acceptForm.fourNum"
+                                    size="mini"
+                                    placeholder=" 请搜索400号码" @input="searchFourNum"></el-input>
+                            <div id="fourNumList" v-if="numShow">
+                                <ul>
+                                    <li v-for="(item,index) in fourNumList" :key="index" @click="num400li(item)">{{item.number400}}</li>
+                                </ul>
+                            </div>
+                        </el-form-item>
+
                         <el-form-item label="企业名称：" class="firmName" id="firmName" prop="firmName">
                             <el-input
                                     v-model="acceptForm.firmName"
@@ -41,18 +53,6 @@
                                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                             </el-upload>
                             <div class="uploadTips"><p>说明：目的码证明材料可以是缴费材料，也可以是自助平台相关截图</p></div>
-                        </el-form-item>
-
-                        <el-form-item label="400号码：" class="firmName" prop="fourNum">
-                            <el-input
-                                    v-model="acceptForm.fourNum"
-                                    size="mini"
-                                    placeholder=" 请搜索400号码" @input="searchFourNum"></el-input>
-                            <div id="fourNumList" v-if="numShow">
-                                <ul>
-                                    <li v-for="(item,index) in fourNumList" :key="index" @click="num400li(item)">{{item.number400}}</li>
-                                </ul>
-                            </div>
                         </el-form-item>
 
                         <el-form-item label="目的码：">
@@ -186,11 +186,13 @@
                         this.acceptForm.imageUrl='';
                         this.acceptForm.fourNum='';
                         this.objCodeList=[];
+                    }else{
+                        this.objCodeDetail();
                     }
                 }
                 this.objFlowId=res.objCodeIn==2?res.flowId:sessionStorage.getItem('objCodeIn');
-                this.objCodeDetail();
-            } );
+
+            });
             this.addTariff(this.busIdentity);
 
         },
@@ -259,6 +261,7 @@
                         "number400":this.acceptForm.fourNum,
                     }
                 }).then((res)=>{
+                    console.log(res.data);
                     console.log(res.data.number400s);
                     this.fourNumList = res.data.number400s;
                     if(this.acceptForm.fourNum!='' && this.fourNumList.length!=0){
