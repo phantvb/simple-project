@@ -7,7 +7,6 @@
                     <el-input v-model="acceptForm.companyName"
                               size="mini"
                               @input="searchFirm"
-                              @blur = 'nameListHidden'
                               placeholder=" 营业执照上公司全称，个体工商户填写字号全称，组织机构上的机构全称"></el-input>
                     <div id="firmNameList" v-if="firmNameShow" style="margin-top:40px">
                         <ul>

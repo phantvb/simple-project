@@ -375,6 +375,51 @@
         statusChange(){
             this.businessLists();
         },
+        async passCompany(val,data) {
+            var obj = {};
+            var url;
+            if (data.status == 'Business_Auditing') {
+                url = '/vos/business/businessAuditPass';
+            }
+            obj.companyFlow = {
+                flowId: data.flowId,
+                creator: data.creator,
+                assigneeRole: data.assigneeRole
+            };
+            obj.message = await this.prompt(val);
+            if (obj.message === false) {
+                return;
+            }
+            this.$ajax.post(url, obj).then(res => {
+                if (res.code == 200) {
+                    this.$message.success('操作成功');
+                    this.fetchData(this.page.num);
+                }
+            });
+        },
+        async backCompany(val,data) {
+            console.log(val);
+            console.log(data);
+            var obj = {};
+            var url;
+                //业务受理驳回
+                url = '/vos/business/businessAuditReject';
+            obj.companyFlow = {
+                flowId: data.flowId,
+                creator: data.creator,
+                assigneeRole: data.assigneeRole
+            };
+            obj.message = await this.prompt(val);
+            if (obj.message === false) {
+                return;
+            }
+            this.$ajax.post(url, obj).then(res => {
+                if (res.code == 200) {
+                    this.$message.success('操作成功');
+                    this.fetchData(this.page.num);
+                }
+            });
+        },
         // 存vuex更新企业信息模块入参
         ChangeCompanyStatus(val) {
             return this.$store.dispatch("ChangeCompanyStatus", val);

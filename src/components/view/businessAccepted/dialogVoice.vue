@@ -183,10 +183,12 @@
                         this.voiceInfo.voiType='';
                         this.voiceInfo.voiName='';
                         this.voiceForm.addValueType='';
+                    }else{
+                        this.voiceDetail();
                     }
                 }
                 this.voiceFlowId=res.voiceIn==2?sessionStorage.getItem('entireFlowId'):res.flowId;
-                this.voiceDetail();
+
             } );
 
         },
@@ -360,7 +362,7 @@
                         if(res.message){
                             this.$message.warning(res.message);
                         }else{
-                            this.$message.warning("message为空null")
+                            this.$message.warning("message为空null");
                         }
                     }
                 })
