@@ -142,7 +142,7 @@ export default new Router({
 				name: '注销审核详情',
 				component: logoutDetail,
 				hidden: true,
-			}, {
+			},{
 				path: 'businessData',
 				name: '业务详情',
 				component: businessData,

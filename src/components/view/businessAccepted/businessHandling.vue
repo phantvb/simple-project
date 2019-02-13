@@ -83,17 +83,6 @@
                 label="操作">
           <template slot-scope="scope">
             <el-button size="mini" type="text" v-for="(item,index) in scope.row.btnList" :key="index" @click="details(item.label,scope.row)">{{item.label}}</el-button>
-            <!--<el-button size="mini" type="text">详情</el-button>-->
-            <!--&lt;!&ndash;<router-link :to="{path:'/addEvent/'+3+'/'+scope.row.contactEvtId}">&ndash;&gt;-->
-            <!--<el-button size="mini" type="text">撤回</el-button>-->
-            <!--<el-button size="mini" type="text">变更</el-button>-->
-            <!--<el-button size="mini" type="text">注销</el-button>-->
-            <!--<el-button size="mini" type="text">通过审核</el-button>-->
-            <!--<el-button size="mini" type="text">驳回</el-button>-->
-            <!--<el-button size="mini" type="text" @click="businessIn=2,acceptSave()">编辑</el-button>-->
-            <!--</router-link>-->
-            <!--<el-button size="mini" type="text">送审</el-button>-->
-            <!--<el-button size="mini" type="text">删除</el-button>-->
           </template>
         </el-table-column>
       </el-table>
@@ -112,19 +101,11 @@
 </template>
 <script>
 
-  // import stepOne from './stepOne';
-  // import stepTwo from './stepTwo';
-  // import stepThree from './stepThree';
-  // import stepFour from './stepFour';
   import DialogBusiness from './dialogBusiness';
-
+  import {mapState} from "vuex";
   export default {
     name: 'businessHandling',
       components: {
-          // stepOne,
-          // stepTwo,
-          // stepThree,
-          // stepFour,
           DialogBusiness
       },
     data() {
@@ -204,6 +185,11 @@
               roleName:'',
               username:'',
           },
+          busFlowId:'',   //表格对象id
+          busStatus:'',   //表格对象状态
+          busCreator:'',  //表格对象creator
+          busAssigneeRole:'',
+
       };
     },
     created(){
@@ -236,13 +222,58 @@
           });
       },
         //点击详情
-        details(scope){
-            console.log(scope);
-            this.$router.push({
-                path:'/businessDetial',   //跳转的路径
-                query:{                   //路由传参时push和query搭配使用 ，作用时传递参数
-                    flowId:scope.flowId ,
-                    companyId:scope.companyId ,
+        details(val,objData){
+            console.log(val);
+            console.log(objData);
+            let busMsg = objData;
+            this.busFlowId = busMsg.flowId;
+            this.busStatus = busMsg.status;
+            this.busCreator = busMsg.creator;
+            this.busAssigneeRole = busMsg.assigneeRole;
+            console.log(this.busFlowId);
+            sessionStorage.setItem('busFlowId',this.busFlowId);
+            if(val=='送审'){
+                // sessionStorage.setItem("busEntrance",2);
+                this.getCacheData(val);
+            }else if(val=='详情'){
+                console.log('详情入口');
+                console.log(this.busStatus);
+                // 详情接口
+                this.getCacheData(val);
+
+            }else if(val=='通过审核'){
+                console.log("11111");
+                this.passCompany(val,objMsg);
+            }else if(val=='驳回'){
+                console.log("22222");
+                this.backCompany(val,objMsg);
+            }
+        },
+        getCacheData(val){
+            this.$ajax.get('/vos/business/getCacheData?flowId='+this.busFlowId).then((res)=>{
+                console.log("详情",res);
+                if(res.data!=null){
+                    this.ChangeCompanyStatus(res.data.company);
+                    console.log(this.company);
+                    this.ChangeBusinessStatus(res.data.business);
+                    // this.ChangeDestNumber(res.data.destNumber);
+                    this.ChangeNumber400ValueAdded(res.data.number400ValueAdded);
+                    this.ChangeNumber400Concession(res.data.number400Concession);
+                    if(val=='送审'){
+                            this.$root.eventHub.$emit('dialogVisibleBusiness',{visibleBusiness:true,businessIn:2});
+                    }else if(val=='详情'){
+                            this.$router.push({
+                                path:'/BusinessAccepted/businessDetial',
+                                query: {
+                                    flowId: this.busFlowId,
+                                    status:this.busStatus,
+                                    assigneeRole:this.busAssigneeRole,
+                                    creators:this.busCreator,
+                                }
+                            });
+                    }
+                }else{
+                    this.$message.warning("data为空null");
                 }
             })
         },
@@ -344,9 +375,32 @@
         statusChange(){
             this.businessLists();
         },
+        // 存vuex更新企业信息模块入参
+        ChangeCompanyStatus(val) {
+            return this.$store.dispatch("ChangeCompanyStatus", val);
+        },
+        ChangeBusinessStatus(val) {
+            return this.$store.dispatch("ChangeBusinessStatus", val);
+        },
+        ChangeDestNumber(val) {
+            return this.$store.dispatch("ChangeDestNumberStatus", val);
+        },
+        ChangeNumber400ValueAdded(val) {
+            return this.$store.dispatch("ChangeNumber400ValueAddedStatus", val);
+        },
+        ChangeNumber400Concession(val) {
+            return this.$store.dispatch("ChangeNumber400ConcessionStatus", val);
+        },
     },
 
     computed: {
+        ...mapState({
+            company: state => state.createActivities.company,
+            business: state => state.createActivities.business,
+            destNumber: state => state.createActivities.destNumber,
+            number400ValueAdded: state => state.createActivities.number400ValueAdded,
+            number400Concession: state => state.createActivities.number400Concession,
+        })
     }
   }
 </script>

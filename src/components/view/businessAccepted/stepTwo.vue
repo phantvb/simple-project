@@ -130,13 +130,13 @@
         },
         components: {},
         created() {
-            console.log(sessionStorage.getItem('entrance'));
+            console.log(sessionStorage.getItem('businessIn'));
             this.$root.eventHub.$on('flowId', (resp) => {
                 console.log("flowId", resp);
                 this.flowId = resp;
             });
 
-            if (sessionStorage.getItem('entrance') == 2) {
+            if (sessionStorage.getItem('businessIn') == 2) {
                 console.log(this.company);
                 this.stepTwoForm = this.company;
             }
@@ -169,11 +169,11 @@
                 // this.stepTwoForm.legalCardHandPic = URL.createObjectURL(file.raw);
             },
             beforeAvatarUpload(file) {
-                const isJPG = file.type === 'image/jpeg';
+                const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
                 const isLt2M = file.size / 1024 / 1024 < 2;
 
                 if (!isJPG) {
-                    this.$message.error('上传头像图片只能是 JPG 格式!');
+                    this.$message.error('上传头像图片只能是 JPG/PNG 格式!');
                 }
                 if (!isLt2M) {
                     this.$message.error('上传头像图片大小不能超过 2MB!');

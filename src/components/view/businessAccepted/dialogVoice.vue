@@ -39,7 +39,7 @@
                                     width="180">
                                         <template slot-scope="scope">
                                             <div>
-                                                <el-select v-model="voiceInfo.voiType" placeholder="请选择" size="mini">
+                                                <el-select v-model="scope.row.voicetype" placeholder="请选择" size="mini">
                                                     <el-option
                                                             v-for="item in voiceTypeList"
                                                             :key="item.dicKey"
@@ -56,7 +56,7 @@
                                     width="180">
                                         <template slot-scope="scope">
                                             <div>
-                                                <el-input v-model="voiceInfo.voiName" placeholder="请输入内容" size="mini"></el-input>
+                                                <el-input v-model="scope.row.voicename" placeholder="请输入内容" size="mini"></el-input>
                                             </div>
                                         </template>
                             </el-table-column>
@@ -66,6 +66,7 @@
                                         <template slot-scope="scope">
                                             <el-upload action=""
                                                        size="mini"
+                                                       :file-list="scope.row.voicefile"
                                                        :on-change="handleChange"
                                                        :http-request="uploadFile"
                                                        :before-upload ="beforeAvatarUpload"
@@ -101,7 +102,7 @@
                                 <div class="objCodeBox">
                                     <div class="valAddSer">
                                         <div v-for="item in valueAddedList">
-                                            <p>功能资费：{{item.tariffFee}}</p>
+                                            <p>功能资费：{{item.tariffFee+'元'}}</p>
                                             <p v-if="item.presents==1">是否赠送：赠送</p>
                                             <p v-if="item.presents==2">是否赠送：付费</p>
                                             <p>功能备注：{{item.remarks}}</p>
@@ -160,6 +161,7 @@
                 companyId:'',      //公司id
                 companyInfo:'',    //公司信息
                 busIdentity:'',     //登录信息channel
+                voiceFlowId:'',     //语音表格flowId
             }
         },
         created(){
@@ -170,17 +172,23 @@
             this.addValueChange(this.busIdentity);
             this.voiceType();
             this.$root.eventHub.$on('dialog1VisibleVoice', (res)=>{
-                this.visibleVoice=res.visibleVoice;
-                this.voiceForm.firmName='';
-                this.voiceForm.voiceNum='';
-                this.voiceInfo.voiType='';
-                this.voiceInfo.voiName='';
-                this.voiceForm.addValueType='';
+                console.log('voiceInfo',res);
                 if(res.voiceIn){
                     this.voiceIn = res.voiceIn;
+                    if(res.voiceIn==1){
+                        this.visibleVoice=res.visibleVoice;
+                        this.voiceIn=res.voiceIn;
+                        this.voiceForm.firmName='';
+                        this.voiceForm.voiceNum='';
+                        this.voiceInfo.voiType='';
+                        this.voiceInfo.voiName='';
+                        this.voiceForm.addValueType='';
+                    }
                 }
+                this.voiceFlowId=res.voiceIn==2?sessionStorage.getItem('entireFlowId'):res.flowId;
+                this.voiceDetail();
             } );
-            this.getDetail();
+
         },
         components: {},
         methods: {
@@ -372,29 +380,57 @@
                     }],
                     "companyFlow":{
                         "flowId":""
-
                     },
                     "company": this.companyInfo,
                 }).then((res)=>{
                     console.log(res);
                     if(res.code==200){
                         this.visibleVoice = false;
+                        this.$root.eventHub.$emit('addAcceptSave', null);
                     }else{
                         this.$message.warning(res.message);
                     }
                 })
             },
             // 语音详情
-            getDetail(){
-             this.$ajax.post('/vos/voice/getDetail',{
-                 "companyFlow":{
-                     "assigneeRole":"ROLE_city_admin"
-                 },
-                 "voiceId":19
-             }).then((res)=>{
-                 console.log(res);
+            voiceDetail(){
+             console.log(this.voiceFlowId);
+             this.$ajax.get('/vos/voice/getCacheData?flowId='+this.voiceFlowId).then((res)=>{
+                 console.log(res.data);
+                 this.voiceForm.firmName = res.data.company.companyName;
+                 this.voiceForm.voiceNum = res.data.number400;
+                 this.tableData = res.data.voice;
+                 this.tableData.map((item)=>{
+                     let sss=[];
+                     sss.push({
+                         name:item.voicefile,
+                         url:item.voicefile
+                     });
+                     item.voicefile = sss;
+                 });
              })
-            }
+            },
+            // getCacheData(val){
+            //     console.log(val);
+            //     this.$ajax.get('/vos/destnum/getCacheData?flowId='+this.voiceFlowId).then((res)=>{
+            //         console.log(res.data);
+            //         if(res.code==200){
+            //             if(val=='详情'){
+            //                 this.$router.push({
+            //                     path:'/BusinessAccepted/voiceDetial',
+            //                     query: {
+            //                         flowId: this.voiceFlowId,
+            //                         status:this.voiceStatus ,
+            //                         assigneeRole:this.voiceAssigneeRole,
+            //                         creators:this.voiceCreator,
+            //                     }
+            //                 });
+            //             }else if(val=='送审'){
+            //                 this.$root.eventHub.$emit('dialog1VisibleVoice',{visibleVoice:true,voiceIn:2});
+            //             }
+            //         }
+            //     })
+            // },
         },
         computed: {},
         watch:{},

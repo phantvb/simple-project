@@ -96,17 +96,17 @@
                               style="width: 90%">
 
                         <el-table-column
-                                prop="tariffName"
+                                prop="valueAddedName"
                                 label="增值服务名称">
                         </el-table-column>
 
                         <el-table-column
-                                prop="tariffName"
+                                prop="amounts"
                                 label="数量">
                         </el-table-column>
 
                         <el-table-column
-                                prop="units"
+                                prop="unit"
                                 label="资费/单位">
                         </el-table-column>
 
@@ -116,7 +116,7 @@
                         </el-table-column>
 
                         <el-table-column
-                                prop="presents"
+                                prop="present"
                                 label='是否赠送'>
                         </el-table-column>
 
@@ -201,6 +201,7 @@
     import {mapState} from "vuex";
     export default {
         name: 'businessData',
+        props: ["detialInfos"],
         data() {
             return {
                 objCodeTable: [],
@@ -209,12 +210,32 @@
         },
         components: {},
         created(){
-            console.log(this.company);
-            console.log(this.business);
-            console.log(this.destNumber);
-            console.log(this.number400ValueAdded);
-            console.log(this.number400Concession);
+            console.log("company",this.company);
+            console.log("business",this.business);
+            console.log("destNumber",this.destNumber);
+            console.log("number400ValueAdded",this.number400ValueAdded);
+            console.log("number400Concession",this.number400Concession);
 
+            //增值资费
+            this.addValueList = this.number400ValueAdded;
+            this.addValueList.map((item)=>{
+                item.amount = item.numOfMonth;
+                if(item.units=="perMonth"){
+                    item.unit="月"
+                }else if(item.units=="perOne"){
+                    item.unit="个"
+                }else if(item.units=="perMonthOne"){
+                    item.unit="月/个"
+                }
+                item.amounts = item.amount + item.unit;
+                if(item.presents==1){
+                    item.present="赠送"
+                }else{
+                    item.present="付费"
+                }
+            });
+            console.log("addValueList",this.addValueList);
+            //400号码表格
             let num400Obj = {};
                 num400Obj.number400 = this.business.number400;
                 num400Obj.tariffName = this.business.tariffName;
@@ -223,6 +244,7 @@
                 num400Obj.units = this.business.units;
                 num400Obj.packageContent = this.business.packageContent;
                 this.objCodeTable.push(num400Obj);
+                console.log(this.objCodeTable);
         },
         methods: {
             // 存vuex更新企业信息模块入参

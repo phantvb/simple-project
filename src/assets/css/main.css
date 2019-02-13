@@ -267,9 +267,8 @@
 	width: 50% !important;
 	overflow: hidden;
 }
-
-.addValueTable .el-input-number {
-	width: 150px;
+.addValueTable .el-input-number{
+	width:100px;
 }
 
 .objCodeDialog .el-table .cell,
@@ -287,7 +286,6 @@
 .objCodeDialog .materials .el-form-item__content {
 	line-height: 23px;
 }
-
 .threeSelect .el-form-item,
 .legalInfo .el-form-item {
 	width: 20%;
