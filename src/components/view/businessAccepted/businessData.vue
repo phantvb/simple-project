@@ -220,12 +220,13 @@
             this.addValueList = this.number400ValueAdded;
             this.addValueList.map((item)=>{
                 item.amount = item.numOfMonth;
+                item.numOfone = item.numOfone;
                 if(item.units=="perMonth"){
-                    item.unit=item.valueAddedFee+"元/月"
+                    item.unit=item.valueAddedFee+"/月"
                 }else if(item.units=="perOne"){
-                    item.unit="元/个"
+                    item.unit="/个"
                 }else if(item.units=="perMonthOne"){
-                    item.unit="元/月/个"
+                    item.unit=item.numOfone+"/个"
                 }
                 item.amounts = item.amount + item.unit;
                 if(item.presents==1){

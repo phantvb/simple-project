@@ -178,7 +178,13 @@
 
                 }
             }
-            //编辑受理
+
+            this.$root.eventHub.$on('dialogVisibleBusiness', (res)=>{
+                this.visibleBusiness=res.visibleBusiness;
+                if(res.businessIn){
+                    this.businessIn = res.businessIn;
+                }
+            } );
 
 
             //详情
@@ -245,7 +251,7 @@
             next(val) {
                 this.$emit('childNext', val);
             },
-            // 新增业务保存
+            // 新增业务保存/变更保存
             addBusinessSave() {
                 console.log("business:", this.business);
                 this.businessObj = Object.assign(this.business, this.stepFourForm);
@@ -257,7 +263,13 @@
                 console.log("destNumber", this.destNumber);
                 console.log("number400ValueAdded", this.number400ValueAdded);
                 console.log("number400Concession", this.number400Concession);
-                this.$ajax.post('/vos/business/startAndSave', {
+                var url;
+                if(this.businessIn==1){       //新增
+                      url='/vos/business/startAndSave';
+                }else if(this.businessIn==3){  //变更
+                      url='/vos/business/sendToModifyAudit';
+                }
+                this.$ajax.post(url, {
                     "company": this.company,
                     "business": this.businessObj,
                     "destNumber": this.destNumber,
@@ -270,13 +282,11 @@
                     if (res.code == '200') {
                         console.log(res);
                         this.dialogVisible = false;
+                        this.$root.eventHub.$emit('addAcceptSave');
                     } else {
                         this.$message.warning(res.message);
                     }
                 });
-                this.$root.eventHub.$emit('addAcceptSave');
-
-                // this.stepFourForm.flowId = resp;
             },
             //业务送审
             addBusinessSend() {

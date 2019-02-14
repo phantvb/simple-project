@@ -100,6 +100,7 @@
             handleClose(done) {
                 this.$confirm('确认关闭？')
                     .then(_ => {
+                        this.$root.eventHub.$emit('addAcceptSave');
                         done();
                     })
                     .catch(_ => {

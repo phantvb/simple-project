@@ -243,10 +243,10 @@
 
             }else if(val=='通过审核'){
                 console.log("11111");
-                this.passCompany(val,objMsg);
+                this.passCompany(val,objData);
             }else if(val=='驳回'){
                 console.log("22222");
-                this.backCompany(val,objMsg);
+                this.backCompany(val,objData);
             }
         },
         getCacheData(val){

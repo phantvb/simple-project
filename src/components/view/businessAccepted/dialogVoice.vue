@@ -199,6 +199,7 @@
                 this.$confirm('确认关闭？')
                     .then(_ => {
                         done();
+                        this.$root.eventHub.$emit('voiceList');
                     })
                     .catch(_ => {
                     });

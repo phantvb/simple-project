@@ -231,8 +231,15 @@
             },
             //新增目的码
             addObjCodes(){
-                let unit = {};
-                this.objCodeList.push(unit);
+                if(this.objCodeList.length<3){
+                    let unit = {};
+                    this.objCodeList.push(unit);
+                }else{
+                    this.$message({
+                        message: '目的码最多添加3条',
+                        type: 'warning'
+                    });
+                }
             },
             // 删除目的码
             delObjCodes(index){

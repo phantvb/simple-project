@@ -1,7 +1,7 @@
 <template>
-    <div id="stepOne">
+    <div id="stepOne" @click="nameListHidden">
         <el-form ref="acceptForm" :rules="rules" :model="acceptForm" label-width="140px">
-            <div class="acceptMsg">
+            <div class="acceptMsg" >
                 <p>企业基本信息</p>
                 <el-form-item label="企业名称：" class="identity" prop="companyName">
                     <el-input v-model="acceptForm.companyName"
@@ -208,7 +208,6 @@
                     legalCard: '',
                     cardNum: '',
                     idCardAddress: '',
-
                     idIndate: '',         //身份证有效期
                     // passportIndate:'',   //护照有效期
                     // officerCardIndate:'',//军官证有效期
@@ -346,6 +345,11 @@
                     this.firmNameList = res.data;
                     if (this.acceptForm.companyName != '' && this.firmNameList.length != 0) {
                         this.firmNameShow = true;
+                    }else{
+                        this.acceptForm={
+                            companyName:val,
+                        };
+                        this.firmNameShow = false;
                     }
                     this.firmNameList.map((zool, index) => {
                         if (zool.companyName == this.acceptForm.companyName) {
@@ -355,6 +359,7 @@
                 })
             },
             nameListHidden(){
+                console.log('asdasdasdasdas');
                 this.firmNameShow = false;
             },
             //企业名称li

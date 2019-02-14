@@ -162,10 +162,13 @@
 				this.entireLists();
 			});
 			this.$root.eventHub.$on('voiceList', (resp) => {
-				this.voiceFileLists();
+				this.entireLists();
 			})
 
 		},
+		// businessIn  1:新增业务   2:送审   3:变更
+		//objCodeIn    1:目的码新增 2:送审
+		//voiceIn      1:语音新增   2:送审
 		methods: {
 			handleSizeChange(val) {
 				this.pageObj.pageSize = val;
@@ -316,7 +319,7 @@
           console.log(this.entireFlowId);
             sessionStorage.setItem('entireFlowId',this.entireFlowId);
           if(val=='送审'){
-              sessionStorage.setItem("businessIn",1);
+              sessionStorage.setItem("businessIn",2);
               this.getCacheData(val);
           }else if(val=='详情'){
               console.log('详情入口');
@@ -429,11 +432,11 @@
             if (data.status == 'Business_Auditing') {
                 url = '/vos/business/businessAuditPass';
             }
-            // else if (data.status == 'Modify_Auditing') {
-            //     url = '/vos/company/modifyAuditPass';
-            // } else if (data.status == 'Canceling_Auditing') {
-            //     url = '/vos/company/cancelAuditPass';
-            // };
+            else if (data.status == 'Modify_Auditing') {
+                url = '/vos/business/modifyAuditPass';
+            } else if (data.status == 'Canceling_Auditing') {
+                url = '/vos/business/cancelAuditPass';
+            };
             obj.companyFlow = {
                 flowId: data.flowId,
                 creator: data.creator,
@@ -467,12 +470,20 @@
             }else if (data.status == 'Modify_Auditing') {
                 //变更审核驳回
                 url = '/vos/company/modifyAuditReject';
+            }else if (data.status == 'Cancel_AuditReject') {
+                //注销审核驳回
+                url = '/vos/business/cancelAuditReject';
             };
             obj.companyFlow = {
                 flowId: data.flowId,
                 creator: data.creator,
                 assigneeRole: data.assigneeRole
             };
+            if(data.status == 'Cancel_AuditReject'){   //注销审核被驳回才有的入参
+                obj.business = {
+                    id:data.business.id,
+                };
+			}
             obj.message = await this.prompt(val);
             if (obj.message === false) {
                 return;
