@@ -32,8 +32,8 @@
                                                 </el-table-column>
 
                                                 <el-table-column
-                                                        prop="bottomFee"
-                                                        label="最低年消费">
+                                                        prop="basicFunctionFee"
+                                                        label="基本功能费">
                                                 </el-table-column>
 
                                                 <el-table-column
@@ -68,7 +68,7 @@
                                     <el-button type="primary" size="mini" @click="searchNum()">搜索</el-button>
                                 </el-form-item>
 
-                                <el-tabs type="border-card">
+                                <el-tabs type="border-card" @tab-click="parentMethod">
                                     <el-tab-pane v-for="(item,index) in mealList" :label="item.tariffName"
                                                  :name="index+''" :key="index+''">
                                         <set-meal
@@ -112,8 +112,8 @@
                                 </el-table-column>
 
                                 <el-table-column
-                                        prop="bottomFee"
-                                        label="最低年消费">
+                                        prop="basicFunctionFee"
+                                        label="基本功能费">
                                 </el-table-column>
 
                                 <el-table-column
@@ -270,7 +270,7 @@
 
                                 <el-table-column
                                         prop="bottomFeeCopy"
-                                        label='最低年消费'>
+                                        label='基本功能费'>
                                 </el-table-column>
 
                                 <el-table-column
@@ -338,8 +338,8 @@
                         <el-select v-model="stepThreeForm.discounts" placeholder="请选择" size="mini"
                                    @change="discountChange">
                             <el-option
-                                    v-for="item in discountsList"
-                                    :key="item.id"
+                                    v-for="(item,index) in discountsList"
+                                    :key="index"
                                     :label="item.concessionName"
                                     :value="item">
                             </el-option>
@@ -374,7 +374,7 @@
                                         <template slot-scope="scope">
                                             <el-input-number
                                                     size="mini"
-                                                    v-model="scope.row.amount"
+                                                    v-model="scope.row.numOfMonth"
                                                     @change="handleChange(scope.row,scope.$index)"
                                                     :min="1"
                                                     label="描述文字">
@@ -479,6 +479,7 @@
 
                     // 优惠活动
                     discounts: '',
+
                     //套餐id
                     tariffPackageId: '',
                     excessTariff: '',
@@ -488,9 +489,8 @@
                     //登录信息
                     channel: '',
 
-
-
-
+                    //业务id
+                    id:'',
                 },
                 valueAdd: [],       // 选中的增值业务数组
                 discountsList: [],  //优惠数组
@@ -499,7 +499,6 @@
                     id: "",
                     destnumber: "",
                     number400: "",
-
                     destnumproofpic: "",
                     destnumUsage: "",
                     companyid: "",
@@ -508,8 +507,9 @@
                     connectType: "",
                     connectId: "",
                     flowId: "",
-                    stepThreeFlowId: "",
+                    // stepThreeFlowId: "",
                 }],
+                stepThreeFlowId: "",
                 selectedNum: [],    //已选号码列表
                 searchNumList: [],  //400号码模糊搜索列表
                 objCodeTable: [],  //增值表格
@@ -546,6 +546,7 @@
                 currentPage: 1,   //分页
                 titleNum: '',
                 sealInfo: '',      //套餐信息
+                businessIn:'',
             };
 
         },
@@ -554,21 +555,21 @@
         },
         beforeUpdate(){
             //复选框回显
-            if (sessionStorage.getItem('businessIn') == 2) {
-                console.log('asdasdasdasddasd');
-                this.objCodeTable.map((item)=>{
-                    console.log(1111,this.objCodeTable);
-                    if(this.number400ValueAdded.some((item1)=>{
-                        return item1.id==item.id;
-                    })){
-                        console.log(item);
-                        if(item.presents==1){
-                            this.$refs.addValueTable.toggleRowSelection(item,true);
-                        }
-                        this.$refs.addValueTable.toggleRowSelection(item,true);
-                    }
-                });
-            }
+            // if (sessionStorage.getItem('businessIn') == 2) {
+            //     console.log('asdasdasdasddasd');
+            //     this.objCodeTable.map((item)=>{
+            //         console.log(1111,this.objCodeTable);
+            //         if(this.number400ValueAdded.some((item1)=>{
+            //             return item1.id==item.id;
+            //         })){
+            //             console.log(item);
+            //             if(item.presents==1){
+            //                 this.$refs.addValueTable.toggleRowSelection(item,true);
+            //             }
+            //             this.$refs.addValueTable.toggleRowSelection(item,true);
+            //         }
+            //     });
+            // }
         },
 
          mounted(){
@@ -592,7 +593,7 @@
                 selectedNumCopy.units = this.business.units;
                 selectedNumCopy.number400 = this.business.number400;
                 selectedNumCopy.tariffName = this.business.tariffName;
-                selectedNumCopy.bottomFee = this.business.bottomFee;
+                selectedNumCopy.basicFunctionFee = this.business.basicFunctionFee;
                 selectedNumCopy.packageContent = this.business.packageContent;
                 selectedNumCopy.durationPresentation = this.business.durationPresentation;
                 selectedNumCopy.durationPresentation = this.business.durationPresentation;
@@ -617,6 +618,22 @@
                 this.stepThreeForm.needCompanySave = resp;
             });
 
+            console.log(sessionStorage.getItem('businessIn'));
+            this.businessIn = sessionStorage.getItem('businessIn');
+            //新增受理
+            if (sessionStorage.getItem('businessIn') == 1) {
+                this.$root.eventHub.$on('flowId', (resp) => {
+                    console.log("flowId", resp);
+                    this.flowId = resp;
+                });
+            }
+            this.$root.eventHub.$on('dialogVisibleBusiness', (res)=>{
+                this.visibleBusiness=res.visibleBusiness;
+                if(res.businessIn){
+                    this.businessIn = res.businessIn;
+                }
+            } );
+
         },
         methods: {
             // 分页
@@ -632,7 +649,13 @@
             handleChange(value,index) {
                 console.log(value);
                 console.log(this.objCodeTable);
+                console.log(this.valueAdd);
                 this.$set(this.objCodeTable,index,value);
+                this.valueAdd.map((item,index)=>{
+                    if(item.valueAddedId==value.id){
+                        this.valueAdd[index]=value;
+                    }
+                });
                 // this.stepThreeForm.amount = value;
             },
             lalalal(val) {
@@ -648,8 +671,8 @@
                     obj.remarks = item.remarks;
                     obj.valueAddedFee = item.tariffFee;
                     obj.units = item.units;
-                    obj.numOfMonth = item.amount;
-                    obj.numOfone = item.numOfone;
+                    obj.numOfMonth = item.numOfMonth;
+                    // obj.numOfone = item.numOfone;
                     if(item.units=='perMonthOne'){
                         obj.numOfone = item.numOfone;
                     }
@@ -714,8 +737,6 @@
                     console.log("this.$refs.child1", this.$refs.child1);
                     this.$refs.child1[0].getAllByPackage2();
                 }, 1000);
-
-
             },
             // 弹窗关闭
             handleClose(done) {
@@ -726,7 +747,7 @@
                     .catch(_ => {
                     });
             },
-            // 优惠
+            // 优惠列表
             getConcessionScheme(val) {
                 console.log(val);
                 this.$ajax.post('/vos/tariffPackage/getConcessionScheme', {
@@ -751,18 +772,18 @@
                     console.log(res.data.valueAddedList);
                     this.objCodeTable = res.data.valueAddedList;
                     this.objCodeTable.map((item) => {
-                        item.amount=1;
+                        item.numOfMonth=1;
                         item.numOfone=1;
                         if(item.units=='perMonth'){
                             item.cost = "月";
-                            item.unitsName = (item.tariffFee/item.amount)+'元/月'
+                            item.unitsName = (item.tariffFee/item.numOfMonth)+'元/月'
                         }else if(item.units=='perOne'){
                             item.cost = "个";
-                            item.unitsName = (item.tariffFee/item.amount)+'元/个'
+                            item.unitsName = (item.tariffFee/item.numOfMonth)+'元/个'
                         }else if(item.units=='perMonthOne'){
                             item.cost = "月";
                             item.cost2 = "个";
-                            item.unitsName = (item.tariffFee/item.amount)+'元/月/个'
+                            item.unitsName = (item.tariffFee/item.numOfMonth)+'元/月/个'
                         }
                         if (item.presents == '1') {
                             item.presentsName = "赠送";
@@ -776,31 +797,55 @@
                     let newValueAdd=[];
                     this.$nextTick(()=>{
                         console.log(this.selectedNum);
-                        this.objCodeTable.map((item)=>{
+                        this.objCodeTable.map((item,index)=>{
                             console.log(1111,this.objCodeTable);
                             if(this.number400ValueAdded&&this.number400ValueAdded.length!=0){
-                                if(this.number400ValueAdded.some((item1)=>{
-                                    return item1.id==item.id;
-                                })){
-                                    this.$refs.addValueTable.toggleRowSelection(item,true);   //默认勾选的
+                                this.number400ValueAdded.map((item1)=>{
+                                    if(item1.id==item.id){
+                                        //把选中的复选框信息赋值给原数组勾选的选项
+                                        this.$set(this.objCodeTable,index,item1);
+                                        //回西安勾选的
+                                        this.$refs.addValueTable.toggleRowSelection(this.objCodeTable[index], true);
+                                        let obj = {};
+                                        if (this.selectedNum && this.selectedNum.length != 0) {
+                                            obj.number400 = this.selectedNum[0].number400
+                                        }
+                                        obj.valueAddedName = item.tariffName;
+                                        obj.valueAddedId = item.id;
+                                        obj.presents = item.presents;
+                                        obj.remarks = item.remarks;
+                                        obj.valueAddedFee = item.tariffFee;
+                                        obj.units = item.units;
+                                        obj.numOfMonth = item.numOfMonth;
+                                        // obj.numOfone = item.numOfone;
+                                        if(item.units=='perMonthOne'){
+                                            obj.numOfone = item.numOfone;
+                                        }
+                                        newValueAdd.push(obj);
+                                        console.log(newValueAdd);
+                                    }
+                                });
+                            }else{
+                                if(item.presents==1){
+                                    //赠送勾选
+                                    this.$refs.addValueTable.toggleRowSelection(item,true);
                                     let obj ={};
-                                    obj.number400 = this.selectedNum[0].number400;
+                                    if (this.selectedNum && this.selectedNum.length != 0) {
+                                        obj.number400 = this.selectedNum[0].number400;
+                                    }
                                     obj.valueAddedName = item.tariffName;
                                     obj.valueAddedId = item.id;
                                     obj.presents = item.presents;
                                     obj.remarks = item.remarks;
                                     obj.valueAddedFee = item.tariffFee;
                                     obj.units = item.units;
-                                    obj.numOfMonth = item.amount;
-                                    obj.numOfone = item.numOfone;
+                                    obj.numOfMonth = item.numOfMonth;
+                                    // obj.numOfone = item.numOfone;
                                     if(item.units=='perMonthOne'){
                                         obj.numOfone = item.numOfone;
                                     }
                                     newValueAdd.push(obj);
-                                }
-                            }else{
-                                if(item.presents==1){
-                                    this.$refs.addValueTable.toggleRowSelection(item,true);
+                                    console.log(newValueAdd);
                                 }
                             }
                         });
@@ -844,6 +889,7 @@
                     this.cityList = res.data;
                 })
             },
+
             //以套餐分类搜索400号码
             searchByPackage() {
                 this.$ajax.post('/vos/number400/searchByPackage', {
@@ -882,8 +928,11 @@
             // 优惠切换
             discountChange(val) {
                 console.log(val);
+                let disObj = val;
+                delete disObj.id;
                 this.disList = [];
-                this.disList.push(val);
+                disObj.amount=1;
+                this.disList.push(disObj);
                 console.log(this.disList);
             },
 
@@ -908,7 +957,7 @@
                     console.log(res.data.number400s[0]);
                     this.selectedNum = res.data.number400s;
                     this.selectedNum.map((item)=>{
-                        item.bottomFeeCopy=item.bottomFee+'元';
+                        item.bottomFeeCopy=item.basicFunctionFee+'元';
                         item.durationPresentationCopy=item.durationPresentation+'元';
                         if(item.type==1){
                             item.unitsCopy=item.units+"月"
@@ -984,7 +1033,13 @@
                 console.log("business", this.business);
                 console.log("destNumber", this.destNumber);
                 console.log("number400Concession", this.number400Concession);
-                this.$ajax.post('/vos/business/startAndSave', {
+                var url;
+                if(this.businessIn==1 || this.businessIn==2){       //新增和编辑的暂存
+                    url='/vos/business/startAndSave';
+                }else if(this.businessIn==3){                       //变更
+                    url='/vos/business/sendToModifyAudit';
+                }
+                this.$ajax.post(url, {
                     "company": this.company,
                     "business": this.stepThreeForm,
                     "destNumber": this.destNumber,
@@ -997,8 +1052,9 @@
                     if (res.code == '200') {
                         console.log(res);
                         this.$root.eventHub.$emit('flowId', res.data);
-                        this.stepThreeFlowId = res.data;
-                        console.log(this.stepThreeFlowId = res.data);
+                        this.stepThreeFlowId = res.data.flowId;        //flowId
+                        this.stepThreeForm.id = res.data.businessId;   //业务id
+                        console.log(this.stepThreeFlowId = res.data.flowId);
                         //第三步点击下一步之前检查number400是否绑定了引示号
                         this.$ajax.post('/vos/business/matchGuideNumber', {
                             "number400": this.titleNum,
@@ -1013,6 +1069,12 @@
                         this.$message.warning(res.message);
                     }
                 });
+            },
+            // 点击tab获取相应信息
+            parentMethod(val) {
+                console.log(val);
+                    console.log("this.$refs.child1", this.$refs.child1);
+                    this.$refs.child1[val.index].getAllByPackage2(val.index);
             },
             // 存vuex更新业务信息模块入参
             ChangeBusinessStatus(val) {

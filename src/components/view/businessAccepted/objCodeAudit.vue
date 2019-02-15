@@ -230,12 +230,27 @@
 
                 }else if(val=='通过审核'){
                     console.log("11111");
-                    this.passCompany(val,objMsg);
+                    this.passCompany(val,objData);
                 }else if(val=='驳回'){
                     console.log("22222");
-                    this.backCompany(val,objMsg);
+                    this.backCompany(val,objData);
+                }else if(val=='删除'){
+                    this.$ajax.post('/vos/business/deleteFlow',{
+                        // "companyFlow": {
+                        //     "creator": "admin",
+                        //     "businessId": 188,
+                        //     "updateTime": "2019-01-24 14:50:36",
+                        //     "type": "Business",
+                        //     "companyId": 66,
+                        //     "id": 22,
+                        //     "flowId": this.entireFlowId
+                        // }
+                        "companyFlow": objData
+                    }).then((res)=>{
+                        console.log(res);
+                        this.objCodeLists();
+                    })
                 }
-
             },
             //详情接口
             getCacheData(val){
@@ -273,6 +288,52 @@
                 })
             },
 
+            async passCompany(val,data) {
+                var obj = {};
+                var url;
+                if (data.status == 'Business_Auditing') {
+                    //目的码审核通过
+                    url = '/vos/destnum/auditPass';
+                }
+                obj.companyFlow = {
+                    flowId: data.flowId,
+                    creator: data.creator,
+                    assigneeRole: data.assigneeRole
+                };
+                obj.message = await this.prompt(val);
+                if (obj.message === false) {
+                    return;
+                }
+                this.$ajax.post(url, obj).then(res => {
+                    if (res.code == 200) {
+                        this.$message.success('操作成功');
+                        this.fetchData(this.page.num);
+                    }
+                });
+            },
+            async backCompany(val,data) {
+                console.log(val);
+                console.log(data);
+                var obj = {};
+                var url;
+                //目的码驳回
+                url = '/vos/destnum/auditReject';
+                obj.companyFlow = {
+                    flowId: data.flowId,
+                    creator: data.creator,
+                    assigneeRole: data.assigneeRole
+                };
+                obj.message = await this.prompt(val);
+                if (obj.message === false) {
+                    return;
+                }
+                this.$ajax.post(url, obj).then(res => {
+                    if (res.code == 200) {
+                        this.$message.success('操作成功');
+                        this.fetchData(this.page.num);
+                    }
+                });
+            },
             // 目的码列表
             objCodeLists(){
                 // console.log(this.form.time[0]);

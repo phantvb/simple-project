@@ -38,7 +38,7 @@
 
                         <el-form-item label="使用用途：" class="identity" prop="usage">
                             <el-select v-model="acceptForm.usage" placeholder="请选择" size="mini">
-                                <el-option :label="item.label" :value="item.value" v-for="(item,index) in usage" :key="index"></el-option>
+                                <el-option :label="item.dicValue" :value="item.dicKey" v-for="(item,index) in usage" :key="index"></el-option>
                             </el-select>
                         </el-form-item>
 
@@ -133,18 +133,7 @@
                 },
                 tableData: [],
                 statusOptions: [],
-                usage:[   //证件类型
-                    {
-                        value: 'DestNum_Auditing',
-                        label: '审核中'
-                    }, {
-                        value: 'Audit_Success',
-                        label: '审核通过'
-                    }, {
-                        value: 'Wait_To_Audit',
-                        label: '等待送审'
-                    }
-                ],
+                usage:[],
                 objCodeList:[], //目的码数组
                 firmNameList:[],  //公司名称数组
                 fourNumList:[],   //400号码列表
@@ -176,6 +165,7 @@
             console.log(sessionStorage.getItem('objCodeIn'));
             this.objFlowId = sessionStorage.getItem('objFlowId');
             this.busIdentity = sessionStorage.getItem('businessType');
+            this.usageList();
             this.$root.eventHub.$on('dialog1Visible', (res)=>{
                 this.visible=res.visible;
                 if(res.objCodeIn){
@@ -207,6 +197,16 @@
                     .catch(_ => {
                     });
             },
+            // 使用用途列表
+            usageList(){
+                this.$ajax.post('/vos/dic/getDicsByType',{
+                    "dicType":"usage",
+                    "status":1
+                }).then((res)=>{
+                    console.log(res);
+                    this.usage = res.data.dicList;
+                })
+            },
             // 图片上传
             handleAvatarSuccess(res, file) {
                 console.log(res);
@@ -231,8 +231,15 @@
             },
             //新增目的码
             addObjCodes(){
-                let unit = {};
-                this.objCodeList.push(unit);
+                if(this.objCodeList.length<3){
+                    let unit = {};
+                    this.objCodeList.push(unit);
+                }else{
+                    this.$message({
+                        message: '目的码最多添加3条',
+                        type: 'warning'
+                    });
+                }
             },
             // 删除目的码
             delObjCodes(index){
@@ -281,6 +288,7 @@
                 console.log(val);
                 this.numShow = false;
                 this.acceptForm.fourNum = val.number400;
+                this.acceptForm.firmName = val.companyName;
                 if(this.acceptForm.fourNum!=''){
                     this.searchObjCode();
                 }

@@ -313,10 +313,75 @@
                     });
                 }else if(val=='送审'){
                     this.$root.eventHub.$emit('dialog1VisibleVoice',{visibleVoice:true,voiceIn:3,flowId:this.voiceFlowId});
+                }else if(val=='通过审核'){
+                    console.log("11111");
+                    this.passCompany(val,data);
+                }else if(val=='驳回'){
+                    console.log("tttttttt");
+                    this.backCompany(val,data);
+				}else if(val=='删除'){
+                    this.$ajax.post('/vos/business/deleteFlow',{
+                        // "companyFlow": {
+                        //     "creator": "admin",
+                        //     "businessId": 188,
+                        //     "updateTime": "2019-01-24 14:50:36",
+                        //     "type": "Business",
+                        //     "companyId": 66,
+                        //     "id": 22,
+                        //     "flowId": this.entireFlowId
+                        // }
+                        "companyFlow": data
+                    }).then((res)=>{
+                        console.log(res);
+                        this.voiceFileLists();
+                    })
                 }
-
             },
-
+            async passCompany(val,data) {
+                var obj = {};
+                var url;
+                if (data.status == 'Business_Auditing') {
+                    url = '/vos/voice/auditPass';
+                }
+                obj.companyFlow = {
+                    flowId: data.flowId,
+                    creator: data.creator,
+                    assigneeRole: data.assigneeRole
+                };
+                obj.message = await this.prompt(val);
+                if (obj.message === false) {
+                    return;
+                }
+                this.$ajax.post(url, obj).then(res => {
+                    if (res.code == 200) {
+                        this.$message.success('操作成功');
+                        this.fetchData(this.page.num);
+                    }
+                });
+            },
+            async backCompany(val,data) {
+                console.log(val);
+                console.log(data);
+                var obj = {};
+                var url;
+                //语音驳回
+                url = '/vos/voice/auditReject';
+                obj.companyFlow = {
+                    flowId: data.flowId,
+                    creator: data.creator,
+                    assigneeRole: data.assigneeRole
+                };
+                obj.message = await this.prompt(val);
+                if (obj.message === false) {
+                    return;
+                }
+                this.$ajax.post(url, obj).then(res => {
+                    if (res.code == 200) {
+                        this.$message.success('操作成功');
+                        this.fetchData(this.page.num);
+                    }
+                });
+            },
 			voiceOperate(val,data){
                 console.log(val);
                 console.log(data);

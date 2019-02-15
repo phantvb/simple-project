@@ -5,8 +5,8 @@
         <p style="color:#999999">{{mealListInfo.packageContent}}</p>
         <div class="bigHouse">
             <div class="lowestExpense">
-                <p>年最低消费</p>
-                <div class="ellipse"><span>{{mealListInfo.bottomFee}}</span>元</div>
+                <p>基本功能费</p>
+                <div class="ellipse"><span>{{mealListInfo.basicFunctionFee}}</span>元</div>
             </div>
             <div class="lowestExpense">
                 <p>预存话费</p>
@@ -72,11 +72,11 @@
                 console.log(`当前页: ${val}`);
             },
             // 以套餐分类400号码
-            getAllByPackage2(){
+            getAllByPackage2(data){
                 this.$ajax.post('/vos/number400/searchByPackage',{
                     "num400Package":{
                         "number400":"",
-                        "packgeId":this.mealIndex
+                        "packgeId":data?data:this.mealIndex
                     },
                     "page":{
                         "pageNo":this.pageObj.page,

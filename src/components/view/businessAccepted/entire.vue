@@ -162,10 +162,13 @@
 				this.entireLists();
 			});
 			this.$root.eventHub.$on('voiceList', (resp) => {
-				this.voiceFileLists();
+				this.entireLists();
 			})
 
 		},
+		// businessIn  1:新增业务   2:送审   3:变更
+		//objCodeIn    1:目的码新增 2:送审
+		//voiceIn      1:语音新增   2:送审
 		methods: {
 			handleSizeChange(val) {
 				this.pageObj.pageSize = val;
@@ -214,7 +217,6 @@
                         }else{
                             item.btnList.push({label:'详情'});
                         }
-                        // console.log("btnList",item.btnList);
                     }else if(item.status=='Audit_Success'){
                         item.busStatus='通过审核';
                         item.btnList=[];
@@ -316,7 +318,7 @@
           console.log(this.entireFlowId);
             sessionStorage.setItem('entireFlowId',this.entireFlowId);
           if(val=='送审'){
-              sessionStorage.setItem("businessIn",1);
+              sessionStorage.setItem("businessIn",2);
               this.getCacheData(val);
           }else if(val=='详情'){
               console.log('详情入口');
@@ -331,7 +333,23 @@
           }else if(val=='驳回'){
               console.log("22222");
               this.backCompany(val,objMsg);
-          }
+          }else if(val=='删除'){
+              this.$ajax.post('/vos/business/deleteFlow',{
+                  // "companyFlow": {
+                  //     "creator": "admin",
+                  //     "businessId": 188,
+                  //     "updateTime": "2019-01-24 14:50:36",
+                  //     "type": "Business",
+                  //     "companyId": 66,
+                  //     "id": 22,
+                  //     "flowId": this.entireFlowId
+                  // }
+                  "companyFlow": objData
+			  }).then((res)=>{
+			      console.log(res);
+			      this.entireLists();
+			  })
+		  }
 
         },
         //“全部”表格详情
@@ -352,7 +370,7 @@
                     this.ChangeCompanyStatus(res.data.company);
                     console.log(this.company);
                     this.ChangeBusinessStatus(res.data.business);
-                    // this.ChangeDestNumber(res.data.destNumber);
+                    this.ChangeDestNumber(res.data.destNumber);
                     this.ChangeNumber400ValueAdded(res.data.number400ValueAdded);
                     this.ChangeNumber400Concession(res.data.number400Concession);
                     console.log("entireType",this.entireType);
@@ -429,11 +447,11 @@
             if (data.status == 'Business_Auditing') {
                 url = '/vos/business/businessAuditPass';
             }
-            // else if (data.status == 'Modify_Auditing') {
-            //     url = '/vos/company/modifyAuditPass';
-            // } else if (data.status == 'Canceling_Auditing') {
-            //     url = '/vos/company/cancelAuditPass';
-            // };
+            else if (data.status == 'Modify_Auditing') {
+                url = '/vos/business/modifyAuditPass';
+            } else if (data.status == 'Canceling_Auditing') {
+                url = '/vos/business/cancelAuditPass';
+            };
             obj.companyFlow = {
                 flowId: data.flowId,
                 creator: data.creator,
@@ -467,12 +485,20 @@
             }else if (data.status == 'Modify_Auditing') {
                 //变更审核驳回
                 url = '/vos/company/modifyAuditReject';
+            }else if (data.status == 'Cancel_AuditReject') {
+                //注销审核驳回
+                url = '/vos/business/cancelAuditReject';
             };
             obj.companyFlow = {
                 flowId: data.flowId,
                 creator: data.creator,
                 assigneeRole: data.assigneeRole
             };
+            if(data.status == 'Cancel_AuditReject'){   //注销审核被驳回才有的入参
+                obj.business = {
+                    id:data.business.id,
+                };
+			}
             obj.message = await this.prompt(val);
             if (obj.message === false) {
                 return;

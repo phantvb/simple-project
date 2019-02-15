@@ -243,10 +243,26 @@
 
             }else if(val=='通过审核'){
                 console.log("11111");
-                this.passCompany(val,objMsg);
+                this.passCompany(val,objData);
             }else if(val=='驳回'){
                 console.log("22222");
-                this.backCompany(val,objMsg);
+                this.backCompany(val,objData);
+            }else if(val=='删除'){
+                this.$ajax.post('/vos/business/deleteFlow',{
+                    // "companyFlow": {
+                    //     "creator": "admin",
+                    //     "businessId": 188,
+                    //     "updateTime": "2019-01-24 14:50:36",
+                    //     "type": "Business",
+                    //     "companyId": 66,
+                    //     "id": 22,
+                    //     "flowId": this.entireFlowId
+                    // }
+                    "companyFlow": objData
+                }).then((res)=>{
+                    console.log(res);
+                    this.businessLists();
+                })
             }
         },
         getCacheData(val){
@@ -314,7 +330,7 @@
                         item.status='等待送审';
                         item.btnList=[];
                         if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
-                            item.btnList.push({label:'送审'},{label:'详情'});
+                            item.btnList.push({label:'送审'},{label:'详情'},{label:'删除'});
                         }else{
                             item.btnList.push({label:'详情'});
                         }
