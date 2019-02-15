@@ -46,6 +46,7 @@
 			},
 			'data.id': function (n, o) {
 				if (n) {
+					this.getConcessionScheme();
 					this.get400Concession();
 				}
 			}
@@ -58,9 +59,6 @@
 				favourableId: '',
 				options: [],
 			}
-		},
-		mounted() {
-			this.getConcessionScheme();
 		},
 		methods: {
 			close(bol) {
@@ -78,7 +76,7 @@
 				})
 			},
 			getConcessionScheme() {
-				this.$ajax.post('/vos/tariffPackage/getConcessionScheme', { concessionScheme: { channel: this.active } }).then(res => {
+				this.$ajax.post('/vos/tariffPackage/getConcessionScheme', { concessionScheme: { channel: this.active, concessionWay: /时长包/.test(this.data.packageName) ? 1 : 2 } }).then(res => {
 					if (res.code == 200) {
 						this.options = res.data.concessionSchemeList;
 					}

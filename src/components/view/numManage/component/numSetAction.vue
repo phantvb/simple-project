@@ -12,243 +12,123 @@
 				<div class="pributton">{{allData.keyNumber}}</div>
 			</div>
 		</div>
-		<div v-if="allData.businessType=='transfer'">
-			<div class="form_item">
-				<div class="form_title right">业务类型：</div>
-				<div class="form_con">
-					<el-select v-model="allData.businessType" placeholder="请选择" size="mini">
-						<el-option v-for="item in (isFirst?options:optionscopy)" :disabled="allType?allType.indexOf(item.value)!=-1:false" :key="item.value" :label="item.label" :value="item.value">
-						</el-option>
-					</el-select>
-				</div>
-			</div>
-			<div class="form_item">
-				<div class="form_title right">规则类型：</div>
-				<div class="form_con">
-					<el-select v-model="allData.actionSet.ruleType" placeholder="请选择" size="mini" multiple collapse-tags>
-						<el-option v-for="item in ruleOptions" :key="item.value" :label="item.label" :value="item.value">
-						</el-option>
-					</el-select>
-				</div>
-			</div>
-			<div class="form_item">
-				<el-tabs v-model="actionSetActiveName" type="card" size="small" class="form_con">
-					<el-tab-pane label="每周设置" name="week" v-if="allData.actionSet.ruleType.indexOf('week')!=-1">
-						<el-checkbox-group v-model="allData.actionSet.ruleConfig.weekTime" size="mini">
-							<div v-for="item in dayOptions" :key="item.value" style="float:left;">
-								<el-checkbox-button size="mini" :label="item.value">{{item.label}}</el-checkbox-button>&#12288;
-							</div>
-						</el-checkbox-group>
-					</el-tab-pane>
-					<el-tab-pane label="每月设置" name="month" v-if="allData.actionSet.ruleType.indexOf('month')!=-1">
-						<el-checkbox-group v-model="allData.actionSet.ruleConfig.monthTime" size="mini">
-							<div v-for="(item,index) in monthOptions" :key="item.value" style="float:left;">
-								<el-checkbox-button size="mini" :label="item.value">{{item.label}}</el-checkbox-button>&#12288;
-							</div>
-						</el-checkbox-group>
-					</el-tab-pane>
-					<el-tab-pane label="特定日期" name="specificDate" v-if="allData.actionSet.ruleType.indexOf('specificDate')!=-1">
-						<el-date-picker v-model="allData.actionSet.ruleConfig.date" type="date" placeholder="选择日期" size="mini">
-						</el-date-picker>
-					</el-tab-pane>
-				</el-tabs>
-			</div>
-			<div class="srearch">
-				<div class="form_item">
-					<div class="form_title right">工作时间：</div>
-					<div class="form_con">
-						<div v-for="(item,index) in allData.actionSet.workTime" :key="index" style="margin-bottom:10px">
-							<el-time-picker value-format="HH:mm:ss" is-range v-model="allData.actionSet.workTime[index]" range-separator="至" start-placeholder="开始时间" end-placeholder="结束时间" placeholder="选择时间范围" size="mini" style="margin-bottom:10px;">
-							</el-time-picker>
-							<el-button v-if="index==0" type="primary" size="mini" icon="el-icon-plus" @click="addactTime(true)"></el-button>
-							<el-button v-if="index>0" type="primary" size="mini" icon="el-icon-minus" @click="addactTime(false)"></el-button>
-						</div>
-					</div>
-				</div>
-				<div class="form_item">
-					<div class="form_title right">工作时间&#12288;<br>目的码：</div>
-					<div class="form_con">
-						<el-table :data="allData.actionSet.codeWork" border :header-row-class-name="'lightblue'">
-							<el-table-column prop="code" label="目的码" min-width="150">
-								<template slot-scope="scope">
-									<el-select v-model="allData.actionSet.codeWork[scope.$index]" placeholder="请选择" size="mini">
-										<el-option v-for="item in codeOptions" :key="item.value" :value="item.label">
-										</el-option>
-									</el-select>
-								</template>
-							</el-table-column>
-							<el-table-column label="操作" min-width="80">
-								<template slot-scope="scope">
-									<el-button size="mini" type="text" @click="codeWorkDelete(scope.$index, scope.row)">删除</el-button>
-								</template>
-							</el-table-column>
-						</el-table>
-						<div class="lightblue center" style="width:100%">
-							<el-button size="mini" type="text" @click="codeWorkadd">添加目的码</el-button>
-						</div>
-					</div>
-				</div>
-				<div class="form_item">
-					<div class="form_title right">非工作时间&#12288;<br>目的码：</div>
-					<div class="form_con">
-						<el-table :data="allData.actionSet.codeUnWork" border :header-row-class-name="'lightblue'">
-							<el-table-column prop="code" label="目的码" min-width="150">
-								<template slot-scope="scope">
-									<el-select v-model="allData.actionSet.codeUnWork[scope.$index]" placeholder="请选择" size="mini">
-										<el-option v-for="item in codeOptions" :key="item.value" :value="item.label">
-										</el-option>
-									</el-select>
-								</template>
-							</el-table-column>
-							<el-table-column label="操作" min-width="80">
-								<template slot-scope="scope">
-									<el-button size="mini" type="text" @click="codeUnWorkDelete(scope.$index, scope.row)">删除</el-button>
-								</template>
-							</el-table-column>
-						</el-table>
-						<div class="lightblue center" style="width:100%">
-							<el-button size="mini" type="text" @click="codeUnWorkadd">添加目的码</el-button>
-						</div>
-					</div>
-				</div>
-				<div class="form_item">
-					<div class="form_con">
-						<div class="grey">
-							注解：已添加目的码的顺序即为号码轮询顺序
-						</div>
-					</div>
-				</div>
+		<div class="form_item">
+			<div class="form_title right">业务类型：</div>
+			<div class="form_con">
+				<el-select v-model="allData.businessType" placeholder="请选择" size="mini">
+					<el-option v-for="item in (isFirst?options:optionscopy)" :disabled="allType?allType.indexOf(item.value)!=-1:false" :key="item.value" :label="item.label" :value="item.value">
+					</el-option>
+				</el-select>
 			</div>
 		</div>
-		<div v-if="allData.businessType=='playback'">
-			<div class="form_item">
-				<div class="form_title right">业务类型：</div>
-				<div class="form_con">
-					<el-select v-model="allData.businessType" placeholder="请选择" size="mini">
-						<el-option v-for="item in (isFirst?options:optionscopy)" :disabled="allType?allType.indexOf(item.value)!=-1:false" :key="item.value" :label="item.label" :value="item.value">
-						</el-option>
-					</el-select>
-				</div>
+		<div class="form_item" v-if="allData.businessType=='playback'||allData.businessType=='IVR'">
+			<div class="form_title right">语音选择：</div>
+			<div class="form_con">
+				<el-select v-model="allData[allData.businessType].voiceType" placeholder="请选择" size="mini">
+					<el-option v-for="item in (isFirst?options:optionscopy)" :key="item.value" :label="item.label" :value="item.value">
+					</el-option>
+				</el-select>
+				<span class="grey fmini">&#12288;语音文件需要审核后才能选用</span>
 			</div>
-			<div class="form_item">
-				<div class="form_title right">语音选择：</div>
-				<div class="form_con">
-					<el-select v-model="allData.hookSet.voiceType" placeholder="请选择" size="mini">
-						<el-option v-for="item in (isFirst?options:optionscopy)" :key="item.value" :label="item.label" :value="item.value">
-						</el-option>
-					</el-select>
-					<span class="grey fmini">&#12288;语音文件需要审核后才能选用</span>
-				</div>
+		</div>
+		<div class="form_item" v-if="allData.businessType=='transfer'||allData.businessType=='playback'||allData.businessType=='IVR'">
+			<div class="form_title right">规则类型：</div>
+			<div class="form_con">
+				<el-select v-model="allData[allData.businessType].ruleType" placeholder="请选择" size="mini" multiple collapse-tags @change="handleRuleTypeChange">
+					<el-option v-for="item in ruleOptions" :key="item.value" :label="item.label" :value="item.value" :disabled="(allData[allData.businessType].ruleType.indexOf('ignore')!=-1&&item.value!='ignore')||(item.value=='day'&&(allData[allData.businessType].ruleType.indexOf('week')!=-1||allData[allData.businessType].ruleType.indexOf('month')!=-1))||(item.value=='week'&&(allData[allData.businessType].ruleType.indexOf('day')!=-1||allData[allData.businessType].ruleType.indexOf('month')!=-1))||(item.value=='month'&&(allData[allData.businessType].ruleType.indexOf('day')!=-1||allData[allData.businessType].ruleType.indexOf('week')!=-1))">
+					</el-option>
+				</el-select>
 			</div>
-			<div class="form_item">
-				<div class="form_title right">规则类型：</div>
-				<div class="form_con">
-					<el-select v-model="allData.hookSet.ruleType" placeholder="请选择" size="mini" multiple collapse-tags>
-						<el-option v-for="item in ruleOptions" :key="item.value" :label="item.label" :value="item.value">
-						</el-option>
-					</el-select>
-				</div>
-			</div>
-			<div class="form_item">
-				<el-tabs v-model="hookSetActiveName" type="card" size="small" class="form_con">
-					<el-tab-pane label="每周设置" name="week" v-if="allData.hookSet.ruleType.indexOf('week')!=-1">
-						<el-checkbox-group v-model="allData.hookSet.ruleConfig.weekTime" size="mini">
+		</div>
+		<div class="form_item" v-if="allData.businessType=='transfer'||allData.businessType=='playback'||allData.businessType=='IVR'">
+			<el-tabs v-model="ActiveName[allData.businessType]" type="card" size="small">
+				<el-tab-pane :label="_value.label" :name="_key" v-for="(_value,_key,_index) in allData[allData.businessType].ruleConfig" :key="_index" v-if="allData[allData.businessType].ruleType.indexOf(_key)!=-1">
+					<div style="overflow: hidden;margin-bottom:15px;">
+						<el-checkbox-group v-if="_key=='week'" v-model="_value.specificDate" size="mini">
 							<div v-for="item in dayOptions" :key="item.value" style="float:left;">
 								<el-checkbox-button size="mini" :label="item.value">{{item.label}}</el-checkbox-button>&#12288;
 							</div>
 						</el-checkbox-group>
-					</el-tab-pane>
-					<el-tab-pane label="每月设置" name="month" v-if="allData.hookSet.ruleType.indexOf('month')!=-1">
-						<el-checkbox-group v-model="allData.hookSet.ruleConfig.monthTime" size="mini">
-							<div v-for="(item,index) in monthOptions" :key="item.value" style="float:left;">
+						<el-checkbox-group v-else-if="_key=='month'" v-model="_value.specificDate" size="mini">
+							<div v-for="item in monthOptions" :key="item.value" style="float:left;">
 								<el-checkbox-button size="mini" :label="item.value">{{item.label}}</el-checkbox-button>&#12288;
 							</div>
 						</el-checkbox-group>
-					</el-tab-pane>
-					<el-tab-pane label="特定日期" name="specificDate" v-if="allData.hookSet.ruleType.indexOf('specificDate')!=-1">
-						<el-date-picker v-model="allData.hookSet.ruleConfig.date" type="date" placeholder="选择日期" size="mini">
+						<el-date-picker v-else-if="_key=='specificDate'" v-model="_value.specificDate" type="date" placeholder="选择日期" size="mini">
 						</el-date-picker>
-					</el-tab-pane>
-				</el-tabs>
-			</div>
+					</div>
+					<div class="srearch">
+						<div class="form_item">
+							<div class="form_title right">{{allData.businessType=='transfer'?'工作时间':'播放时间'}}：</div>
+							<div class="form_con">
+								<div v-for="(item,index) in _value.workTime" :key="index" style="margin-bottom:10px">
+									<el-time-picker value-format="HH:mm:ss" is-range v-model="_value.workTime[index]" range-separator="至" start-placeholder="开始时间" end-placeholder="结束时间" placeholder="选择时间范围" size="mini" style="margin-bottom:10px;">
+									</el-time-picker>
+									<el-button v-if="index==0" type="primary" size="mini" icon="el-icon-plus" @click="addactTime(_value,true)"></el-button>
+									<el-button v-if="index>0" type="primary" size="mini" icon="el-icon-minus" @click="addactTime(_value,false)"></el-button>
+								</div>
+							</div>
+						</div>
+						<div class="form_item" v-if="allData.businessType=='transfer'">
+							<div class="form_title right">工作时间&#12288;<br>目的码：</div>
+							<div class="form_con">
+								<el-table :data="_value.codeWork" border :header-row-class-name="'lightblue'">
+									<el-table-column prop="code" label="目的码" min-width="150">
+										<template slot-scope="scope">
+											<el-select v-model="_value.codeWork[scope.$index]" placeholder="请选择" size="mini">
+												<el-option v-for="item in codeOptions" :key="item.value" :value="item.label">
+												</el-option>
+											</el-select>
+										</template>
+									</el-table-column>
+									<el-table-column label="操作" min-width="80">
+										<template slot-scope="scope">
+											<el-button size="mini" type="text" @click="codeWorkDelete(scope.$index, _value)">删除</el-button>
+										</template>
+									</el-table-column>
+								</el-table>
+								<div class="lightblue center" style="width:100%">
+									<el-button size="mini" type="text" @click="codeWorkadd(_value)">添加目的码</el-button>
+								</div>
+							</div>
+						</div>
+						<div class="form_item" v-if="allData.businessType=='transfer'">
+							<div class="form_title right">非工作时间&#12288;<br>目的码：</div>
+							<div class="form_con">
+								<el-table :data="_value.codeUnWork" border :header-row-class-name="'lightblue'">
+									<el-table-column prop="code" label="目的码" min-width="150">
+										<template slot-scope="scope">
+											<el-select v-model="_value.codeUnWork[scope.$index]" placeholder="请选择" size="mini">
+												<el-option v-for="item in codeOptions" :key="item.value" :value="item.label">
+												</el-option>
+											</el-select>
+										</template>
+									</el-table-column>
+									<el-table-column label="操作" min-width="80">
+										<template slot-scope="scope">
+											<el-button size="mini" type="text" @click="codeUnWorkDelete(scope.$index, _value)">删除</el-button>
+										</template>
+									</el-table-column>
+								</el-table>
+								<div class="lightblue center" style="width:100%">
+									<el-button size="mini" type="text" @click="codeUnWorkadd(_value)">添加目的码</el-button>
+								</div>
+							</div>
+						</div>
+						<div class="form_item">
+							<div class="form_con">
+								<div class="grey">
+									注解：已添加目的码的顺序即为号码轮询顺序
+								</div>
+							</div>
+						</div>
+					</div>
 
-			<div class="srearch">
-				<div class="form_item">
-					<div class="form_title right">播放时间：</div>
-					<div class="form_con">
-						<div v-for="(item,index) in allData.hookSet.workTime" :key="index" style="margin-bottom:10px">
-							<el-time-picker value-format="HH:mm:ss" is-range v-model="allData.hookSet.workTime[index]" range-separator="至" start-placeholder="开始时间" end-placeholder="结束时间" placeholder="选择时间范围" size="mini" style="margin-bottom:10px;">
-							</el-time-picker>
-							<el-button v-if="index==0" type="primary" size="mini" icon="el-icon-plus" @click="addactTime(true)"></el-button>
-							<el-button v-if="index>0" type="primary" size="mini" icon="el-icon-minus" @click="addactTime(false)"></el-button>
-						</div>
-					</div>
-				</div>
-			</div>
+				</el-tab-pane>
+			</el-tabs>
 		</div>
-		<div v-if="allData.businessType=='IVR'">
-			<div class="form_item">
-				<div class="form_title right">业务类型：</div>
-				<div class="form_con">
-					<el-select v-model="allData.businessType" placeholder="请选择" size="mini">
-						<el-option v-for="item in (isFirst?options:optionscopy)" :disabled="allType?allType.indexOf(item.value)!=-1:false" :key="item.value" :label="item.label" :value="item.value">
-						</el-option>
-					</el-select>
-				</div>
-			</div>
-			<div class="form_item">
-				<div class="form_title right">语音选择：</div>
-				<div class="form_con">
-					<el-select v-model="allData.ivrSet.voiceType" placeholder="请选择" size="mini">
-						<el-option v-for="item in (isFirst?options:optionscopy)" :key="item.value" :label="item.label" :value="item.value">
-						</el-option>
-					</el-select>
-					<span class="grey fmini">&#12288;语音文件需要审核后才能选用</span>
-				</div>
-			</div>
-			<div class="form_item">
-				<div class="form_title right">规则类型：</div>
-				<div class="form_con">
-					<el-select v-model="allData.ivrSet.ruleType" placeholder="请选择" size="mini" multiple collapse-tags>
-						<el-option v-for="item in ruleOptions" :key="item.value" :label="item.label" :value="item.value">
-						</el-option>
-					</el-select>
-				</div>
-			</div>
-			<div class="form_item">
-				<el-tabs v-model="ivrSetActiveName" type="card" size="small" class="form_con">
-					<el-tab-pane label="每周设置" name="week" v-if="allData.ivrSet.ruleType.indexOf('week')!=-1">
-						<el-checkbox-group v-model="allData.ivrSet.ruleConfig.weekTime" size="mini">
-							<div v-for="item in dayOptions" :key="item.value" style="float:left;">
-								<el-checkbox-button size="mini" :label="item.value">{{item.label}}</el-checkbox-button>&#12288;
-							</div>
-						</el-checkbox-group>
-					</el-tab-pane>
-					<el-tab-pane label="每月设置" name="month" v-if="allData.ivrSet.ruleType.indexOf('month')!=-1">
-						<el-checkbox-group v-model="allData.ivrSet.ruleConfig.monthTime" size="mini">
-							<div v-for="(item,index) in monthOptions" :key="item.value" style="float:left;">
-								<el-checkbox-button size="mini" :label="item.value">{{item.label}}</el-checkbox-button>&#12288;
-							</div>
-						</el-checkbox-group>
-					</el-tab-pane>
-					<el-tab-pane label="特定日期" name="specificDate" v-if="allData.ivrSet.ruleType.indexOf('specificDate')!=-1">
-						<el-date-picker v-model="allData.ivrSet.ruleConfig.date" type="date" placeholder="选择日期" size="mini">
-						</el-date-picker>
-					</el-tab-pane>
-				</el-tabs>
-			</div>
+		<div class="form_item" v-if="allData.businessType=='IVR'">
 			<div class="srearch">
-				<div class="form_item">
-					<div class="form_title right">播放时间：</div>
-					<div class="form_con">
-						<div v-for="(item,index) in allData.ivrSet.workTime" :key="index" style="margin-bottom:10px">
-							<el-time-picker value-format="HH:mm:ss" is-range v-model="allData.ivrSet.workTime[index]" range-separator="至" start-placeholder="开始时间" end-placeholder="结束时间" placeholder="选择时间范围" size="mini" style="margin-bottom:10px;">
-							</el-time-picker>
-							<el-button v-if="index==0" type="primary" size="mini" icon="el-icon-plus" @click="addactTime(true)"></el-button>
-							<el-button v-if="index>0" type="primary" size="mini" icon="el-icon-minus" @click="addactTime(false)"></el-button>
-						</div>
-					</div>
-				</div>
 				<div class="form_item" v-if="isFirst">
 					<div class="form_title right">动作名称：</div>
 					<div class="form_con">
@@ -278,8 +158,8 @@
 									<div style="padding: 14px;">
 										<p class="center blue">{{item.value}}</p>
 										<div class="bottom center">
-											<el-button type="text" class="button" @click="editKey(item.value)">设置</el-button>
-											<el-button type="text" class="button">清空</el-button>
+											<el-button type="text" size="mini" class="button" @click="editKey(item.value)">设置</el-button>
+											<el-button type="text" size="mini" style="float:right" class="button">清空</el-button>
 										</div>
 									</div>
 								</el-card>
@@ -287,28 +167,6 @@
 						</ul>
 					</li>
 				</ul>
-			</div>
-		</div>
-		<div v-if="allData.businessType=='returnLast'">
-			<div class="form_item">
-				<div class="form_title right">业务类型：</div>
-				<div class="form_con">
-					<el-select v-model="allData.businessType" placeholder="请选择" size="mini">
-						<el-option v-for="item in (isFirst?options:optionscopy)" :key="item.value" :label="item.label" :value="item.value">
-						</el-option>
-					</el-select>
-				</div>
-			</div>
-		</div>
-		<div v-if="allData.businessType=='reListen'">
-			<div class="form_item">
-				<div class="form_title right">业务类型：</div>
-				<div class="form_con">
-					<el-select v-model="allData.businessType" placeholder="请选择" size="mini">
-						<el-option v-for="item in (isFirst?options:optionscopy)" :key="item.value" :label="item.label" :value="item.value">
-						</el-option>
-					</el-select>
-				</div>
 			</div>
 		</div>
 		<el-dialog title="按键规则设置" :visible.sync="dialogVisible" width="50%" :modal="false">
@@ -355,9 +213,11 @@
 		data() {
 			return {
 				//allData: {},
-				actionSetActiveName: 'week',
-				hookSetActiveName: 'week',
-				ivrSetActiveName: 'week',
+				ActiveName: {
+					transfer: 'ignore',
+					playback: 'ignore',
+					IVR: 'ignore'
+				},
 				treeData: [],
 				numSetActionIndex: 0,
 				defaultProps: {
@@ -503,7 +363,7 @@
 		},
 		methods: {
 			submit(data) {
-				this.$emit('fetch', data);
+				console.log(data);
 				//this.updata(data, false);
 				this.dialogVisible = false;
 			},
@@ -520,49 +380,57 @@
 					this.numSetActionIndex = index;
 					this.dialogVisible = true;
 				} else {
-					this.allData.children.push({
+					let obj = {
 						id: "",
 						keyNumber: keycode,
 						number400Data: this.number400Data,
 						businessType: 'transfer',
 						temName: '转接',
 						actionName: '一级 11',
-						actionSet: {
-							ruleType: ['ignore'],
-							ruleConfig: {
-								weekTime: [],
-								monthTime: [],
-								date: ''
-							},
-							workTime: [''],
-							codeWork: [],
-							codeUnWork: []
+						transfer: {
+							ruleType: [],
+							ruleConfig: {}
 						},
-						hookSet: {
+						playback: {
 							voiceType: 0,
-							ruleType: ['ignore'],
-							ruleConfig: {
-								weekTime: [],
-								monthTime: [],
-							},
-							workTime: ['']
+							ruleType: [],
+							ruleConfig: {}
 						},
-						ivrSet: {
+						IVR: {
 							voiceType: 0,
-							ruleType: ['ignore'],
-							ruleConfig: {
-								weekTime: [],
-								monthTime: [],
-							},
-							workTime: ['']
+							ruleType: [],
+							ruleConfig: {}
 						},
 						children: []
+					};
+					this.ruleOptions.map(item => {
+						obj.transfer.ruleConfig[item.value] = {
+							id: "",
+							label: item.label,
+							workTime: [''],
+							codeWork: [''],
+							codeUnWork: [''],
+							specificDate: []
+						};
+						obj.playback.ruleConfig[item.value] = {
+							id: "",
+							label: item.label,
+							workTime: [''],
+							specificDate: []
+						};
+						obj.IVR.ruleConfig[item.value] = {
+							id: "",
+							label: item.label,
+							workTime: [''],
+							specificDate: []
+						};
 					});
+					this.allData.children.push(obj);
 					this.numSetActionIndex = this.allData.children.length - 1;
 					this.dialogVisible = true;
 				}
 			},
-			updata(objData, bol) {
+			updata(objData, bol /*判断是否位第一层数据*/ ) {
 				var postdata = {};
 				postdata.id = objData.id;
 				if (this.isFirst && bol) {
@@ -574,47 +442,63 @@
 				postdata.number400 = this.number400Data.number400;
 				postdata.businessType = objData.businessType;
 				if (objData.businessType == 'transfer') {
-					postdata.workDestNumbers = objData.actionSet.codeWork.join(',');
-					postdata.nonWorkDestNumbers = objData.actionSet.codeUnWork.join(',');
-					objData.actionSet.workTime.map((item, index) => {
-						postdata['workTime' + (index + 1) + 'Start'] = item[0];
-						postdata['workTime' + (index + 1) + 'End'] = item[1];
-					});
-					postdata.ruleType = objData.actionSet.ruleType;
-					if (objData.actionSet.ruleType == 'week' || objData.actionSet.ruleType == 'month') {
-						postdata.specificDate = objData.actionSet.ruleConfig[objData.actionSet.ruleType + 'Time'].join(',');
-					} else if (objData.actionSet.ruleType == 'specificDate') {
-						postdata.specificDate = objData.actionSet.ruleConfig.date;
-					}
-					//postdata.parentId=objData.actionSet;
+					objData.transfer.ruleType.map(item => {
+						let cData = Object.assign({}, postdata);
+						cData.ruleType = item;
+						cData.workDestNumbers = objData.transfer.ruleConfig[item].codeWork.join(',');
+						cData.nonWorkDestNumbers = objData.transfer.ruleConfig[item].codeUnWork.join(',');
+						objData.transfer.ruleConfig.workTime.map((_item, _index) => {
+							cData['workTime' + (_index + 1) + 'Start'] = _item[0];
+							cData['workTime' + (_index + 1) + 'End'] = _item[1];
+						});
+						if (item == 'week' || item == 'month') {
+							cData.specificDate = objDa.tatransfer.ruleConfig[item].specificDate.join(',');
+						} else {
+							cData.specificDate = objData.transfer.ruleConfig[item].specificDate;
+						};
+						console.log(cData)
+						this.sendUp('saveTransfer', cData)
+					})
 				} else if (objData.businessType == 'playback') {
-					objData.hookSet.workTime.map((item, index) => {
-						postdata['workTime' + (index + 1) + 'Start'] = item[0];
-						postdata['workTime' + (index + 1) + 'End'] = item[1];
-					});
-					postdata.ruleType = objData.hookSet.ruleType;
-					if (objData.hookSet.ruleType == 'week' || objData.hookSet.ruleType == 'month') {
-						postdata.specificDate = objData.hookSet.ruleConfig[objData.hookSet.ruleType + 'Time'].join(',');
-					} else if (objData.hookSet.ruleType == 'specificDate') {
-						postdata.specificDate = objData.hookSet.ruleConfig.date;
-					}
-					postdata.voiceId = objData.hookSet.voiceType;
+					objData.playback.ruleType.map(item => {
+						let cData = Object.assign({}, postdata);
+						cData.ruleType = item;
+						objData.playback.ruleConfig.workTime.map((_item, _index) => {
+							cData['workTime' + (_index + 1) + 'Start'] = _item[0];
+							cData['workTime' + (_index + 1) + 'End'] = _item[1];
+						});
+						if (item == 'week' || item == 'month') {
+							cData.specificDate = objData.playback.ruleConfig[item].specificDate.join(',');
+						} else {
+							cData.specificDate = objData.playback.ruleConfig[item].specificDate;
+						};
+						cData.voiceId = objData.playback.voiceType;
+						this.sendUp('savePlayback', cData)
+					})
 				} else if (objData.businessType == 'IVR') {
-					postdata.actionName = objData.actionName;
-					objData.ivrSet.workTime.map((item, index) => {
-						postdata['workTime' + (index + 1) + 'Start'] = item[0];
-						postdata['workTime' + (index + 1) + 'End'] = item[1];
-					});
-					postdata.ruleType = objData.ivrSet.ruleType;
-					if (objData.ivrSet.ruleType == 'week' || objData.ivrSet.ruleType == 'month') {
-						postdata.specificDate = objData.ivrSet.ruleConfig[objData.ivrSet.ruleType + 'Time'].join(',');
-					} else if (objData.ivrSet.ruleType == 'specificDate') {
-						postdata.specificDate = objData.ivrSet.ruleConfig.date;
-					}
-					postdata.voiceId = objData.ivrSet.voiceType;
+					objData.IVR.ruleType.map(item => {
+						let cData = Object.assign({}, postdata);
+						cData.ruleType = item;
+						cData.actionName = objData.actionName;
+						objData.IVR.ruleConfig.workTime.map((_item, _index) => {
+							cData['workTime' + (_index + 1) + 'Start'] = _item[0];
+							cData['workTime' + (_index + 1) + 'End'] = _item[1];
+						});
+						if (item == 'week' || item == 'month') {
+							cData.specificDate = objData.IVR.ruleConfig[item].specificDate.join(',');
+						} else {
+							cData.specificDate = objData.IVR.ruleConfig[item].specificDate;
+						};
+						cData.voiceId = objData.IVR.voiceType;
+						this.sendUp('saveIVR', cData);
+					})
 				} else {
-					postdata.businessType = objData.businessType;
+					let cData = Object.assign({}, postdata);
+					cData.businessType = objData.businessType;
+					this.sendUp('saveKey', cData);
 				};
+			},
+			sendUp(url, postdata) {
 				if (!this.isFirst) {
 					this.$ajax.post('/vos/num400config/saveKey', {
 						num400KeyConfig: postdata
@@ -624,78 +508,48 @@
 						}
 					});
 				} else {
-					if (objData.businessType == 'transfer') {
-						this.$ajax.post('/vos/num400config/saveTransfer', {
-							num400TransferConfig: postdata
-						}).then(res => {
-							if (res.code == 200) {
-								objData.id = res.data;
-							}
-						});
-					} else if (objData.businessType == 'playback') {
-						this.$ajax.post('/vos/num400config/savePlayback', {
-							num400PlayBackConfig: postdata
-						}).then(res => {
-							if (res.code == 200) {
-								objData.id = res.data;
-							}
-						});
-					} else if (objData.businessType == 'IVR') {
-						this.$ajax.post('/vos/num400config/saveIVR', {
-							num400IVRConfig: postdata
-						}).then(res => {
-							if (res.code == 200) {
-								objData.id = res.data;
-							}
-						});
-					}
+					//saveTransfer,savePlayback,saveIVR
+					this.$ajax.post('/vos/num400config/' + url, {
+						num400TransferConfig: postdata
+					}).then(res => {
+						if (res.code == 200) {
+							objData.id = res.data;
+						}
+					});
 				}
 			},
 			handleNodeClick(data) {
 				console.log(this.treeData);
 			},
-			addactTime(bol) {
-				if (bol && this.allData.actionSet.workTime.length < 2) {
-					this.allData.actionSet.workTime.push('');
+			handleRuleTypeChange(val) {
+				if (val.indexOf('ignore') != -1) {
+					val.splice(0, val.length, 'ignore');
+				};
+			},
+			addactTime(target, bol) {
+				if (bol && target.workTime.length < 2) {
+					target.workTime.push('');
 				} else {
-					if (this.allData.actionSet.workTime.length > 1) {
-						this.allData.actionSet.workTime.pop();
+					if (target.workTime.length > 1) {
+						target.workTime.pop();
 					}
 				}
 			},
-			addWorkTime(bol) {
-				if (bol) {
-					this.allData.hookSet.workTime.push('');
-				} else {
-					if (this.allData.hookSet.workTime.length > 1) {
-						this.allData.hookSet.workTime.pop();
-					}
+			codeWorkDelete(index, target) {
+				if (target.codeWork.length > 1) {
+					target.codeWork.splice(index, 1);
 				}
 			},
-			addIvrTime(bol) {
-				if (bol) {
-					this.allData.ivrSet.workTime.push('');
-				} else {
-					if (this.allData.ivrSet.workTime.length > 1) {
-						this.allData.ivrSet.workTime.pop();
-					}
+			codeUnWorkDelete(index, target) {
+				if (target.codeWork.length > 1) {
+					target.codeUnWork.splice(index, 1);
 				}
 			},
-			codeWorkDelete(index) {
-				if (this.allData.actionSet.codeWork.length > 1) {
-					this.allData.actionSet.codeWork.splice(index, 1);
-				}
+			codeWorkadd(target) {
+				target.codeWork.push('');
 			},
-			codeUnWorkDelete(index) {
-				if (this.allData.actionSet.codeWork.length > 1) {
-					this.allData.actionSet.codeUnWork.splice(index, 1);
-				}
-			},
-			codeWorkadd() {
-				this.allData.actionSet.codeWork.push('');
-			},
-			codeUnWorkadd() {
-				this.allData.actionSet.codeUnWork.push('');
+			codeUnWorkadd(target) {
+				target.codeUnWork.push('');
 			}
 		}
 	}
