@@ -76,7 +76,7 @@
 		</div>
 
 		<div class="addFeesDialog">
-			<el-dialog title="新增/编辑资费套餐" :visible.sync="addFeesFromDialogVisible" width="40%" :before-close="handleClose">
+			<el-dialog title="新增/编辑资费套餐" :visible.sync="addFeesFromDialogVisible" width="40%">
 				<div>
 					<el-form ref="addFeesForm" :model="addFeesForm" label-width="100px">
 						<el-form-item label="套餐名称：" prop="tariffName">
@@ -169,19 +169,19 @@
 				submitData: "inline-block",
 
 				disabledSelf: false,
-                disabledChannel: false,
-                loading: false
+				disabledChannel: false,
+				loading: false
 			};
 		},
 		methods: {
-            resetForm(formName){
-                this.$refs[formName].resetFields();
-            },
+			resetForm(formName) {
+				this.$refs[formName].resetFields();
+			},
 			showAddFees() {
-                this.addFeesFromDialogVisible = true;
-                
-                this.resetForm('addFeesForm');
-				
+				this.addFeesFromDialogVisible = true;
+
+				this.resetForm('addFeesForm');
+
 				this.addFeesForm.id = "";
 
 				this.updateData = "none";
@@ -398,17 +398,8 @@
 					});
 			},
 
-			//关闭确认
-			handleClose(done) {
-				this.$confirm("确认关闭?")
-					.then(_ => {
-						done();
-					})
-					.catch(_ => {});
-			},
-
 			loadData() {
-                this.loading = true;
+				this.loading = true;
 				this.$ajax.post("/vos/tariffPackage/getTariff", {
 					tariff: {
 						channel: "self"
@@ -433,7 +424,7 @@
 					}
 				}).then(res => {
 					if (res.code == 200) {
-                        this.loading = false;
+						this.loading = false;
 						this.aTotalCount2 = res.data.tariffPackageList.length;
 						this.aTableData2 = res.data.tariffPackageList;
 						for (var i = 0; i < this.aTotalCount2; i++) {

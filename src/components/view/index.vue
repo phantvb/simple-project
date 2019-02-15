@@ -107,7 +107,7 @@
 			},
 			logout() {
 				this.$ajax.get('/vos/user/logout').then(res => {
-					if (res.code == 200) {
+					if (res == 'OK') {
 						this.$router.push({ path: '/login' });
 					}
 				});

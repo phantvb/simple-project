@@ -74,35 +74,26 @@
 				codeImg: true
 			}
 		},
-		created() {
-
-		},
 		methods: {
 			submitForm() {
 				var _this = this;
-				// this.$refs['loginForm'].validate((valid) => {
-				// 	if (valid) {
-						this.loading = true;
-						_this.$ajax.post('/vos/user/apiLogin', {
-							username: this.loginForm.name,
-							password: this.loginForm.pass,
-							imageCode: this.loginForm.code
-						}).then(resp => {
-							_this.loading = false;
-							for (let key in resp.data) {
-								sessionStorage.setItem(key, resp.data[key]);
-							}
-							_this.$ajax.get('/vos/menu/getTreeMenu?roleId=' + sessionStorage.getItem('roleId')).then(res => {
-								if (res.code == 200) {
-									_this.$store.commit('addRoute', res.data.menuList);
-									_this.$router.push('/Layout/userCenter');
-								}
-							});
-						});
-					// } else {
-					// 	return false;
-					// }
-				// });
+				this.loading = true;
+				_this.$ajax.post('/vos/user/apiLogin', {
+					username: this.loginForm.name,
+					password: this.loginForm.pass,
+					imageCode: this.loginForm.code
+				}).then(resp => {
+					_this.loading = false;
+					for (let key in resp.data) {
+						sessionStorage.setItem(key, resp.data[key]);
+					}
+					_this.$ajax.get('/vos/menu/getTreeMenu?roleId=' + sessionStorage.getItem('roleId')).then(res => {
+						if (res.code == 200) {
+							_this.$store.commit('addRoute', res.data.menuList);
+							_this.$router.push('/Layout/userCenter');
+						}
+					});
+				});
 			},
 
 			changeImg() {

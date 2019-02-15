@@ -62,7 +62,7 @@
 		</div>
 
 		<div>
-			<el-dialog title="新增/编辑引示号码" :visible.sync="addCitationNumberFormDialogVisible" width="30%" :before-close="handleClose">
+			<el-dialog title="新增/编辑引示号码" :visible.sync="addCitationNumberFormDialogVisible" width="30%">
 				<div>
 					<el-form ref="addCitationNumberForm" :model="addCitationNumberForm" label-width="100px">
 						<el-form-item label="引示号码：">
@@ -474,14 +474,6 @@
 				this.$emit("exportGuideNumber");
 			},
 
-			handleClose(done) {
-				this.$confirm("确认关闭？")
-					.then(_ => {
-						done();
-					})
-					.catch(_ => {});
-			},
-
 			loadTable(res) {
 				this.tableData = res.guideNumbers;
 				this.page.total = res.totalCount;
@@ -489,24 +481,20 @@
 				for (let i = 0; i < this.tableData.length; i++) {
 					if (this.tableData[i].channel == "self") {
 						this.tableData[i].channel = "自助直销";
-					}
-					else if (this.tableData[i].channel == "channel") {
+					} else if (this.tableData[i].channel == "channel") {
 						this.tableData[i].channel = "渠道";
-					}
-					else {
+					} else {
 						this.tableData[i].channel = "自助直销,渠道";
 					}
 
 					if (this.tableData[i].status == "Binded") {
 						this.tableData[i].status = "已绑定";
-					}
-					else {
+					} else {
 						this.tableData[i].status = "未绑定";
 					}
 					if (this.tableData[i].priceType == "per6seconds") {
 						this.tableData[i].price = this.tableData[i].price + "/6秒";
-					}
-					else {
+					} else {
 						this.tableData[i].price = this.tableData[i].price + "/分钟";
 					}
 				}
@@ -516,7 +504,7 @@
 				this.$ajax.post("/vos/guideNumber/search", {
 					page: {
 						pageNo: this.page.currentPage,
-							pageSize: this.page.size
+						pageSize: this.page.size
 					},
 					guideNumber: {
 						status: "",
