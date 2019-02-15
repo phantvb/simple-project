@@ -32,8 +32,8 @@
                                                 </el-table-column>
 
                                                 <el-table-column
-                                                        prop="bottomFee"
-                                                        label="最低年消费">
+                                                        prop="basicFunctionFee"
+                                                        label="基本功能费">
                                                 </el-table-column>
 
                                                 <el-table-column
@@ -68,7 +68,7 @@
                                     <el-button type="primary" size="mini" @click="searchNum()">搜索</el-button>
                                 </el-form-item>
 
-                                <el-tabs type="border-card">
+                                <el-tabs type="border-card" @tab-click="parentMethod">
                                     <el-tab-pane v-for="(item,index) in mealList" :label="item.tariffName"
                                                  :name="index+''" :key="index+''">
                                         <set-meal
@@ -112,8 +112,8 @@
                                 </el-table-column>
 
                                 <el-table-column
-                                        prop="bottomFee"
-                                        label="最低年消费">
+                                        prop="basicFunctionFee"
+                                        label="基本功能费">
                                 </el-table-column>
 
                                 <el-table-column
@@ -270,7 +270,7 @@
 
                                 <el-table-column
                                         prop="bottomFeeCopy"
-                                        label='最低年消费'>
+                                        label='基本功能费'>
                                 </el-table-column>
 
                                 <el-table-column
@@ -488,6 +488,9 @@
 
                     //登录信息
                     channel: '',
+
+                    //业务id
+                    id:'',
                 },
                 valueAdd: [],       // 选中的增值业务数组
                 discountsList: [],  //优惠数组
@@ -504,8 +507,9 @@
                     connectType: "",
                     connectId: "",
                     flowId: "",
-                    stepThreeFlowId: "",
+                    // stepThreeFlowId: "",
                 }],
+                stepThreeFlowId: "",
                 selectedNum: [],    //已选号码列表
                 searchNumList: [],  //400号码模糊搜索列表
                 objCodeTable: [],  //增值表格
@@ -542,6 +546,7 @@
                 currentPage: 1,   //分页
                 titleNum: '',
                 sealInfo: '',      //套餐信息
+                businessIn:'',
             };
 
         },
@@ -588,7 +593,7 @@
                 selectedNumCopy.units = this.business.units;
                 selectedNumCopy.number400 = this.business.number400;
                 selectedNumCopy.tariffName = this.business.tariffName;
-                selectedNumCopy.bottomFee = this.business.bottomFee;
+                selectedNumCopy.basicFunctionFee = this.business.basicFunctionFee;
                 selectedNumCopy.packageContent = this.business.packageContent;
                 selectedNumCopy.durationPresentation = this.business.durationPresentation;
                 selectedNumCopy.durationPresentation = this.business.durationPresentation;
@@ -612,6 +617,22 @@
                 console.log("needCompanySave", resp);
                 this.stepThreeForm.needCompanySave = resp;
             });
+
+            console.log(sessionStorage.getItem('businessIn'));
+            this.businessIn = sessionStorage.getItem('businessIn');
+            //新增受理
+            if (sessionStorage.getItem('businessIn') == 1) {
+                this.$root.eventHub.$on('flowId', (resp) => {
+                    console.log("flowId", resp);
+                    this.flowId = resp;
+                });
+            }
+            this.$root.eventHub.$on('dialogVisibleBusiness', (res)=>{
+                this.visibleBusiness=res.visibleBusiness;
+                if(res.businessIn){
+                    this.businessIn = res.businessIn;
+                }
+            } );
 
         },
         methods: {
@@ -716,8 +737,6 @@
                     console.log("this.$refs.child1", this.$refs.child1);
                     this.$refs.child1[0].getAllByPackage2();
                 }, 1000);
-
-
             },
             // 弹窗关闭
             handleClose(done) {
@@ -870,6 +889,7 @@
                     this.cityList = res.data;
                 })
             },
+
             //以套餐分类搜索400号码
             searchByPackage() {
                 this.$ajax.post('/vos/number400/searchByPackage', {
@@ -937,7 +957,7 @@
                     console.log(res.data.number400s[0]);
                     this.selectedNum = res.data.number400s;
                     this.selectedNum.map((item)=>{
-                        item.bottomFeeCopy=item.bottomFee+'元';
+                        item.bottomFeeCopy=item.basicFunctionFee+'元';
                         item.durationPresentationCopy=item.durationPresentation+'元';
                         if(item.type==1){
                             item.unitsCopy=item.units+"月"
@@ -1013,7 +1033,13 @@
                 console.log("business", this.business);
                 console.log("destNumber", this.destNumber);
                 console.log("number400Concession", this.number400Concession);
-                this.$ajax.post('/vos/business/startAndSave', {
+                var url;
+                if(this.businessIn==1 || this.businessIn==2){       //新增和编辑的暂存
+                    url='/vos/business/startAndSave';
+                }else if(this.businessIn==3){                       //变更
+                    url='/vos/business/sendToModifyAudit';
+                }
+                this.$ajax.post(url, {
                     "company": this.company,
                     "business": this.stepThreeForm,
                     "destNumber": this.destNumber,
@@ -1026,8 +1052,9 @@
                     if (res.code == '200') {
                         console.log(res);
                         this.$root.eventHub.$emit('flowId', res.data);
-                        this.stepThreeFlowId = res.data;
-                        console.log(this.stepThreeFlowId = res.data);
+                        this.stepThreeFlowId = res.data.flowId;        //flowId
+                        this.stepThreeForm.id = res.data.businessId;   //业务id
+                        console.log(this.stepThreeFlowId = res.data.flowId);
                         //第三步点击下一步之前检查number400是否绑定了引示号
                         this.$ajax.post('/vos/business/matchGuideNumber', {
                             "number400": this.titleNum,
@@ -1042,6 +1069,12 @@
                         this.$message.warning(res.message);
                     }
                 });
+            },
+            // 点击tab获取相应信息
+            parentMethod(val) {
+                console.log(val);
+                    console.log("this.$refs.child1", this.$refs.child1);
+                    this.$refs.child1[val.index].getAllByPackage2(val.index);
             },
             // 存vuex更新业务信息模块入参
             ChangeBusinessStatus(val) {

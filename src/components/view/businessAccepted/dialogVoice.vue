@@ -9,20 +9,21 @@
             <div>
                 <el-form ref="voiceForm" :model="voiceForm" label-width="90px" class="voiceForm">
                     <div class="voiceMsg">
-                        <el-form-item label="企业名称：" class="input">
-                            <el-input v-model="voiceForm.firmName" size="mini" @input="searchFirm"></el-input>
-                            <div id="firmNameList" v-if="firmNameShow">
-                                <ul>
-                                    <li v-for="(item,index) in firmNameList" :key="index" @click="firmNameLi(item)">{{item.companyName}}</li>
-                                </ul>
-                            </div>
-                        </el-form-item>
 
                         <el-form-item label="400号码：" class="type">
                             <el-input v-model="voiceForm.voiceNum" size="mini" @input="searchNum400"></el-input>
                             <div id="numList" v-if="numShow">
                                 <ul>
                                     <li v-for="(item,index) in num400List" :key="index" @click="num400Lists(item)">{{item.number400 +"("+item.companyName+")"}}</li>
+                                </ul>
+                            </div>
+                        </el-form-item>
+
+                        <el-form-item label="企业名称：" class="input">
+                            <el-input v-model="voiceForm.firmName" size="mini" @input="searchFirm"></el-input>
+                            <div id="firmNameList" v-if="firmNameShow">
+                                <ul>
+                                    <li v-for="(item,index) in firmNameList" :key="index" @click="firmNameLi(item)">{{item.companyName}}</li>
                                 </ul>
                             </div>
                         </el-form-item>
@@ -72,11 +73,9 @@
                                                        :before-upload ="beforeAvatarUpload"
                                                        :limit="1">
                                                 <el-button size="small" type="primary">点击上传</el-button>
-
                                             </el-upload>
                                         </template>
                             </el-table-column>
-
 
                             <el-table-column
                                     prop="operation"
@@ -253,8 +252,12 @@
                 console.log(val);
                 this.voiceForm.voiceNum = val.number400;
                 this.numShow = false;
+                this.$ajax.get('/vos/voice/getAllBy400?number400='+this.voiceForm.voiceNum).then((res)=>{
+                    console.log(res.data.voice);
+                    this.tableData = res.data.voice;
+                });
+                this.voiceForm.firmName = val.companyName;
             },
-
             add(scope){
                 console.log(scope);
                 console.log(this.tableData.length);

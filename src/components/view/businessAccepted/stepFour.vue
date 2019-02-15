@@ -169,16 +169,15 @@
                     this.flowId = resp;
                 });
             }
+
             if(sessionStorage.getItem('entireFlowId')){
                 console.log("entireFlowId", sessionStorage.getItem('entireFlowId'));
                 this.flowId = sessionStorage.getItem('entireFlowId');
                 if (this.businessIn==2) {
                     console.log("flowId", '123123123123123213');
                     this.stepFourForm = this.business;
-
                 }
             }
-
             this.$root.eventHub.$on('dialogVisibleBusiness', (res)=>{
                 this.visibleBusiness=res.visibleBusiness;
                 if(res.businessIn){
@@ -264,9 +263,9 @@
                 console.log("number400ValueAdded", this.number400ValueAdded);
                 console.log("number400Concession", this.number400Concession);
                 var url;
-                if(this.businessIn==1){       //新增
+                if(this.businessIn==1 || this.businessIn==2){       //新增和编辑的暂存
                       url='/vos/business/startAndSave';
-                }else if(this.businessIn==3){  //变更
+                }else if(this.businessIn==3){                       //变更
                       url='/vos/business/sendToModifyAudit';
                 }
                 this.$ajax.post(url, {
@@ -302,9 +301,9 @@
                 console.log("number400ValueAdded", this.number400ValueAdded);
                 console.log("number400Concession", this.number400Concession);
                 var url;
-                if(this.businessIn==1){
+                if(this.businessIn==1 || this.businessIn==2){
                     url = '/vos/business/sendToBusinessAudit';
-                }else if(this.businessIn==2){
+                }else if(this.businessIn==3){
                     url = '/vos/business/sendToModifyAudit';
                 }
                 this.$ajax.post(url, {

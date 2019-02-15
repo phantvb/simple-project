@@ -7,11 +7,14 @@ const createActivities = {
 		destNumber: [], //目的码
 		number400ValueAdded: [], //增值服务
 		number400Concession: [], //优惠信息
+
 		permission: {}, //当前路由信息
 
         flowRecord:[], // 全部详情右侧信息
 		permission: {}, //当前路由信息
-		routes: []
+		routes: [],
+
+
 	},
 	//更新状态
 	mutations: {

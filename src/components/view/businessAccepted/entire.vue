@@ -217,7 +217,6 @@
                         }else{
                             item.btnList.push({label:'详情'});
                         }
-                        // console.log("btnList",item.btnList);
                     }else if(item.status=='Audit_Success'){
                         item.busStatus='通过审核';
                         item.btnList=[];
@@ -334,7 +333,23 @@
           }else if(val=='驳回'){
               console.log("22222");
               this.backCompany(val,objMsg);
-          }
+          }else if(val=='删除'){
+              this.$ajax.post('/vos/business/deleteFlow',{
+                  // "companyFlow": {
+                  //     "creator": "admin",
+                  //     "businessId": 188,
+                  //     "updateTime": "2019-01-24 14:50:36",
+                  //     "type": "Business",
+                  //     "companyId": 66,
+                  //     "id": 22,
+                  //     "flowId": this.entireFlowId
+                  // }
+                  "companyFlow": objData
+			  }).then((res)=>{
+			      console.log(res);
+			      this.entireLists();
+			  })
+		  }
 
         },
         //“全部”表格详情
@@ -355,7 +370,7 @@
                     this.ChangeCompanyStatus(res.data.company);
                     console.log(this.company);
                     this.ChangeBusinessStatus(res.data.business);
-                    // this.ChangeDestNumber(res.data.destNumber);
+                    this.ChangeDestNumber(res.data.destNumber);
                     this.ChangeNumber400ValueAdded(res.data.number400ValueAdded);
                     this.ChangeNumber400Concession(res.data.number400Concession);
                     console.log("entireType",this.entireType);

@@ -319,8 +319,23 @@
                 }else if(val=='驳回'){
                     console.log("tttttttt");
                     this.backCompany(val,data);
-				}
-
+				}else if(val=='删除'){
+                    this.$ajax.post('/vos/business/deleteFlow',{
+                        // "companyFlow": {
+                        //     "creator": "admin",
+                        //     "businessId": 188,
+                        //     "updateTime": "2019-01-24 14:50:36",
+                        //     "type": "Business",
+                        //     "companyId": 66,
+                        //     "id": 22,
+                        //     "flowId": this.entireFlowId
+                        // }
+                        "companyFlow": data
+                    }).then((res)=>{
+                        console.log(res);
+                        this.voiceFileLists();
+                    })
+                }
             },
             async passCompany(val,data) {
                 var obj = {};

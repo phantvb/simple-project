@@ -420,7 +420,7 @@
             industryTypeLists() {
                 this.$ajax.post('/vos/dic/getDicsByType', {
                     "dicType": "industry_category",
-                    "status": "show"
+                    "status": "1"
                 }).then((res) => {
                     console.log(res.data);
                     console.log(res.data.dicList);

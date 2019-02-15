@@ -84,6 +84,9 @@
                         <!--</li>-->
                     <!--</ul>-->
                 </div>
+                <!--<div>-->
+                    <p class="fmini" v-for="(item,index) in destNumberList">{{"目的码"+(index+1)+"："+ item.destnumber}}</p>
+                <!--</div>-->
                 <p class="fmini">归属地区： {{this.business.provinceBelong+this.business.cityBelong+this.business.cityBelong}}</p>
                 <p class="fmini">业务身份： {{this.business.channel}} </p>
                 <p class="fmini"> 优惠：{{this.business.discounts}}</p>
@@ -206,6 +209,7 @@
             return {
                 objCodeTable: [],
                 addValueList:[],
+                destNumberList:[],
             };
         },
         components: {},
@@ -215,6 +219,7 @@
             console.log("destNumber",this.destNumber);
             console.log("number400ValueAdded",this.number400ValueAdded);
             console.log("number400Concession",this.number400Concession);
+            this.destNumberList = this.destNumber;
 
             //增值资费
             this.addValueList = this.number400ValueAdded;
@@ -222,13 +227,16 @@
                 item.amount = item.numOfMonth;
                 item.numOfone = item.numOfone;
                 if(item.units=="perMonth"){
-                    item.unit=item.valueAddedFee+"/月"
+                    item.unit=item.valueAddedFee+"元/月";
+                    item.amounts = item.amount +"月";
                 }else if(item.units=="perOne"){
-                    item.unit="/个"
+                    item.unit="元/个";
+                    item.amounts = item.numOfone +"个";
                 }else if(item.units=="perMonthOne"){
-                    item.unit=item.numOfone+"/个"
+                    item.unit=item.numOfone+"元/月/个";
+                    item.amounts = item.amount+"月" + item.numOfone +"个";
                 }
-                item.amounts = item.amount + item.unit;
+
                 if(item.presents==1){
                     item.present="赠送"
                 }else{
