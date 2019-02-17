@@ -7,17 +7,20 @@ const createActivities = {
 		destNumber: [], //目的码
 		number400ValueAdded: [], //增值服务
 		number400Concession: [], //优惠信息
-
+		msgDisabled:false,       //信息输入框禁用
 		permission: {}, //当前路由信息
 
         flowRecord:[], // 全部详情右侧信息
-		permission: {}, //当前路由信息
 		routes: [],
 
 
 	},
 	//更新状态
 	mutations: {
+		//控制信息输入框是否禁用
+		changeMsgDisabled(state, msgDisabled) {
+			state.msgDisabled = msgDisabled
+		},
 		//控制企业信息的变化
 		changeCompany(state, company) {
 			state.company = company
@@ -67,6 +70,10 @@ const createActivities = {
 		}
 	},
 	actions: {
+		//控制企业信息的变化
+        changeMsgDisabledStatus({ commit }, msgDisabled) {
+			commit("changeMsgDisabled", msgDisabled)
+		},
 		//控制企业信息的变化
 		ChangeCompanyStatus({ commit }, company) {
 			commit("changeCompany", company)

@@ -17,7 +17,7 @@
                                     placeholder=" 请搜索400号码" @input="searchFourNum"></el-input>
                             <div id="fourNumList" v-if="numShow">
                                 <ul>
-                                    <li v-for="(item,index) in fourNumList" :key="index" @click="num400li(item)">{{item.number400}}</li>
+                                    <li v-for="(item,index) in fourNumList" :key="index" @click="num400li(item)">{{item.number400+"("+item.companyName+")"}}</li>
                                 </ul>
                             </div>
                         </el-form-item>
@@ -25,6 +25,7 @@
                         <el-form-item label="企业名称：" class="firmName" id="firmName" prop="firmName">
                             <el-input
                                     v-model="acceptForm.firmName"
+                                    :disabled="msgDisabled"
                                     size="mini"
                                     @input="searchFirm"
                                     placeholder=" 营业执照上公司全称，个体工商户填写字号全称，组织机构上的机构全称">
@@ -92,6 +93,7 @@
     </div>
 </template>
 <script>
+    import {mapState} from "vuex";
     export default {
         name: 'dialog1',
         data() {
@@ -105,7 +107,6 @@
                     time:'',
                 },
                 acceptForm:{
-                    firmId:'',
                     firmName:'',
                     usage:'',
                     imageUrl: '',    //上传图片
@@ -154,6 +155,7 @@
                 presents:'',  //是否赠送;1 赠送；2 付费
                 remarks:'',  //功能描述
                 objFlowId:'',
+                entireFlowId:'',
                 objEntrance:'',
                 companyId:'',
                 busIdentity:'',  //登录信息channel
@@ -163,10 +165,12 @@
             console.log(sessionStorage.getItem('businessType'));
             console.log(sessionStorage.getItem('objFlowId'));
             console.log(sessionStorage.getItem('objCodeIn'));
-            this.objFlowId = sessionStorage.getItem('objFlowId');
+            // this.objFlowId = sessionStorage.getItem('objFlowId');
+            this.entireFlowId = sessionStorage.getItem('entireFlowId');
             this.busIdentity = sessionStorage.getItem('businessType');
             this.usageList();
             this.$root.eventHub.$on('dialog1Visible', (res)=>{
+                console.log(res);
                 this.visible=res.visible;
                 if(res.objCodeIn){
                     this.objCodeIn=res.objCodeIn;
@@ -177,10 +181,11 @@
                         this.acceptForm.fourNum='';
                         this.objCodeList=[];
                     }else{
+                        this.objFlowId=res.objCodeIn==2?this.entireFlowId:sessionStorage.getItem('objFlowId');
+                        console.log("this.objFlowId",this.objFlowId);
                         this.objCodeDetail();
                     }
                 }
-                this.objFlowId=res.objCodeIn==2?res.flowId:sessionStorage.getItem('objCodeIn');
 
             });
             this.addTariff(this.busIdentity);
@@ -274,6 +279,13 @@
                     if(this.acceptForm.fourNum!='' && this.fourNumList.length!=0){
                         this.numShow = true;
                     }
+                    this.fourNumList.map((item)=>{
+                        if(item.companyName==this.acceptForm.firmName){
+                            this.changeMsgDisabled(true);
+                        }else{
+                            this.changeMsgDisabled(false);
+                        }
+                    })
                 })
             },
             //企业名称li
@@ -289,10 +301,11 @@
                 this.numShow = false;
                 this.acceptForm.fourNum = val.number400;
                 this.acceptForm.firmName = val.companyName;
+                this.changeMsgDisabled(true);
+                this.companyId = val.companyId;
                 if(this.acceptForm.fourNum!=''){
                     this.searchObjCode();
                 }
-
             },
             //目的码
             searchObjCode(){
@@ -328,32 +341,35 @@
 
             // 目的码暂存
             objCodeSave(acceptForm){
+                var companyInfo = {};
+                companyInfo.company = this.acceptForm.firmName;
+                companyInfo.companyId = this.companyId;
                 this.$refs[acceptForm].validate((valid) => {
                     if (valid) {
                         let paramList=[];
                         this.objCodeList.map((item)=>{
                             let param={};
-                            param.id=item.id;
+                            param.id=this.companyId;
                             param.destnumber=item.destnumber;
                             param.destnumproofpic=this.acceptForm.imageUrl;
                             param.destnumUsage=this.acceptForm.usage;
                             param.number400=this.acceptForm.fourNum;
-                            param.companyid=this.acceptForm.firmId;
+                            param.companyid=this.companyId;
                             paramList.push(param);
                         });
                         this.searchObjCode();
                         this.$ajax.post('/vos/destnum/startAndSave',{
                             "destNumber":paramList,
                             "number400": this.acceptForm.fourNum,
-                            "company":this.companyInfo,
+                            "company":companyInfo,
                             "companyFlow":{
                                 "flowId":this.objCodeIn=='2'?this.objFlowId:'',
                             }
                         }).then((res)=>{
                             console.log(res);
                             if(res.code==200){
-                                this.dialogVisible = false;
-                                this.objCodeLists();
+                                this.visible = false;
+                                // this.objCodeLists();
                                 this.$root.eventHub.$emit('addAcceptSave', null);
                             }else{
                                 this.$message({type:'warning',message:res.message});
@@ -368,31 +384,35 @@
 
             // 目的码送审
             objCodeSubmit(acceptForm){
+                var companyInfo = {};
+                companyInfo.company = this.acceptForm.firmName;
+                companyInfo.companyId = this.companyId;
                 this.$refs[acceptForm].validate((valid) => {
                     if (valid) {
                         let paramList=[];
                         this.objCodeList.map((item)=>{
                             let param={};
-                            param.id=item.id;
+                            param.id=this.companyId;
                             param.destnumber=item.destnumber;
                             param.destnumproofpic=this.acceptForm.imageUrl;
                             param.destnumUsage=this.acceptForm.usage;
                             param.number400=this.acceptForm.fourNum;
-                            param.companyid=this.acceptForm.firmId;
+                            param.companyid=this.companyId;
                             paramList.push(param);
                         });
                         this.$ajax.post('/vos/destnum/sendToDestNumberAudit',{
                             "destNumber":paramList,
                             "number400": this.acceptForm.fourNum,
-                            "company":this.companyInfo,
+                            "company":companyInfo,
                             "companyFlow":{
-                                "flowId":this.objEntrance=='2'?this.objFlowId:'',
+                                "flowId":this.objCodeIn=='2'?this.objFlowId:'',
                             }
                         }).then((res)=>{
                             console.log(res);
                             if(res.code==200){
-                                this.dialogVisible = false;
-                                this.objCodeLists();
+                                this.visible = false;
+                                this.$root.eventHub.$emit('addAcceptSave', null);
+                                // this.objCodeLists();
                                 this.$parent.entireLists();
                             }else{
                             }
@@ -406,18 +426,19 @@
             // 目的码详情
             objCodeDetail(){
                 console.log("目的码详情");
+                console.log("目的码flowId");
+                console.log(this.objFlowId);
                 this.$ajax.get('/vos/destnum/getCacheData?flowId='+this.objFlowId).then((res)=>{
                     if(res.code==200){
                         console.log(res.data);
                         console.log(res.data.destNumber);
                         console.log(res.data.company);
                         console.log(res.data.company.companyName);
-                        this.acceptForm.firmName = res.data.company.companyName;
-                        this.acceptForm.imageUrl = res.data.company.companyProofPic;
+                        this.acceptForm.firmName = res.data.company.company;
+                        // this.acceptForm.imageUrl = res.data.company.companyProofPic;
                         this.acceptForm.fourNum = res.data.number400;
                         res.data.destNumber.map((item)=>{
-                            this.acceptForm.firmName = item.companyName;
-                            this.acceptForm.imageUrl = item.companyProofPic;
+                            this.acceptForm.imageUrl = item.destnumproofpic;
                             this.acceptForm.fourNum = item.number400;
                             this.acceptForm.usage = item.destnumUsage;
                         })
@@ -425,8 +446,15 @@
                     }
                 })
             },
+            changeMsgDisabled(val) {
+                return this.$store.dispatch("changeMsgDisabledStatus", val);
+            },
         },
-        computed: {}
+        computed: {
+            ...mapState({
+                msgDisabled: state => state.createActivities.msgDisabled,
+            })
+        }
     }
 </script>
 <style>

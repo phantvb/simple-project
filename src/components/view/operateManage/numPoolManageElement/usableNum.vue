@@ -661,10 +661,10 @@
 				let ids = '';
 				let selfId = this.addNumberForm.selfCheckList.join(",");
 				let channelId = this.addNumberForm.channelCheckList.join(",");
-				if (addNumberForm.checkList.indexOf('自助直销') != -1) {
+				if (this.addNumberForm.checkList.indexOf('自助直销') != -1) {
 					ids = ids + selfId + ',';
 				};
-				if (addNumberForm.checkList.indexOf('渠道') != -1) {
+				if (this.addNumberForm.checkList.indexOf('渠道') != -1) {
 					ids = ids + channelId + ',';
 				};
 				return ids;

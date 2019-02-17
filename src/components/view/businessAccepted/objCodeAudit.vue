@@ -171,7 +171,10 @@
             this.statusList();
             this.$root.eventHub.$on('getLoginInfo', (resp)=>{
                 this.addTariff(resp);
-            } )
+            } );
+            this.$root.eventHub.$on('addAcceptSave', (resp) => {
+                this.objCodeLists();
+            })
         },
         methods: {
             // 分页

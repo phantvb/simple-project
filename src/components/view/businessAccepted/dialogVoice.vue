@@ -20,7 +20,7 @@
                         </el-form-item>
 
                         <el-form-item label="企业名称：" class="input">
-                            <el-input v-model="voiceForm.firmName" size="mini" @input="searchFirm"></el-input>
+                            <el-input v-model="voiceForm.firmName" size="mini" @input="searchFirm" :disabled="msgDisabled"></el-input>
                             <div id="firmNameList" v-if="firmNameShow">
                                 <ul>
                                     <li v-for="(item,index) in firmNameList" :key="index" @click="firmNameLi(item)">{{item.companyName}}</li>
@@ -40,7 +40,7 @@
                                     width="180">
                                         <template slot-scope="scope">
                                             <div>
-                                                <el-select v-model="scope.row.voicetype" placeholder="请选择" size="mini">
+                                                <el-select v-model="scope.row.voicetype" placeholder="请选择" size="mini" @change="voiceTypeChange">
                                                     <el-option
                                                             v-for="item in voiceTypeList"
                                                             :key="item.dicKey"
@@ -57,7 +57,10 @@
                                     width="180">
                                         <template slot-scope="scope">
                                             <div>
-                                                <el-input v-model="scope.row.voicename" placeholder="请输入内容" size="mini"></el-input>
+                                                <el-input
+                                                        v-model="scope.row.voicename"
+                                                        @input="voiceNameChange"
+                                                        placeholder="请输入内容" size="mini"></el-input>
                                             </div>
                                         </template>
                             </el-table-column>
@@ -71,12 +74,13 @@
                                                        :on-change="handleChange"
                                                        :http-request="uploadFile"
                                                        :before-upload ="beforeAvatarUpload"
+                                                       accept="mp3"
                                                        :limit="1">
                                                 <el-button size="small" type="primary">点击上传</el-button>
                                             </el-upload>
                                         </template>
                             </el-table-column>
-
+                            <!--accept=".flv,.mp3,.wma,.swf,.wmv,.mid,.avi,.mpg,.asf,.rm,.rmvb"-->
                             <el-table-column
                                     prop="operation"
                                     label="操作">
@@ -120,6 +124,7 @@
     </div>
 </template>
 <script>
+    import {mapState} from "vuex";
     export default {
         name: 'dialogVoice',
         props:[
@@ -135,8 +140,8 @@
                 voiceForm:{
                     firmName:'',
                     voiceNum:'',
-                    voiceFile:'',
-                    voiceName:'',
+                    voicefile:'',
+                    voicename:'',
                     voiceNumAndFile:'',
                     addValueType:'',
                 },
@@ -146,49 +151,63 @@
                 },
                 voiceList:[],
                 tableData:[{
-                    voiceType:'',
-                    voiceName:'',
-                    voiceFile:'',
+                    voicetype:'',
+                    voicename:'',
+                    voicefile:[],
                 }],
                 voiceTypeList:[],
                 businessType:'', //登录信息
                 file: '',
-                voicefile:'',    //语音文件
+                voicefile:[],    //语音文件
+                changeVoiceType:'',//语音类型
                 addValueId:'',
                 valueAddedList:'', //资费增值信息数组
                 num400Unit:'',
                 companyId:'',      //公司id
-                companyInfo:'',    //公司信息
+                // companyInfo:'',    //公司信息
                 busIdentity:'',     //登录信息channel
                 voiceFlowId:'',     //语音表格flowId
             }
         },
         created(){
-            console.log(sessionStorage.getItem('businessType'));
-            console.log("entireFlowId",sessionStorage.getItem('entireFlowId'));
-            this.busIdentity = sessionStorage.getItem('businessType');
-            this.getValueAdded(this.busIdentity);
-            this.addValueChange(this.busIdentity);
-            this.voiceType();
             this.$root.eventHub.$on('dialog1VisibleVoice', (res)=>{
                 console.log('voiceInfo',res);
                 if(res.voiceIn){
                     this.voiceIn = res.voiceIn;
+                    this.visibleVoice=res.visibleVoice;
                     if(res.voiceIn==1){
-                        this.visibleVoice=res.visibleVoice;
                         this.voiceIn=res.voiceIn;
                         this.voiceForm.firmName='';
                         this.voiceForm.voiceNum='';
                         this.voiceInfo.voiType='';
                         this.voiceInfo.voiName='';
                         this.voiceForm.addValueType='';
+                        this.tableData=[{
+                            voicetype:'',
+                            voicename:'',
+                            voicefile:[],
+                        }];
+                        this.tableData.map((item)=>{
+                            item.voicefile = [];
+                        });
                     }else{
+                        console.log("res.voiceIn",res.voiceIn);
+                        this.voiceIn = res.voiceIn;
+                        console.log("this.voiceIn",this.voiceIn);
+                        this.voiceFlowId=res.voiceIn==2?sessionStorage.getItem('entireFlowId'):res.flowId;
                         this.voiceDetail();
                     }
                 }
-                this.voiceFlowId=res.voiceIn==2?sessionStorage.getItem('entireFlowId'):res.flowId;
 
             } );
+
+            console.log(sessionStorage.getItem('businessType'));
+            console.log("entireFlowId",sessionStorage.getItem('entireFlowId'));
+            this.busIdentity = sessionStorage.getItem('businessType');
+            this.getValueAdded(this.busIdentity);
+            this.addValueChange(this.busIdentity);
+            this.voiceType();
+
 
         },
         components: {},
@@ -223,13 +242,13 @@
                 })
             },
             //企业名称li
-            firmNameLi(val){
-                console.log(val);
-                this.voiceForm.firmName = val.companyName;
-                this.firmNameShow = false;
-                this.companyInfo = val;
-                this.companyId = val.id;
-            },
+            // firmNameLi(val){
+            //     console.log(val);
+            //     this.voiceForm.firmName = val.companyName;
+            //     this.firmNameShow = false;
+            //     this.companyInfo = val;
+            //     this.companyId = val.id;
+            // },
             searchNum400(){
                 this.$ajax.post('/vos/num400config/search',{
                     "page":{
@@ -240,31 +259,51 @@
                         "number400":this.voiceForm.voiceNum,
                     }
                 }).then((res)=>{
+
                     console.log(res.data.number400s);
                     this.num400List = res.data.number400s;
                     if(this.voiceForm.voiceNum!='' && this.voiceForm.length!=0){
                         this.numShow = true;
                     }
+                    res.data.number400s.map((item)=>{
+                        if(item.companyName == this.voiceForm.firmName){
+                            this.changeMsgDisabled(true);
+                        }else {
+                            this.changeMsgDisabled(false);
+                        }
+                    })
                 })
             },
             //400号码li
             num400Lists(val){
                 console.log(val);
                 this.voiceForm.voiceNum = val.number400;
+                if(this.voiceForm.firmName = val.companyName){
+                    this.changeMsgDisabled(true);
+                }
                 this.numShow = false;
                 this.$ajax.get('/vos/voice/getAllBy400?number400='+this.voiceForm.voiceNum).then((res)=>{
+                    console.log(res.data);
                     console.log(res.data.voice);
-                    this.tableData = res.data.voice;
-                });
+                    // if(res.data.voice.length!=0){
+                        this.tableData = res.data.voice;
+                        this.tableData.push({
+                            voicetype:'',
+                            voicename:'',
+                            voicefile:[],
+                        });
+                    // }
+            });
                 this.voiceForm.firmName = val.companyName;
+                this.companyId = val.companyId;
             },
             add(scope){
-                console.log(scope);
+                console.log(scopev);
                 console.log(this.tableData.length);
                 this.tableData.push({
-                    voiceType:'',
-                    voiceName:'',
-                    voiceFile:'',
+                    voicetype:'',
+                    voicename:'',
+                    voicefile:[],
                 })
             },
             // 文件上传限制
@@ -290,6 +329,15 @@
                   this.voicefile = res;
                 })
 
+            },
+            // 语音类型选择
+            voiceTypeChange(val){
+                console.log("语音类型",val);
+                this.changeVoiceType = val;
+            },
+            //语音名字监听
+            voiceNameChange(val){
+                console.log(val);
             },
             // 增值资费列表
             getValueAdded(val){
@@ -341,22 +389,23 @@
             // 暂存
             voiceSave(){
                 console.log(this.voicefile);
+                console.log(this.voiceIn);
+                var companyInfo = {};
+                companyInfo.company = this.voiceForm.firmName;
+                companyInfo.companyId = this.companyId;
+                this.tableData.map((item)=>{
+                    item.id = this.companyId;
+                    item.companyid = this.companyId;
+                    item.number400 = this.voiceForm.voiceNum;
+                    item.valueaddedid = this.valueAddedList[0].id;
+                });
                 this.$ajax.post('/vos/voice/startAndSave',{
                     "number400":this.voiceForm.voiceNum,
-                    "voice":[{
-                        "id":"",
-                        "number400":this.voiceForm.voiceNum,
-                        "voicetype":this.voiceInfo.voiType,
-                        "voicename":this.voiceInfo.voiName,
-                        "voicefile":this.voicefile,
-                        "valueaddedid":this.valueAddedList[0].id,
-                        "companyid":this.companyId,
-                    }],
+                    "voice":this.tableData,
                     "companyFlow":{
-                        "flowId":""
-
+                        "flowId":this.voiceIn==2?this.voiceFlowId:""
                     },
-                    "company": this.companyInfo,
+                    "company": companyInfo,
                 }).then((res)=>{
                     console.log(res);
                     if(res.code==200){
@@ -373,21 +422,22 @@
             },
             // 语音送审
             voiveAudit(){
-                this.$ajax.post('/vos/voice/startAndSave',{
+                var companyInfo = {};
+                companyInfo.company = this.voiceForm.firmName;
+                companyInfo.companyId = this.companyId;
+                this.tableData.map((item)=>{
+                    item.id = this.companyId;
+                    item.companyid = this.companyId;
+                    item.number400 = this.voiceForm.voiceNum;
+                    item.valueaddedid = this.valueAddedList[0].id;
+                });
+                this.$ajax.post('/vos/voice/sendToVoiceAudit',{
                     "number400":this.voiceForm.voiceNum,
-                    "voice":[{
-                        "id":"",
-                        "number400":this.voiceForm.voiceNum,
-                        "voicetype":this.voiceInfo.voiType,
-                        "voicename":this.voiceInfo.voiName,
-                        "voicefile":this.voicefile,
-                        "valueaddedid":this.valueAddedList[0].id,
-                        "companyid":this.companyId,
-                    }],
+                    "voice":this.tableData,
                     "companyFlow":{
-                        "flowId":""
+                        "flowId":this.voiceIn==2?this.voiceFlowId:""
                     },
-                    "company": this.companyInfo,
+                    "company": companyInfo,
                 }).then((res)=>{
                     console.log(res);
                     if(res.code==200){
@@ -403,9 +453,10 @@
              console.log(this.voiceFlowId);
              this.$ajax.get('/vos/voice/getCacheData?flowId='+this.voiceFlowId).then((res)=>{
                  console.log(res.data);
-                 this.voiceForm.firmName = res.data.company.companyName;
+
                  this.voiceForm.voiceNum = res.data.number400;
                  this.tableData = res.data.voice;
+                 this.voiceForm.firmName = res.data.company.company;
                  this.tableData.map((item)=>{
                      let sss=[];
                      sss.push({
@@ -414,7 +465,11 @@
                      });
                      item.voicefile = sss;
                  });
+
              })
+            },
+            changeMsgDisabled(val) {
+                return this.$store.dispatch("changeMsgDisabledStatus", val);
             },
             // getCacheData(val){
             //     console.log(val);
@@ -438,7 +493,11 @@
             //     })
             // },
         },
-        computed: {},
+        computed: {
+            ...mapState({
+                msgDisabled: state => state.createActivities.msgDisabled,
+            })
+        },
         watch:{},
     }
 </script>

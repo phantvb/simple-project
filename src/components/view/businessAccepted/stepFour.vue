@@ -317,8 +317,9 @@
                     }
                 }).then((res) => {
                     console.log(res);
+                    this.$message.success(res.data);
+                    this.$root.eventHub.$emit('addAcceptSave', null);
                 });
-                this.$root.eventHub.$emit('addAcceptSave', null);
             },
 
             // 存vuex更新企业信息模块入参

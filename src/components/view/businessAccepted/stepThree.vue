@@ -1013,10 +1013,13 @@
             },
             // 暂存
             addBusinessSave() {
+                console.log("this.business",this.business);
+                console.log("this.business.companyId",this.business.companyId);
                 console.log("第三步获取flowed",sessionStorage.getItem('entireFlowId'));
                 console.log("入口：",sessionStorage.getItem('businessIn'));
                 this.stepThreeForm.companyName = this.company.companyName;
-                this.stepThreeForm.companyId = this.company.companyId;
+                this.stepThreeForm.companyId = this.business.companyId;
+                // this.stepThreeForm.companyId = this.company.companyId;
                 console.log("selectedNum",this.selectedNum);
                 this.stepThreeForm.number400 = this.selectedNum[0].number400;
                 this.stepThreeForm.tariffName = this.selectedNum[0].tariffName;
@@ -1057,7 +1060,7 @@
                         console.log(this.stepThreeFlowId = res.data.flowId);
                         //第三步点击下一步之前检查number400是否绑定了引示号
                         this.$ajax.post('/vos/business/matchGuideNumber', {
-                            "number400": this.titleNum,
+                            "number400": this.stepThreeFlowId!=null?this.stepThreeForm.number400:this.titleNum,
                         }).then((res) => {
                             if (res.code == 200) {
                                 console.log(res);
