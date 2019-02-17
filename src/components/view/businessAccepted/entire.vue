@@ -106,10 +106,12 @@
 						value: 'Business_Auditing',
 						label: '审核中'
 					}, {
-						value: 'Audit_Success',
-						label: '审核通过'
-					},
-					{
+						value: 'DestNum_Auditing',
+						label: '目的码审核中'
+					},{
+                    	value: 'Audit_Success',
+                    	label: '审核通过'
+                    },{
 						value: 'Modify_Auditing',
 						label: '变更审核中'
 					},
@@ -225,7 +227,7 @@
                         }else{
                             item.btnList.push({label:'详情'});
                         }
-                    }else if(item.status=='Business_Auditing'){
+                    }else if(item.status=='Business_Auditing' || item.status=='DestNum_Auditing'|| item.status=='Voice_Auditing'){
                         item.busStatus='审核中';
                         item.btnList=[];
                         if(this.baseData.roleName=='ROLE_admin' || item.assigneeRole==this.baseData.roleName){
@@ -324,7 +326,6 @@
               console.log('详情入口');
               console.log(this.entireStatus);
               this.getCacheData(val);
-
           }else if(val=='通过审核'){
               console.log("11111");
               this.passCompany(val,objMsg);
@@ -355,47 +356,78 @@
         //“全部”表格详情
         getCacheData(val){
           console.log(val);
-          var url;
-          if(this.entireType=='业务'){
-              url = '/vos/business/getCacheData?flowId=';
-          }else if(this.entireType=='目的码'){
-              url = '/vos/destnum/getCacheData?flowId=';
-          }else if(this.entireType=='语音'){
-              url = '/vos/voice/getCacheData?flowId=';
-          }
-          console.log(url);
-            this.$ajax.get(url+this.entireFlowId).then((res)=>{
-                console.log("详情",res);
-                if(res.data!=null){
-                    this.ChangeCompanyStatus(res.data.company);
-                    console.log(this.company);
-                    this.ChangeBusinessStatus(res.data.business);
-                    this.ChangeDestNumber(res.data.destNumber);
-                    this.ChangeNumber400ValueAdded(res.data.number400ValueAdded);
-                    this.ChangeNumber400Concession(res.data.number400Concession);
+          // var url;
+          // if(this.entireType=='业务'){
+          //     url = '/vos/business/getCacheData?flowId=';
+          // }else if(this.entireType=='目的码'){
+          //     url = '/vos/destnum/getCacheData?flowId=';
+          // }else if(this.entireType=='语音'){
+          //     url = '/vos/voice/getCacheData?flowId=';
+          // }
+          // console.log(url);
+
+
                     console.log("entireType",this.entireType);
                     if(val=='送审'){
                         if(this.entireType=='业务'){
-                            this.$root.eventHub.$emit('dialogVisibleBusiness',{visibleBusiness:true,businessIn:2});
+                            this.$ajax.get('/vos/business/getCacheData?flowId='+this.entireFlowId).then((res)=>{
+                                console.log("详情信息",res);
+                                if(res.data!=null) {
+                                    this.ChangeCompanyStatus(res.data.company);
+                                    console.log(this.company);
+                                    this.ChangeBusinessStatus(res.data.business);
+                                    this.ChangeDestNumber(res.data.destNumber);
+                                    this.ChangeNumber400ValueAdded(res.data.number400ValueAdded);
+                                    this.ChangeNumber400Concession(res.data.number400Concession);
+                                    this.$root.eventHub.$emit('dialogVisibleBusiness',{visibleBusiness:true,businessIn:2});
+                                }
+                            });
                         }else if(this.entireType=='目的码'){
                             this.$root.eventHub.$emit('dialog1Visible',{visible:true,objCodeIn:2});
                         }else if(this.entireType=='语音'){
+                            console.log("语音送审显示弹窗");
                             this.$root.eventHub.$emit('dialog1VisibleVoice',{visibleVoice:true,voiceIn:2});
                         }
                     }else if(val=='变更'){
-                        this.$root.eventHub.$emit('dialogVisibleBusiness',{visibleBusiness:true,businessIn:3});
+                        this.$ajax.get('/vos/business/getCacheData?flowId='+this.entireFlowId).then((res)=>{
+                            console.log("详情信息",res);
+                            if(res.data!=null) {
+                                this.ChangeCompanyStatus(res.data.company);
+                                console.log(this.company);
+                                this.ChangeBusinessStatus(res.data.business);
+                                this.ChangeDestNumber(res.data.destNumber);
+                                this.ChangeNumber400ValueAdded(res.data.number400ValueAdded);
+                                this.ChangeNumber400Concession(res.data.number400Concession);
+                                this.$root.eventHub.$emit('dialogVisibleBusiness',{visibleBusiness:true,businessIn:3});
+                            }
+                        });
+
                     }else if(val=='详情'){
                         if(this.entireType=='业务'){
-                            this.$router.push({
-                                path:'/BusinessAccepted/businessDetial',
-                                query: {
-                                    flowId: this.entireFlowId,
-                                    status:this.entireStatus,
-                                    assigneeRole:this.entireAssigneeRole,
-                                    creators:this.entireCreator,
-                                    type:this.entireType ,
-                                }
+                            this.$ajax.get('/vos/business/getCacheData?flowId='+this.entireFlowId).then((res)=>{
+                                console.log("详情信息",res);
+                                if(res.code==200 && res.data!=null) {
+                                    this.ChangeCompanyStatus(res.data.company);
+                                    console.log(this.company);
+                                    this.ChangeBusinessStatus(res.data.business);
+                                    this.ChangeDestNumber(res.data.destNumber);
+                                    this.ChangeNumber400ValueAdded(res.data.number400ValueAdded);
+                                    this.ChangeNumber400Concession(res.data.number400Concession);
+                                    this.$router.push({
+                                        path:'/BusinessAccepted/businessDetial',
+                                        query: {
+                                            flowId: this.entireFlowId,
+                                            status:this.entireStatus,
+                                            assigneeRole:this.entireAssigneeRole,
+                                            creators:this.entireCreator,
+                                            type:this.entireType ,
+                                        }
+                                    });
+                                }else{
+                                    this.$message.error('res.code=='+res.code);
+								}
                             });
+
                         }else if(this.entireType=='目的码'){
                             this.$router.push({
                                 path:'/BusinessAccepted/objCodeDetail',
@@ -420,10 +452,10 @@
                             });
                         }
                     }
-                }else{
-                    this.$message.warning("data为空null");
-                }
-            })
+                // }else{
+                //     this.$message.warning("data为空null");
+                // }
+            // })
         },
 
         //通过审核和驳回弹窗
@@ -464,7 +496,7 @@
             this.$ajax.post(url, obj).then(res => {
                 if (res.code == 200) {
                     this.$message.success('操作成功');
-                    this.fetchData(this.page.num);
+                    this.fetchData(this.pageObj.page);
                 }
             });
         },
@@ -505,11 +537,33 @@
             }
             this.$ajax.post(url, obj).then(res => {
                 if (res.code == 200) {
-                    this.$message.success('操作成功');
-                    this.fetchData(this.page.num);
+                    this.$message.success(res.data);
+                    this.fetchData(this.pageObj.page);
+                   this.entireLists();
                 }
             });
         },
+            fetchData(pageNum) {
+                this.loading = true;
+                this.pageObj.page = pageNum || 1;
+                var data = {};
+                data.page = {
+                    pageNo: this.pageObj.page,
+                    pageSize: this.pageObj.pageSize
+                };
+                data.blacklist = Object.assign({}, this.form);
+                data.blacklist.blackType = this.active;
+                delete data.blacklist["time"];
+                data.beforeTime = this.form.time[0] || '';
+                data.afterTime = this.form.time[1] || '';
+                this.$ajax.post("/vos/blacklist/search", data).then(res => {
+                    if (res.code == 200) {
+                        this.loading = false;
+                        this.tableData = res.data.blacklists;
+                        this.pageObj.total = res.data.totalCount;
+                    }
+                });
+            },
         cancelCompany(data) {
             var obj = {};
             var url;
@@ -524,7 +578,7 @@
             this.$ajax.post(url, obj).then(res => {
                 if (res.code == 200) {
                     this.$message.success('操作成功');
-                    this.fetchData(this.page.num);
+                    this.fetchData(this.pageObj.page);
                 }
             });
         },

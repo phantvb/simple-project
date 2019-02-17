@@ -12,9 +12,13 @@
                         </div>
                         <ul class="abc">
                             <li class="8">
-                                <el-upload class="avatar-uploader examplew" :action="$global.uploadUrl"
-                                           :show-file-list="false" :on-success="handleAvatarSuccess"
-                                           :on-error="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
+                                <el-upload class="avatar-uploader examplew"
+                                           :action="$global.uploadUrl"
+                                           accept=".png,.jpeg,.jpg"
+                                           :show-file-list="false"
+                                           :on-success="handleAvatarSuccess"
+                                           :on-error="handleAvatarSuccess"
+                                           :before-upload="beforeAvatarUpload">
                                     <img v-if="stepTwoForm.companyProofPic" :src="stepTwoForm.companyProofPic"
                                          class="avatar">
                                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -45,17 +49,24 @@
                             <li class="l2">
                                 <ul class="abc">
                                     <li class="l2">
-                                        <el-upload class="avatar-uploader exampleh" :action="$global.uploadUrl"
-                                                   :show-file-list="false" :on-success="handleFrontSuccess"
-                                                   :on-error="handleFrontSuccess" :before-upload="beforeAvatarUpload">
+                                        <el-upload class="avatar-uploader exampleh"
+                                                   :action="$global.uploadUrl"
+                                                   :show-file-list="false"
+                                                   accept=".png,.jpeg,.jpg"
+                                                   :on-success="handleFrontSuccess"
+                                                   :on-error="handleFrontSuccess"
+                                                   :before-upload="beforeAvatarUpload">
                                             <img v-if="stepTwoForm.legalCardFrontPic"
                                                  :src="stepTwoForm.legalCardFrontPic" class="avatar">
                                             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                         </el-upload>
                                     </li>
                                     <li class="l2">
-                                        <el-upload class="avatar-uploader exampleh" :action="$global.uploadUrl"
-                                                   :show-file-list="false" :on-success="handleContrarySuccess"
+                                        <el-upload class="avatar-uploader exampleh"
+                                                   :action="$global.uploadUrl"
+                                                   :show-file-list="false"
+                                                   accept=".png,.jpeg,.jpg"
+                                                   :on-success="handleContrarySuccess"
                                                    :on-error="handleContrarySuccess"
                                                    :before-upload="beforeAvatarUpload">
                                             <img v-if="stepTwoForm.legalCardBackPic" :src="stepTwoForm.legalCardBackPic"
@@ -66,9 +77,13 @@
                                 </ul>
                                 <ul class="abc">
                                     <li class="l2">
-                                        <el-upload class="avatar-uploader exampleh" :action="$global.uploadUrl"
-                                                   :show-file-list="false" :on-success="handleSelfSuccess"
-                                                   :on-error="handleSelfSuccess" :before-upload="beforeAvatarUpload">
+                                        <el-upload class="avatar-uploader exampleh"
+                                                   :action="$global.uploadUrl"
+                                                   :show-file-list="false"
+                                                   accept=".png,.jpeg,.jpg"
+                                                   :on-success="handleSelfSuccess"
+                                                   :on-error="handleSelfSuccess"
+                                                   :before-upload="beforeAvatarUpload">
                                             <img v-if="stepTwoForm.legalCardHandPic" :src="stepTwoForm.legalCardHandPic"
                                                  class="avatar">
                                             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
