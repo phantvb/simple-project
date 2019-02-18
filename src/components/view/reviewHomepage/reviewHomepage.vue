@@ -110,7 +110,7 @@
 				</div>
 			</el-card>
 		</div>
-		<el-aside style="width: 30%; float: right; height:832px;">
+		<el-aside style="width: 30%; float: right; height:845px;">
 			<el-card class="right_card">
 				<div class="right_card_title">系统公告</div>
 				<div v-for="(item,index) in systemNotice.tableData" :key="index" class="noticeItem">
@@ -193,9 +193,9 @@
 						Date.parse(b.publishTime) - Date.parse(a.publishTime)
 					); //时间正序
 				});
-            });
-            
-            this.$ajax.post("/vos/announcement/getAll", {
+			});
+
+			this.$ajax.post("/vos/announcement/getAll", {
 				ann: {
 					title: "",
 					publishMan: ""
