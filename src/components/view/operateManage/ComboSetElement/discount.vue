@@ -68,7 +68,7 @@
 		</div>
 
 		<div class="addDiscountDialog">
-			<el-dialog title="新增优惠方案" :visible.sync="addDiscountFormDialogVisible" width="30%" :before-close="handleClose">
+			<el-dialog title="新增优惠方案" :visible.sync="addDiscountFormDialogVisible" width="30%">
 				<div>
 					<el-form ref="addDiscountForm" :model="addDiscountForm" label-width="100px">
 						<el-form-item label="优惠名称：">
@@ -177,8 +177,8 @@
 				submitData: "inline-block",
 
 				disabledSelf: false,
-                disabledChannel: false,
-                loading:false
+				disabledChannel: false,
+				loading: false
 			};
 		},
 		methods: {
@@ -421,15 +421,6 @@
 				this.addDiscountFormDialogVisible = false;
 			},
 
-			//关闭确认
-			handleClose(done) {
-				this.$confirm("确认关闭？")
-					.then(_ => {
-						done();
-					})
-					.catch(_ => {});
-			},
-
 			handleChange() {},
 
 			// 改变新增优惠方案的dialog样式
@@ -454,7 +445,7 @@
 			},
 
 			loadData() {
-                this.loading=true;
+				this.loading = true;
 				this.$ajax
 					.post("/vos/tariffPackage/getConcessionScheme", {
 						concessionScheme: {
@@ -463,15 +454,15 @@
 					})
 					.then(res => {
 						if (res.code == 200) {
-							this.cTotalCount1 =res.data.concessionSchemeList.length;
+							this.cTotalCount1 = res.data.concessionSchemeList.length;
 							this.cTableData1 = res.data.concessionSchemeList;
 
 							for (var i = 0; i < this.cTotalCount1; i++) {
 								if (this.cTableData1[i].concessionWay == 1) {
-									this.cTableData1[i].concessionWay ="充值包满就送";
+									this.cTableData1[i].concessionWay = "充值包满就送";
 								}
 								if (this.cTableData1[i].concessionWay == 2) {
-									this.cTableData1[i].concessionWay ="套餐价格优惠";
+									this.cTableData1[i].concessionWay = "套餐价格优惠";
 								}
 								if (this.cTableData1[i].units == "month") {
 									this.cTableData1[i].units = "月";
@@ -490,15 +481,15 @@
 					})
 					.then(res => {
 						if (res.code == 200) {
-                            this.loading=false;
-							this.cTotalCount2 =res.data.concessionSchemeList.length;
+							this.loading = false;
+							this.cTotalCount2 = res.data.concessionSchemeList.length;
 							this.cTableData2 = res.data.concessionSchemeList;
 							for (var i = 0; i < this.cTotalCount2; i++) {
 								if (this.cTableData2[i].concessionWay == 1) {
-									this.cTableData2[i].concessionWay ="充值包满就送";
+									this.cTableData2[i].concessionWay = "充值包满就送";
 								}
 								if (this.cTableData2[i].concessionWay == 2) {
-									this.cTableData2[i].concessionWay ="套餐价格优惠";
+									this.cTableData2[i].concessionWay = "套餐价格优惠";
 								}
 								if (this.cTableData2[i].units == "month") {
 									this.cTableData2[i].units = "月";

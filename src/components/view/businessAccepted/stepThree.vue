@@ -14,64 +14,68 @@
                         <p style="border-color:rgba(255,255,255,1)">已选号码：</p>
                         <div class="block left">
                             <el-form ref="addNumform" :model="addNumform" class="addNumform" label-width="120px">
-                            <div class="selectNumTable">
-                                <ul>
-                                    <li style="float: unset">
-                                        <el-table :data="selectedNum"
-                                                  border
-                                                  style="width: 100%">
+                                <div class="selectNumTable">
+                                    <ul class="abc">
+                                        <li style="float: unset">
+                                            <el-table :data="selectedNum"
+                                                      border
+                                                      style="width: 100%">
 
-                                            <el-table-column
-                                                    prop="number400"
-                                                    label="400号码">
-                                            </el-table-column>
+                                                <el-table-column
+                                                        prop="number400"
+                                                        label="400号码">
+                                                </el-table-column>
 
-                                            <el-table-column
-                                                    prop="tariffName"
-                                                    label="套餐">
-                                            </el-table-column>
+                                                <el-table-column
+                                                        prop="tariffName"
+                                                        label="套餐">
+                                                </el-table-column>
 
-                                            <el-table-column
-                                                    prop="bottomFee"
-                                                    label="最低年消费">
-                                            </el-table-column>
+                                                <el-table-column
+                                                        prop="basicFunctionFee"
+                                                        label="基本功能费">
+                                                </el-table-column>
 
-                                            <el-table-column
-                                                    prop="durationPresentation"
-                                                    label="预存话费">
-                                            </el-table-column>
+                                                <el-table-column
+                                                        prop="durationPresentation"
+                                                        label="预存话费">
+                                                </el-table-column>
 
-                                            <el-table-column
-                                                    prop="unit"
-                                                    label="单位">
-                                            </el-table-column>
+                                                <el-table-column
+                                                        prop="unitsCopy"
+                                                        label="单位">
+                                                </el-table-column>
 
-                                            <el-table-column
-                                                    prop="packageContent"
-                                                    label="套餐详细">
-                                            </el-table-column>
+                                                <el-table-column
+                                                        prop="packageContent"
+                                                        label="套餐详细">
+                                                </el-table-column>
 
-                                            <el-table-column
-                                                    label="操作">
+                                                <el-table-column
+                                                        label="操作">
                                                     <template slot-scope="scope">
-                                                        <el-button size="mini" type="text" @click="delNum(scope.$index)">删除</el-button>
+                                                        <el-button size="mini" type="text"
+                                                                   @click="delNum(scope.$index)">删除
+                                                        </el-button>
                                                     </template>
-                                            </el-table-column>
-                                        </el-table>
-                                    </li>
-                                </ul>
-                            </div>
+                                                </el-table-column>
+                                            </el-table>
+                                        </li>
+                                    </ul>
+                                </div>
                                 <el-form-item label="号码模糊搜索：">
                                     <el-input v-model="addNumform.activeName" size="mini"></el-input>
                                     <el-button type="primary" size="mini" @click="searchNum()">搜索</el-button>
                                 </el-form-item>
 
-                                <el-tabs type="border-card">
-                                    <el-tab-pane v-for="(item,index) in mealList" :label="item.packageRules"  :name="index+''" :key="index+''">
+                                <el-tabs type="border-card" @tab-click="parentMethod">
+                                    <el-tab-pane v-for="(item,index) in mealList" :label="item.tariffName"
+                                                 :name="index+''" :key="index+''">
                                         <set-meal
-                                                :unitMeal = "item"
-                                                :unitIndex ="index"
-                                                :getAllByPackages = "getAllByPackage"></set-meal>
+                                                ref="child1"
+                                                :unitMeal="item"
+                                                :unitIndex="index"
+                                                :getAllByPackages="getAllByPackage"></set-meal>
                                     </el-tab-pane>
                                 </el-tabs>
 
@@ -108,8 +112,8 @@
                                 </el-table-column>
 
                                 <el-table-column
-                                        prop="bottomFee"
-                                        label="最低年消费">
+                                        prop="basicFunctionFee"
+                                        label="基本功能费">
                                 </el-table-column>
 
                                 <el-table-column
@@ -117,10 +121,10 @@
                                         label="预存话费">
                                 </el-table-column>
 
-                                <!--<el-table-column-->
-                                <!--prop="unit"-->
-                                <!--label="单位">-->
-                                <!--</el-table-column>-->
+                                <el-table-column
+                                prop="unit"
+                                label="单位">
+                                </el-table-column>
 
                                 <el-table-column
                                         prop="packageContent"
@@ -130,7 +134,8 @@
                                 <el-table-column
                                         label="操作">
                                     <template slot-scope="scope">
-                                        <el-button size="mini" type="text" @click="searchNumdialogVisible=false">选择</el-button>
+                                        <el-button size="mini" type="text" @click="searchNumdialogVisible=false">选择
+                                        </el-button>
                                     </template>
                                 </el-table-column>
                             </el-table>
@@ -148,10 +153,8 @@
                 </span>
                     </el-dialog>
                 </div>
-
             </el-dialog>
         </div>
-
 
 
         <el-form ref="stepThreeForm" :model="stepThreeForm" label-width="100px">
@@ -163,69 +166,82 @@
                     <el-input v-model="stepThreeForm.agentName" size="mini" placeholder="填入法人真实姓名"></el-input>
                 </el-form-item>
                 <el-form-item label="经办人电话：" class="firmName">
-                    <el-input v-model="stepThreeForm.agentMobilePhone" size="mini" placeholder="填入法人联系电话（固话或手机）"></el-input>
+                    <el-input v-model="stepThreeForm.agentMobilePhone" size="mini"
+                              placeholder="填入法人联系电话（固话或手机）"></el-input>
                 </el-form-item>
                 <el-form-item label="经办人证件：" class="identity">
-                    <el-select v-model="stepThreeForm.agentDocumentType" @change="change123" placeholder="请选择" size="mini">
-                        <el-option :label="item.label" :value="item.value" v-for="(item,index) in identityTypeList" :key="index"></el-option>
+                    <el-select v-model="stepThreeForm.agentDocumentType" @change="change123" placeholder="请选择"
+                               size="mini">
+                        <el-option :label="item.label" :value="item.value" v-for="(item,index) in identityTypeList"
+                                   :key="index"></el-option>
                     </el-select>
-                    <el-input class="agentDocumentNum" v-model="stepThreeForm.agentDocumentNum" size="mini" placeholder="根据证件类型，填写相应的证件号码"></el-input>
+                    <el-input class="agentDocumentNum" v-model="stepThreeForm.agentDocumentNum" size="mini"
+                              placeholder="根据证件类型，填写相应的证件号码"></el-input>
                 </el-form-item>
             </div>
             <div class="block person_data">
-            <div>
-                <div style="float:left;">
-                    <span class="grey fmini">经办人身份证：</span>
-                </div>
-                <ul>
-                    <li class="l2">
-                        <ul>
-                            <li class="l2">
-                                <el-upload class="avatar-uploader exampleh" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="handleAvatarSuccess" :on-error="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
-                                    <img v-if="stepThreeForm.agentCardFront" :src="stepThreeForm.agentCardFront" class="avatar">
-                                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                                </el-upload>
-                            </li>
-                            <li class="l2">
-                                <el-upload class="avatar-uploader exampleh" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="handleBackSuccess" :on-error="handleBackSuccess" :before-upload="beforeAvatarUpload">
-                                    <img v-if="stepThreeForm.agentCardBack" :src="stepThreeForm.agentCardBack" class="avatar">
-                                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                                </el-upload>
-                            </li>
-                        </ul>
-                        <ul>
-                            <li class="l2">
-                                <el-upload class="avatar-uploader exampleh" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="handleHandSuccess" :on-error="handleHandSuccess" :before-upload="beforeAvatarUpload">
-                                    <img v-if="stepThreeForm.agentCardWIthHand" :src="stepThreeForm.agentCardWIthHand" class="avatar">
-                                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                                </el-upload>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="l2">
-                        <ul>
-                            <li class="l2 example">
-                                <img class="exampleh" src="../../../assets/example_2.png" alt="">
-                            </li>
-                            <li class="l2 example">
-                                <img class="exampleh" src="../../../assets/example_3.png" alt="">
-                            </li>
-                        </ul>
-                        <ul>
-                            <li class="l2 example">
-                                <img class="exampleh" src="../../../assets/example_4.png" alt="">
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-                <div class="stepTwotips">
-                    <p class="grey">◆ 请提供身份证的原件照片或者彩色扫描件文字清晰可辨认，如正反面复印件在一页上只需上传一张。</p>
-                    <p class="grey">◆ 法人持身份证照片法人外貌必须和证件文字必须清晰可辨认</p>
-                    <p class="grey">◆ 格式根据要求jpg、jpeg、png,不能超过10MB</p>
-                </div>
+                <div>
+                    <div style="float:left;">
+                        <span class="grey fmini">经办人身份证：</span>
+                    </div>
+                    <ul class="abc">
+                        <li class="l2">
+                            <ul class="abc">
+                                <li class="l2">
+                                    <el-upload class="avatar-uploader exampleh" :action="$global.uploadUrl"
+                                               :show-file-list="false" :on-success="handleAvatarSuccess"
+                                               :on-error="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
+                                        <img v-if="stepThreeForm.agentCardFront" :src="stepThreeForm.agentCardFront"
+                                             class="avatar">
+                                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                                    </el-upload>
+                                </li>
+                                <li class="l2">
+                                    <el-upload class="avatar-uploader exampleh" :action="$global.uploadUrl"
+                                               :show-file-list="false" :on-success="handleBackSuccess"
+                                               :on-error="handleBackSuccess" :before-upload="beforeAvatarUpload">
+                                        <img v-if="stepThreeForm.agentCardBack" :src="stepThreeForm.agentCardBack"
+                                             class="avatar">
+                                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                                    </el-upload>
+                                </li>
+                            </ul>
+                            <ul class="abc">
+                                <li class="l2">
+                                    <el-upload class="avatar-uploader exampleh" :action="$global.uploadUrl"
+                                               :show-file-list="false" :on-success="handleHandSuccess"
+                                               :on-error="handleHandSuccess" :before-upload="beforeAvatarUpload">
+                                        <img v-if="stepThreeForm.agentCardWIthHand"
+                                             :src="stepThreeForm.agentCardWIthHand" class="avatar">
+                                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                                    </el-upload>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="l2">
+                            <ul class="abc">
+                                <li class="l2 example">
+                                    <img class="exampleh" src="../../../assets/example_2.png" alt="">
+                                </li>
+                                <li class="l2 example">
+                                    <img class="exampleh" src="../../../assets/example_3.png" alt="">
+                                </li>
+                            </ul>
+                            <ul class="abc">
+                                <li class="l2 example">
+                                    <img class="exampleh" src="../../../assets/example_4.png" alt="">
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <div class="stepTwotips">
+                        <p class="grey">◆ 请提供身份证的原件照片或者彩色扫描件文字清晰可辨认，如正反面复印件在一页上只需上传一张。</p>
+                        <p class="grey">◆ 法人持身份证照片法人外貌必须和证件文字必须清晰可辨认</p>
+                        <p class="grey">◆ 格式根据要求jpg、jpeg、png,不能超过10MB</p>
+                    </div>
 
+                </div>
             </div>
-        </div>
             <div class="title left">
                 业务信息
             </div>
@@ -235,7 +251,7 @@
                     <el-button type="primary" size="mini" @click="addNum()">+新增号码</el-button>
                 </div>
                 <div style="overflow: hidden;margin-bottom:30px">
-                    <ul>
+                    <ul class="abc">
                         <li style="float:unset;margin-left:70px">
                             <p style="text-align: right">业务身份：{{busIdentity}}</p>
                             <el-table :data="selectedNum"
@@ -253,17 +269,17 @@
                                 </el-table-column>
 
                                 <el-table-column
-                                        prop="bottomFee"
-                                        label='最低年消费'>
+                                        prop="bottomFeeCopy"
+                                        label='基本功能费'>
                                 </el-table-column>
 
                                 <el-table-column
-                                        prop="durationPresentation"
+                                        prop="durationPresentationCopy"
                                         label='预存话费'>
                                 </el-table-column>
 
                                 <el-table-column
-                                        prop="units"
+                                        prop="unitsCopy"
                                         label='单位'>
                                 </el-table-column>
 
@@ -281,11 +297,14 @@
                     <span>目的码：</span>
                     <div>
                         <div class="objCodeBox">
-                            <el-button type="primary" size="mini" @click="addObjCodes()" style="margin-bottom: 20px">+新增目的码</el-button>
+                            <el-button type="primary" size="mini" @click="addObjCodes()" style="margin-bottom: 20px">
+                                +新增目的码
+                            </el-button>
                             <div v-for="(item,index) in objCodeList" :key="index">
                                 <div class="addObjCode">
                                     <el-input v-model="item.destnumber" size="mini"></el-input>
-                                    <el-button type="primary" icon="el-icon-minus" size="mini" @click="delObjCodes(index)"></el-button>
+                                    <el-button type="primary" icon="el-icon-minus" size="mini"
+                                               @click="delObjCodes(index)"></el-button>
                                 </div>
                             </div>
                         </div>
@@ -295,7 +314,8 @@
                 <div class="num400" style="margin-bottom:30px;">
                     <span>归属地区：</span>
                     <div class="QCellCore">
-                        <el-select v-model="stepThreeForm.provinceBelong" placeholder="请选择" size="mini" @change="proChange">
+                        <el-select v-model="stepThreeForm.provinceBelong" placeholder="请选择" size="mini"
+                                   @change="proChange">
                             <el-option
                                     v-for="item in provinceList"
                                     :key="item.provinceId"
@@ -303,7 +323,8 @@
                                     :value="item.provinceId">
                             </el-option>
                         </el-select>
-                        <el-select v-model="stepThreeForm.cityBelong" placeholder="请选择" size="mini" @change="cityChange">
+                        <el-select v-model="stepThreeForm.cityBelong" placeholder="请选择" size="mini"
+                                   @change="cityChange">
                             <el-option
                                     v-for="item in cityList"
                                     :key="item.cityId"
@@ -314,12 +335,13 @@
                     </div>
                     <div class="QCellCore">
                         <span>优惠：</span>
-                        <el-select v-model="stepThreeForm.discounts" placeholder="请选择" size="mini">
+                        <el-select v-model="stepThreeForm.discounts" placeholder="请选择" size="mini"
+                                   @change="discountChange">
                             <el-option
-                                    v-for="item in discountsList"
-                                    :key="item.id"
+                                    v-for="(item,index) in discountsList"
+                                    :key="index"
                                     :label="item.concessionName"
-                                    :value="item.id">
+                                    :value="item">
                             </el-option>
                         </el-select>
                     </div>
@@ -328,28 +350,50 @@
                 <div style="float:left;">
                     <span class="fmini">增值服务：</span>
                 </div>
-                <div style="overflow: hidden">
-                    <ul>
+                <div style="overflow: hidden" class="addValueTable">
+                    <ul class="abc">
                         <li style="float:unset">
-                            <el-table @selection-change="lalalal" :data="objCodeTable"
+                            <el-table ref="addValueTable"
+                                      :data="objCodeTable"
                                       border
+                                      @selection-change="lalalal"
                                       style="width: 100%">
                                 <el-table-column
                                         type="selection"
                                         width="55">
                                 </el-table-column>
+
                                 <el-table-column
                                         prop="tariffName"
                                         label="增值服务名称">
                                 </el-table-column>
 
                                 <el-table-column
-                                        prop="presents"
-                                        label='数量'>
+                                        label='数量'
+                                        width="250">
+                                        <template slot-scope="scope">
+                                            <el-input-number
+                                                    size="mini"
+                                                    v-model="scope.row.numOfMonth"
+                                                    @change="handleChange(scope.row,scope.$index)"
+                                                    :min="1"
+                                                    label="描述文字">
+                                            </el-input-number>
+                                            <span>{{scope.row.cost}}</span>
+                                            <el-input-number
+                                                    v-if="scope.row.units=='perMonthOne'"
+                                                    size="mini"
+                                                    v-model="scope.row.numOfone"
+                                                    @change="handleChange(scope.row,scope.$index)"
+                                                    :min="1"
+                                                    label="描述文字">
+                                            </el-input-number>
+                                            <span v-if="scope.row.units=='perMonthOne'">{{scope.row.cost2}}</span>
+                                        </template>
                                 </el-table-column>
 
                                 <el-table-column
-                                        prop="units"
+                                        prop="unitsName"
                                         label='资费/单位'>
                                 </el-table-column>
 
@@ -366,6 +410,11 @@
                                 <el-table-column
                                         prop="remarks"
                                         label='套餐详情'>
+                                </el-table-column>
+
+                                <el-table-column
+                                        prop="presentsName"
+                                        label='是否赠送'>
                                 </el-table-column>
 
                             </el-table>
@@ -386,63 +435,85 @@
 <script>
     import {mapState} from "vuex";
     import setMeal from './setMeal';
+
     export default {
         name: 'stepThree',
-        props:[
-            "loginRes"
-        ],
+        props: [],
         data() {
             return {
-                addNumdialogVisible:false,
-                searchNumdialogVisible:false,
-                addNumform:{
-                    activeName:'',
+                addNumdialogVisible: false,
+                searchNumdialogVisible: false,
+                addNumform: {
+                    activeName: '',
                 },
-                stepThreeForm:{
-                   // 经办人信息入参
-                    agentName:'',             //经办人姓名
-                    agentMobilePhone:'',      //经办人电话
-                    agentDocumentType:'',     //经办人证件
-                    agentDocumentNum:'',      //经办人证件号码
-                    agentCardFront:'',        //正面照
+                stepThreeForm: {
+                    source:"self",
+                    //是否需要保存公司到后台
+                    needCompanySave: false,
+                    //公司信息
+                    companyId: '',
+                    companyName: '',
+                    // 经办人信息入参
+                    agentName: '',             //经办人姓名
+                    agentMobilePhone: '',      //经办人电话
+                    agentDocumentType: '',     //经办人证件
+                    agentDocumentNum: '',      //经办人证件号码
+                    agentCardFront: '',        //正面照
                     agentCardBack: '',        //反面照
-                    agentCardWIthHand:'',     //本人手持证件照
+                    agentCardWIthHand: '',     //本人手持证件照
 
                     // 400号码入参
-                    number400:'',             //400号码
-                    tariffName:'',            //套餐
-                    bottomFee:'',             //低消
-                    durationPresentation:'',  //预存话费
-                    units:'',                 //单位
-                    packageContent:'',        //套餐详情
+                    number400: '',             //400号码
+                    tariffName: '',            //套餐
+                    bottomFee: '',             //低消
+                    basicFunctionFee: '',      //低消
+                    durationPresentation: '',  //预存话费
+                    units: '',                 //单位
+                    packageContent: '',        //套餐详情
+                    type: '',                  //1是月，2是年
+                    amount:1,                  //数量
 
                     // 归属地入参
-                    provinceBelong:'',        //归属地(省)
-                    cityBelong:'',            //归属地(市)
+                    provinceBelong: '',        //归属地(省)
+                    cityBelong: '',            //归属地(市)
 
                     // 优惠活动
-                    discounts:'',
-                },
-                valueAdd:[],       // 选中的增值业务数组
-                discountsList:[],  //优惠数组
-                objCodeList:[{     //目的码数组
-                    id:"",
-                    destnumber:"6666",
-                    number400:"400142520888",
+                    discounts: '',
 
-                    destnumproofpic:"",
-                    destnumUsage:"",
-                    companyid:"",
-                    valueAddedId:"",
-                    status:"",
-                    connectType:"",
-                    connectId:"",
-                    flowId:""
+                    //套餐id
+                    tariffPackageId: '',
+                    excessTariff: '',
+                    unitPriceType: '',
+                    excessPriceType: '',
+
+                    //登录信息
+                    channel: '',
+
+                    //业务id
+                    id:'',
+                },
+                valueAdd: [],       // 选中的增值业务数组
+                discountsList: [],  //优惠数组
+                disList: [],
+                objCodeList: [{     //目的码数组
+                    id: "",
+                    destnumber: "",
+                    number400: "",
+                    destnumproofpic: "",
+                    destnumUsage: "",
+                    companyid: "",
+                    valueAddedId: "",
+                    status: "",
+                    connectType: "",
+                    connectId: "",
+                    flowId: "",
+                    // stepThreeFlowId: "",
                 }],
-                selectedNum:[],    //已选号码列表
-                searchNumList:[],  //400号码模糊搜索列表
+                stepThreeFlowId: "",
+                selectedNum: [],    //已选号码列表
+                searchNumList: [],  //400号码模糊搜索列表
                 objCodeTable: [],  //增值表格
-                identityTypeList:[   //证件类型
+                identityTypeList: [   //证件类型
                     {
                         value: '1',
                         label: '营业执照'
@@ -454,39 +525,118 @@
                         label: '三证合一'
                     }
                 ],
-                provinceId:'', //省id
-                cityId:'',  //城市id
-                provinceList:[],
-                cityList:[],
-                addObjCode:'',  //添加目的码
-                delObjCode:'',  //删减目的码
-                busIdentity:'', //业务身份
-                mealList:[],    //套餐数组
-                searchNumPage:{
-                    pageSize:10,
-                    page:1,
-                    total:0,
+                provinceId: '', //省id
+                cityId: '',  //城市id
+                provinceList: [],
+                cityList: [],
+                addObjCode: '',  //添加目的码
+                delObjCode: '',  //删减目的码
+                busIdentity: '', //业务身份
+                mealList: [],    //套餐数组
+                searchNumPage: {
+                    pageSize: 10,
+                    page: 1,
+                    total: 0,
                 },
-                pageObj:{
-                    total:0,
-                    page:1,
-                    pageSize:10
+                pageObj: {
+                    total: 0,
+                    page: 1,
+                    pageSize: 10
                 },
                 currentPage: 1,   //分页
-                titleNum:'',
+                titleNum: '',
+                sealInfo: '',      //套餐信息
+                businessIn:'',
             };
+
         },
         components: {
             setMeal
         },
-        created(){
-                console.log(this.loginRes);
-                this.busIdentity = this.loginRes.businessType;
-                this.getConcessionScheme(this.loginRes);
-                this.getValueAdded(this.loginRes);
+        beforeUpdate(){
+            //复选框回显
+            // if (sessionStorage.getItem('businessIn') == 2) {
+            //     console.log('asdasdasdasddasd');
+            //     this.objCodeTable.map((item)=>{
+            //         console.log(1111,this.objCodeTable);
+            //         if(this.number400ValueAdded.some((item1)=>{
+            //             return item1.id==item.id;
+            //         })){
+            //             console.log(item);
+            //             if(item.presents==1){
+            //                 this.$refs.addValueTable.toggleRowSelection(item,true);
+            //             }
+            //             this.$refs.addValueTable.toggleRowSelection(item,true);
+            //         }
+            //     });
+            // }
+        },
+
+         mounted(){
+            if (sessionStorage.getItem('businessIn') == 2) {
+                //详情
+                console.log(this.business);
+                console.log(this.destNumber);
+                console.log(this.number400ValueAdded);
+                console.log(this.number400Concession);
+                this.stepThreeForm = this.business;
+                this.objCodeList = this.destNumber;
+                this.valueAdd = this.number400ValueAdded;
+                console.log("this.valueAdd", this.valueAdd);
+                this.disList = this.number400Concession;
+                // 优惠回显
+                this.number400Concession.map((item) => {
+                    this.stepThreeForm.discounts = item.concessionName;
+                });
+                //400号码表格回显
+                let selectedNumCopy={};
+                selectedNumCopy.units = this.business.units;
+                selectedNumCopy.number400 = this.business.number400;
+                selectedNumCopy.tariffName = this.business.tariffName;
+                selectedNumCopy.basicFunctionFee = this.business.basicFunctionFee;
+                selectedNumCopy.packageContent = this.business.packageContent;
+                selectedNumCopy.durationPresentation = this.business.durationPresentation;
+                selectedNumCopy.durationPresentation = this.business.durationPresentation;
+                this.selectedNum.push(selectedNumCopy);
+
                 this.getAllProvince();
+            }else{
+                this.getAllProvince();
+            }
+            console.log(this.number400ValueAdded);
+            console.log(this.valueAdd);
+            this.getValueAdded(this.busIdentity);
+        },
+        created() {
+            console.log(sessionStorage.getItem('businessType'));
+            this.busIdentity = sessionStorage.getItem('businessType');
+            this.stepThreeForm.channel = this.busIdentity;
+            this.getConcessionScheme(this.busIdentity);
+
+            this.$root.eventHub.$on('needCompanySave', (resp) => {
+                console.log("needCompanySave", resp);
+                this.stepThreeForm.needCompanySave = resp;
+            });
+
+            console.log(sessionStorage.getItem('businessIn'));
+            this.businessIn = sessionStorage.getItem('businessIn');
+            //新增受理
+            if (sessionStorage.getItem('businessIn') == 1) {
+                this.$root.eventHub.$on('flowId', (resp) => {
+                    console.log("flowId", resp);
+                    this.flowId = resp;
+                });
+            }
+            this.$root.eventHub.$on('dialogVisibleBusiness', (res)=>{
+                this.visibleBusiness=res.visibleBusiness;
+                if(res.businessIn){
+                    this.businessIn = res.businessIn;
+                }
+            } );
+
         },
         methods: {
+            // 分页
             handleSizeChange(val) {
                 this.pageObj.pageSize = val;
                 console.log(`每页 ${val} 条`);
@@ -495,19 +645,59 @@
                 this.pageObj.page = val;
                 console.log(`当前页: ${val}`);
             },
-            lalalal(val){
+            // 数量变化
+            handleChange(value,index) {
+                console.log(value);
+                console.log(this.objCodeTable);
+                console.log(this.valueAdd);
+                this.$set(this.objCodeTable,index,value);
+                this.valueAdd.map((item,index)=>{
+                    if(item.valueAddedId==value.id){
+                        this.valueAdd[index]=value;
+                    }
+                });
+                // this.stepThreeForm.amount = value;
+            },
+            lalalal(val) {
                 console.log(val);
-                this.valueAdd = val;
+                console.log(this.selectedNum);
+                let newValueAdd=[];
+                val.map((item)=>{
+                    let obj ={};
+                    obj.number400 = this.selectedNum && this.selectedNum.length!=0?this.selectedNum[0].number400:null;
+                    obj.valueAddedName = item.tariffName;
+                    obj.valueAddedId = item.id;
+                    obj.presents = item.presents;
+                    obj.remarks = item.remarks;
+                    obj.valueAddedFee = item.tariffFee;
+                    obj.units = item.units;
+                    obj.numOfMonth = item.numOfMonth;
+                    // obj.numOfone = item.numOfone;
+                    if(item.units=='perMonthOne'){
+                        obj.numOfone = item.numOfone;
+                    }
+                    newValueAdd.push(obj);
+                });
+                this.valueAdd=newValueAdd;
             },
             // 图片上传
             handleAvatarSuccess(res, file) {
-                this.stepThreeForm.agentCardFront = URL.createObjectURL(file.raw);
+                if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {
+                    this.stepThreeForm.agentCardFront = this.$global.serverSrc + res;
+                }
+                // this.stepThreeForm.agentCardFront = URL.createObjectURL(file.raw);
             },
             handleBackSuccess(res, file) {
-                this.stepThreeForm.agentCardBack = URL.createObjectURL(file.raw);
+                if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {
+                    this.stepThreeForm.agentCardBack = this.$global.serverSrc + res;
+                }
+                // this.stepThreeForm.agentCardBack = URL.createObjectURL(file.raw);
             },
             handleHandSuccess(res, file) {
-                this.stepThreeForm.agentCardWIthHand = URL.createObjectURL(file.raw);
+                if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {
+                    this.stepThreeForm.agentCardWIthHand = this.$global.serverSrc + res;
+                }
+                // this.stepThreeForm.agentCardWIthHand = URL.createObjectURL(file.raw);
             },
             beforeAvatarUpload(file) {
                 const isJPG = file.type === 'image/jpeg';
@@ -522,27 +712,31 @@
                 return isJPG && isLt2M;
             },
             change123(event) {
-                console.log("event",event);
+                console.log("event", event);
             },
 
             //新增目的码
-            addObjCodes(){
+            addObjCodes() {
                 let unit = {};
                 this.objCodeList.push(unit);
             },
             // 删除目的码
-            delObjCodes(index){
+            delObjCodes(index) {
                 console.log(index);
-                this.objCodeList.splice(index,1);
+                this.objCodeList.splice(index, 1);
             },
             // 选号
-            addNumSave(){
-                this.addNumdialogVisible=false;
+            addNumSave() {
+                this.addNumdialogVisible = false;
             },
             // 新增号码按钮
-            addNum(){
+            addNum() {
                 this.addNumdialogVisible = true;
-                this.getTariff(this.loginRes);
+                this.getTariff(this.busIdentity);
+                setTimeout(() => {
+                    console.log("this.$refs.child1", this.$refs.child1);
+                    this.$refs.child1[0].getAllByPackage2();
+                }, 1000);
             },
             // 弹窗关闭
             handleClose(done) {
@@ -553,180 +747,352 @@
                     .catch(_ => {
                     });
             },
-            // 优惠
-            getConcessionScheme(val){
-                // console.log(val);
-                this.$ajax.post('/vos/tariffPackage/getConcessionScheme',{
-                    "concessionScheme":{
-                        "channel":val.businessType,
-                        "id":"",
+            // 优惠列表
+            getConcessionScheme(val) {
+                console.log(val);
+                this.$ajax.post('/vos/tariffPackage/getConcessionScheme', {
+                    "concessionScheme": {
+                        "channel": val,
+                        "id": "",
                     }
-                }).then((res)=>{
+                }).then((res) => {
                     console.log(val);
                     console.log(res.data.concessionSchemeList);
-                    this.discountsList =res.data.concessionSchemeList;
+                    this.discountsList = res.data.concessionSchemeList;
                 })
             },
             // 增值业务
-            getValueAdded(val){
-                this.$ajax.post('/vos/tariffPackage/getValueAdded',{
-                    "valueAdded":{
-                        "channel":val.businessType,
-                        "id":'',
+            getValueAdded(val) {
+                this.$ajax.post('/vos/tariffPackage/getValueAdded', {
+                    "valueAdded": {
+                        "channel": val,
+                        "id": '',
                     }
-                }).then((res)=>{
+                }).then((res) => {
                     console.log(res.data.valueAddedList);
                     this.objCodeTable = res.data.valueAddedList;
+                    this.objCodeTable.map((item) => {
+                        item.numOfMonth=1;
+                        item.numOfone=1;
+                        if(item.units=='perMonth'){
+                            item.cost = "月";
+                            item.unitsName = (item.tariffFee/item.numOfMonth)+'元/月'
+                        }else if(item.units=='perOne'){
+                            item.cost = "个";
+                            item.unitsName = (item.tariffFee/item.numOfMonth)+'元/个'
+                        }else if(item.units=='perMonthOne'){
+                            item.cost = "月";
+                            item.cost2 = "个";
+                            item.unitsName = (item.tariffFee/item.numOfMonth)+'元/月/个'
+                        }
+                        if (item.presents == '1') {
+                            item.presentsName = "赠送";
+                            this.valueAdd.push(item);
+                        } else {
+                            item.presentsName = "付费"
+                        }
+                    });
+                    console.log('aaa',this.objCodeTable);
+                    console.log('bbb',this.number400ValueAdded);
+                    let newValueAdd=[];
+                    this.$nextTick(()=>{
+                        console.log(this.selectedNum);
+                        this.objCodeTable.map((item,index)=>{
+                            console.log(1111,this.objCodeTable);
+                            if(this.number400ValueAdded&&this.number400ValueAdded.length!=0){
+                                this.number400ValueAdded.map((item1)=>{
+                                    if(item1.id==item.id){
+                                        //把选中的复选框信息赋值给原数组勾选的选项
+                                        this.$set(this.objCodeTable,index,item1);
+                                        //回西安勾选的
+                                        this.$refs.addValueTable.toggleRowSelection(this.objCodeTable[index], true);
+                                        let obj = {};
+                                        if (this.selectedNum && this.selectedNum.length != 0) {
+                                            obj.number400 = this.selectedNum[0].number400
+                                        }
+                                        obj.valueAddedName = item.tariffName;
+                                        obj.valueAddedId = item.id;
+                                        obj.presents = item.presents;
+                                        obj.remarks = item.remarks;
+                                        obj.valueAddedFee = item.tariffFee;
+                                        obj.units = item.units;
+                                        obj.numOfMonth = item.numOfMonth;
+                                        // obj.numOfone = item.numOfone;
+                                        if(item.units=='perMonthOne'){
+                                            obj.numOfone = item.numOfone;
+                                        }
+                                        newValueAdd.push(obj);
+                                        console.log(newValueAdd);
+                                    }
+                                });
+                            }else{
+                                if(item.presents==1){
+                                    //赠送勾选
+                                    this.$refs.addValueTable.toggleRowSelection(item,true);
+                                    let obj ={};
+                                    if (this.selectedNum && this.selectedNum.length != 0) {
+                                        obj.number400 = this.selectedNum[0].number400;
+                                    }
+                                    obj.valueAddedName = item.tariffName;
+                                    obj.valueAddedId = item.id;
+                                    obj.presents = item.presents;
+                                    obj.remarks = item.remarks;
+                                    obj.valueAddedFee = item.tariffFee;
+                                    obj.units = item.units;
+                                    obj.numOfMonth = item.numOfMonth;
+                                    // obj.numOfone = item.numOfone;
+                                    if(item.units=='perMonthOne'){
+                                        obj.numOfone = item.numOfone;
+                                    }
+                                    newValueAdd.push(obj);
+                                    console.log(newValueAdd);
+                                }
+                            }
+                        });
+                    });
+                    this.valueAdd=newValueAdd;
+                    this.$set(this.objCodeTable);
+                    return new Promise(resolve => {
+                        resolve();
+                    })
+
                 })
             },
             //查询资费套餐
-            getTariff(val){
-                this.$ajax.post('/vos/tariffPackage/getTariff',{
-                    "tariff":{
-                        "id":"",
-                        "channel":val.businessType
+            getTariff(val) {
+                this.$ajax.post('/vos/tariffPackage/getTariff', {
+                    "tariff": {
+                        "id": "",
+                        "channel": val
                     }
-                }).then((res)=>{
+                }).then((res) => {
                     console.log(res.data);
                     console.log(res.data.tariffPackageList);
                     this.mealList = res.data.tariffPackageList;
                 })
             },
             // 省
-           getAllProvince(){
-                this.$ajax.get('/vos/address/getAllProvince').then((res)=>{
+            getAllProvince() {
+                this.$ajax.get('/vos/address/getAllProvince').then((res) => {
                     console.log(res.data);
                     this.provinceList = res.data;
+                    if(sessionStorage.getItem('businessIn') == 2){
+                        console.log(this.stepThreeForm.provinceBelong);
+                        this.getCitiesByProvinceId(this.stepThreeForm.provinceBelong);
+                    }
                 })
             },
             // 市
-            getCitiesByProvinceId(){
-                this.$ajax.get('/vos/address/getCitiesByProvinceId?provinceId='+this.provinceId).then((res)=>{
+            getCitiesByProvinceId(provinceId) {
+                this.$ajax.get('/vos/address/getCitiesByProvinceId?provinceId=' + provinceId).then((res) => {
                     console.log(res.data);
                     this.cityList = res.data;
                 })
             },
-            //以套餐分类搜索400号码
-            searchByPackage(){
-                this.$ajax.post('/vos/number400/searchByPackage',{
-                    "num400Package":{
-                        "number400":this.addNumform.activeName,
-                        "packgeId":""
-                    },
-                    "page":{
-                        "pageNo":this.searchNumPage.page,
-                        "pageSize":this.searchNumPage.pageSize,
-                    }
-                }).then((res)=>{
-                    console.log(res.data);
 
+            //以套餐分类搜索400号码
+            searchByPackage() {
+                this.$ajax.post('/vos/number400/searchByPackage', {
+                    "num400Package": {
+                        "number400": this.addNumform.activeName,
+                        "packgeId": ""
+                    },
+                    "page": {
+                        "pageNo": this.searchNumPage.page,
+                        "pageSize": this.searchNumPage.pageSize,
+                    }
+                }).then((res) => {
+                    console.log(res.data);
                 })
             },
             //号码模糊搜索
-            searchNum(){
+            searchNum() {
                 this.searchNumdialogVisible = true;
-                this.$ajax.post('/vos/number400/getAllByPackage',{
-                    "num400Package":{
-                        "number400":this.addNumform.activeName,
-                        "packgeId":""
+                this.$ajax.post('/vos/number400/searchByPackage', {
+                    "num400Package": {
+                        "number400": this.addNumform.activeName,
+                        "packgeId": ""
                     },
-                    "page":{
-                        "pageNo":this.pageObj.page,
-                        "pageSize":this.pageObj.pageSize
+                    "page": {
+                        "pageNo": this.pageObj.page,
+                        "pageSize": this.pageObj.pageSize
                     }
 
-                }).then((res)=>{
+                }).then((res) => {
                     console.log(res.data);
                     console.log(res.data.number400s);
                     this.searchNumList = res.data.number400s;
                     this.pageObj.total = res.data.totalCount;
                 })
             },
+            // 优惠切换
+            discountChange(val) {
+                console.log(val);
+                let disObj = val;
+                delete disObj.id;
+                this.disList = [];
+                disObj.amount=1;
+                this.disList.push(disObj);
+                console.log(this.disList);
+            },
+
             // 选择400号码，添加到已选号码
-            getAllByPackage(val){
+            getAllByPackage(val) {
                 console.log(val);
                 this.titleNum = val;
-                this.$ajax.post('/vos/number400/getAllByPackage',{
-                    "num400Package":{
-                        "number400":this.titleNum,
-                        "packgeId":""
+                this.stepThreeForm.number400 = this.titleNum;
+                this.$ajax.post('/vos/number400/searchByPackage', {
+                    "num400Package": {
+                        "number400": this.titleNum,
+                        "packgeId": ""
                     },
-                    "page":{
-                        "pageNo":this.pageObj.page,
-                        "pageSize":this.pageObj.pageSize
+                    "page": {
+                        "pageNo": this.pageObj.page,
+                        "pageSize": this.pageObj.pageSize
                     }
 
-                }).then((res)=>{
+                }).then((res) => {
                     console.log(res.data);
                     console.log(res.data.number400s);
+                    console.log(res.data.number400s[0]);
                     this.selectedNum = res.data.number400s;
+                    this.selectedNum.map((item)=>{
+                        item.bottomFeeCopy=item.basicFunctionFee+'元';
+                        item.durationPresentationCopy=item.durationPresentation+'元';
+                        if(item.type==1){
+                            item.unitsCopy=item.units+"月"
+                        }else if(item.type==2){
+                            item.unitsCopy=item.units+"年"
+                        }
+                    })
                     this.pageObj.total = res.data.totalCount;
+                    this.sealInfo = res.data.number400s[0];
+
+                    //套餐返回值
+                    this.stepThreeForm.packgeId = this.sealInfo.packgeId;
+                    this.stepThreeForm.basicFunctionFee = this.sealInfo.basicFunctionFee;
+                    this.stepThreeForm.bottomFee = this.sealInfo.bottomFee;
+                    this.stepThreeForm.durationPresentation = this.sealInfo.durationPresentation;
+                    this.stepThreeForm.excessPriceType = this.sealInfo.excessPriceType;
+                    this.stepThreeForm.excessTariff = this.sealInfo.excessTariff;
+                    this.stepThreeForm.unitPrice = this.sealInfo.unitPrice;
+                    this.stepThreeForm.unitPriceType = this.sealInfo.unitPriceType;
+                    this.stepThreeForm.units = this.sealInfo.units;
                 })
             },
 
             // 删除已选400号码
-            delNum(val){
+            delNum(val) {
                 console.log(val);
-                this.selectedNum.splice(val,1)
+                this.selectedNum.splice(val, 1)
             },
             // 省份切换
-            proChange(val){
+            proChange(val) {
                 console.log(val);
                 this.provinceId = val;
-                this.getCitiesByProvinceId();
+                this.getCitiesByProvinceId(this.provinceId);
             },
-            cityChange(val){
+            cityChange(val) {
                 console.log(val);
                 this.cityId = val;
                 // this.getAreasByCityId();
             },
-            next(val){
+            next(val) {
                 this.$emit('childNext', val);
-                if(val==4){
+                if (val == 4) {
+                    console.log(this.disList);
                     this.ChangeBusinessStatus(this.stepThreeForm);
                     this.ChangeDestNumberStatus(this.objCodeList);
                     this.ChangeNumber400ValueAddedStatus(this.valueAdd);
-                    this.ChangeNumber400ConcessionStatus(this.discounts);
-                    console.log("company",this.company);
-                    console.log("business",this.business);
-                    console.log("destNumber",this.destNumber);
-                    console.log("number400Concession",this.number400Concession);
-                    //第三步点击下一步之前检查number400是否绑定了引示号
-                    this.$ajax.post('/vos/business/matchGuideNumber',{
-                        "number400":this.stepThreeForm.number400,
-                    }).then((res)=>{
-                        if(res.code==200){
-                            console.log(res);
-                        }else{
-                            this.$message({type:'warning',message:res.message});
-                        }
-                    })
+                    this.ChangeNumber400ConcessionStatus(this.disList);
+                    console.log("company", this.company);
+                    console.log("business", this.business);
+                    console.log("destNumber", this.destNumber);
+                    console.log("number400Concession", this.number400Concession);
                 }
             },
-            addBusinessSave(){
+            // 暂存
+            addBusinessSave() {
+                console.log("this.business",this.business);
+                console.log("this.business.companyId",this.business.companyId);
+                console.log("第三步获取flowed",sessionStorage.getItem('entireFlowId'));
+                console.log("入口：",sessionStorage.getItem('businessIn'));
+                this.stepThreeForm.companyName = this.company.companyName;
+                this.stepThreeForm.companyId = this.business.companyId;
+                // this.stepThreeForm.companyId = this.company.companyId;
+                console.log("selectedNum",this.selectedNum);
+                this.stepThreeForm.number400 = this.selectedNum[0].number400;
+                this.stepThreeForm.tariffName = this.selectedNum[0].tariffName;
+                this.stepThreeForm.packageContent = this.selectedNum[0].packageContent;
+                this.stepThreeForm.type = this.selectedNum[0].type;
+                this.stepThreeForm.tariffPackageId = this.selectedNum[0].packgeId;
+                console.log(this.stepThreeForm);
+                console.log(this.disList);
                 this.ChangeBusinessStatus(this.stepThreeForm);
                 this.ChangeDestNumberStatus(this.objCodeList);
                 this.ChangeNumber400ValueAddedStatus(this.valueAdd);
-                this.ChangeNumber400ConcessionStatus(this.discounts);
-                console.log("company",this.company);
-                console.log("business",this.business);
-                console.log("destNumber",this.destNumber);
-                console.log("number400Concession",this.number400Concession);
+                this.ChangeNumber400ConcessionStatus(this.disList);
+                console.log("company", this.company);
+                console.log("business", this.business);
+                console.log("destNumber", this.destNumber);
+                console.log("number400Concession", this.number400Concession);
+                var url;
+                if(this.businessIn==1 || this.businessIn==2){       //新增和编辑的暂存
+                    url='/vos/business/startAndSave';
+                }else if(this.businessIn==3){                       //变更
+                    url='/vos/business/sendToModifyAudit';
+                }
+                this.$ajax.post(url, {
+                    "company": this.company,
+                    "business": this.stepThreeForm,
+                    "destNumber": this.destNumber,
+                    "number400ValueAdded": this.valueAdd,
+                    "number400Concession": this.number400Concession,
+                    "companyFlow": {
+                        "flowId": sessionStorage.getItem('businessIn')==2?sessionStorage.getItem('entireFlowId'):this.stepThreeFlowId
+                    }
+                }).then((res) => {
+                    if (res.code == '200') {
+                        console.log(res);
+                        this.$root.eventHub.$emit('flowId', res.data);
+                        this.stepThreeFlowId = res.data.flowId;        //flowId
+                        this.stepThreeForm.id = res.data.businessId;   //业务id
+                        console.log(this.stepThreeFlowId = res.data.flowId);
+                        //第三步点击下一步之前检查number400是否绑定了引示号
+                        this.$ajax.post('/vos/business/matchGuideNumber', {
+                            "number400": this.stepThreeFlowId!=null?this.stepThreeForm.number400:this.titleNum,
+                        }).then((res) => {
+                            if (res.code == 200) {
+                                console.log(res);
+                            } else {
+                                this.$message({type: 'warning', message: res.message});
+                            }
+                        })
+                    } else {
+                        this.$message.warning(res.message);
+                    }
+                });
+            },
+            // 点击tab获取相应信息
+            parentMethod(val) {
+                console.log(val);
+                    console.log("this.$refs.child1", this.$refs.child1);
+                    this.$refs.child1[val.index].getAllByPackage2(val.index);
             },
             // 存vuex更新业务信息模块入参
-            ChangeBusinessStatus(val){
+            ChangeBusinessStatus(val) {
                 return this.$store.dispatch("ChangeBusinessStatus", val);
             },
             // 存vuex更新业务信息模块入参
-            ChangeDestNumberStatus(val){
+            ChangeDestNumberStatus(val) {
                 return this.$store.dispatch("ChangeDestNumberStatus", val);
             },
             // 存vuex更新增值业务模块入参
-            ChangeNumber400ValueAddedStatus(val){
+            ChangeNumber400ValueAddedStatus(val) {
                 return this.$store.dispatch("ChangeNumber400ValueAddedStatus", val);
             },
             // 存vuex更新优惠模块入参
-            ChangeNumber400ConcessionStatus(val){
+            ChangeNumber400ConcessionStatus(val) {
                 return this.$store.dispatch("ChangeNumber400ConcessionStatus", val);
             },
 
@@ -736,14 +1102,11 @@
                 company: state => state.createActivities.company,
                 business: state => state.createActivities.business,
                 destNumber: state => state.createActivities.destNumber,
+                number400ValueAdded: state => state.createActivities.number400ValueAdded,
                 number400Concession: state => state.createActivities.number400Concession,
             })
         },
-        watch:{
-            // loginRes(val){
-            //
-            // }
-        }
+        watch: {}
     }
 </script>
 <style>
@@ -787,6 +1150,7 @@
         color: #8c939d;
         text-align: center;
     }
+
     .avatar {
         display: block;
     }

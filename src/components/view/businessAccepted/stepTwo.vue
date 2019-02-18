@@ -10,10 +10,17 @@
                         <div style="float:left;">
                             <span class="grey fmini">企业资质证明文件：</span>
                         </div>
-                        <ul>
+                        <ul class="abc">
                             <li class="8">
-                                <el-upload class="avatar-uploader examplew" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="handleAvatarSuccess" :on-error="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
-                                    <img v-if="stepTwoForm.companyProofPic" :src="stepTwoForm.companyProofPic" class="avatar">
+                                <el-upload class="avatar-uploader examplew"
+                                           :action="$global.uploadUrl"
+                                           accept=".png,.jpeg,.jpg"
+                                           :show-file-list="false"
+                                           :on-success="handleAvatarSuccess"
+                                           :on-error="handleAvatarSuccess"
+                                           :before-upload="beforeAvatarUpload">
+                                    <img v-if="stepTwoForm.companyProofPic" :src="stepTwoForm.companyProofPic"
+                                         class="avatar">
                                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                 </el-upload>
                             </li>
@@ -38,33 +45,54 @@
                         <div style="float:left;">
                             <span class="grey fmini">法人身份证：</span>
                         </div>
-                        <ul>
+                        <ul class="abc">
                             <li class="l2">
-                                <ul>
+                                <ul class="abc">
                                     <li class="l2">
-                                        <el-upload class="avatar-uploader exampleh" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="handleFrontSuccess" :on-error="handleFrontSuccess" :before-upload="beforeAvatarUpload">
-                                            <img v-if="stepTwoForm.legalCardFrontPic" :src="stepTwoForm.legalCardFrontPic" class="avatar">
+                                        <el-upload class="avatar-uploader exampleh"
+                                                   :action="$global.uploadUrl"
+                                                   :show-file-list="false"
+                                                   accept=".png,.jpeg,.jpg"
+                                                   :on-success="handleFrontSuccess"
+                                                   :on-error="handleFrontSuccess"
+                                                   :before-upload="beforeAvatarUpload">
+                                            <img v-if="stepTwoForm.legalCardFrontPic"
+                                                 :src="stepTwoForm.legalCardFrontPic" class="avatar">
                                             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                         </el-upload>
                                     </li>
                                     <li class="l2">
-                                        <el-upload class="avatar-uploader exampleh" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="handleContrarySuccess" :on-error="handleContrarySuccess" :before-upload="beforeAvatarUpload">
-                                            <img v-if="stepTwoForm.legalCardBackPic" :src="stepTwoForm.legalCardBackPic" class="avatar">
+                                        <el-upload class="avatar-uploader exampleh"
+                                                   :action="$global.uploadUrl"
+                                                   :show-file-list="false"
+                                                   accept=".png,.jpeg,.jpg"
+                                                   :on-success="handleContrarySuccess"
+                                                   :on-error="handleContrarySuccess"
+                                                   :before-upload="beforeAvatarUpload">
+                                            <img v-if="stepTwoForm.legalCardBackPic" :src="stepTwoForm.legalCardBackPic"
+                                                 class="avatar">
                                             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                         </el-upload>
                                     </li>
                                 </ul>
-                                <ul>
+                                <ul class="abc">
                                     <li class="l2">
-                                        <el-upload class="avatar-uploader exampleh" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="handleSelfSuccess" :on-error="handleSelfSuccess" :before-upload="beforeAvatarUpload">
-                                            <img v-if="stepTwoForm.legalCardHandPic" :src="stepTwoForm.legalCardHandPic" class="avatar">
+                                        <el-upload class="avatar-uploader exampleh"
+                                                   :action="$global.uploadUrl"
+                                                   :show-file-list="false"
+                                                   accept=".png,.jpeg,.jpg"
+                                                   :on-success="handleSelfSuccess"
+                                                   :on-error="handleSelfSuccess"
+                                                   :before-upload="beforeAvatarUpload">
+                                            <img v-if="stepTwoForm.legalCardHandPic" :src="stepTwoForm.legalCardHandPic"
+                                                 class="avatar">
                                             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                         </el-upload>
                                     </li>
                                 </ul>
                             </li>
                             <li class="l2">
-                                <ul>
+                                <ul class="abc">
                                     <li class="l2 example">
                                         <img class="exampleh" src="../../../assets/example_2.png" alt="">
                                     </li>
@@ -72,7 +100,7 @@
                                         <img class="exampleh" src="../../../assets/example_3.png" alt="">
                                     </li>
                                 </ul>
-                                <ul>
+                                <ul class="abc">
                                     <li class="l2 example">
                                         <img class="exampleh" src="../../../assets/example_4.png" alt="">
                                     </li>
@@ -100,60 +128,99 @@
 </template>
 <script>
     import {mapState} from "vuex";
+
     export default {
         name: 'stepTwo',
         data() {
             return {
-                stepTwoForm:{
-                    companyProofPic:'',      //企业证明材料
-                    legalCardFrontPic:'',    //正面照
+                stepTwoForm: {
+                    companyProofPic: '',      //企业证明材料
+                    legalCardFrontPic: '',    //正面照
                     legalCardBackPic: '',    //反面照
-                    legalCardHandPic:'',     //本人手持证件照
+                    legalCardHandPic: '',     //本人手持证件照
                 },
-                campanyObj:{},        //企业信息对象
+                campanyObj: {},        //企业信息对象
+                flowId: '',
             };
         },
         components: {},
+        created() {
+            console.log(sessionStorage.getItem('businessIn'));
+            this.$root.eventHub.$on('flowId', (resp) => {
+                console.log("flowId", resp);
+                this.flowId = resp;
+            });
+
+            if (sessionStorage.getItem('businessIn') == 2) {
+                console.log(this.company);
+                this.stepTwoForm = this.company;
+            }
+        },
         methods: {
             // 图片上传
             handleAvatarSuccess(res, file) {
-                this.stepTwoForm.companyProofPic = URL.createObjectURL(file.raw);
+                console.log(res);
+                if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {
+                    this.stepTwoForm.companyProofPic = this.$global.serverSrc + res;
+                }
+                // this.stepTwoForm.companyProofPic = URL.createObjectURL(file.raw);
             },
-            handleFrontSuccess(res,file){
-                this.stepTwoForm.legalCardFrontPic = URL.createObjectURL(file.raw);
+            handleFrontSuccess(res, file) {
+                if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {
+                    this.stepTwoForm.legalCardFrontPic = this.$global.serverSrc + res;
+                }
+                // this.stepTwoForm.legalCardFrontPic = URL.createObjectURL(file.raw);
             },
-            handleContrarySuccess(res,file){
-                this.stepTwoForm.legalCardBackPic = URL.createObjectURL(file.raw);
+            handleContrarySuccess(res, file) {
+                if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {
+                    this.stepTwoForm.legalCardBackPic = this.$global.serverSrc + res;
+                }
+                // this.stepTwoForm.legalCardBackPic = URL.createObjectURL(file.raw);
             },
-            handleSelfSuccess(res,file){
-                this.stepTwoForm.legalCardHandPic = URL.createObjectURL(file.raw);
+            handleSelfSuccess(res, file) {
+                if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {
+                    this.stepTwoForm.legalCardHandPic = this.$global.serverSrc + res;
+                }
+                // this.stepTwoForm.legalCardHandPic = URL.createObjectURL(file.raw);
             },
             beforeAvatarUpload(file) {
-                const isJPG = file.type === 'image/jpeg';
+                const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
                 const isLt2M = file.size / 1024 / 1024 < 2;
 
                 if (!isJPG) {
-                    this.$message.error('上传头像图片只能是 JPG 格式!');
+                    this.$message.error('上传头像图片只能是 JPG/PNG 格式!');
                 }
                 if (!isLt2M) {
                     this.$message.error('上传头像图片大小不能超过 2MB!');
                 }
                 return isJPG && isLt2M;
             },
-            next(val){
+            next(val) {
                 this.$emit('childNext', val);
                 // 改变vuex的值
-                if(val==3){
-                    this.campanyObj = Object.assign(this.company,this.stepTwoForm);
+                if (val == 3) {
+                    this.campanyObj = Object.assign(this.company, this.stepTwoForm);
                     console.log(this.campanyObj);
                     this.ChangeCompanyStatus(this.campanyObj);
                 }
             },
             // 暂存按钮
-            addBusinessSave(){
-                this.campanyObj = Object.assign(this.company,this.stepTwoForm);
+            addBusinessSave() {
+                this.campanyObj = Object.assign(this.company, this.stepTwoForm);
                 console.log(this.campanyObj);
                 this.ChangeCompanyStatus(this.campanyObj);
+                this.$ajax.post('/vos/business/startAndSave', {
+                    "company": this.campanyObj,
+                    "business": this.business,
+                    "destNumber": this.destNumber,
+                    "number400ValueAdded": this.number400ValueAdded,
+                    "number400Concession": this.number400Concession,
+                    "companyFlow": {
+                        "flowId": this.flowId
+                    }
+                }).then((res) => {
+                    console.log(res);
+                });
             },
             // 存vuex更新企业信息模块入参
             ChangeCompanyStatus(val) {
@@ -163,6 +230,10 @@
         computed: {
             ...mapState({
                 company: state => state.createActivities.company,
+                business: state => state.createActivities.business,
+                destNumber: state => state.createActivities.destNumber,
+                number400ValueAdded: state => state.createActivities.number400ValueAdded,
+                number400Concession: state => state.createActivities.number400Concession,
             })
         },
     }
@@ -208,6 +279,7 @@
         color: #8c939d;
         text-align: center;
     }
+
     .avatar {
         display: block;
     }

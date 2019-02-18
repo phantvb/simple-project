@@ -131,7 +131,6 @@
 						this.form[key] = n[key];
 					}
 				};
-				console.log(this.form);
 			}
 		},
 		methods: {

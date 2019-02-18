@@ -75,20 +75,18 @@
 				</el-table-column>
 
 				<el-table-column
-						prop="status"
+						prop="busStatus"
 						label="状态">
 				</el-table-column>
 
 				<el-table-column
 						label="操作">
 					<template slot-scope="scope">
-						<el-button size="mini" type="text">试听</el-button>
-						<el-button size="mini" type="text" @click="voiceDetial(scope.row),$router.push('/voiceDetial/')">详情</el-button>
-						<el-button size="mini" type="text" @click="voiceEdit()">编辑</el-button>
-						<el-button size="mini" type="text">送审</el-button>
-						<el-button size="mini" type="text">删除</el-button>
-						<!--<router-link :to="{path:'/addEvent/'+3+'/'+scope.row.contactEvtId}">-->
-						<!--</router-link>-->
+						<el-button size="mini" type="text" v-for="(item,index) in scope.row.btnList" :key="index" @click="voiceDetial(item.label,scope.row)">{{item.label}}</el-button>
+						<!--<el-button size="mini" type="text" @click="voiceDetial(scope.row)">详情</el-button>-->
+						<!--<el-button size="mini" type="text" @click="voiceEdit(scope.row)">编辑</el-button>-->
+						<!--<el-button size="mini" type="text">送审</el-button>-->
+						<!--<el-button size="mini" type="text">删除</el-button>-->
 					</template>
 				</el-table-column>
 			</el-table>
@@ -119,13 +117,6 @@
                     time:'',
                     receiver:'',
                 },
-                // voiceForm:{
-                //     firmName:'',
-                //     fourNum:'',
-                //     voiceType:'',
-                //     voiceFile:'',
-                //     voiceName:'',
-                // },
                 tableData: [],
                 statusOptions: [
                     {
@@ -143,13 +134,6 @@
                         label: '受理终止'
                     }
                 ],
-                // voiceList:[{
-                 //    value:'1',
-                 //    title:'彩铃',
-				// },{
-                 //    value:'2',
-                 //    title:'导航音',
-				// }],
                 pageObj:{
                     total:0,
                     page:1,
@@ -157,18 +141,25 @@
                 },
                 accountStatus:'',
                 currentPage: 1,   //当前页
-                // textarea2:'',
-                // fileList3: [{
-                //     name: 'food.jpeg',
-                //     url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-                // }, {
-                //     name: 'food2.jpeg',
-                //     url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-                // }]
+                baseData:{
+                    roleName:'',
+                    username:'',
+                },
+                voiceFlowId:'',        //语音列表对象id
+				voiceCreator:'',       //语音列表对象creator
+                voiceStatus:'',        //语音列表对象状态
+                voiceAssigneeRole:'',  //语音列表对象assigneeRole
 			};
 		},
 		created(){
+            this.baseData.roleName = sessionStorage.getItem("roleName");
+            this.baseData.username = sessionStorage.getItem("username");
+            console.log("roleName",this.baseData.roleName);
+            console.log("username",this.baseData.username);
 		    this.voiceFileLists();
+            this.$root.eventHub.$on('voiceList',(resp)=>{
+                this.voiceFileLists();
+			})
 		},
 		components: {
             DialogVoice
@@ -191,18 +182,11 @@
                     .catch(_ => {
                     });
             },
-            handleChange(file, fileList) {
-                this.fileList3 = fileList.slice(-3);
-            },
             voiceAdd(){
                 this.$root.eventHub.$emit('dialog1VisibleVoice',{visibleVoice:true,voiceIn:1});
 			},
-			voiceEdit(){
-                this.$root.eventHub.$emit('dialog1VisibleVoice',{visibleVoice:true,voiceIn:2});
-			},
-            voiceDetial(scope){
-               console.log(scope);
-			},
+
+			// 语音列表
             voiceFileLists(){
                 // console.log(this.form.time[0]);
                 // console.log(this.form.time[1]);
@@ -228,18 +212,181 @@
                     this.tableData = res.data.businessFlows;
                     this.pageObj.total = res.data.totalCount;
                     this.tableData.map((item)=>{
+
+                        //判断操作
                         if(item.status=='Wait_To_Audit'){
-                            item.status='等待送审'
+                            item.busStatus='等待送审';
+                            item.btnList=[];
+                            if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
+                                item.btnList.push({label:'送审'},{label:'详情'},{label:'删除'});
+                            }else{
+                                item.btnList.push({label:'详情'});
+                            }
                         }else if(item.status=='Audit_Success'){
-                            item.status='审核通过'
+                            item.busStatus='通过审核';
+                            item.btnList=[];
+                            if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
+                                item.btnList.push({label:'变更'},{label:'注销'},{label:'详情'});
+                            }else{
+                                item.btnList.push({label:'详情'});
+                            }
                         }else if(item.status=='Voice_Auditing'){
-                            item.status='审核中'
+                            item.busStatus='审核中';
+                            item.btnList=[];
+                            if(this.baseData.roleName=='ROLE_admin' || item.assigneeRole==this.baseData.roleName){
+                                item.btnList.push({label:'通过审核'},{label:'驳回'},{label:'详情'});
+                            }else{
+                                item.btnList.push({label:'详情'});
+                            }
+                        }else if(item.status=='Modify_Auditing'){
+                            item.busStatus='变更审核中';
+                            item.btnList=[];
+                            if(this.baseData.roleName=='ROLE_admin' || item.assigneeRole==this.baseData.roleName){
+                                item.btnList.push({label:'变更审核通过'},{label:'驳回'},{label:'终止'},{label:'详情'});
+                            }else{
+                                item.btnList.push({label:'详情'});
+                            }
+                        }else if(item.status=='Modify_Rejected'){
+                            item.busStatus='变更审核驳回';
+                            item.btnList=[];
+                            if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
+                                item.btnList.push({label:'变更'},{label:'注销'},{label:'详情'});
+                            }else{
+                                item.btnList.push({label:'详情'});
+                            }
+                        }else if(item.status=='Canceling_Auditing'){
+                            item.busStatus='注销审核';
+                            item.btnList=[];
+                            if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
+                                item.btnList.push({label:'通过审核'},{label:'终止'},{label:'详情'});
+                            }else{
+                                item.btnList.push({label:'详情'});
+                            }
+                        }else if(item.status=='Cancelled'){
+                            item.busStatus='已注销';
+                            item.btnList=[];
+                            item.btnList.push({label:'详情'});
                         }else if(item.status=='Terminate_Flow'){
-                            item.status='受理终止'
-						}
+                            item.busStatus='受理终止';
+                            item.btnList=[];
+                            item.btnList.push({label:'详情'});
+                        }
                     })
                 })
             },
+            // voiceEdit(val){
+            //     console.log(val);
+            //     this.$root.eventHub.$emit('dialog1VisibleVoice',{visibleVoice:true,voiceIn:2,flowId:val.flowId});
+            //
+            // },
+            //详情接口
+            // getCacheData(val){
+            //     console.log(val);
+            //     this.$ajax.get('/vos/destnum/getCacheData?flowId='+this.voiceFlowId).then((res)=>{
+            //         console.log(res.data);
+            //         if(res.code==200){
+            //
+            //         }
+            //     })
+            // },
+            //详情
+            voiceDetial(val,data){
+                console.log(val);
+                console.log(data);
+                console.log(data);
+                let voiceMsg = data;
+                this.voiceFlowId = voiceMsg.flowId;
+                this.voiceStatus = voiceMsg.status;
+                this.voiceCreator = voiceMsg.creator;
+                this.voiceAssigneeRole = voiceMsg.assigneeRole;
+                sessionStorage.setItem('voiceFlowId',this.voiceFlowId);
+                // this.getCacheData(val);
+                if(val=='详情'){
+                    this.$router.push({
+                        path:'/BusinessAccepted/voiceDetial',
+                        query: {
+                            flowId: this.voiceFlowId,
+                            status:this.voiceStatus ,
+                            assigneeRole:this.voiceAssigneeRole,
+                            creators:this.voiceCreator,
+                        }
+                    });
+                }else if(val=='送审'){
+                    this.$root.eventHub.$emit('dialog1VisibleVoice',{visibleVoice:true,voiceIn:3,flowId:this.voiceFlowId});
+                }else if(val=='通过审核'){
+                    console.log("11111");
+                    this.passCompany(val,data);
+                }else if(val=='驳回'){
+                    console.log("tttttttt");
+                    this.backCompany(val,data);
+				}else if(val=='删除'){
+                    this.$ajax.post('/vos/business/deleteFlow',{
+                        // "companyFlow": {
+                        //     "creator": "admin",
+                        //     "businessId": 188,
+                        //     "updateTime": "2019-01-24 14:50:36",
+                        //     "type": "Business",
+                        //     "companyId": 66,
+                        //     "id": 22,
+                        //     "flowId": this.entireFlowId
+                        // }
+                        "companyFlow": data
+                    }).then((res)=>{
+                        console.log(res);
+                        this.voiceFileLists();
+                    })
+                }
+            },
+            async passCompany(val,data) {
+                var obj = {};
+                var url;
+                if (data.status == 'Business_Auditing') {
+                    url = '/vos/voice/auditPass';
+                }
+                obj.companyFlow = {
+                    flowId: data.flowId,
+                    creator: data.creator,
+                    assigneeRole: data.assigneeRole
+                };
+                obj.message = await this.prompt(val);
+                if (obj.message === false) {
+                    return;
+                }
+                this.$ajax.post(url, obj).then(res => {
+                    if (res.code == 200) {
+                        this.$message.success('操作成功');
+                        this.fetchData(this.page.num);
+                    }
+                });
+            },
+            async backCompany(val,data) {
+                console.log(val);
+                console.log(data);
+                var obj = {};
+                var url;
+                //语音驳回
+                url = '/vos/voice/auditReject';
+                obj.companyFlow = {
+                    flowId: data.flowId,
+                    creator: data.creator,
+                    assigneeRole: data.assigneeRole
+                };
+                obj.message = await this.prompt(val);
+                if (obj.message === false) {
+                    return;
+                }
+                this.$ajax.post(url, obj).then(res => {
+                    if (res.code == 200) {
+                        this.$message.success('操作成功');
+                        this.fetchData(this.page.num);
+                    }
+                });
+            },
+			voiceOperate(val,data){
+                console.log(val);
+                console.log(data);
+
+			},
 			// 状态改变
             statusChange(val){
                 this.voiceFileLists();

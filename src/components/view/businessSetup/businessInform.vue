@@ -3,99 +3,100 @@
 		<header class="flg">
 			企业管理
 		</header>
-		<el-tabs v-model="active">
+		<!-- <el-tabs v-model="active">
 			<el-tab-pane label="全部" name="all"></el-tab-pane>
 			<el-tab-pane label="企业审核" name="Company_Auditing"></el-tab-pane>
 			<el-tab-pane label="变更审核" name="Modify_Auditing"></el-tab-pane>
 			<el-tab-pane label="注销审核" name="Canceling_Auditing"></el-tab-pane>
 			<el-tab-pane label="已过审企业" name="Audit_Success"></el-tab-pane>
-			<el-tab-pane label="已注销企业" name="Cancelled"></el-tab-pane>
-			<div class="search">
-				<ul>
-					<li>
-						<span class="demonstration">企业名称：</span>
-						<el-input v-model="form.companyName" placeholder="请输入内容" size="mini" style="width:200px;">
-						</el-input>
-					</li>
-					<li>
-						<span class="demonstration">法人：</span>
-						<el-input v-model="form.legalPerson" placeholder="请输入内容" size="mini">
-						</el-input>
-					</li>
-					<li>
-						<span class="demonstration">证件编号：</span>
-						<el-input v-model="form.companyCardNo" placeholder="请输入内容" size="mini">
-						</el-input>
-					</li>
-				</ul>
-				<div class="block left">
-					<span class="demonstration">提交日期：</span>
-					<el-date-picker style="margin-right:15px;" v-model="form.time" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" size="mini">
-					</el-date-picker>
-					<el-button type="primary" size="mini" style="width:80px;">搜索</el-button>
-					<el-button type="primary" plain size="mini" style="width:80px;">重置</el-button>
-				</div>
+			<el-tab-pane label="已注销企业" name="Cancelled"></el-tab-pane> -->
+		<div class="search">
+			<ul>
+				<li>
+					<span class="demonstration">企业名称：</span>
+					<el-input v-model="form.companyName" placeholder="请输入内容" size="mini" style="width:200px;">
+					</el-input>
+				</li>
+				<li>
+					<span class="demonstration">法人：</span>
+					<el-input v-model="form.legalPerson" placeholder="请输入内容" size="mini">
+					</el-input>
+				</li>
+				<li>
+					<span class="demonstration">证件编号：</span>
+					<el-input v-model="form.companyCardNo" placeholder="请输入内容" size="mini">
+					</el-input>
+				</li>
+			</ul>
+			<div class="block left">
+				<span class="demonstration">提交日期：</span>
+				<el-date-picker style="margin-right:15px;" v-model="form.time" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" size="mini">
+				</el-date-picker>
+				<el-button type="primary" size="mini" style="width:80px;" @click="fetchData()">搜索</el-button>
+				<el-button type="primary" plain size="mini" style="width:80px;" @click="reset">重置</el-button>
 			</div>
-			<section class="addCompany left">
-				<el-button type="primary" size="mini" @click="addCompany(true)">新增企业</el-button>
-				<div>
-					<span>状态：</span>
-					<el-select v-model="form.status" size="mini" placeholder="请选择" @change="fetchData()">
-						<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
-						</el-option>
-					</el-select>
-					<el-button type="primary" plain size="mini">导出</el-button>
-				</div>
-			</section>
-			<el-table :data="tableData" style="width: 100%;margin-bottom:15px;">
-				<el-table-column label="类型" min-width="80">
-					<template slot-scope="scope">
-						<span v-if="scope.row.status=='Company'">企业审核</span>
-						<span v-else-if="scope.row.status=='Business'">业务受理</span>
-						<span v-else-if="scope.row.status=='Destnum'">目的码审核</span>
-						<span v-else-if="scope.row.status=='Voice'">语音审核</span>
-					</template>
-				</el-table-column>
-				<el-table-column prop="company.companyName" label="企业名称" min-width="200">
-				</el-table-column>
-				<el-table-column prop="company.companyCardNo" label="证件编号" min-width="150">
-				</el-table-column>
-				<el-table-column prop="company.legalPerson" label="法人" min-width="80">
-				</el-table-column>
-				<el-table-column prop="createTime" label="提交日期" min-width="100">
-				</el-table-column>
-				<el-table-column label="状态" min-width="80">
-					<template slot-scope="scope">
-						<span v-if="scope.row.status=='New_Flow'">新增受理</span>
-						<span v-else-if="scope.row.status=='Wait_To_Audit'" class="red">等待送审</span>
-						<span v-else-if="scope.row.status=='Company_Auditing'">企业审核中</span>
-						<span v-else-if="scope.row.status=='Business_Auditing'">业务受理审核</span>
-						<span v-else-if="scope.row.status=='Voice_Auditing'">语音审核</span>
-						<span v-else-if="scope.row.status=='DestNum_Auditing'">目的码审核</span>
-						<span v-else-if="scope.row.status=='Audit_Success'" class="success">审核通过</span>
-						<span v-else-if="scope.row.status=='Canceling_Auditing'">注销审核中</span>
-						<span v-else-if="scope.row.status=='Modify_Auditing'" class="red">变更审核中</span>
-						<span v-else-if="scope.row.status=='Terminate_Flow'" class="red">受理终止</span>
-						<span v-else-if="scope.row.status=='Cancelled'" class="red">已注销</span>
-						<span v-else-if="scope.row.status=='Modify_Rejected'" class="red">变更审核驳回</span>
-						<span v-else-if="scope.row.status=='Freezed'">注销冷冻</span>
-					</template>
-				</el-table-column>
-				<el-table-column prop="name" label="操作" min-width="200">
-					<template slot-scope="scope">
-						<el-button size="mini" type="text" @click="checkDetail(scope.row)">详情</el-button>
-						<el-button size="mini" type="text" v-if="scope.row.status=='Wait_To_Audit'&&scope.row.creator==baseData.username" @click="addCompany(true,scope.row)">编辑送审</el-button>
-						<el-button size="mini" type="text" v-if="(scope.row.status=='Audit_Success'||scope.row.status=='Modify_Rejected')&&scope.row.creator==baseData.username" @click="editCompany(scope.row)">变更</el-button>
-						<el-button size="mini" type="text" v-if="(scope.row.status=='Audit_Success'||scope.row.status=='Modify_Rejected')&&scope.row.creator==baseData.username" @click="cancelCompany(scope.row)">注销</el-button>
-						<el-button size="mini" type="text" v-if="(scope.row.status=='Company_Auditing'||scope.row.status=='Canceling_Auditing'||scope.row.status=='Modify_Auditing')&&baseData.roleName=='ROLE_admin'" @click="passCompany(scope.row)">通过审核</el-button>
-						<el-button size="mini" type="text" v-if="(scope.row.status=='Company_Auditing'||scope.row.status=='Canceling_Auditing'||scope.row.status=='Modify_Auditing')&&baseData.roleName=='ROLE_admin'" @click="backCompany(scope.row)">驳回</el-button>
-						<el-button size="mini" type="text" v-if="scope.row.status=='Canceling_Auditing'||scope.row.status=='Modify_Auditing'" @click="endCompany(scope.row)">终止</el-button>
-					</template>
-				</el-table-column>
-			</el-table>
-			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page.num" :page-sizes="$global.pageSize" :page-size="page.size" layout="total, sizes, prev, pager, next, jumper" :total="page.total">
-			</el-pagination>
-		</el-tabs>
+		</div>
+		<section class="addCompany left">
+			<el-button type="primary" size="mini" @click="addCompany(true)">新增企业</el-button>
+			<div>
+				<span>状态：</span>
+				<el-select v-model="form.status" size="mini" placeholder="请选择" @change="fetchData()">
+					<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+					</el-option>
+				</el-select>
+				<el-button type="primary" plain size="mini">导出</el-button>
+			</div>
+		</section>
+		<el-table :data="tableData" style="width: 100%;margin-bottom:15px;">
+			<el-table-column label="类型" min-width="80">
+				<template slot-scope="scope">
+					<span v-if="scope.row.status=='Company'">企业审核</span>
+					<span v-else-if="scope.row.status=='Business'">业务受理</span>
+					<span v-else-if="scope.row.status=='Destnum'">目的码审核</span>
+					<span v-else-if="scope.row.status=='Voice'">语音审核</span>
+				</template>
+			</el-table-column>
+			<el-table-column prop="company.companyName" label="企业名称" min-width="200">
+			</el-table-column>
+			<el-table-column prop="company.companyCardNo" label="证件编号" min-width="150">
+			</el-table-column>
+			<el-table-column prop="company.legalPerson" label="法人" min-width="80">
+			</el-table-column>
+			<el-table-column prop="createTime" label="提交日期" min-width="100">
+			</el-table-column>
+			<el-table-column label="状态" min-width="80">
+				<template slot-scope="scope">
+					<span v-if="scope.row.status=='New_Flow'">新增受理</span>
+					<span v-else-if="scope.row.status=='Wait_To_Audit'" class="red">等待送审</span>
+					<span v-else-if="scope.row.status=='Company_Auditing'">企业审核中</span>
+					<span v-else-if="scope.row.status=='Business_Auditing'">业务受理审核</span>
+					<span v-else-if="scope.row.status=='Voice_Auditing'">语音审核</span>
+					<span v-else-if="scope.row.status=='DestNum_Auditing'">目的码审核</span>
+					<span v-else-if="scope.row.status=='Audit_Success'" class="success">审核通过</span>
+					<span v-else-if="scope.row.status=='Canceling_Auditing'">注销审核中</span>
+					<span v-else-if="scope.row.status=='Modify_Auditing'" class="red">变更审核中</span>
+					<span v-else-if="scope.row.status=='Terminate_Flow'" class="red">受理终止</span>
+					<span v-else-if="scope.row.status=='Cancelled'" class="red">已注销</span>
+					<span v-else-if="scope.row.status=='Modify_Rejected'" class="red">变更审核驳回</span>
+					<span v-else-if="scope.row.status=='Freezed'">注销冷冻</span>
+				</template>
+			</el-table-column>
+			<el-table-column prop="name" label="操作" min-width="200">
+				<template slot-scope="scope">
+					<el-button size="mini" type="text" @click="checkDetail(scope.row)">详情</el-button>
+					<el-button size="mini" type="text" v-if="scope.row.status=='Wait_To_Audit'&&(scope.row.creator==baseData.username||baseData.roleName=='ROLE_admin')" @click="addCompany(true,scope.row)">编辑送审</el-button>
+					<el-button size="mini" type="text" v-if="(scope.row.status=='Audit_Success'||scope.row.status=='Modify_Rejected')&&(scope.row.assignee==baseData.username||baseData.roleName=='ROLE_admin')" @click="editCompany(scope.row)">变更</el-button>
+					<el-button size="mini" type="text" v-if="(scope.row.status=='Audit_Success'||scope.row.status=='Modify_Rejected')&&(scope.row.assignee==baseData.username||baseData.roleName=='ROLE_admin')" @click="cancelCompany(scope.row)">注销</el-button>
+					<el-button size="mini" type="text" v-if="(scope.row.status=='Company_Auditing'||scope.row.status=='Canceling_Auditing'||scope.row.status=='Modify_Auditing')&&(baseData.roleName==scope.row.assigneeRole||baseData.roleName=='ROLE_admin')" @click="passCompany(scope.row)">通过审核</el-button>
+					<el-button size="mini" type="text" v-if="(scope.row.status=='Company_Auditing'||scope.row.status=='Canceling_Auditing'||scope.row.status=='Modify_Auditing')&&(baseData.roleName==scope.row.assigneeRole||baseData.roleName=='ROLE_admin')" @click="backCompany(scope.row)">驳回</el-button>
+					<!-- <el-button size="mini" type="text" v-if="scope.row.status=='Canceling_Auditing'||scope.row.status=='Modify_Auditing'" @click="endCompany(scope.row)">终止</el-button> -->
+					<el-button size="mini" type="text" v-if="scope.row.status=='Wait_To_Audit'&&(scope.row.creator==baseData.username||baseData.roleName=='ROLE_admin')" @click="removeCompany(scope.row)">删除</el-button>
+				</template>
+			</el-table-column>
+		</el-table>
+		<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page.num" :page-sizes="$global.pageSize" :page-size="page.size" layout="total, sizes, prev, pager, next, jumper" :total="page.total">
+		</el-pagination>
+		<!-- </el-tabs> -->
 		<company :show="addCompanys" @close="closeCompany" :flowIdData="flowIdData" :editCompanyType="editCompanyType"></company>
 	</div>
 </template>
@@ -111,7 +112,7 @@
 		},
 		data() {
 			return {
-				active: 'all',
+				// active: 'all',
 				addCompanys: false,
 				editCompanyType: 0, //0新建1编辑
 				baseData: {},
@@ -126,17 +127,23 @@
 					value: '',
 					label: '全部'
 				}, {
-					value: '选项2',
+					value: 'Wait_To_Audit',
 					label: '等待送审'
 				}, {
-					value: '选项3',
-					label: '待审核'
+					value: 'Company_Auditing',
+					label: '企业审核中'
 				}, {
-					value: '选项4',
+					value: 'Audit_Success',
 					label: '审核通过'
 				}, {
-					value: '选项5',
-					label: '被驳回'
+					value: 'Modify_Auditing',
+					label: '变更审核中'
+				}, {
+					value: 'Cancelled',
+					label: '已注销'
+				}, {
+					value: 'Modify_Rejected',
+					label: '变更审核驳回'
 				}],
 				tableData: [],
 				page: {
@@ -160,7 +167,7 @@
 		methods: {
 			checkDetail(data) {
 				this.flowIdData = data;
-				this.$router.push({ path: '/businessInform/businessDetail', query: { flowId: data.flowId, status: data.status, creator: data.creator } });
+				this.$router.push({ path: '/BusinessInform/businessDetail', query: { flowId: data.flowId, status: data.status, creator: data.creator, assigneeRole: data.assigneeRole } });
 			},
 			closeCompany(bol) {
 				if (bol) {
@@ -178,7 +185,7 @@
 				this.flowIdData = data || {};
 				this.addCompanys = bol;
 			},
-			passCompany(data) {
+			async passCompany(data) {
 				var obj = {};
 				var url;
 				if (data.status == 'Company_Auditing') {
@@ -192,6 +199,10 @@
 					flowId: data.flowId,
 					creator: data.creator,
 					assigneeRole: data.assigneeRole
+				};
+				obj.message = await this.prompt();
+				if (obj.message === false) {
+					return;
 				}
 				this.$ajax.post(url, obj).then(res => {
 					if (res.code == 200) {
@@ -200,7 +211,7 @@
 					}
 				});
 			},
-			backCompany(data) {
+			async backCompany(data) {
 				var obj = {};
 				var url;
 				if (data.status == 'Company_Auditing') {
@@ -214,6 +225,10 @@
 					flowId: data.flowId,
 					creator: data.creator,
 					assigneeRole: data.assigneeRole
+				};
+				obj.message = await this.prompt();
+				if (obj.message === false) {
+					return;
 				}
 				this.$ajax.post(url, obj).then(res => {
 					if (res.code == 200) {
@@ -229,8 +244,10 @@
 				obj.companyFlow = {
 					flowId: data.flowId,
 					creator: data.creator,
-					assigneeRole: data.assigneeRole
-				}
+					assigneeRole: data.assigneeRole,
+					assignee: data.assignee
+				};
+				obj.message = '';
 				this.$ajax.post(url, obj).then(res => {
 					if (res.code == 200) {
 						this.$message.success('操作成功');
@@ -246,12 +263,45 @@
 					flowId: data.flowId,
 					creator: data.creator,
 					assigneeRole: data.assigneeRole
-				}
+				};
+				obj.message = '';
 				this.$ajax.post(url, obj).then(res => {
 					if (res.code == 200) {
 						this.$message.success('操作成功');
 						this.fetchData(this.page.num);
 					}
+				});
+			},
+			removeCompany(data) {
+				var obj = {};
+				var url;
+				url = '/vos/business/deleteFlow';
+				obj.companyFlow = {
+					flowId: data.flowId,
+					creator: data.creator,
+					businessId: data.businessId,
+					type: data.type,
+					companyId: data.companyId
+				};
+				this.$ajax.post(url, obj).then(res => {
+					if (res.code == 200) {
+						this.$message.success('操作成功');
+						this.fetchData(this.page.num);
+					}
+				});
+			},
+			prompt() {
+				return this.$prompt('请输入审核意见', '审核', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消'
+				}).then(({ value }) => {
+					return value || '';
+				}).catch(() => {
+					this.$message({
+						type: 'info',
+						message: '取消输入'
+					});
+					return false;
 				});
 			},
 			handleSizeChange() {
@@ -279,6 +329,10 @@
 					}
 				});
 			},
+			reset() {
+				this.$clear(this.form);
+				this.fetchData();
+			}
 		}
 	}
 </script>

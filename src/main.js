@@ -46,7 +46,6 @@ Vue.prototype.$format = function (obj) {
 };
 axios.defaults.withCredentials = true;
 axios.defaults.headers.common['Content-Type'] = 'application/json;charset=UTF-8';
-axios.defaults.baseURL = '/vos';
 axios.interceptors.response.use(res => {
 	// switch (res.status) {
 	// case 302:
@@ -59,6 +58,12 @@ axios.interceptors.response.use(res => {
 	// 	//location.href='#/login?error_type=1'
 	// 	break
 	// }
+	if (res.data.code != 200) {
+		Vue.prototype.$message({
+			message: res.data.message,
+			type: 'warning'
+		});
+	}
 	return res.data;
 }, err => {
 	//处理302
@@ -71,9 +76,83 @@ axios.interceptors.response.use(res => {
 Vue.config.productionTip = false;
 Vue.prototype.$global = {
 	pageSize: [10, 20, 30, 50],
-	uploadUrl: '/vos/vos/common/uploadImg'
-}
+	uploadUrl: '/vos/common/uploadImg',
+	uploadUrl2: 'http://47.94.168.117/vos/',
+	serverSrc: 'http://47.94.168.117:5480/vos/',
+};
+router.beforeEach((to, from, next) => {
+	var allPath = store.getters.getRoute;
+	let currentPath = to.path;
+	var isPass = false;
+	if (currentPath == '/login') {
+		isPass = true;
+		next();
+	};
+	if (allPath.length == 0) {
+		if (sessionStorage.getItem('roleId') != null) {
+			axios.get('/vos/menu/getTreeMenu?roleId=' + sessionStorage.getItem('roleId')).then(res => {
+				if (res.code == 200) {
+					store.commit('addRoute', res.data.menuList);
+					allPath = store.getters.getRoute;
+					for (let i = 0; i < allPath.length; i++) {
+						if (allPath[i].trim() == currentPath) {
+							isPass = true;
+							next();
+							return;
+						}
+					};
+					if (!isPass) {
+						Vue.prototype.$message({
+							message: '权限错误',
+							type: 'warning'
+						});
+					}
+				}
+			});
+		} else {
+			axios.get('/vos/user/getMe').then(resp => {
+				for (let key in resp.data) {
+					sessionStorage.setItem(key, resp.data[key]);
+				};
+				axios.get('/vos/menu/getTreeMenu?roleId=' + sessionStorage.getItem('roleId')).then(res => {
+					if (res.code == 200) {
+						store.commit('addRoute', res.data.menuList);
+						allPath = store.getters.getRoute;
+						for (let i = 0; i < allPath.length; i++) {
+							if (allPath[i].trim() == currentPath) {
+								isPass = true;
+								next();
+								return;
+							}
+						};
+						if (!isPass) {
+							Vue.prototype.$message({
+								message: '权限错误',
+								type: 'warning'
+							});
+						}
+					}
+				});
+			});
+		}
 
+	} else {
+		for (let i = 0; i < allPath.length; i++) {
+			if (allPath[i].trim() == currentPath) {
+				isPass = true;
+				next();
+				return;
+			}
+		};
+		if (!isPass) {
+			Vue.prototype.$message({
+				message: '权限错误',
+				type: 'warning'
+			});
+		}
+	};
+
+})
 /* eslint-disable no-new */
 new Vue({
 	el: '#app',

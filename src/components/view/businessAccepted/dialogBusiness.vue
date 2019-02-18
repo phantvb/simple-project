@@ -4,6 +4,7 @@
         <el-dialog
                 :title="businessIn==1?'新增受理':'编辑受理'"
                 :visible.sync="visibleBusiness"
+                v-if="visibleBusiness"
                 width="80%"
                 :before-close="handleClose">
             <div>
@@ -17,7 +18,7 @@
                 </div>
                 <step-one v-show="active==1" @childNext="step"></step-one>
                 <step-two v-show="active==2" @childNext="step"></step-two>
-                <step-three v-show="active==3" @childNext="step" :loginRes = "loginResp"></step-three>
+                <step-three v-show="active==3" @childNext="step"></step-three>
                 <step-four v-show="active==4" @childNext="step"></step-four>
             </div>
         </el-dialog>
@@ -71,10 +72,22 @@
         created(){
             this.$root.eventHub.$on('dialogVisibleBusiness', (res)=>{
                 this.visibleBusiness=res.visibleBusiness;
+                console.log("asdasdas");
+                this.actives = 1;
+                this.active = 1;
                 if(res.businessIn){
                     this.businessIn = res.businessIn;
+                    if(this.businessIn==1){       //新增
+
+                    }else if(this.businessIn==3){  //变更
+
+                    }
                 }
             } );
+            this.$root.eventHub.$on('addAcceptSave', (resp)=>{
+                this.visibleBusiness=false;
+            });
+
         },
         components: {
             stepOne,
@@ -87,6 +100,7 @@
             handleClose(done) {
                 this.$confirm('确认关闭？')
                     .then(_ => {
+                        this.$root.eventHub.$emit('addAcceptSave');
                         done();
                     })
                     .catch(_ => {

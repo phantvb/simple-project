@@ -32,7 +32,7 @@
 					<li class="l3">
 						<el-form-item label="行业类型" prop="industryType">
 							<el-select v-model="form.industryType" placeholder="请选择" size="mini">
-								<el-option v-for="item in industryTypeOptions" :key="item.id" :label="item.dicValue" :value="item.id"></el-option>
+								<el-option v-for="item in industryTypeOptions" :key="item.id" :label="item.dicValue" :value="item.dicValue"></el-option>
 							</el-select>
 						</el-form-item>
 					</li>
@@ -294,15 +294,11 @@
 				data.cardEndDate = this.form.cardDate[1];
 				delete data.cardDate;
 				this.$refs.form.validate((valid) => {
-					this.$emit('next', 2, data);
-					this.$emit('isComplete', valid);
-					// if (valid) {
-					//     this.$emit('next', 2, data);
-					//     this.$emit('next', 2, data);
-					// } else {
-					//     this.$emit('next', 2, data);
-					// 	return false;
-					// }
+					if (valid) {
+						this.$emit('next', 2, data);
+					} else {
+						this.$message.error('请先完善信息再进行下一步操作');
+					}
 				});
 			},
 			checkValue(value, options, oldId) {

@@ -1,5 +1,9 @@
 <template>
+<<<<<<< HEAD
 	<div id="usableNum" v-loading="loading">
+=======
+	<div id="usableNum">
+>>>>>>> bec2c36c0003632c6f5b540a7a6f961c307cca67
 		<div class="search">
 			<el-form ref="usableNumForm" :model="usableNumForm">
 				<el-form-item style="float: left;margin-left: 15px;">
@@ -55,7 +59,11 @@
 		</div>
 
 		<div>
+<<<<<<< HEAD
 			<el-dialog title="新增/编辑400号码" :visible.sync="addNumberFormDialogVisible" width="30%" :before-close="handleClose">
+=======
+			<el-dialog title="新增/编辑400号码" :visible.sync="addNumberFormDialogVisible" width="30%">
+>>>>>>> bec2c36c0003632c6f5b540a7a6f961c307cca67
 				<div>
 					<el-form ref="addNumberForm" :model="addNumberForm" label-width="100px">
 						<el-form-item label="400号码：">
@@ -63,7 +71,11 @@
 						</el-form-item>
 
 						<el-form-item label="可见渠道：">
+<<<<<<< HEAD
 							<el-checkbox-group v-model="addNumberForm.checkList" @change="changeCheckList">
+=======
+							<el-checkbox-group v-model="addNumberForm.checkList" :min="1" @change="changeCheckList">
+>>>>>>> bec2c36c0003632c6f5b540a7a6f961c307cca67
 								<el-checkbox label="自助直销" class="el-checkbox"></el-checkbox>
 								<el-checkbox label="渠道"></el-checkbox>
 							</el-checkbox-group>
@@ -77,6 +89,7 @@
 
 						<el-form-item label="关联套餐：" style="margin-top: 15px;">
 							<el-tabs v-model="addNumberForm.activeName" type="card">
+<<<<<<< HEAD
 								<el-tab-pane label="自助直销" name="first">
 									<el-checkbox-group v-model="addNumberForm.selfCheckList" v-for="(item,index) in this.addNumberForm.selfTableData.length" :key="item">
 										<el-checkbox :label="addNumberForm.selfTableData[index].tariffName"></el-checkbox>
@@ -86,6 +99,17 @@
 								<el-tab-pane label="渠道" name="second">
 									<el-checkbox-group v-model="addNumberForm.channelCheckList" v-for="(item,index) in this.addNumberForm.channelTableData.length" :key="item">
 										<el-checkbox :label="addNumberForm.channelTableData[index].tariffName"></el-checkbox>
+=======
+								<el-tab-pane label="自助直销" name="first" v-if="addNumberForm.checkList.indexOf('自助直销')!=-1">
+									<el-checkbox-group v-model="addNumberForm.selfCheckList" v-for="(item) in addNumberForm.selfTableData" :key="item.id">
+										<el-checkbox :label="item.id">{{item.tariffName}}</el-checkbox>
+										<br>
+									</el-checkbox-group>
+								</el-tab-pane>
+								<el-tab-pane label="渠道" name="second" v-if="addNumberForm.checkList.indexOf('渠道')!=-1">
+									<el-checkbox-group v-model="addNumberForm.channelCheckList" v-for="(item) in addNumberForm.channelTableData" :key="item.id">
+										<el-checkbox :label="item.id">{{item.tariffName}}</el-checkbox>
+>>>>>>> bec2c36c0003632c6f5b540a7a6f961c307cca67
 										<br>
 									</el-checkbox-group>
 								</el-tab-pane>
@@ -102,7 +126,11 @@
 		</div>
 
 		<div>
+<<<<<<< HEAD
 			<el-dialog title="400号码导入校验" :visible.sync="importNumberFormDialogVisible" width="40%" :before-close="handleClose">
+=======
+			<el-dialog title="400号码导入校验" :visible.sync="importNumberFormDialogVisible" width="40%">
+>>>>>>> bec2c36c0003632c6f5b540a7a6f961c307cca67
 				<div>
 					<el-form ref="addNumberForm" :model="importNumberForm" label-width="150px">
 						<el-form-item label="校验比对结果：">
@@ -180,8 +208,12 @@
 				updateData: "none", // 编辑和新增公用一个弹窗控制按钮显示
 				submitData: "inline-block",
 
+<<<<<<< HEAD
                 id: "", // 存放编辑时的id
                 loading:false
+=======
+				id: "" // 存放编辑时的id
+>>>>>>> bec2c36c0003632c6f5b540a7a6f961c307cca67
 			};
 		},
 		// props:['status'],
@@ -238,12 +270,16 @@
 
 			reset() {
 				this.usableNumForm.number = "";
+<<<<<<< HEAD
 				this.usableNumForm.checkList = [];
 
 				this.addNumberForm.number = "";
 				this.addNumberForm.checkList = ["自助直销"];
 				this.addNumberForm.selfTableData = [];
 				this.addNumberForm.channelTableData = [];
+=======
+				this.addNumberForm.checkList = ["自助直销"];
+>>>>>>> bec2c36c0003632c6f5b540a7a6f961c307cca67
 				this.addNumberForm.selfCheckList = [];
 				this.addNumberForm.channelCheckList = [];
 				this.addNumberForm.guideNumberValue = "";
@@ -254,6 +290,7 @@
 			showAddNum() {
 				this.addNumberFormDialogVisible = true;
 				this.reset();
+<<<<<<< HEAD
 
 				this.updateData = "none";
 				this.submitData = "inline-block";
@@ -272,12 +309,18 @@
 					});
 			},
 
+=======
+				this.updateData = "none";
+				this.submitData = "inline-block";
+			},
+>>>>>>> bec2c36c0003632c6f5b540a7a6f961c307cca67
 			// 根据checklist改变关联套餐选项
 			changeCheckList() {
 				if (
 					this.addNumberForm.checkList.length == 1 &&
 					this.addNumberForm.checkList[0] == "自助直销"
 				) {
+<<<<<<< HEAD
 					// 自助直销
 					this.$ajax
 						.post("/vos/tariffPackage/getTariff", {
@@ -292,12 +335,15 @@
 							}
 						});
 					this.addNumberForm.channelTableData = [];
+=======
+>>>>>>> bec2c36c0003632c6f5b540a7a6f961c307cca67
 					this.addNumberForm.activeName = "first";
 				}
 				if (
 					this.addNumberForm.checkList.length == 1 &&
 					this.addNumberForm.checkList[0] == "渠道"
 				) {
+<<<<<<< HEAD
 					// 渠道
 					this.$ajax
 						.post("/vos/tariffPackage/getTariff", {
@@ -346,6 +392,9 @@
 					// 都不选
 					this.addNumberForm.channelTableData = [];
 					this.addNumberForm.selfTableData = [];
+=======
+					this.addNumberForm.activeName = "second"
+>>>>>>> bec2c36c0003632c6f5b540a7a6f961c307cca67
 				}
 			},
 
@@ -614,6 +663,7 @@
 					});
 			},
 
+<<<<<<< HEAD
 			handleClose(done) {
 				this.$confirm("确认关闭？")
 					.then(_ => {
@@ -621,6 +671,8 @@
 					})
 					.catch(_ => {});
 			},
+=======
+>>>>>>> bec2c36c0003632c6f5b540a7a6f961c307cca67
 
 			//翻译table中显示的数据
 			translate(res) {
@@ -747,6 +799,7 @@
 
 			// 得到新增dialog里面的关联套餐的列表
 			getIdsFunction() {
+<<<<<<< HEAD
 				let ids = [];
 				for (let i = 0; i < this.addNumberForm.selfCheckList.length; i++) {
 					for (
@@ -776,11 +829,25 @@
 					}
 				}
 				ids = ids.join(",");
+=======
+				let ids = '';
+				let selfId = this.addNumberForm.selfCheckList.join(",");
+				let channelId = this.addNumberForm.channelCheckList.join(",");
+				if (this.addNumberForm.checkList.indexOf('自助直销') != -1) {
+					ids = ids + selfId + ',';
+				};
+				if (this.addNumberForm.checkList.indexOf('渠道') != -1) {
+					ids = ids + channelId + ',';
+				};
+>>>>>>> bec2c36c0003632c6f5b540a7a6f961c307cca67
 				return ids;
 			},
 
 			loadData() {
+<<<<<<< HEAD
                 this.loading=true;
+=======
+>>>>>>> bec2c36c0003632c6f5b540a7a6f961c307cca67
 				this.$ajax
 					.post("/vos/number400/getAll", {
 						page: {
@@ -810,6 +877,11 @@
 					.then(res => {
 						if (res.code == 200) {
 							this.aTableData1 = res.data.tariffPackageList;
+<<<<<<< HEAD
+=======
+							this.addNumberForm.selfTableData =
+								res.data.tariffPackageList;
+>>>>>>> bec2c36c0003632c6f5b540a7a6f961c307cca67
 						}
 					});
 				this.$ajax
@@ -820,8 +892,14 @@
 					})
 					.then(res => {
 						if (res.code == 200) {
+<<<<<<< HEAD
                             this.aTableData2 = res.data.tariffPackageList;
                             this.loading=false;
+=======
+							this.aTableData2 = res.data.tariffPackageList;
+							this.addNumberForm.channelTableData =
+								res.data.tariffPackageList;
+>>>>>>> bec2c36c0003632c6f5b540a7a6f961c307cca67
 						}
 					});
 			}
@@ -834,4 +912,8 @@
 
 <style lang="scss" scoped>
 	@import "./usableNum";
+<<<<<<< HEAD
 </style>
+=======
+</style>
+>>>>>>> bec2c36c0003632c6f5b540a7a6f961c307cca67

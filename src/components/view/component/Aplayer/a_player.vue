@@ -26,13 +26,34 @@
 <script>
 	export default {
 		name: 'Aplayer',
-		data() { return { music: { isPlay: false, currentTime: 0, maxTime: 0, volume: 100 }, timer: null, cWidth: null, s_url: 'http://sc1.111ttt.cn:8282/2018/1/03m/13/396131232171.m4a?tflag=1519095601&pin=6cd414115fdb9a950d827487b16b5f97#.mp3' } },
+		data() {
+			return {
+				music: { isPlay: false, currentTime: 0, maxTime: 0, volume: 100 },
+				timer: null,
+				cWidth: null
+			}
+		},
+		watch: {
+			music_url(n, o) {
+				this.music = { isPlay: false, currentTime: 0, maxTime: 0, volume: 100 };
+				this.listenMusic();
+				this.timer = setInterval(this.listenMusic, 1000);
+			}
+		},
 		mounted() {
 			var _this = this;
-			this.$nextTick(() => {
-				this.listenMusic();
-				this.timer = setInterval(this.listenMusic, 1000)
-			});
+			if (this.model = 'auto') {
+				this.$nextTick(() => {
+					this.listenMusic_auto();
+					this.timer = setInterval(this.listenMusic_auto, 1000);
+				});
+			} else {
+				this.$nextTick(() => {
+					this.listenMusic();
+					this.timer = setInterval(this.listenMusic, 1000);
+				});
+			}
+
 			// eventBus.$on('music_play', (currentName) => {
 			// 	if (!_this.$refs[_this.name]) { return } else if (_this.$refs[_this.name] && _this.name != currentName) {
 			// 		_this.$refs[_this.name].pause()
@@ -40,7 +61,7 @@
 			// });
 			this.cWidth = this.$refs.content.clientWidth;
 		},
-		props: ['name', 'music_url', 'size'],
+		props: ['name', 'music_url', 'size', 'model'],
 		methods: {
 			change() {
 				console.log('change')
@@ -51,8 +72,18 @@
 				if (this.$refs[this.name].paused) {
 					clearInterval(this.timer);
 				}
-				this.music.isPlay = !this.$refs[this.name].paused
-				this.music.currentTime = this.$refs[this.name].currentTime
+				this.music.isPlay = !this.$refs[this.name].paused;
+				this.music.currentTime = this.$refs[this.name].currentTime;
+			},
+			listenMusic_auto() {
+				if (!this.$refs[this.name]) { return }
+				if (this.$refs[this.name].readyState) { this.music.maxTime = this.$refs[this.name].duration }
+				if (this.$refs[this.name].paused) {
+					clearInterval(this.timer);
+					this.play();
+				}
+				this.music.isPlay = true;
+				this.music.currentTime = this.$refs[this.name].currentTime;
 			},
 			play() {
 				if (this.$refs[this.name].paused) {
@@ -66,7 +97,7 @@
 				this.music.isPlay = !this.$refs[this.name].paused
 				this.$nextTick(() => { document.getElementById('play').blur() })
 			},
-			changeTime(time) {
+			changeTime() {
 				this.$refs[this.name].currentTime = this.music.currentTime;
 			},
 			changeVolume(v) {

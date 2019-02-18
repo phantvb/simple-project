@@ -128,7 +128,7 @@
 					num: ""
 				}],
 				imageUrl: '',
-				dialogVisible: true,
+				dialogVisible: false,
 				options: [
 					{ value: 0, label: "转接" },
 					{ value: 1, label: "放音挂机" },

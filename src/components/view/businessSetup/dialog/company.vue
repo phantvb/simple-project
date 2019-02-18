@@ -6,8 +6,8 @@
 				<el-step title="上传企业资料"></el-step>
 				<el-step title="送审"></el-step>
 			</el-steps>
-			<baseMes v-show="active==1" @next="next" :oldData="oldData" @isComplete="isCom"></baseMes>
-			<baseData v-show="active==2" :isComplete="isOneComplete" @next="next" :oneData="oneData" :idData="flowIdData" @complete='complete' :editType="editType"></baseData>
+			<baseMes v-show="active==1" @next="next" :oldData="oldData"></baseMes>
+			<baseData v-show="active==2" @next="next" :oneData="oneData" :idData="flowIdData" @complete='complete' :editType="editType"></baseData>
 		</el-dialog>
 	</div>
 </template>
@@ -50,8 +50,7 @@
 				active: 1,
 				dialogVisible: false,
 				oneData: {},
-				oldData: {},
-				isOneComplete: false
+				oldData: {}
 			}
 		},
 		methods: {
@@ -67,9 +66,6 @@
 					this.oneData = data;
 				}
 				this.active = step;
-			},
-			isCom(bol) {
-				this.isOneComplete = bol;
 			}
 		}
 	}

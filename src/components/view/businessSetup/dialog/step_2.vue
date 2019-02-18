@@ -11,7 +11,7 @@
 					</div>
 					<ul>
 						<li class="l2">
-							<el-upload class="avatar-uploader examplew" :with-credentials="true" :action="$global.uploadUrl" :show-file-list="false" :on-success="uploaded1">
+							<el-upload class="avatar-uploader examplew" :with-credentials="true" :action="$global.uploadUrl" :show-file-list="false" :on-success="uploaded1" :before-upload="beforeAvatarUpload">
 								<img v-if="file.p1!=''" :src="imageUrl.p1" class="avatar">
 								<i v-else class="el-icon-plus avatar-uploader-icon"></i>
 							</el-upload>
@@ -37,13 +37,13 @@
 						<li class="l2">
 							<ul>
 								<li class="l2">
-									<el-upload class="avatar-uploader exampleh" :with-credentials="true" :action="$global.uploadUrl" :show-file-list="false" :on-success="uploaded2">
+									<el-upload class="avatar-uploader exampleh" :with-credentials="true" :action="$global.uploadUrl" :show-file-list="false" :on-success="uploaded2" :before-upload="beforeAvatarUpload">
 										<img v-if="file.p2!=''" :src="imageUrl.p2" class="avatar">
 										<i v-else class="el-icon-plus avatar-uploader-icon"></i>
 									</el-upload>
 								</li>
 								<li class="l2">
-									<el-upload class="avatar-uploader exampleh" :with-credentials="true" :action="$global.uploadUrl" :show-file-list="false" :on-success="uploaded3">
+									<el-upload class="avatar-uploader exampleh" :with-credentials="true" :action="$global.uploadUrl" :show-file-list="false" :on-success="uploaded3" :before-upload="beforeAvatarUpload">
 										<img v-if="file.p3!=''" :src="imageUrl.p3" class="avatar">
 										<i v-else class="el-icon-plus avatar-uploader-icon"></i>
 									</el-upload>
@@ -51,7 +51,7 @@
 							</ul>
 							<ul>
 								<li class="l2">
-									<el-upload class="avatar-uploader exampleh" :with-credentials="true" :action="$global.uploadUrl" :show-file-list="false" :on-success="uploaded4">
+									<el-upload class="avatar-uploader exampleh" :with-credentials="true" :action="$global.uploadUrl" :show-file-list="false" :on-success="uploaded4" :before-upload="beforeAvatarUpload">
 										<img v-if="file.p4!=''" :src="imageUrl.p4" class="avatar">
 										<i v-else class="el-icon-plus avatar-uploader-icon"></i>
 									</el-upload>
@@ -162,13 +162,13 @@
 				this.file.p2 = newV.legalCardFrontPic;
 				this.file.p3 = newV.legalCardBackPic;
 				this.file.p4 = newV.legalCardHandPic;
-				this.imageUrl.p1 = 'http://192.168.0.117:5480/vos/' + this.file.p1;
-				this.imageUrl.p2 = 'http://192.168.0.117:5480/vos/' + this.file.p2;
-				this.imageUrl.p3 = 'http://192.168.0.117:5480/vos/' + this.file.p3;
-				this.imageUrl.p4 = 'http://192.168.0.117:5480/vos/' + this.file.p4;
+				this.imageUrl.p1 = this.$global.serverSrc + this.file.p1;
+				this.imageUrl.p2 = this.$global.serverSrc + this.file.p2;
+				this.imageUrl.p3 = this.$global.serverSrc + this.file.p3;
+				this.imageUrl.p4 = this.$global.serverSrc + this.file.p4;
 			}
 		},
-		props: ['oneData', 'idData', 'isComplete', 'editType'],
+		props: ['oneData', 'idData', 'editType'],
 		methods: {
 			next(step) {
 				this.$emit('next', step);
@@ -182,40 +182,42 @@
 				data.company.legalCardBackPic = this.file.p3;
 				data.company.legalCardHandPic = this.file.p4;
 				data.companyFlow = {
-					flowId: this.idData.id || ''
+					flowId: this.idData.flowId || ''
 				};
-				if (!this.isComplete && bol) {
-					this.$message.error('请先返回上一步完善信息');
-				} else {
-					if (this.editType == 0) {
-						this.$ajax.post(url, data).then(res => {
-							if (res.code == 200) {
-								this.$message.success('操作成功');
-								this.$emit('complete', true);
-							}
-						});
-					} else if (this.editType == 1) {
-						data.companyFlow = this.idData;
-						this.$ajax.post('/vos/company/sendToModifyAudit', data).then(res => {
-							if (res.code == 200) {
-								this.$message.success('操作成功');
-								this.$emit('complete', true);
-							}
-						});
-					}
+				if (this.file.p1 == '' || this.file.p2 == '' || this.file.p3 == '' || this.file.p4 == '') {
+					this.$message.error('请先完善图片信息');
+					return;
+				};
+				if (this.editType == 0) {
+					this.$ajax.post(url, data).then(res => {
+						if (res.code == 200) {
+							this.$message.success('操作成功');
+							this.$emit('complete', true);
+						}
+					});
+				} else if (this.editType == 1) {
+					data.companyFlow = this.idData;
+					this.$ajax.post('/vos/company/sendToModifyAudit', data).then(res => {
+						if (res.code == 200) {
+							this.$message.success('操作成功');
+							this.$emit('complete', true);
+						}
+					});
 				}
 			},
 			beforeAvatarUpload(file) {
 				const isLt10M = file.size / 1024 / 1024 < 10;
 				if (!isLt10M) {
 					this.$message.error('上传头像图片大小不能超过 10MB!');
+					return false;
+				} else {
+					return true;
 				}
-				return true;
 			},
 			uploaded1(res, files, fileList) {
 				if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {
 					this.file.p1 = res;
-					this.imageUrl.p1 = 'http://192.168.0.117:5480/vos/' + res;
+					this.imageUrl.p1 = URL.createObjectURL(files.raw);
 				}
 				// let file = files.raw;
 				// let param = new FormData(); //创建form对象
@@ -230,19 +232,19 @@
 			uploaded2(res, files, fileList) {
 				if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {
 					this.file.p2 = res;
-					this.imageUrl.p2 = 'http://192.168.0.117:5480/vos/' + res;
+					this.imageUrl.p2 = URL.createObjectURL(files.raw);
 				}
 			},
 			uploaded3(res, files, fileList) {
 				if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {
 					this.file.p3 = res;
-					this.imageUrl.p3 = 'http://192.168.0.117:5480/vos/' + res;
+					this.imageUrl.p3 = URL.createObjectURL(files.raw);
 				}
 			},
 			uploaded4(res, files, fileList) {
 				if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {
 					this.file.p4 = res;
-					this.imageUrl.p4 = 'http://192.168.0.117:5480/vos/' + res;
+					this.imageUrl.p4 = URL.createObjectURL(files.raw);
 				}
 			},
 

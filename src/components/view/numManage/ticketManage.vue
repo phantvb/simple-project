@@ -1,13 +1,13 @@
 <template>
 	<div id="ticketManage" class="managerFormTitle" v-loading="loading">
-		<Aplayer name="123" music_url="http://192.168.0.123:5480/vos/voice/123.wav"></Aplayer>
+		<Aplayer name="Aplayer" model="auto" :music_url="$global.serverSrc+voiceSrc" v-if="player" v-show="false"></Aplayer>
 		<el-tabs v-model="active">
 			<el-tab-pane label="自助直销" name="self"></el-tab-pane>
 			<el-tab-pane label="渠道" name="channel"></el-tab-pane>
 			<div class="search">
 				<ul>
 					<li>
-						<span class="demonstration">企业名称：</span>
+						<span class="demonstration" @click="listen">企业名称：</span>
 						<el-input v-model="form.companyName" placeholder="企业名称" size="mini">
 						</el-input>
 					</li>
@@ -45,7 +45,7 @@
 						<span class="demonstration"> 秒</span>
 					</div>
 					<el-button type="primary" size="mini" style="width:80px;" @click="fetchData()">搜索</el-button>
-					<el-button type="primary" plain size="mini" style="width:80px;">重置</el-button>
+					<el-button type="primary" plain size="mini" style="width:80px;" @click="reset">重置</el-button>
 				</div>
 			</div>
 			<section class="right block lineTop">
@@ -66,15 +66,15 @@
 				</el-table-column>
 				<el-table-column prop="name" label="操作" min-width="200">
 					<template slot-scope="scope">
-						<el-button size="mini" type="text">试听{{scope.row.recordAddress}}</el-button>
-						<el-button size="mini" type="text" @click="showTicketDetail(true)">详情</el-button>
+						<el-button size="mini" type="text" @click="listen(scope.row.recordAddress)">试听</el-button>
+						<el-button size="mini" type="text" @click="showTicketDetail(true,scope.row)">详情</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
 			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page.num" :page-sizes="$global.pageSize" :page-size="page.size" layout="total, sizes, prev, pager, next, jumper" :total="page.total">
 			</el-pagination>
 		</el-tabs>
-		<ticketDetail :show="ticketDetailShow" @close="showTicketDetail(false)"></ticketDetail>
+		<ticketDetail :show="ticketDetailShow" @close="showTicketDetail(false)" :data="ticketDetailData"></ticketDetail>
 
 	</div>
 </template>
@@ -102,7 +102,9 @@
 					callDurationEnd: '',
 					time: []
 				},
+				voiceSrc: 'c9965168-20a9-40ef-9858-1827256a119d.mp3',
 				ticketDetailShow: false,
+				ticketDetailData: {},
 				status: '',
 				options: [{
 					value: '',
@@ -120,7 +122,8 @@
 					size: 10,
 					total: 1
 				},
-				loading: false
+				loading: false,
+				player: false
 			}
 		},
 		watch: {
@@ -132,7 +135,23 @@
 			this.fetchData();
 		},
 		methods: {
-			showTicketDetail(bol) {
+			reset() {
+				this.$clear(this.form);
+				this.fetchData();
+			},
+			listen(src) {
+				if (this.voiceSrc != src) {
+					this.voiceSrc = src;
+					this.player = false;
+					this.$nextTick(() => {
+						this.player = true;
+					});
+				} else {
+					this.player = false;
+				}
+			},
+			showTicketDetail(bol, data) {
+				this.ticketDetailData = data || {};
 				this.ticketDetailShow = bol;
 			},
 			handleSizeChange() {

@@ -1,15 +1,16 @@
 <template>
 	<div id="ticketDetail" class="numDialog">
 		<el-dialog title="话单详情" class="left" :visible.sync="dialogVisible" @close="close" v-if="dialogVisible">
+			<Aplayer name="Aplayer" model="auto" :music_url="$global.serverSrc+data.recordAddress" v-if="player"></Aplayer>
 			<div class="block">
 				<ul>
 					<li class="l2">
-						<p class="fmini">400号码: 4008818611</p>
-						<p class="fmini">主叫号码: 15622771295</p>
+						<p class="fmini">400号码: {{data.number400}}</p>
+						<p class="fmini">主叫号码: {{data.callingNumber}}</p>
 					</li>
 					<li class="l2">
-						<p class="fmini">引示号: 057186694234</p>
-						<p class="fmini">被叫号码: 2018-10</p>
+						<p class="fmini">引示号: {{data.calledNumber}}</p>
+						<p class="fmini">被叫号码: {{data.guideNumber}}</p>
 					</li>
 				</ul>
 			</div>
@@ -17,39 +18,39 @@
 			<div class="block">
 				<ul>
 					<li class="l2">
-						<p class="fmini">主叫开始时间: 2018-10-19 16:28:57</p>
-						<p class="fmini">主叫应答时间: 2018-10-19 16:28:57</p>
-						<p class="fmini">主叫呼叫时长: 52 </p>
-						<p class="fmini">被叫开始时间: 2018-10-19 16:28:57</p>
-						<p class="fmini">被叫应答时间: 2018-10-19 16:29:01</p>
-						<p class="fmini">被叫呼叫时长: 48 </p>
-						<p class="fmini">是否录音: 是 </p>
+						<p class="fmini">主叫开始时间: {{data.callingStartTime}}</p>
+						<p class="fmini">主叫应答时间: {{data.callingResponseTime}}</p>
+						<p class="fmini">主叫呼叫时长: {{data.callingCallDuration}} </p>
+						<p class="fmini">被叫开始时间: {{data.calledStartTime}}</p>
+						<p class="fmini">被叫应答时间: {{data.calledResponseTime}}</p>
+						<p class="fmini">被叫呼叫时长: {{data.calledRingTime}} </p>
+						<p class="fmini">是否录音: {{data.record}} </p>
 					</li>
 					<li class="l2">
-						<p class="fmini">主叫振铃时间: 2018-10-19 16:28:57 </p>
-						<p class="fmini">主叫挂机时间: 2018-10-19 16:29:49</p>
+						<p class="fmini">主叫振铃时间: {{data.callingRingTime}} </p>
+						<p class="fmini">主叫挂机时间: {{data.callingHangTime}}</p>
 						<p class="fmini"> </p>
-						<p class="fmini">被叫振铃时间: 2018-10-19 16:29:01</p>
-						<p class="fmini">被叫挂机时间: 2018-10-19 16:29:49 </p>
-						<p class="fmini">挂机状态: 主叫正常挂机</p>
-						<p class="fmini">挂机方: 主叫 </p>
+						<p class="fmini">被叫振铃时间: {{data.calledRingTime}}</p>
+						<p class="fmini">被叫挂机时间: {{data.calledHangTime}} </p>
+						<p class="fmini">挂机状态: {{data.hangStatus}}</p>
+						<p class="fmini">挂机方: {{data.hangSide}} </p>
 					</li>
 				</ul>
 			</div>
 			<div class="block">
-				录音文件地址:168.16.12_15622771295_057128827571.wav &#12288;<el-button type="text">试听</el-button>
+				录音文件地址:{{data.recordAddress}} &#12288;<el-button type="text" @click="listen">试听</el-button>
 			</div>
 			<div class="block">
 				<ul>
 					<li class="l2">
-						<p class="fmini">创建时间: 2018-10-19 16:31:24</p>
+						<p class="fmini">创建时间: {{data.createTime}}</p>
 					</li>
 				</ul>
 			</div>
 			<div class="greyline"></div>
 			<footer class="right">
-				<el-button type="primary" size="mini">确定</el-button>
-				<el-button type="primary" size="mini" plain>取消</el-button>
+				<el-button type="primary" size="mini" @click="close">确定</el-button>
+				<el-button type="primary" size="mini" plain @click="close">取消</el-button>
 			</footer>
 		</el-dialog>
 	</div>
@@ -59,9 +60,13 @@
 </style>
 
 <script>
+	import Aplayer from '@/components/view/component/Aplayer/a_player.vue'
 	export default {
 		name: "ticketDetail",
-		props: ["show"],
+		components: {
+			Aplayer
+		},
+		props: ["show", "data"],
 		watch: {
 			show(newV, oldV) {
 				this.dialogVisible = newV;
@@ -69,13 +74,17 @@
 		},
 		data() {
 			return {
-				dialogVisible: false
+				dialogVisible: false,
+				player: false
 			};
 		},
 		methods: {
 			close() {
 				this.$emit("close");
-			}
+			},
+			listen(src) {
+				this.player = !this.player;
+			},
 		}
 	};
 </script>

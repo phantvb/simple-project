@@ -10,11 +10,25 @@
                 <el-form ref="acceptForm" :rules="rules" :model="acceptForm" label-width="140px">
                     <div class="objCodeMsg">
 
+                        <el-form-item label="400号码：" class="firmName" prop="fourNum">
+                            <el-input
+                                    v-model="acceptForm.fourNum"
+                                    size="mini"
+                                    placeholder=" 请搜索400号码" @input="searchFourNum"></el-input>
+                            <div id="fourNumList" v-if="numShow">
+                                <ul>
+                                    <li v-for="(item,index) in fourNumList" :key="index" @click="num400li(item)">{{item.number400+"("+item.companyName+")"}}</li>
+                                </ul>
+                            </div>
+                        </el-form-item>
+
                         <el-form-item label="企业名称：" class="firmName" id="firmName" prop="firmName">
                             <el-input
                                     v-model="acceptForm.firmName"
+                                    :disabled="msgDisabled"
                                     size="mini"
-                                    placeholder=" 营业执照上公司全称，个体工商户填写字号全称，组织机构上的机构全称" @input="searchFirm">
+                                    @input="searchFirm"
+                                    placeholder=" 营业执照上公司全称，个体工商户填写字号全称，组织机构上的机构全称">
                             </el-input>
                             <div id="firmNameList" v-if="firmNameShow">
                                 <ul>
@@ -25,33 +39,21 @@
 
                         <el-form-item label="使用用途：" class="identity" prop="usage">
                             <el-select v-model="acceptForm.usage" placeholder="请选择" size="mini">
-                                <el-option :label="item.label" :value="item.value" v-for="(item,index) in usage" :key="index"></el-option>
+                                <el-option :label="item.dicValue" :value="item.dicKey" v-for="(item,index) in usage" :key="index"></el-option>
                             </el-select>
                         </el-form-item>
 
                         <el-form-item label="目的码证明材料：" class="materials" prop="imageUrl">
                             <el-upload
                                     class="avatar-uploader"
-                                    action="https://jsonplaceholder.typicode.com/posts/"
+                                    :action="$global.uploadUrl"
                                     :show-file-list="false"
                                     :on-success="handleAvatarSuccess"
                                     :before-upload="beforeAvatarUpload">
-                                <img v-if="acceptForm.imageUrl" :src="acceptForm.imageUrl" class="avatar">
+                                <img v-if="acceptForm.imageUrl" :src="acceptForm.imageUrl" class="avatar" style="width: 120px;height: auto;">
                                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                             </el-upload>
                             <div class="uploadTips"><p>说明：目的码证明材料可以是缴费材料，也可以是自助平台相关截图</p></div>
-                        </el-form-item>
-
-                        <el-form-item label="400号码：" class="firmName" prop="fourNum">
-                            <el-input
-                                    v-model="acceptForm.fourNum"
-                                    size="mini"
-                                    placeholder=" 请搜索400号码" @input="searchFourNum"></el-input>
-                            <div id="fourNumList" v-if="numShow">
-                                <ul>
-                                    <li v-for="(item,index) in fourNumList" :key="index" @click="num400li(item)">{{item.number400}}</li>
-                                </ul>
-                            </div>
                         </el-form-item>
 
                         <el-form-item label="目的码：">
@@ -73,7 +75,7 @@
                                 <div class="objCodeBox">
                                     <span>增加目的码</span>
                                     <div class="valAddSer">
-                                        <p>功能资费：{{tariffFee}}</p>
+                                        <p>功能资费：{{tariffFee+'元'}}</p>
                                         <p>是否赠送：{{presents}}</p>
                                         <p>功能备注：{{remarks}}</p>
                                     </div>
@@ -91,6 +93,7 @@
     </div>
 </template>
 <script>
+    import {mapState} from "vuex";
     export default {
         name: 'dialog1',
         data() {
@@ -104,7 +107,6 @@
                     time:'',
                 },
                 acceptForm:{
-                    firmId:'',
                     firmName:'',
                     usage:'',
                     imageUrl: '',    //上传图片
@@ -114,40 +116,7 @@
                     delObjCode:'',  //删减目的码
                 },
                 companyInfo:{   //企业信息
-                    // companyName: "",
-                    // companyCardType: "",
-                    // companyCardNo: "",
-                    // companyCharacter: "",
-                    // companyRank: "",
-                    // industryType: "",
-                    // registProvince: "",
-                    // registProvinceId: null,
-                    // registCity: null,
-                    // registCityId: null,
-                    // registArea: null,
-                    // registaAreaId: null,
-                    // registAddress: null,
-                    // officeCity: "",
-                    // officeCityId: "",
-                    // officeProvince: null,
-                    // officeProvinceId: null,
-                    // officeArea: null,
-                    // officeAreaId: null,
-                    // officeAddress: null,
-                    // phone: "",
-                    // legalPerson: "",
-                    // legalPhone: null,
-                    // legalCard: null,
-                    // cardNum: "",
-                    // idCardAddress: null,
-                    // cardStartDate: null,
-                    // cardEndDate: null,
-                    // companyProofPic: "",
-                    // legalCardFrontPic: "",
-                    // legalCardBackPic: null,
-                    // legalCardHandPic: null,
-                    // usable: "",
-                    // source: ""
+
                 },
                 rules:{
                     firmName: [
@@ -165,18 +134,7 @@
                 },
                 tableData: [],
                 statusOptions: [],
-                usage:[   //证件类型
-                    {
-                        value: 'DestNum_Auditing',
-                        label: '审核中'
-                    }, {
-                        value: 'Audit_Success',
-                        label: '审核通过'
-                    }, {
-                        value: 'Wait_To_Audit',
-                        label: '等待送审'
-                    }
-                ],
+                usage:[],
                 objCodeList:[], //目的码数组
                 firmNameList:[],  //公司名称数组
                 fourNumList:[],   //400号码列表
@@ -193,20 +151,44 @@
                     page:1,
                     pageSize:10,
                 },
-                tariffFee:0, //功能资费
-                presents:'1',  //是否赠送;1 赠送；2 付费
+                tariffFee:'', //功能资费
+                presents:'',  //是否赠送;1 赠送；2 付费
                 remarks:'',  //功能描述
-                flowId:'',
+                objFlowId:'',
+                entireFlowId:'',
+                objEntrance:'',
                 companyId:'',
+                busIdentity:'',  //登录信息channel
             };
         },
         created(){
+            console.log(sessionStorage.getItem('businessType'));
+            console.log(sessionStorage.getItem('objFlowId'));
+            console.log(sessionStorage.getItem('objCodeIn'));
+            // this.objFlowId = sessionStorage.getItem('objFlowId');
+            this.entireFlowId = sessionStorage.getItem('entireFlowId');
+            this.busIdentity = sessionStorage.getItem('businessType');
+            this.usageList();
             this.$root.eventHub.$on('dialog1Visible', (res)=>{
+                console.log(res);
                 this.visible=res.visible;
                 if(res.objCodeIn){
                     this.objCodeIn=res.objCodeIn;
+                    if(this.objCodeIn==1){
+                        this.acceptForm.firmName='';
+                        this.acceptForm.usage='';
+                        this.acceptForm.imageUrl='';
+                        this.acceptForm.fourNum='';
+                        this.objCodeList=[];
+                    }else{
+                        this.objFlowId=res.objCodeIn==2?this.entireFlowId:sessionStorage.getItem('objFlowId');
+                        console.log("this.objFlowId",this.objFlowId);
+                        this.objCodeDetail();
+                    }
                 }
-            } );
+
+            });
+            this.addTariff(this.busIdentity);
 
         },
         components: {},
@@ -220,16 +202,32 @@
                     .catch(_ => {
                     });
             },
+            // 使用用途列表
+            usageList(){
+                this.$ajax.post('/vos/dic/getDicsByType',{
+                    "dicType":"usage",
+                    "status":1
+                }).then((res)=>{
+                    console.log(res);
+                    this.usage = res.data.dicList;
+                })
+            },
             // 图片上传
             handleAvatarSuccess(res, file) {
-                this.acceptForm.imageUrl = URL.createObjectURL(file.raw);
+                console.log(res);
+                console.log(this.$global.serverSrc + res);
+                if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {
+                    this.acceptForm.imageUrl = this.$global.serverSrc + res;
+                }
+                // this.acceptForm.imageUrl = URL.createObjectURL(file.raw);
+                console.log("file.raw", file.raw);
             },
             beforeAvatarUpload(file) {
-                const isJPG = file.type === 'image/jpeg';
+                const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
                 const isLt2M = file.size / 1024 / 1024 < 2;
 
                 if (!isJPG) {
-                    this.$message.error('上传头像图片只能是 JPG 格式!');
+                    this.$message.error('上传头像图片只能是 JPG、PNG格式!');
                 }
                 if (!isLt2M) {
                     this.$message.error('上传头像图片大小不能超过 2MB!');
@@ -238,18 +236,21 @@
             },
             //新增目的码
             addObjCodes(){
-                let unit = {};
-                this.objCodeList.push(unit);
+                if(this.objCodeList.length<3){
+                    let unit = {};
+                    this.objCodeList.push(unit);
+                }else{
+                    this.$message({
+                        message: '目的码最多添加3条',
+                        type: 'warning'
+                    });
+                }
             },
             // 删除目的码
             delObjCodes(index){
                 console.log(index);
                 this.objCodeList.splice(index,1);
             },
-            //点击详情
-            // details(scope){
-            //     console.log(scope);
-            // },
             // 企业模糊搜索
             searchFirm(val){
                 console.log(val);
@@ -272,11 +273,19 @@
                         "number400":this.acceptForm.fourNum,
                     }
                 }).then((res)=>{
+                    console.log(res.data);
                     console.log(res.data.number400s);
                     this.fourNumList = res.data.number400s;
                     if(this.acceptForm.fourNum!='' && this.fourNumList.length!=0){
                         this.numShow = true;
                     }
+                    this.fourNumList.map((item)=>{
+                        if(item.companyName==this.acceptForm.firmName){
+                            this.changeMsgDisabled(true);
+                        }else{
+                            this.changeMsgDisabled(false);
+                        }
+                    })
                 })
             },
             //企业名称li
@@ -291,10 +300,12 @@
                 console.log(val);
                 this.numShow = false;
                 this.acceptForm.fourNum = val.number400;
+                this.acceptForm.firmName = val.companyName;
+                this.changeMsgDisabled(true);
+                this.companyId = val.companyId;
                 if(this.acceptForm.fourNum!=''){
                     this.searchObjCode();
                 }
-
             },
             //目的码
             searchObjCode(){
@@ -306,65 +317,60 @@
             // 增值资费
             addTariff(val){
                 console.log(val);
-                let businessType = val.businessType;
+                let businessType = val;
                 if(businessType=='self'){
                     businessType = 30;
                 }else if(businessType=='channel'){
                     businessType = 31;
                 }
+                console.log(businessType);
                 this.$ajax.get('/vos/blacklist/getValueAdded/'+businessType).then((res)=>{
-                    // console.log(res.data);
-                    this.tariffFee = res.data.tariffFee;
-                    this.presents = res.data.presents;
-                    if(this.presents=='1'){
-                        this.presents = '赠送';
-                    }else{
-                        this.presents = '付费';
+                    console.log(res);
+                    if(res.data!=null){
+                        this.tariffFee = res.data.tariffFee;
+                        this.presents = res.data.presents;
+                        if(this.presents=='1'){
+                            this.presents = '赠送';
+                        }else{
+                            this.presents = '付费';
+                        }
+                        this.remarks = res.data.remarks;
                     }
-                    this.remarks = res.data.remarks;
                 })
             },
 
             // 目的码暂存
             objCodeSave(acceptForm){
+                var companyInfo = {};
+                companyInfo.company = this.acceptForm.firmName;
+                companyInfo.companyId = this.companyId;
                 this.$refs[acceptForm].validate((valid) => {
                     if (valid) {
                         let paramList=[];
                         this.objCodeList.map((item)=>{
                             let param={};
-                            param.id=item.id;
+                            param.id=this.companyId;
                             param.destnumber=item.destnumber;
                             param.destnumproofpic=this.acceptForm.imageUrl;
                             param.destnumUsage=this.acceptForm.usage;
                             param.number400=this.acceptForm.fourNum;
-                            param.companyid=this.acceptForm.firmId;
+                            param.companyid=this.companyId;
                             paramList.push(param);
                         });
-                        // if(this.objCodeList.length==0){
-                        //     this.$message({type:'warning',message:'请新增目的码'});
-                        //     return
-                        // }else{
-                        //     this.objCodeList.map((item)=>{
-                        //         if(item.destnumber==''){
-                        //             this.$message({type:'warning',message:'请填写或删除空的目的码'});
-                        //             return
-                        //         }
-                        //     });
-                        //     return
-                        // };
                         this.searchObjCode();
                         this.$ajax.post('/vos/destnum/startAndSave',{
                             "destNumber":paramList,
                             "number400": this.acceptForm.fourNum,
-                            "company":this.companyInfo,
+                            "company":companyInfo,
                             "companyFlow":{
-                                "flowId":""
+                                "flowId":this.objCodeIn=='2'?this.objFlowId:'',
                             }
                         }).then((res)=>{
                             console.log(res);
                             if(res.code==200){
-                                this.dialogVisible = false;
-                                this.objCodeLists();
+                                this.visible = false;
+                                // this.objCodeLists();
+                                this.$root.eventHub.$emit('addAcceptSave', null);
                             }else{
                                 this.$message({type:'warning',message:res.message});
                             }
@@ -378,31 +384,35 @@
 
             // 目的码送审
             objCodeSubmit(acceptForm){
+                var companyInfo = {};
+                companyInfo.company = this.acceptForm.firmName;
+                companyInfo.companyId = this.companyId;
                 this.$refs[acceptForm].validate((valid) => {
                     if (valid) {
                         let paramList=[];
                         this.objCodeList.map((item)=>{
                             let param={};
-                            param.id=item.id;
+                            param.id=this.companyId;
                             param.destnumber=item.destnumber;
                             param.destnumproofpic=this.acceptForm.imageUrl;
                             param.destnumUsage=this.acceptForm.usage;
                             param.number400=this.acceptForm.fourNum;
-                            param.companyid=this.acceptForm.firmId;
+                            param.companyid=this.companyId;
                             paramList.push(param);
                         });
                         this.$ajax.post('/vos/destnum/sendToDestNumberAudit',{
                             "destNumber":paramList,
                             "number400": this.acceptForm.fourNum,
-                            "company":this.companyInfo,
+                            "company":companyInfo,
                             "companyFlow":{
-                                "flowId":""
+                                "flowId":this.objCodeIn=='2'?this.objFlowId:'',
                             }
                         }).then((res)=>{
                             console.log(res);
                             if(res.code==200){
-                                this.dialogVisible = false;
-                                this.objCodeLists();
+                                this.visible = false;
+                                this.$root.eventHub.$emit('addAcceptSave', null);
+                                // this.objCodeLists();
                                 this.$parent.entireLists();
                             }else{
                             }
@@ -412,15 +422,46 @@
                         return false;
                     }
                 });
-            }
+            },
+            // 目的码详情
+            objCodeDetail(){
+                console.log("目的码详情");
+                console.log("目的码flowId");
+                console.log(this.objFlowId);
+                this.$ajax.get('/vos/destnum/getCacheData?flowId='+this.objFlowId).then((res)=>{
+                    if(res.code==200){
+                        console.log(res.data);
+                        console.log(res.data.destNumber);
+                        console.log(res.data.company);
+                        console.log(res.data.company.companyName);
+                        this.acceptForm.firmName = res.data.company.company;
+                        // this.acceptForm.imageUrl = res.data.company.companyProofPic;
+                        this.acceptForm.fourNum = res.data.number400;
+                        res.data.destNumber.map((item)=>{
+                            this.acceptForm.imageUrl = item.destnumproofpic;
+                            this.acceptForm.fourNum = item.number400;
+                            this.acceptForm.usage = item.destnumUsage;
+                        })
+
+                    }
+                })
+            },
+            changeMsgDisabled(val) {
+                return this.$store.dispatch("changeMsgDisabledStatus", val);
+            },
         },
-        computed: {}
+        computed: {
+            ...mapState({
+                msgDisabled: state => state.createActivities.msgDisabled,
+            })
+        }
     }
 </script>
 <style>
     /*图片上传--start*/
     .avatar-uploader{
         text-align: left;
+        width:140px;
     }
     .avatar-uploader .el-upload {
         border: 1px dashed #d9d9d9;

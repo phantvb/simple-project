@@ -8,6 +8,8 @@ import systemLog from '@/components/view/systemSetup/systemLog';
 import roleManage from '@/components/view/systemSetup/roleManage';
 import businessInform from '@/components/view/businessSetup/businessInform';
 import businessDetail from '@/components/view/businessSetup/businessDetail';
+import businessData from '@/components/view/businessAccepted/businessData';
+import businessDetial from '@/components/view/businessAccepted/businessDetial';
 import accountingManage from '@/components/view/accountingManage/accountingManage';
 import billManage from '@/components/view/accountingManage/billManage';
 import chargeManage from '@/components/view/accountingManage/chargeManage';
@@ -28,13 +30,14 @@ import messageCenter from '@/components/view/messageCenter/messageCenter';
 import numPoolManage from '@/components/view/operateManage/numPoolManage';
 import customNavigation from '@/components/view/customNavigation/customNavigation';
 import reviewHomepage from '@/components/view/reviewHomepage/reviewHomepage';
+import voiceDetial from '@/components/view/businessAccepted/voiceDetial';
 
 Vue.use(Router);
 
 export default new Router({
 	routes: [{
 			path: '/',
-			redirect: '/layout',
+			redirect: '/login',
 			hidden: true
 		},
 		{
@@ -44,7 +47,7 @@ export default new Router({
 			hidden: true
 		},
 		{
-			path: '/businessInform',
+			path: '/BusinessInform',
 			name: 'layout',
 			component: layout,
 			hidden: true,
@@ -56,7 +59,7 @@ export default new Router({
 			}]
 		},
 		{
-			path: '/accountingManage',
+			path: '/AccountingManage',
 			name: '账务管理',
 			component: layout,
 			children: [{
@@ -78,7 +81,7 @@ export default new Router({
 			}]
 		},
 		{
-			path: '/numManage',
+			path: '/NumManage',
 			name: '号码管理',
 			component: layout,
 			children: [{
@@ -104,7 +107,7 @@ export default new Router({
 			}]
 		},
 		{
-			path: '/systemSetup',
+			path: '/SystemSetup',
 			name: '系统设置',
 			component: layout,
 			children: [{
@@ -122,7 +125,7 @@ export default new Router({
 			}]
 		},
 		{
-			path: '/businessAccepted',
+			path: '/BusinessAccepted',
 			name: '业务受理',
 			component: layout,
 			children: [{
@@ -130,19 +133,34 @@ export default new Router({
 				name: '400业务管理',
 				component: fourBusinessManage
 			}, {
-				path: '/objCodeDetail',
+				path: 'objCodeDetail',
 				name: '目的码详情',
 				component: objCodeDetail,
 				hidden: true,
 			}, {
-				path: '/logoutDetail',
+				path: 'logoutDetail',
 				name: '注销审核详情',
 				component: logoutDetail,
 				hidden: true,
+			},{
+				path: 'businessData',
+				name: '业务详情',
+				component: businessData,
+				hidden: true,
+			}, {
+				path: 'businessDetial',
+				name: '业务详情',
+				component: businessDetial,
+				hidden: true,
+			}, {
+				path: 'voiceDetial',
+				name: '语音详情',
+				component: voiceDetial,
+				hidden: true
 			}]
 		},
 		{
-			path: '/operateManage',
+			path: '/OperateManage',
 			name: '运营管理',
 			component: layout,
 			children: [{
@@ -164,7 +182,7 @@ export default new Router({
 			}]
 		},
 		{
-			path: '/layout',
+			path: '/Layout',
 			name: 'layouts',
 			component: layout,
 			hidden: true,

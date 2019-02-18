@@ -1,6 +1,6 @@
 <template>
 	<div id="fourBusinessManage">
-		<dialog1></dialog1>
+		<dialog-objCode></dialog-objCode>
 		<dialog-voice></dialog-voice>
 		<dialog-business></dialog-business>
 		<el-tabs type="border-card">
@@ -33,7 +33,7 @@
     import LogoutAudit from './logoutAudit';
     import ChangeAudit from './changeAudit';
     import VoiceFile from './voiceFile';
-    import Dialog1 from './dialog1';
+    import DialogObjCode from './dialogObjCode';
     import DialogVoice from "./dialogVoice";
     import DialogBusiness from "./dialogBusiness";
     export default {
@@ -51,7 +51,7 @@
             LogoutAudit,
             ChangeAudit,
             VoiceFile,
-            Dialog1,
+            DialogObjCode,
             DialogVoice,
             DialogBusiness,
         },

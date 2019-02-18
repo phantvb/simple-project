@@ -3,9 +3,8 @@
 	background-color: #172138;
 }
 
-#app .el-menu .el-menu-item,
-#app .el-menu .el-submenu__title {
-	color: #ffffff;
+#app .targetMenu .el-menu-item {
+	background-color: #424242 !important;
 }
 
 /*右侧内容区域*/
@@ -247,7 +246,8 @@
 }
 
 .acceptMsg .identity .el-input {
-	width: 68%;
+	/*width: 68%;*/
+	width: 100%;
 	float: left;
 }
 
@@ -267,6 +267,9 @@
 	width: 50% !important;
 	overflow: hidden;
 }
+.addValueTable .el-input-number{
+	width:100px;
+}
 
 .objCodeDialog .el-table .cell,
 .el-table th div,
@@ -283,7 +286,6 @@
 .objCodeDialog .materials .el-form-item__content {
 	line-height: 23px;
 }
-
 .threeSelect .el-form-item,
 .legalInfo .el-form-item {
 	width: 20%;
@@ -433,8 +435,4 @@
 
 .busMaterForm .el-form-item .el-form-item__content {
 	text-align: left;
-}
-
-#app .el-menu .el-submenu__title {
-	padding-left: 0px !important;
 }

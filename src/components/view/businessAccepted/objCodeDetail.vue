@@ -12,21 +12,20 @@
                     </p>
                 </div>
                 <div class="block left">
-                    <p class="fmini">VSMS客户编码：</p>
-                    <p class="fmini">集团CRM客户编码： </p>
-                    <p class="fmini">省CRM客户编码：</p>
-                    <p class="fmini">企业名称： </p>
-                    <p class="fmini">证件编号： </p>
-                    <p class="fmini"><span>企业性质：</span><span>企业等级：</span><span>行业类型：</span></p>
-                    <p class="fmini">注册地址：</p>
-                    <p class="fmini">企业电话：</p>
+                    <p class="fmini">企业名称：{{companyInfo.companyName}} </p>
+                    <p class="fmini">证件编号： {{companyInfo.companyCardNo}}</p>
+                    <p class="fmini"><span>企业性质：{{companyInfo.companyCharacter}}</span></p>
+                    <p class="fmini"><span>企业等级：{{companyInfo.companyRank}}</span></p>
+                    <p class="fmini"><span>行业类型：{{companyInfo.industryType}}</span></p>
+                    <p class="fmini">注册地址：{{companyInfo.registProvince+companyInfo.registCity+companyInfo.registArea}}</p>
+                    <p class="fmini">企业电话：{{companyInfo.phone}}</p>
                     <div>
                         <div style="float:left;">
                             <span class="fmini">企业资质证明文件：</span>
                         </div>
                         <ul>
                             <li class="l2">
-                                <img class="examplew" src="../../../assets/example_1.png" alt="">
+                                <img class="examplew" :src="companyInfo.companyProofPic" alt="">
                             </li>
                         </ul>
                     </div>
@@ -39,15 +38,14 @@
                     </p>
                 </div>
                 <div class="block left">
-                    <p class="fmini">使用用途：</p>
-                    <p class="fmini">目的码证明材料：</p>
+                    <p class="fmini">使用用途：{{destNumInfo.destnumUsage}}</p>
                     <div>
                         <div style="float:left;">
-                            <span class="fmini">目的码：</span>
+                            <span class="fmini">目的码证明材料：</span>
                         </div>
                         <ul>
                             <li class="l2">
-                                <img class="examplew" src="../../../assets/example_1.png" alt="">
+                                <img class="examplew" :src="destNumInfo.destnumproofpic" alt="">
                             </li>
                         </ul>
                     </div>
@@ -62,13 +60,16 @@
                                           style="width: 100%">
 
                                     <el-table-column
-                                            prop="number"
+                                            prop="number400"
                                             label="400号码">
                                     </el-table-column>
 
                                     <el-table-column
-                                            prop="objCode"
+                                            prop="destnumber"
                                             label='目的码 (填入目的码，多个请用","隔开)'>
+                                        <template slot-scope="scope">
+                                            <span v-for="(item,index) in destNumInfo" :key="index">{{item.destnumber}}<span v-if="index!=destNumInfo.length-1">,</span></span>
+                                        </template>
                                     </el-table-column>
                                 </el-table>
                             </li>
@@ -107,14 +108,43 @@
         name: 'objCodeDetail',
         data() {
             return {
-                objCodeTable: [{
-                    number: '234567',
-                    objCode: '',
-                }],
+                companyInfo:{},
+                destNumInfo:[],
+                objCodeTable: [],
+                baseData:{
+                    roleName:'',
+                    username:'',
+                },
             };
         },
         components: {},
-        methods: {},
+        created(){
+            console.log(this.$route.query.flowId);
+            // console.log(this.$route.query.companyId);
+            this.getDetail();
+        },
+        methods: {
+            getDetail(){
+                this.$ajax.get('/vos/destnum/getCacheData?flowId='+this.$route.query.flowId).then((res)=>{
+                    console.log(res.data);
+                    if(res.code==200){
+                        this.companyInfo = res.data.company;
+                        this.destNumInfo = res.data.destNumber;
+                        let objCodeTableObj = {};
+                        if(this.destNumInfo.length!=0){
+                            objCodeTableObj.number400 = this.destNumInfo[0].number400;
+                            this.destNumInfo.destnumUsage = this.destNumInfo[0].destnumUsage;
+                            this.destnumproofpic = this.destNumInfo[0].destnumproofpic;
+                            this.destNumInfo.destnumproofpic = this.destNumInfo[0].destnumproofpic;
+                        }
+                        this.objCodeTable.push(objCodeTableObj);
+
+                    }else{
+                        this.$message.warning(res.message);
+                    }
+                })
+            },
+        },
         computed: {}
     }
 </script>

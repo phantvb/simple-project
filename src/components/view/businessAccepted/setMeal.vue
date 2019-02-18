@@ -5,8 +5,8 @@
         <p style="color:#999999">{{mealListInfo.packageContent}}</p>
         <div class="bigHouse">
             <div class="lowestExpense">
-                <p>年最低消费</p>
-                <div class="ellipse"><span>{{mealListInfo.bottomFee}}</span>元</div>
+                <p>基本功能费</p>
+                <div class="ellipse"><span>{{mealListInfo.basicFunctionFee}}</span>元</div>
             </div>
             <div class="lowestExpense">
                 <p>预存话费</p>
@@ -53,7 +53,8 @@
         created(){
             console.log("unitMeal",this.unitMeal);
             console.log("unitIndex",this.unitIndex);
-            this.getAllByPackage();
+
+            this.getAllByPackage2();
             this.mealListInfo = this.unitMeal;
             this.mealIndex = this.unitIndex;
             this.$root.eventHub.$on('getLoginInfo', (resp)=>{
@@ -71,11 +72,11 @@
                 console.log(`当前页: ${val}`);
             },
             // 以套餐分类400号码
-            getAllByPackage(){
-                this.$ajax.post('/vos/number400/getAllByPackage',{
+            getAllByPackage2(data){
+                this.$ajax.post('/vos/number400/searchByPackage',{
                     "num400Package":{
                         "number400":"",
-                        "packgeId":this.mealIndex
+                        "packgeId":data?data:this.mealIndex
                     },
                     "page":{
                         "pageNo":this.pageObj.page,
@@ -83,8 +84,8 @@
                     }
 
                 }).then((res)=>{
-                    console.log(res.data);
-                    console.log(res.data.number400s);
+                    // console.log(res.data);
+                    // console.log(res.data.number400s);
                     this.numberList = res.data.number400s;
                     this.pageObj.total = res.data.totalCount;
                 })

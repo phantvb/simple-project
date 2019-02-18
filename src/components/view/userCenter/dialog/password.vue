@@ -29,6 +29,8 @@
 			var validatePass = (rule, value, callback) => {
 				if (value === '') {
 					callback(new Error('请输入密码'));
+				} else if (value.length < 8) {
+					callback(new Error('请输入至少8位密码'));
 				} else {
 					var bol = false;
 					['_', '-', '+', '=', '*', '!', '@', '#', '$', '%', '^', '&', '(', ')'].map(item => {
