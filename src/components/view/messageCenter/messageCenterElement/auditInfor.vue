@@ -46,7 +46,7 @@
 		},
 		methods: {
 			lcb(row) {
-				this.$router.push({ path: '/businessInform/businessDetail', query: { flowId: row.messageUrl } });
+				this.$router.push({ path: '/BusinessInform/businessDetail', query: { flowId: row.messageUrl } });
 			},
 			// 修改页面显示数据大小
 			handleSizeChange(val) {

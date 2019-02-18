@@ -333,10 +333,11 @@
 								});
 								this.loadData();
 							}
-						});
+                        });
+                        this.addCitationNumberFormDialogVisible = false;
 				}
 
-				this.addCitationNumberFormDialogVisible = false;
+				
 			},
 
 			handleEdit(index, row) {
@@ -412,10 +413,11 @@
 								});
 								this.loadData();
 							}
-						});
+                        });
+                        this.addCitationNumberFormDialogVisible = false;
 				}
 
-				this.addCitationNumberFormDialogVisible = false;
+				
 			},
 
 			handleDelete(index, row) {

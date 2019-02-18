@@ -139,7 +139,7 @@
 							</el-form-item>
 
 							<el-form-item label="备注：" class="addUserRemark" prop="remark">
-								<el-input type="textarea" v-model="addTopForm.remark"></el-input>
+								<el-input type="textarea" :rows="5" resize="none" v-model="addTopForm.remark"></el-input>
 							</el-form-item>
 						</div>
 					</el-form>
@@ -186,7 +186,7 @@
 					</div>
 				</el-form>
 				<span slot="footer" class="dialog-footer">
-					<el-button type="primary" @click="detailsDialogVisible = false">关 闭</el-button>
+					<el-button type="primary" size="mini" @click="detailsDialogVisible = false">关 闭</el-button>
 				</span>
 			</el-dialog>
 		</div>

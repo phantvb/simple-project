@@ -87,7 +87,7 @@
 						</el-form-item>
 
 						<el-form-item label="功能备注：">
-							<el-input type="textarea" :rows="5" v-model="AddComboForm.remark" class="el-input"></el-input>
+							<el-input type="textarea" :rows="5" resize="none" v-model="AddComboForm.remark" class="el-input"></el-input>
 						</el-form-item>
 
 						<el-form-item label="是否赠送：">
@@ -241,10 +241,11 @@
 									type: "warning"
 								});
 							}
-						});
+                        });
+                        this.addComboFromDialogVisible = false;
 				}
 
-				this.addComboFromDialogVisible = false;
+				
 			},
 
 			updateTariff(num, index) {
@@ -345,10 +346,11 @@
 								});
 								this.loadData();
 							}
-						});
+                        });
+                        this.addComboFromDialogVisible = false;
 				}
 
-				this.addComboFromDialogVisible = false;
+				
 			},
 
 			//删除信息
