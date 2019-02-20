@@ -227,20 +227,40 @@
 		},
 		methods: {
 			getRole() {
+                this.operateRoleList.push({
+					name: '',
+					nameZh: '全部'
+				});
 				this.$ajax.get("/vos/role/getAllRoleWithoutAdmin").then(res => {
 					if (res.code == 200) {
+                        
                         this.roleData = res.data.data;
-                        this.operateRoleList=res.data.data;
+                        // this.operateRoleList=res.data.data;
+                        for(let i=0;i<res.data.data.length;i++){
+                            this.operateRoleList.push({
+                                name: res.data.data[i].name,
+                                nameZh: res.data.data[i].nameZh
+                            });
+                        }
 					}
 				});
             },
             getOperate(){
+                this.operateTypeList.push({
+					dicKey: '',
+					dicValue: '全部'
+				});
                 this.$ajax.post("/vos/dic/getDicsByType",{
                     "dicType":"actionLogType",
                     "status":1
                 }).then(res => {
 					if (res.code == 200) {
-                        this.operateTypeList=res.data.dicList;
+                        for(let i=0;i<res.data.dicList.length;i++){
+                            this.operateTypeList.push({
+                                dicKey: res.data.dicList[i].dicKey,
+                                dicValue: res.data.dicList[i].dicValue
+                            });
+                        }
 					}
 				});
             },
