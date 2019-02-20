@@ -270,10 +270,11 @@
 							if (res.code == 60000) {
 								this.$message.error("数据已存在!");
 							}
-						});
+                        });
+                        this.addDiscountFormDialogVisible = false;
 				}
 
-				this.addDiscountFormDialogVisible = false;
+				
 			},
 
 			//删除信息
@@ -415,10 +416,11 @@
 								});
 								this.loadData();
 							}
-						});
+                        });
+                        this.addDiscountFormDialogVisible = false;
 				}
 
-				this.addDiscountFormDialogVisible = false;
+				
 			},
 
 			handleChange() {},

@@ -98,7 +98,8 @@
 
 						<el-form-item label="单位：" prop="units">
 							<el-input v-model="addFeesForm.units" size="mini" class="el-input"></el-input>
-							<span class="span">月</span>
+							<span class="span" v-if="addFeesForm.radio==1">年</span>
+							<span class="span" v-if="addFeesForm.radio==2">月</span>
 						</el-form-item>
 
 						<el-form-item label="赠送时长：" prop="durationPresentation">
@@ -117,7 +118,7 @@
 						</el-form-item>
 
 						<el-form-item label="套餐内容：" prop="packageContent">
-							<el-input type="textarea" :rows="5" v-model="addFeesForm.packageContent" class="el-input"></el-input>
+							<el-input type="textarea" :rows="5" resize="none" v-model="addFeesForm.packageContent" class="el-input"></el-input>
 						</el-form-item>
 
 						<el-form-item label="渠道：">
@@ -257,9 +258,8 @@
 								});
 							}
 						});
+					this.addFeesFromDialogVisible = false;
 				}
-
-				this.addFeesFromDialogVisible = false;
 			},
 
 			// 编辑资费套餐
@@ -364,9 +364,8 @@
 								this.loadData();
 							}
 						});
+					this.addFeesFromDialogVisible = false;
 				}
-
-				this.addFeesFromDialogVisible = false;
 			},
 
 			//删除信息

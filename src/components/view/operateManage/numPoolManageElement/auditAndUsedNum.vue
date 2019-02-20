@@ -1,7 +1,7 @@
 <template>
-    <div id="auditNum">
+    <div id="auditNum" v-loading="loading">
         <div class="search">
-            <el-form ref="auditNumForm" :model="auditNumForm">
+            <el-form ref="auditNumForm" :model="auditNumForm" style="padding:9px 9px;">
                 <el-form-item style="float: left;margin-left: 10px;">
                     <span class="demonstration">400号码：</span>
                     <el-input v-model="auditNumForm.number" placeholder="请输入内容" size="mini" style="width:300px;">
@@ -100,7 +100,8 @@
                     size: 10,
                     total: 1
                 },
-                status: ''
+                status: '',
+                loading:false
             }
         },
 
@@ -176,6 +177,7 @@
             },
 
             loadData(status) {
+                this.loading=true;
                 this.reset();
                 this.status = status;
                 this.$ajax.post('/vos/number400/getAll', {
@@ -213,6 +215,7 @@
                                 this.tableData[i].status = '审核中';
                             }
                         }
+                        this.loading=false;
                     }
                 });
             }

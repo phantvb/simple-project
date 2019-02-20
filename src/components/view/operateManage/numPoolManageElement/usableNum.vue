@@ -1,7 +1,7 @@
 <template>
 	<div id="usableNum">
 		<div class="search">
-			<el-form ref="usableNumForm" :model="usableNumForm">
+			<el-form ref="usableNumForm" :model="usableNumForm" style="padding:9px 9px;">
 				<el-form-item style="float: left;margin-left: 15px;">
 					<span class="demonstration">400号码：</span>
 					<el-input v-model="usableNumForm.number" placeholder="请输入400号码" size="mini" style="width:300px;"></el-input>
@@ -41,7 +41,7 @@
 				<el-table-column type="selection" min-width="100"></el-table-column>
 				<el-table-column prop="number400" label="400号码" min-width="60"></el-table-column>
 				<el-table-column prop="channel" label="可见渠道" min-width="80"></el-table-column>
-				<el-table-column prop="packageIds" label="关联套餐" min-width="200"></el-table-column>
+				<el-table-column prop="tariffName" label="关联套餐" min-width="200"></el-table-column>
 				<el-table-column label="操作" min-width="80">
 					<template slot-scope="scope">
 						<el-button size="mini" type="text" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
@@ -78,16 +78,16 @@
 						<el-form-item label="关联套餐：" style="margin-top: 15px;">
 							<el-tabs v-model="addNumberForm.activeName" type="card">
 								<el-tab-pane label="自助直销" name="first" v-if="addNumberForm.checkList.indexOf('自助直销')!=-1">
-									<el-checkbox-group v-model="addNumberForm.selfCheckList" v-for="(item) in addNumberForm.selfTableData" :key="item.id">
-										<el-checkbox :label="item.id">{{item.tariffName}}</el-checkbox>
-										<br>
-									</el-checkbox-group>
+									<el-radio-group v-model="addNumberForm.selfIdValue" v-for="(item) in addNumberForm.selfTableData" :key="item.id" style="display:block;margin-top:10px;">
+										<el-radio :label="item.id" style="float:left;">{{item.tariffName}}</el-radio>
+										<br />
+									</el-radio-group>
 								</el-tab-pane>
 								<el-tab-pane label="渠道" name="second" v-if="addNumberForm.checkList.indexOf('渠道')!=-1">
-									<el-checkbox-group v-model="addNumberForm.channelCheckList" v-for="(item) in addNumberForm.channelTableData" :key="item.id">
-										<el-checkbox :label="item.id">{{item.tariffName}}</el-checkbox>
+									<el-radio-group v-model="addNumberForm.channelIdValue" v-for="(item) in addNumberForm.channelTableData" :key="item.id" style="display:block;margin-top:10px;">
+										<el-radio :label="item.id" style="float:left;">{{item.tariffName}}</el-radio>
 										<br>
-									</el-checkbox-group>
+									</el-radio-group>
 								</el-tab-pane>
 							</el-tabs>
 						</el-form-item>
@@ -151,8 +151,8 @@
 					checkList: ["自助直销"],
 					selfTableData: [],
 					channelTableData: [],
-					selfCheckList: [],
-					channelCheckList: [],
+					selfIdValue: '',
+					channelIdValue: '',
 					guideNumberOptions: [],
 					guideNumberValue: "",
 					activeName: "first"
@@ -230,16 +230,18 @@
 					})
 					.then(res => {
 						if (res.code == 200) {
-							this.translate(res.data);
+							// this.translate(res.data);
 						}
 					});
 			},
 
 			reset() {
 				this.usableNumForm.number = "";
+				this.usableNumForm.checkList = [];
+				this.addNumberForm.number = "";
 				this.addNumberForm.checkList = ["自助直销"];
-				this.addNumberForm.selfCheckList = [];
-				this.addNumberForm.channelCheckList = [];
+				this.addNumberForm.selfIdValue = '';
+				this.addNumberForm.channelIdValue = '';
 				this.addNumberForm.guideNumberValue = "";
 				this.addNumberForm.guideNumberOptions = [];
 			},
@@ -271,9 +273,8 @@
 				if (
 					this.addNumberForm.number == "" ||
 					this.addNumberForm.checkList.length == 0 ||
-					this.addNumberForm.guideNumberValue == "" ||
-					(this.addNumberForm.selfCheckList.length == 0) &
-					(this.addNumberForm.channelCheckList.length == 0)
+					(this.addNumberForm.selfIdValue == '') &
+					(this.addNumberForm.channelIdValue == '')
 				) {
 					this.$message({
 						message: "存在空字段!",
@@ -299,6 +300,7 @@
 
 					let ids = this.getIdsFunction();
 
+
 					this.$ajax
 						.post("/vos/number400/save", {
 							number400: {
@@ -323,14 +325,15 @@
 								});
 							}
 						});
+					this.addNumberFormDialogVisible = false;
 				}
 
-				this.addNumberFormDialogVisible = false;
+
 			},
 
 			downloadTemplate() {
 				// 下载导入模板
-				const url = "http://192.168.0.117:5480/vos/excel/number400Model";
+				const url = this.$global.serverSrc + '/excel/number400Model';
 				window.open(url, "_blank");
 			},
 
@@ -340,7 +343,7 @@
 				// this.importNumberFormDialogVisible = true;
 			},
 			handleFile(event) {
-				// console.log(event.target.files[0]);
+				// ;
 
 				this.$ajax
 					.post(
@@ -382,8 +385,29 @@
 					channel = ["自助直销", "渠道"];
 				}
 
+				let packageIds = row.packageIds.split(",");
+
+				for (let i = 0; i < packageIds.length; i++) {
+					for (let j = 0; j < this.aTableData1.length; j++) {
+						if (packageIds[i] == this.aTableData1[j].id) {
+							this.addNumberForm.selfIdValue = this.aTableData1[j].id;
+							break;
+						}
+					}
+
+					for (let j = 0; j < this.aTableData2.length; j++) {
+						if (packageIds[i] == this.aTableData2[j].id) {
+							this.addNumberForm.channelIdValue = this.aTableData2[j].id;
+							break;
+						}
+					}
+
+
+				}
+
 				this.addNumberForm.number = row.number400;
 				this.addNumberForm.checkList = channel;
+
 				this.addNumberForm.guideNumberValue = row.guideNumber;
 				this.id = row.id;
 
@@ -394,9 +418,8 @@
 				if (
 					this.addNumberForm.number == "" ||
 					this.addNumberForm.checkList.length == 0 ||
-					this.addNumberForm.guideNumberValue == "" ||
-					(this.addNumberForm.selfCheckList.length == 0) &
-					(this.addNumberForm.channelCheckList.length == 0)
+					(this.addNumberForm.selfIdValue == '') &
+					(this.addNumberForm.channelIdValue == '')
 				) {
 					this.$message({
 						message: "存在空字段!",
@@ -444,9 +467,10 @@
 								this.$message.error("您无权操作!");
 							}
 						});
+					this.addNumberFormDialogVisible = false;
 				}
 
-				this.addNumberFormDialogVisible = false;
+
 			},
 
 			// 单个删除
@@ -552,7 +576,7 @@
 								}
 							}
 						}
-						res.number400s[i].packageIds = this.getItemTariffNames.join(
+						res.number400s[i].tariffName = this.getItemTariffNames.join(
 							","
 						);
 						this.getItemTariffNames = [];
@@ -568,7 +592,7 @@
 								}
 							}
 						}
-						res.number400s[i].packageIds = this.getItemTariffNames.join(
+						res.number400s[i].tariffName = this.getItemTariffNames.join(
 							","
 						);
 						this.getItemTariffNames = [];
@@ -593,7 +617,7 @@
 								}
 							}
 						}
-						res.number400s[i].packageIds = this.getItemTariffNames.join(
+						res.number400s[i].tariffName = this.getItemTariffNames.join(
 							","
 						);
 						this.getItemTariffNames = [];
@@ -603,6 +627,11 @@
 
 			//加载可用引示号
 			getCanUseCitationNum() {
+				this.addNumberForm.guideNumberOptions = [];
+				this.addNumberForm.guideNumberOptions.push({
+					value: '',
+					label: '无'
+				});
 				let totalCount = 0;
 				this.$ajax
 					.post("/vos/guideNumber/getAll", {
@@ -659,8 +688,8 @@
 			// 得到新增dialog里面的关联套餐的列表
 			getIdsFunction() {
 				let ids = '';
-				let selfId = this.addNumberForm.selfCheckList.join(",");
-				let channelId = this.addNumberForm.channelCheckList.join(",");
+				let selfId = this.addNumberForm.selfIdValue;
+				let channelId = this.addNumberForm.channelIdValue;
 				if (this.addNumberForm.checkList.indexOf('自助直销') != -1) {
 					ids = ids + selfId + ',';
 				};
@@ -671,6 +700,33 @@
 			},
 
 			loadData() {
+
+
+				this.$ajax
+					.post("/vos/tariffPackage/getTariff", {
+						tariff: {
+							channel: "self"
+						}
+					})
+					.then(res => {
+						if (res.code == 200) {
+							this.aTableData1 = res.data.tariffPackageList;
+							this.addNumberForm.selfTableData = res.data.tariffPackageList;
+						}
+					});
+				this.$ajax
+					.post("/vos/tariffPackage/getTariff", {
+						tariff: {
+							channel: "channel"
+						}
+					})
+					.then(res => {
+						if (res.code == 200) {
+							this.aTableData2 = res.data.tariffPackageList;
+							this.addNumberForm.channelTableData = res.data.tariffPackageList;
+						}
+					});
+
 				this.$ajax
 					.post("/vos/number400/getAll", {
 						page: {
@@ -688,33 +744,6 @@
 					.then(res => {
 						if (res.code == 200) {
 							this.translate(res.data);
-						}
-					});
-
-				this.$ajax
-					.post("/vos/tariffPackage/getTariff", {
-						tariff: {
-							channel: "self"
-						}
-					})
-					.then(res => {
-						if (res.code == 200) {
-							this.aTableData1 = res.data.tariffPackageList;
-							this.addNumberForm.selfTableData =
-								res.data.tariffPackageList;
-						}
-					});
-				this.$ajax
-					.post("/vos/tariffPackage/getTariff", {
-						tariff: {
-							channel: "channel"
-						}
-					})
-					.then(res => {
-						if (res.code == 200) {
-							this.aTableData2 = res.data.tariffPackageList;
-							this.addNumberForm.channelTableData =
-								res.data.tariffPackageList;
 						}
 					});
 			}

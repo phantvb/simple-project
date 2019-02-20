@@ -1,7 +1,7 @@
 <template>
-	<div id="citationNum">
+	<div id="citationNum" v-loading="loading">
 		<div class="search">
-			<el-form ref="citationNumForm" :model="citationNumForm">
+			<el-form ref="citationNumForm" :model="citationNumForm" style="padding:9px 9px;">
 				<el-form-item style="float: left;margin-left: 15px;">
 					<span class="demonstration">引示号码：</span>
 					<el-input v-model="citationNumForm.number" placeholder="请输入内容" size="mini" style="width:300px;"></el-input>
@@ -150,7 +150,8 @@
 				submitData: "inline-block",
 
 				disabledSelf: false,
-				disabledChannel: false
+                disabledChannel: false,
+                loading:false
 			};
 		},
 		methods: {
@@ -332,10 +333,11 @@
 								});
 								this.loadData();
 							}
-						});
+                        });
+                        this.addCitationNumberFormDialogVisible = false;
 				}
 
-				this.addCitationNumberFormDialogVisible = false;
+				
 			},
 
 			handleEdit(index, row) {
@@ -411,10 +413,11 @@
 								});
 								this.loadData();
 							}
-						});
+                        });
+                        this.addCitationNumberFormDialogVisible = false;
 				}
 
-				this.addCitationNumberFormDialogVisible = false;
+				
 			},
 
 			handleDelete(index, row) {
@@ -501,6 +504,7 @@
 			},
 
 			loadData() {
+                this.loading=true;
 				this.$ajax.post("/vos/guideNumber/search", {
 					page: {
 						pageNo: this.page.currentPage,
@@ -513,7 +517,8 @@
 					}
 				}).then(res => {
 					if (res.code == 200) {
-						this.loadTable(res.data);
+                        this.loadTable(res.data);
+                        this.loading=false;
 					}
 				});
 			}
