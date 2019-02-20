@@ -8,10 +8,10 @@
             <div class="logoutDetailTab">
                 <el-tabs type="border-card">
                     <el-tab-pane label="企业基本信息">
-                        <firmBasicInfo></firmBasicInfo>
+                        <firmBasicInfo :companyInfos = companyInfo></firmBasicInfo>
                     </el-tab-pane>
                     <el-tab-pane label="业务资料">
-                        <businessData></businessData>
+                        <businessData :companyInfos = companyInfo></businessData>
                     </el-tab-pane>
                 </el-tabs>
             </div>
@@ -68,6 +68,7 @@
                 },
                 detialInfo:{},  //详情信息对象
                 queryStatus:'',
+                companyInfo:[],
             };
         },
         components: {
@@ -82,6 +83,8 @@
             console.log(sessionStorage.getItem('entireFlowId'));
             console.log("this.$route.query",this.$route.query);
             console.log(this.$route.query.status);
+            console.log("$route.query.flowId",this.$route.query.flowId);
+            this.getCacheData(this.$route.query.flowId);
             switch(this.$route.query.status){
                 case 'Wait_To_Audit':
                     this.queryStatus='等待送审';
@@ -157,6 +160,15 @@
                     }else{
                         this.$message.error(res.message);
                     }
+                })
+            },
+            // 详情
+            getCacheData(data){
+                console.log("data",data);
+                this.$ajax.get('/vos/business/getCacheData?flowId='+data).then((res)=>{
+                    console.log(res);
+                    this.companyInfo = res;
+                    console.log(this.companyInfo);
                 })
             },
         },

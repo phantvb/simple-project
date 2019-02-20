@@ -15,7 +15,7 @@
                     <!--<p class="fmini">VSMS客户编码：</p>-->
                     <!--<p class="fmini">集团CRM客户编码： </p>-->
                     <!--<p class="fmini">省CRM客户编码：</p>-->
-                    <p class="fmini">企业名称：{{voiceDetails.company}} </p>
+                    <p class="fmini">企业名称：{{voiceDetails.companyName}} </p>
                     <p class="fmini">证件编号：{{voiceDetails.companyCardNo}} </p>
                     <p class="fmini"><span>企业性质：{{voiceDetails.companyCharacter}}</span></p>
                     <p class="fmini"><span>企业等级：{{voiceDetails.companyRank}}</span></p>

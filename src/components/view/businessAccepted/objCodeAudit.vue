@@ -7,9 +7,20 @@
 					<el-form-item label="企业名称：">
 						<el-input v-model="form.firmName" size="mini"></el-input>
 					</el-form-item>
+                    <el-form-item label="400电话：">
+                        <el-input v-model="form.phoneNum" size="mini"></el-input>
+                    </el-form-item>
 					<el-form-item label="创建时间：">
-						<el-date-picker size="mini" v-model="form.time" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
-						</el-date-picker>
+						<!--<el-date-picker size="mini" v-model="form.time" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">-->
+						<!--</el-date-picker>-->
+                        <el-date-picker
+                                v-model="form.time"
+                                size="mini"
+                                type="datetimerange"
+                                range-separator="至"
+                                start-placeholder="开始日期"
+                                end-placeholder="结束日期">
+                        </el-date-picker>
 					</el-form-item>
 
 					<el-form-item class="searchBtn">
@@ -86,6 +97,7 @@
                 objCodeIn:1,
                 form:{
                     firmName:'',
+                    phoneNum:'',
                     time:'',
                 },
                 acceptForm:{
@@ -174,7 +186,7 @@
             } );
             this.$root.eventHub.$on('addAcceptSave', (resp) => {
                 this.objCodeLists();
-            })
+            });
         },
         methods: {
             // 分页
@@ -223,14 +235,13 @@
                 this.objAssigneeRole = objCodeMsg.assigneeRole;
                 sessionStorage.setItem('objFlowId',this.objFlowId);
                 if(val=='送审'){
-                    sessionStorage.setItem("objCodeIn",2);
+                    sessionStorage.setItem("objCodeIn",5);
                     this.getCacheData(val);
                 }else if(val=='详情'){
                     console.log('详情入口');
                     console.log(this.objStatus);
                     // 详情接口
                     this.getCacheData(val);
-
                 }else if(val=='通过审核'){
                     console.log("11111");
                     this.passCompany(val,objData);
@@ -239,15 +250,6 @@
                     this.backCompany(val,objData);
                 }else if(val=='删除'){
                     this.$ajax.post('/vos/business/deleteFlow',{
-                        // "companyFlow": {
-                        //     "creator": "admin",
-                        //     "businessId": 188,
-                        //     "updateTime": "2019-01-24 14:50:36",
-                        //     "type": "Business",
-                        //     "companyId": 66,
-                        //     "id": 22,
-                        //     "flowId": this.entireFlowId
-                        // }
                         "companyFlow": objData
                     }).then((res)=>{
                         console.log(res);
@@ -258,40 +260,31 @@
             //详情接口
             getCacheData(val){
                 console.log(val);
-                this.$ajax.get('/vos/destnum/getCacheData?flowId='+this.objFlowId).then((res)=>{
-                    console.log(res.data);
-                    if(res.code==200){
-                        // this.companyInfo = res.data.company;
-                        // this.destNumInfo = res.data.destNumber;
-                        // let objCodeTableObj = {};
-                        // objCodeTableObj.number400 = res.data.number400;
-                        if(val=='详情'){
-                            this.$router.push({
-                                path:'/BusinessAccepted/objCodeDetail',   //跳转的路径
-                                query:{                                   //路由传参时push和query搭配使用 ，作用时传递参数
-                                    flowId:this.objFlowId ,
-                                }
-                            })
-                        }else if(val=='送审'){
-                            // console.log(res.data);
-                            // console.log(res.data.destNumber);
-                            // console.log(res.data.company);
-                            // this.acceptForm.firmName = res.data.company.companyName;
-                            // this.acceptForm.imageUrl = res.data.company.companyProofPic;
-                            // this.acceptForm.fourNum = res.data.number400;
-                            // res.data.destNumber.map((item)=>{
-                            //     this.acceptForm.firmName = item.companyName;
-                            //     this.acceptForm.imageUrl = item.companyProofPic;
-                            //     this.acceptForm.fourNum = item.number400;
-                            //     this.acceptForm.usage = item.destnumUsage;
-                            // })
-                            this.$root.eventHub.$emit('dialog1Visible',{visible:true,objCodeIn:2,flowId:this.objFlowId});
+                // this.$ajax.get('/vos/destnum/getCacheData?flowId='+this.objFlowId).then((res)=>{
+                //     console.log(res.data);
+                //     if(res.code==200){
+                //         // this.companyInfo = res.data.company;
+                //         // this.destNumInfo = res.data.destNumber;
+                //         // let objCodeTableObj = {};
+                //         // objCodeTableObj.number400 = res.data.number400;
+                //
+                //     }
+                // })
+
+                if(val=='详情'){
+                    this.$router.push({
+                        path:'/BusinessAccepted/objCodeDetail',   //跳转的路径
+                        query:{                                   //路由传参时push和query搭配使用 ，作用时传递参数
+                            flowId:this.objFlowId ,
                         }
-                    }
-                })
+                    })
+                }else if(val=='送审'){
+                    this.$root.eventHub.$emit('dialog1Visible',{visible:true,objCodeIn:5,flowId:this.objFlowId});
+                }
             },
 
             async passCompany(val,data) {
+                console.log(data);
                 var obj = {};
                 var url;
                 if (data.status == 'Business_Auditing') {
@@ -310,7 +303,7 @@
                 this.$ajax.post(url, obj).then(res => {
                     if (res.code == 200) {
                         this.$message.success('操作成功');
-                        this.fetchData(this.page.num);
+                        this.fetchData(this.pageObj.page);
                     }
                 });
             },
@@ -333,7 +326,43 @@
                 this.$ajax.post(url, obj).then(res => {
                     if (res.code == 200) {
                         this.$message.success('操作成功');
-                        this.fetchData(this.page.num);
+                        this.fetchData(this.pageObj.page);
+                    }
+                });
+            },
+            //通过审核和驳回弹窗
+            prompt(data) {
+                return this.$prompt('请输入审核意见', data, {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消'
+                }).then(({ value }) => {
+                    return value || '';
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '取消输入'
+                    });
+                    return false;
+                });
+            },
+            fetchData(pageNum) {
+                this.loading = true;
+                this.pageObj.page = pageNum || 1;
+                var data = {};
+                data.page = {
+                    pageNo: this.pageObj.page,
+                    pageSize: this.pageObj.pageSize
+                };
+                data.blacklist = Object.assign({}, this.form);
+                data.blacklist.blackType = this.active;
+                delete data.blacklist["time"];
+                data.beforeTime = this.form.time[0] || '';
+                data.afterTime = this.form.time[1] || '';
+                this.$ajax.post("/vos/blacklist/search", data).then(res => {
+                    if (res.code == 200) {
+                        this.loading = false;
+                        this.tableData = res.data.blacklists;
+                        this.pageObj.total = res.data.totalCount;
                     }
                 });
             },
@@ -343,8 +372,8 @@
                 // console.log(this.form.time[1]);
                 let dateStart = new Date(this.form.time[0]);
                 let dateEnd = new Date(this.form.time[1]);
-                let dateStart_value=dateStart.getFullYear() + '-' + (dateStart.getMonth() + 1) + '-' + dateStart.getDate();
-                let dateEnd_value=dateEnd.getFullYear() + '-' + (dateEnd.getMonth() + 1) + '-' + dateEnd.getDate();
+                let dateStart_value=dateStart.getFullYear() + '-' + (dateStart.getMonth() + 1) + '-' + dateStart.getDate()+dateStart.getHours()+':'+dateStart.getMinutes()+':'+dateStart.getSeconds();
+                let dateEnd_value=dateEnd.getFullYear() + '-' + (dateEnd.getMonth() + 1) + '-' + dateEnd.getDate()+dateStart.getHours()+':'+dateStart.getMinutes()+':'+dateStart.getSeconds();
                 // console.log(dateStart_value);
                 // console.log(dateEnd_value);
                 console.log("companyName",this.form.firmName);
@@ -378,7 +407,8 @@
                             item.status='审核通过';
                             item.btnList=[];
                             if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
-                                item.btnList.push({label:'变更'},{label:'注销'},{label:'详情'});
+                                // item.btnList.push({label:'变更'},{label:'注销'},{label:'详情'});
+                                item.btnList.push({label:'详情'});
                             }else{
                                 item.btnList.push({label:'详情'});
                             }
@@ -395,7 +425,8 @@
                             item.status='变更审核中';
                             item.btnList=[];
                             if(this.baseData.roleName=='ROLE_admin' || item.assigneeRole==this.baseData.roleName){
-                                item.btnList.push({label:'变更审核通过'},{label:'驳回'},{label:'终止'},{label:'详情'});
+                                // item.btnList.push({label:'变更审核通过'},{label:'驳回'},{label:'终止'},{label:'详情'});
+                                item.btnList.push({label:'驳回'},{label:'终止'},{label:'详情'});
                             }else{
                                 item.btnList.push({label:'详情'});
                             }
@@ -403,7 +434,8 @@
                             item.status='变更审核驳回';
                             item.btnList=[];
                             if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
-                                item.btnList.push({label:'变更'},{label:'注销'},{label:'详情'});
+                                // item.btnList.push({label:'变更'},{label:'注销'},{label:'详情'});
+                                item.btnList.push({label:'注销'},{label:'详情'});
                             }else{
                                 item.btnList.push({label:'详情'});
                             }
@@ -476,7 +508,7 @@
                         this.objCodeList.map((item)=>{
                             let param={};
                             param.id=item.id;
-                            param.destnumber=item.destnumber;
+                            param.destNumber=item.destNumber;
                             param.destnumproofpic=this.acceptForm.imageUrl;
                             param.destnumUsage=this.acceptForm.usage;
                             param.number400=this.acceptForm.fourNum;
@@ -488,7 +520,7 @@
                             return
                         }else{
                             this.objCodeList.map((item)=>{
-                                if(item.destnumber==''){
+                                if(item.destNumber==''){
                                     this.$message({type:'warning',message:'请填写或删除空的目的码'});
                                     return
                                 }
@@ -533,7 +565,7 @@
                         this.objCodeList.map((item)=>{
                             let param={};
                             param.id=item.id;
-                            param.destnumber=item.destnumber;
+                            param.destNumber=item.destNumber;
                             param.destnumproofpic=this.acceptForm.imageUrl;
                             param.destnumUsage=this.acceptForm.usage;
                             param.number400=this.acceptForm.fourNum;

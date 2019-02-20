@@ -12,7 +12,7 @@
                         <span>ZJ93681212</span>
                     </el-form-item>
                     <el-form-item label="全套业务单据PDF模板下载：" class="model">
-                        <el-button type="primary" size="mini">立刻下载PDF模板</el-button>
+                        <el-button type="primary" size="mini" @click="uploadPdf()">立刻下载PDF模板</el-button>
                         <span>说明：下载自动生成的标准协议、业务受理单、授权书、信息安全责任书PDF，并打彩色印盖章后上传</span>
                     </el-form-item>
                     <el-form-item label="以下为需要上传的资料" class="cutOffRule">
@@ -131,7 +131,7 @@
         </div>
         <div class="stepBtn">
             <el-button type="primary" size="mini" @click="next(3)">上一步</el-button>
-            <el-button type="primary" size="mini" @click="addBusinessSave()">暂存信息</el-button>
+            <el-button type="primary" size="mini" @click="addBusinessSave()" v-if="saveBtnHidden">暂存信息</el-button>
             <el-button type="primary" size="mini" @click="addBusinessSend()">送审</el-button>
         </div>
     </div>
@@ -156,6 +156,7 @@
                 businessObj: {},  //业务参数对象
                 flowId: '',
                 businessIn:'',
+                saveBtnHidden:true,
             };
         },
         components: {},
@@ -166,8 +167,11 @@
             if (sessionStorage.getItem('businessIn') == 1) {
                 this.$root.eventHub.$on('flowId', (resp) => {
                     console.log("flowId", resp);
-                    this.flowId = resp;
+                    this.flowId = resp.flowId;
                 });
+            }else if(sessionStorage.getItem('businessIn') == 3){
+                this.saveBtnHidden=false;
+                console.log("saveBtnHidden",this.saveBtnHidden);
             }
 
             if(sessionStorage.getItem('entireFlowId')){
@@ -190,10 +194,17 @@
             if (sessionStorage.getItem('businessIn') == 2) {
                 console.log(this.business);
                 this.stepFourForm = this.business;
-
+            }
+            if(sessionStorage.getItem('businessIn') == 2 || sessionStorage.getItem('businessIn') == 3 || sessionStorage.getItem('businessIn') == 4){
+                this.stepFourDetail();
             }
         },
         methods: {
+            // 详情
+            stepFourDetail() {
+                console.log("this.company",this.company);
+                this.stepFourForm = this.business;
+            },
             // 图片上传
             handleAvatarSuccess(res, file) {
                 console.log(res);
@@ -300,6 +311,7 @@
                 console.log("destNumber", this.destNumber);
                 console.log("number400ValueAdded", this.number400ValueAdded);
                 console.log("number400Concession", this.number400Concession);
+                console.log("businessIn", this.businessIn);
                 var url;
                 if(this.businessIn==1 || this.businessIn==2){
                     url = '/vos/business/sendToBusinessAudit';
@@ -321,7 +333,35 @@
                     this.$root.eventHub.$emit('addAcceptSave', null);
                 });
             },
-
+            // 下载pdf
+            uploadPdf(){
+                // this.dialogVisible = false;
+                // console.log("business:", this.business);
+                this.businessObj = Object.assign(this.business, this.stepFourForm);
+                this.ChangeBusinessStatus(this.businessObj);
+                // 打印business入参对象
+                // console.log("businessObj:", this.businessObj);
+                //打印compang入参对像
+                // console.log("company", this.company);
+                // console.log("destNumber", this.destNumber);
+                // console.log("number400ValueAdded", this.number400ValueAdded);
+                // console.log("number400Concession", this.number400Concession);
+                // console.log("businessIn", this.businessIn);
+                this.$ajax.post('/vos/PdfOption/createAndDownloadPDF', {
+                    "company": this.company,
+                    "business": this.businessObj,
+                    "destNumber": this.destNumber,
+                    "number400ValueAdded": this.number400ValueAdded,
+                    "number400Concession": this.number400Concession,
+                    "companyFlow": {
+                        "flowId": this.flowId
+                    }
+                }).then((res) => {
+                    console.log(res);
+                    this.$message.success(res.data);
+                    // this.$root.eventHub.$emit('addAcceptSave', null);
+                });
+            },
             // 存vuex更新企业信息模块入参
             ChangeBusinessStatus(val) {
                 return this.$store.dispatch("ChangeBusinessStatus", val);

@@ -44,7 +44,16 @@ footer {
   }
 }
 .stepBtn{
+  position: relative;
   text-align: right;
+}
+.saveTips{
+  overflow: hidden;
+  width:68px;
+  height:28px;
+  position:absolute;
+  right:0;
+  top:0;
 }
 .handleInfo{
   overflow-y: hidden;

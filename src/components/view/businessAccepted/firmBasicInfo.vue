@@ -8,22 +8,22 @@
                     </p>
                 </div>
                 <div class="block left">
-                    <p class="fmini">企业名称：{{this.company.companyName}} </p>
-                    <p class="fmini">证件编号： {{this.company.companyCardNo}}</p>
+                    <p class="fmini">企业名称：{{this.businessDetialCompanyInfo.companyName}} </p>
+                    <p class="fmini">证件编号： {{this.businessDetialCompanyInfo.companyCardNo}}</p>
                     <p class="fmini">
-                        <span>企业性质：{{this.company.companyCharacter}}</span>
-                        <span>企业等级：{{this.company.companyRank}}</span>
-                        <span>行业类型：{{this.company.industryType}}</span></p>
-                    <p class="fmini">注册地址：{{this.company.registProvince+this.company.registCity+this.company.registaArea}}</p>
-                    <p class="fmini">办公地址：{{this.company.officeProvince+this.company.officeCity+this.company.officeArea}}</p>
-                    <p class="fmini">企业电话：{{this.company.phone}}</p>
+                        <span>企业性质：{{this.businessDetialCompanyInfo.companyCharacter}}</span>
+                        <span>企业等级：{{this.businessDetialCompanyInfo.companyRank}}</span>
+                        <span>行业类型：{{this.businessDetialCompanyInfo.industryType}}</span></p>
+                    <p class="fmini">注册地址：{{this.businessDetialCompanyInfo.registProvince+this.businessDetialCompanyInfo.registCity+this.businessDetialCompanyInfo.registaArea}}</p>
+                    <p class="fmini">办公地址：{{this.businessDetialCompanyInfo.officeProvince+this.businessDetialCompanyInfo.officeCity+this.businessDetialCompanyInfo.officeArea}}</p>
+                    <p class="fmini">企业电话：{{this.businessDetialCompanyInfo.phone}}</p>
                     <div>
                         <div style="float:left;">
                             <span class="fmini">企业资质证明文件：</span>
                         </div>
                         <ul>
                             <li class="l2">
-                                <img class="examplew" :src="this.company.companyProofPic" alt="">
+                                <img class="examplew" :src="this.businessDetialCompanyInfo.companyProofPic" alt="">
                             </li>
                         </ul>
                     </div>
@@ -36,28 +36,28 @@
                     </p>
                 </div>
                 <div class="block left">
-                    <p class="fmini">法人姓名： {{this.company.legalPerson}}</p>
-                    <p class="fmini"> 法人电话： {{this.company.legalPhone}}</p>
-                    <p class="fmini">法人证件： {{this.company.legalCard+" "+this.company.cardNum}} </p>
-                    <p class="fmini" v-if="this.company.idCardAddress">身份证住址： {{this.company.idCardAddress}}</p>
-                    <p class="fmini">证件有效期：{{this.company.cardStartDate+"-"+this.company.cardEndDate}}</p>
+                    <p class="fmini">法人姓名： {{this.businessDetialCompanyInfo.legalPerson}}</p>
+                    <p class="fmini"> 法人电话： {{this.businessDetialCompanyInfo.legalPhone}}</p>
+                    <p class="fmini">法人证件： {{this.businessDetialCompanyInfo.legalCard+" "+this.businessDetialCompanyInfo.cardNum}} </p>
+                    <p class="fmini" v-if="this.businessDetialCompanyInfo.idCardAddress">身份证住址： {{this.businessDetialCompanyInfo.idCardAddress}}</p>
+                    <p class="fmini">证件有效期：{{this.businessDetialCompanyInfo.cardStartDate+"-"+this.businessDetialCompanyInfo.cardEndDate}}</p>
                     <div>
                         <!-- <div style="float:left;">
                             <span class="fmini">企业资质证明文件：</span>
                         </div> -->
                         <ul class="basedata">
                             <li>
-                                <img class="exampleh" :src="this.company.legalCardFrontPic" alt="">
+                                <img class="exampleh" :src="this.businessDetialCompanyInfo.legalCardFrontPic" alt="">
                                 <p class="fmini center">法人身份证（正面）</p>
                             </li>
                             <li>
-                                <img class="exampleh" :src="this.company.legalCardBackPic" alt="">
+                                <img class="exampleh" :src="this.businessDetialCompanyInfo.legalCardBackPic" alt="">
                                 <p class="fmini center">法人身份证（反面）</p>
                             </li>
                         </ul>
                         <ul class="basedata">
                             <li>
-                                <img class="exampleh" :src="this.company.legalCardHandPic" alt="">
+                                <img class="exampleh" :src="this.businessDetialCompanyInfo.legalCardHandPic" alt="">
                                 <p class="fmini center">法人手持身份证（正面）</p>
                             </li>
                         </ul>
@@ -71,17 +71,26 @@
     import {mapState} from "vuex";
     export default {
         name: 'firmBasicInfo',
+        props:[
+            "companyInfos"
+        ],
+        watch: {
+            companyInfos(val) {
+                console.log("companyInfos",val);
+                this.businessDetialInfo = val.data;
+                console.log("businessDetialInfo.company",this.businessDetialInfo.company);
+                this.businessDetialCompanyInfo = this.businessDetialInfo.company;
+            }
+        },
         data() {
-            return {};
+            return {
+                businessDetialInfo:{},
+                businessDetialCompanyInfo:{},
+            };
         },
         components: {},
         created(){
-            // this.getCacheData();
             console.log(this.company);
-
-            // console.log(this.destNumber);
-            // console.log(this.number400ValueAdded);
-            // console.log(this.number400Concession);
         },
         methods: {
             // 存vuex更新企业信息模块入参

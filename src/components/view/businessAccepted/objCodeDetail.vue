@@ -68,7 +68,7 @@
                                             prop="destnumber"
                                             label='目的码 (填入目的码，多个请用","隔开)'>
                                         <template slot-scope="scope">
-                                            <span v-for="(item,index) in destNumInfo" :key="index">{{item.destnumber}}<span v-if="index!=destNumInfo.length-1">,</span></span>
+                                            <span v-for="(item,index) in destNumInfo" :key="index">{{item.destNumber}}<span v-if="index!=destNumInfo.length-1">,</span></span>
                                         </template>
                                     </el-table-column>
                                 </el-table>

@@ -120,7 +120,7 @@
         </el-form>
         <div class="stepBtn">
             <el-button type="primary" size="mini" @click="next(1)">上一步</el-button>
-            <el-button type="primary" size="mini" @click="addBusinessSave()">暂存信息</el-button>
+            <el-button type="primary" size="mini" @click="addBusinessSave()" v-if="saveBtnHidden">暂存信息</el-button>
             <el-button type="primary" size="mini" @click="next(3)">下一步</el-button>
         </div>
 
@@ -141,6 +141,7 @@
                 },
                 campanyObj: {},        //企业信息对象
                 flowId: '',
+                saveBtnHidden:true,
             };
         },
         components: {},
@@ -151,12 +152,25 @@
                 this.flowId = resp;
             });
 
-            if (sessionStorage.getItem('businessIn') == 2) {
-                console.log(this.company);
-                this.stepTwoForm = this.company;
-            }
+            // if (sessionStorage.getItem('businessIn') == 2) {
+            //     console.log(this.company);
+            //     this.stepTwoForm = this.company;
+            // }else
+                if(sessionStorage.getItem('businessIn') == 3){
+                  this.saveBtnHidden=false;
+                  console.log("saveBtnHidden",this.saveBtnHidden);
+                  }
+                if (sessionStorage.getItem('businessIn') == 2 || sessionStorage.getItem('businessIn') == 3 ||sessionStorage.getItem('businessIn') == 4) {
+                  console.log("11111111111111");
+                  this.stepThreeDetail();
+                 }
         },
         methods: {
+            // 详情
+            stepThreeDetail() {
+                console.log("this.company",this.company);
+                this.stepTwoForm = this.company;
+            },
             // 图片上传
             handleAvatarSuccess(res, file) {
                 console.log(res);

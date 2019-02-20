@@ -15,7 +15,7 @@
         </div>
         <!--号码详情-->
         <div class="numberDetail">
-            <div class="unit" v-for="(item,index) in numberList" :key="index" @click="getAllByPackages(item.number400)">{{item.number400}}</div>
+            <div class="unit" v-for="(item,index) in numberList" :key="index" @click="getAllByPackages(item)">{{item.number400}}</div>
         </div>
         <!--分页-->
         <el-pagination
@@ -72,11 +72,12 @@
                 console.log(`当前页: ${val}`);
             },
             // 以套餐分类400号码
-            getAllByPackage2(data){
+            getAllByPackage2(dataIndex){
+                console.log("dataIndex",dataIndex);
                 this.$ajax.post('/vos/number400/searchByPackage',{
                     "num400Package":{
                         "number400":"",
-                        "packgeId":data?data:this.mealIndex
+                        "packgeId":dataIndex?dataIndex:'',
                     },
                     "page":{
                         "pageNo":this.pageObj.page,
@@ -84,7 +85,7 @@
                     }
 
                 }).then((res)=>{
-                    // console.log(res.data);
+                    console.log(res.data);
                     // console.log(res.data.number400s);
                     this.numberList = res.data.number400s;
                     this.pageObj.total = res.data.totalCount;
