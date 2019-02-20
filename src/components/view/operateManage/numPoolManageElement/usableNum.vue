@@ -1,7 +1,7 @@
 <template>
 	<div id="usableNum">
 		<div class="search">
-			<el-form ref="usableNumForm" :model="usableNumForm">
+			<el-form ref="usableNumForm" :model="usableNumForm" style="padding:9px 9px;">
 				<el-form-item style="float: left;margin-left: 15px;">
 					<span class="demonstration">400号码：</span>
 					<el-input v-model="usableNumForm.number" placeholder="请输入400号码" size="mini" style="width:300px;"></el-input>

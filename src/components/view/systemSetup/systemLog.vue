@@ -85,13 +85,13 @@
 					</el-form-item>
 
 					<el-form-item label="时间：">
-						<el-date-picker size="mini" v-model="form.time" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+						<el-date-picker size="mini" v-model="form.time" type="datetimerange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd HH:mm:ss">
 						</el-date-picker>
 					</el-form-item>
 
 					<el-form-item class="searchBtn">
 						<el-button type="primary" size="mini" @click="systemLogList()">搜索</el-button>
-						<el-button @click="resetForm('form')" size="mini">重置</el-button>
+						<el-button @click="resetForm" size="mini">重置</el-button>
 					</el-form-item>
 				</div>
 			</el-form>
@@ -104,14 +104,14 @@
 					<el-form ref="LogSelectForm" :model="LogSelectForm" label-width="100px">
 						<el-form-item label="操作类型：">
 							<el-select v-model="operateType" placeholder="请选择" size="mini" @change="operTypeChange">
-								<el-option v-for="item in operateTypeList" :key="item.value" :label="item.label" :value="item.value">
+								<el-option v-for="item in operateTypeList" :key="item.value" :label="item.dicValue" :value="item.dicKey">
 								</el-option>
 							</el-select>
 						</el-form-item>
 
 						<el-form-item label="操作角色：">
 							<el-select v-model="operateRole" placeholder="请选择" size="mini" @change="operRole">
-								<el-option v-for="item in operateRoleList" :key="item.value" :label="item.label" :value="item.value">
+								<el-option v-for="item in operateRoleList" :key="item.value" :label="item.nameZh" :value="item.name">
 								</el-option>
 							</el-select>
 						</el-form-item>
@@ -156,7 +156,7 @@
 				form: {
 					descMsg: '',
 					operAccount: '',
-					time: '',
+					time: [],
 				},
 				addTopForm: {
 					loginId: '',
@@ -176,46 +176,10 @@
 					operateType: '',
 					operateRole: '',
 				},
-				operateTypeList: [ //操作类型
-					{
-						value: '1',
-						label: '全部'
-					},
-					{
-						value: '2',
-						label: '新增'
-					},
-					{
-						value: '3',
-						label: '编辑'
-					},
-					{
-						value: '4',
-						label: '删除'
-					}
-				],
-				operateRoleList: [ //操作角色
-					{
-						value: '1',
-						label: '超级管理员'
-					},
-					{
-						value: '2',
-						label: '省级管理员'
-					},
-					{
-						value: '3',
-						label: '地市管理员'
-					},
-					{
-						value: '4',
-						label: '业务员'
-					},
-					{
-						value: '5',
-						label: 'ROLE_people'
-					}
-				],
+				operateTypeList: [],//操作类型列表
+                operateRoleList: [], //操作角色列表
+                operateType: '', //操作类型
+				operateRole: '', //操作角色
 				provinceList: [{
 						value: '1',
 						label: '广东省'
@@ -248,32 +212,49 @@
 				totalPage: 0,
 				pageSize: 10,
 				page: 1,
-				operateType: '', //操作类型
-				operateRole: '', //操作角色
+				
 				roleData: []
 			}
 		},
 		created() {
 			this.systemLogList();
 			// 获取所有角色
-			this.getRole();
+            this.getRole();
+            //获取所有操作类型
+            this.getOperate();
+
+            this.resetForm();   //日期范围初始值不是当前时间，在重置后更新为当前时间。
 		},
 		methods: {
 			getRole() {
 				this.$ajax.get("/vos/role/getAllRoleWithoutAdmin").then(res => {
 					if (res.code == 200) {
-						this.roleData = res.data.data;
+                        this.roleData = res.data.data;
+                        this.operateRoleList=res.data.data;
 					}
 				});
+            },
+            getOperate(){
+                this.$ajax.post("/vos/dic/getDicsByType",{
+                    "dicType":"actionLogType",
+                    "status":1
+                }).then(res => {
+					if (res.code == 200) {
+                        this.operateTypeList=res.data.dicList;
+					}
+				});
+            },
+            resetForm() {
+				this.form.descMsg = "";
+				this.form.operAccount = "";
+				this.form.time = [];
 			},
 			// 分页
 			handleSizeChange(val) {
-				console.log(`每页 ${val} 条`);
 				this.pageSize = val;
 				this.systemLogList();
 			},
 			handleCurrentChange(val) {
-				console.log(`当前页: ${val}`);
 				this.page = val;
 				this.systemLogList();
 			},
@@ -284,10 +265,14 @@
 						done();
 					})
 					.catch(_ => {});
-			},
+            },
 
 			//日志表格
 			systemLogList() {
+                if (this.form.time.length == 0) {
+					this.form.time[0] = "";
+					this.form.time[1] = "";
+				}
 				this.$ajax.post('/vos/actionLog/search', {
 					"actionLog": {
 						"actionRoleName": this.operateRole, //操作角色
@@ -295,15 +280,15 @@
 						"username": this.form.operAccount, //操作账号
 						"description": this.form.descMsg, //描述
 					},
-					"beforeTime": "",
-					"afterTime": "",
+					"beforeTime": this.form.time[0],
+					"afterTime": this.form.time[1],
 					"page": {
 						"pageNo": this.page,
 						"pageSize": this.pageSize
 					}
 				}).then((res) => {
-					console.log(res.data.actionLogs);
-					console.log(res.data.totalCount);
+					// ;
+					// ;
 					this.tableData = res.data.actionLogs;
 					this.totalPage = res.data.totalCount;
 				})
@@ -311,24 +296,24 @@
 
 			//操作类型下拉框
 			operTypeChange(data) {
-				console.log(data);
+				// ;
 				this.operateType = data;
 				this.systemLogList();
 			},
 			// 操作角色下拉框
 			operRole(data) {
-				console.log(data);
+				// ;
 				this.operateRole = data;
 				this.systemLogList();
 			},
 			//操作账号
 			operAccount(val) {
 				this.dialogVisible = true;
-				console.log(val);
+				// ;
 				this.$ajax.post('/vos/user/getByUsername', {
 					"username": val.username
 				}).then((res) => {
-					console.log(res.data);
+					// ;
 					let data = res.data;
 					this.addTopForm.loginId = data.username;
 					this.addTopForm.role = data.roleName;
