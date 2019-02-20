@@ -18,7 +18,7 @@
                 </el-form-item>
 
                 <el-form-item label="证件编号：" class="identity" prop="companyCardNo">
-                    <el-select v-model="acceptForm.companyCardType" @change="change123" placeholder="请选择" size="mini" :disabled="msgDisabled">
+                    <el-select v-model="acceptForm.companyCardType" @change="change123" :disabled="msgDisabled" placeholder="请选择" size="mini">
                         <el-option
                                 v-for="item in companyCardNoList"
                                 :label="item.dicValue"
@@ -175,6 +175,7 @@
         </el-form>
         <div class="stepBtn">
             <el-button type="primary" size="mini" @click="next">下一步</el-button>
+
         </div>
     </div>
 </template>
@@ -295,7 +296,6 @@
             this.$root.eventHub.$on('clearData', (resp) => {
                 this.acceptForm = {};
             });
-
             console.log(sessionStorage.getItem('entireFlowId'));
             console.log(sessionStorage.getItem('businessIn'));
             this.companyCardTypeList();
@@ -306,10 +306,20 @@
             this.getAllProvince();
             this.getCitiesByProvinceId();
             this.getAreasByCityId();
-
-            if (sessionStorage.getItem('businessIn') == 2) {
+            if (sessionStorage.getItem('businessIn') == 2 || sessionStorage.getItem('businessIn') == 3 ||sessionStorage.getItem('businessIn') == 4) {
                 console.log("qqqqqqqqqqqqqqqqq");
                 this.stepTwoDetail();
+                this.searchFirm(this.acceptForm.companyName);
+                this.firmNameList.map((zool, index) => {
+                    console.log("909090909090909000090909009090");
+                    if (zool.companyName == this.acceptForm.companyName) {
+                        this.acceptForm = this.firmNameList[index];
+                        this.changeMsgDisabled(true);
+                    }else{
+                        this.changeMsgDisabled(false);
+                    }
+                });
+
             }
 
         },
@@ -321,6 +331,14 @@
             },
             // 下一步
             next() {
+                if(this.business!=null){
+                    console.log("this.business",this.business);
+                }else{
+                    let companyIdInfo ={};
+                    companyIdInfo.companyId=null;
+                    this.ChangeBusinessStatus(companyIdInfo);
+                    console.log("this.business",this.business);
+                }
                 this.$emit('childNext', 2);
                 // 改变vuex的值
                 this.ChangeCompanyStatus(this.acceptForm);
@@ -370,10 +388,12 @@
             },
             //企业名称li
             firmNameLi(val) {
-                console.log(val);
-                console.log(val.id);
                 let companyIdInfo ={};
-                companyIdInfo.companyId = val.id;
+                if(val.id!=null){
+                    console.log(val);
+                    console.log(val.id);
+                    companyIdInfo.companyId = val.id;
+                }
                 this.ChangeBusinessStatus(companyIdInfo);
                 console.log("this.business",this.business);
                 this.$root.eventHub.$emit('companyMsg', val);

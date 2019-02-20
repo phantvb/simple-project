@@ -32,12 +32,12 @@
                                                 </el-table-column>
 
                                                 <el-table-column
-                                                        prop="basicFunctionFee"
+                                                        prop="basicFunctionFeeCopy"
                                                         label="基本功能费">
                                                 </el-table-column>
 
                                                 <el-table-column
-                                                        prop="durationPresentation"
+                                                        prop="durationPresentationCopy"
                                                         label="预存话费">
                                                 </el-table-column>
 
@@ -269,7 +269,7 @@
                                 </el-table-column>
 
                                 <el-table-column
-                                        prop="bottomFeeCopy"
+                                        prop="basicFunctionFeeCopy"
                                         label='基本功能费'>
                                 </el-table-column>
 
@@ -427,8 +427,11 @@
 
         <div class="stepBtn">
             <el-button type="primary" size="mini" @click="next(2)">上一步</el-button>
-            <el-button type="primary" size="mini" @click="addBusinessSave()">暂存信息</el-button>
-            <el-button type="primary" size="mini" @click="next(4)">下一步</el-button>
+            <el-button type="primary" size="mini" @click="addBusinessSave()" v-if="saveBtnHidden">暂存信息</el-button>
+            <el-tooltip content="请先暂存信息" placement="top" effect="light">
+                <div class="saveTips" @click="next(4)"></div>
+        </el-tooltip>
+            <el-button type="primary" size="mini"  :disabled="nextDisabled">下一步</el-button>
         </div>
     </div>
 </template>
@@ -545,35 +548,22 @@
                 },
                 currentPage: 1,   //分页
                 titleNum: '',
+                tabId:'',
+                tabNum400:'',
                 sealInfo: '',      //套餐信息
                 businessIn:'',
+                saveBtnHidden:true,
+                nextDisabled:true,
+                packgeId:'',
             };
 
         },
         components: {
             setMeal
         },
-        beforeUpdate(){
-            //复选框回显
-            // if (sessionStorage.getItem('businessIn') == 2) {
-            //     console.log('asdasdasdasddasd');
-            //     this.objCodeTable.map((item)=>{
-            //         console.log(1111,this.objCodeTable);
-            //         if(this.number400ValueAdded.some((item1)=>{
-            //             return item1.id==item.id;
-            //         })){
-            //             console.log(item);
-            //             if(item.presents==1){
-            //                 this.$refs.addValueTable.toggleRowSelection(item,true);
-            //             }
-            //             this.$refs.addValueTable.toggleRowSelection(item,true);
-            //         }
-            //     });
-            // }
-        },
 
          mounted(){
-            if (sessionStorage.getItem('businessIn') == 2) {
+            if (sessionStorage.getItem('businessIn') == 2 || sessionStorage.getItem('businessIn') == 3) {
                 //详情
                 console.log(this.business);
                 console.log(this.destNumber);
@@ -581,6 +571,8 @@
                 console.log(this.number400Concession);
                 this.stepThreeForm = this.business;
                 this.objCodeList = this.destNumber;
+                // console.log(this.valueAdd);
+                // console.log(this.this.number400ValueAdded);
                 this.valueAdd = this.number400ValueAdded;
                 console.log("this.valueAdd", this.valueAdd);
                 this.disList = this.number400Concession;
@@ -591,14 +583,16 @@
                 //400号码表格回显
                 let selectedNumCopy={};
                 selectedNumCopy.units = this.business.units;
+                selectedNumCopy.unitsCopy = this.business.units+'月';
                 selectedNumCopy.number400 = this.business.number400;
                 selectedNumCopy.tariffName = this.business.tariffName;
                 selectedNumCopy.basicFunctionFee = this.business.basicFunctionFee;
+                selectedNumCopy.basicFunctionFeeCopy = this.business.basicFunctionFee+'元';
                 selectedNumCopy.packageContent = this.business.packageContent;
                 selectedNumCopy.durationPresentation = this.business.durationPresentation;
+                selectedNumCopy.durationPresentationCopy = this.business.durationPresentation+'元';
                 selectedNumCopy.durationPresentation = this.business.durationPresentation;
                 this.selectedNum.push(selectedNumCopy);
-
                 this.getAllProvince();
             }else{
                 this.getAllProvince();
@@ -609,6 +603,8 @@
         },
         created() {
             console.log(sessionStorage.getItem('businessType'));
+            console.log("saveBtnHidden",this.saveBtnHidden);
+            console.log("nextDisabled",this.nextDisabled);
             this.busIdentity = sessionStorage.getItem('businessType');
             this.stepThreeForm.channel = this.busIdentity;
             this.getConcessionScheme(this.busIdentity);
@@ -618,15 +614,6 @@
                 this.stepThreeForm.needCompanySave = resp;
             });
 
-            console.log(sessionStorage.getItem('businessIn'));
-            this.businessIn = sessionStorage.getItem('businessIn');
-            //新增受理
-            if (sessionStorage.getItem('businessIn') == 1) {
-                this.$root.eventHub.$on('flowId', (resp) => {
-                    console.log("flowId", resp);
-                    this.flowId = resp;
-                });
-            }
             this.$root.eventHub.$on('dialogVisibleBusiness', (res)=>{
                 this.visibleBusiness=res.visibleBusiness;
                 if(res.businessIn){
@@ -634,8 +621,35 @@
                 }
             } );
 
+            console.log(sessionStorage.getItem('businessIn'));
+            this.businessIn = sessionStorage.getItem('businessIn');
+
+            //新增受理
+            if (sessionStorage.getItem('businessIn') == 1) {
+                this.$root.eventHub.$on('flowId', (resp) => {
+                    console.log("flowId", resp);
+                    this.flowId = resp;
+                });
+            }else if(sessionStorage.getItem('businessIn') == 3){
+                this.saveBtnHidden=false;
+                this.nextDisabled = false;
+                console.log("saveBtnHidden",this.saveBtnHidden);
+            }
+            if(sessionStorage.getItem('businessIn') == 2 || sessionStorage.getItem('businessIn') == 3 || sessionStorage.getItem('businessIn') == 4){
+                this.stepFourDetail();
+            }
+
+
         },
         methods: {
+            // 详情
+            stepFourDetail() {
+                console.log("this.business",this.business);
+                this.stepThreeForm = this.business;
+                // this.selectedNum[0].basicFunctionFeeCopy = this.business.basicFunctionFee;
+                // this.selectedNum[0].durationPresentationCopy = this.business.durationPresentation;
+                // this.selectedNum[0].unitsCopy = this.business.units;
+            },
             // 分页
             handleSizeChange(val) {
                 this.pageObj.pageSize = val;
@@ -666,12 +680,15 @@
                     let obj ={};
                     obj.number400 = this.selectedNum && this.selectedNum.length!=0?this.selectedNum[0].number400:null;
                     obj.valueAddedName = item.tariffName;
+                    obj.tariffName = item.tariffName;
                     obj.valueAddedId = item.id;
                     obj.presents = item.presents;
                     obj.remarks = item.remarks;
                     obj.valueAddedFee = item.tariffFee;
                     obj.units = item.units;
                     obj.numOfMonth = item.numOfMonth;
+                    obj.unitsName = item.unitsName;
+                    obj.presentsName = item.presentsName;
                     // obj.numOfone = item.numOfone;
                     if(item.units=='perMonthOne'){
                         obj.numOfone = item.numOfone;
@@ -772,6 +789,7 @@
                     console.log(res.data.valueAddedList);
                     this.objCodeTable = res.data.valueAddedList;
                     this.objCodeTable.map((item) => {
+                        console.log(item);
                         item.numOfMonth=1;
                         item.numOfone=1;
                         if(item.units=='perMonth'){
@@ -785,26 +803,37 @@
                             item.cost2 = "个";
                             item.unitsName = (item.tariffFee/item.numOfMonth)+'元/月/个'
                         }
+                        item.valueAddedName = item.tariffName;
+                        item.valueAddedId = item.id;
+                        item.valueAddedFee = item.tariffFee;
+                        if(item.units=='perMonthOne'){
+                            item.numOfone = item.numOfone;
+                        }
                         if (item.presents == '1') {
                             item.presentsName = "赠送";
-                            this.valueAdd.push(item);
+                            // this.valueAdd.push(item);
                         } else {
-                            item.presentsName = "付费"
+                            item.presentsName = "付费";
+                            // this.valueAdd.push(item);
                         }
+
                     });
                     console.log('aaa',this.objCodeTable);
                     console.log('bbb',this.number400ValueAdded);
                     let newValueAdd=[];
                     this.$nextTick(()=>{
                         console.log(this.selectedNum);
+                        console.log('ccc',this.number400ValueAdded);
                         this.objCodeTable.map((item,index)=>{
                             console.log(1111,this.objCodeTable);
                             if(this.number400ValueAdded&&this.number400ValueAdded.length!=0){
                                 this.number400ValueAdded.map((item1)=>{
-                                    if(item1.id==item.id){
+                                    if(item1.valueAddedId==item.id){
                                         //把选中的复选框信息赋值给原数组勾选的选项
+                                        item1.tariffFee=item.valueAddedFee;
                                         this.$set(this.objCodeTable,index,item1);
-                                        //回西安勾选的
+                                        //回显勾选的
+                                        console.log("回显勾选的");
                                         this.$refs.addValueTable.toggleRowSelection(this.objCodeTable[index], true);
                                         let obj = {};
                                         if (this.selectedNum && this.selectedNum.length != 0) {
@@ -825,9 +854,14 @@
                                         console.log(newValueAdd);
                                     }
                                 });
+
+
+
+
                             }else{
                                 if(item.presents==1){
                                     //赠送勾选
+                                    console.log("赠送勾选");
                                     this.$refs.addValueTable.toggleRowSelection(item,true);
                                     let obj ={};
                                     if (this.selectedNum && this.selectedNum.length != 0) {
@@ -851,6 +885,7 @@
                         });
                     });
                     this.valueAdd=newValueAdd;
+                    console.log(this.valueAdd);
                     this.$set(this.objCodeTable);
                     return new Promise(resolve => {
                         resolve();
@@ -876,7 +911,7 @@
                 this.$ajax.get('/vos/address/getAllProvince').then((res) => {
                     console.log(res.data);
                     this.provinceList = res.data;
-                    if(sessionStorage.getItem('businessIn') == 2){
+                    if(sessionStorage.getItem('businessIn') == 2 || sessionStorage.getItem('businessIn') == 3){
                         console.log(this.stepThreeForm.provinceBelong);
                         this.getCitiesByProvinceId(this.stepThreeForm.provinceBelong);
                     }
@@ -937,48 +972,13 @@
             },
 
             // 选择400号码，添加到已选号码
-            getAllByPackage(val) {
-                console.log(val);
-                this.titleNum = val;
-                this.stepThreeForm.number400 = this.titleNum;
-                this.$ajax.post('/vos/number400/searchByPackage', {
-                    "num400Package": {
-                        "number400": this.titleNum,
-                        "packgeId": ""
-                    },
-                    "page": {
-                        "pageNo": this.pageObj.page,
-                        "pageSize": this.pageObj.pageSize
-                    }
-
-                }).then((res) => {
-                    console.log(res.data);
-                    console.log(res.data.number400s);
-                    console.log(res.data.number400s[0]);
-                    this.selectedNum = res.data.number400s;
-                    this.selectedNum.map((item)=>{
-                        item.bottomFeeCopy=item.basicFunctionFee+'元';
-                        item.durationPresentationCopy=item.durationPresentation+'元';
-                        if(item.type==1){
-                            item.unitsCopy=item.units+"月"
-                        }else if(item.type==2){
-                            item.unitsCopy=item.units+"年"
-                        }
-                    })
-                    this.pageObj.total = res.data.totalCount;
-                    this.sealInfo = res.data.number400s[0];
-
-                    //套餐返回值
-                    this.stepThreeForm.packgeId = this.sealInfo.packgeId;
-                    this.stepThreeForm.basicFunctionFee = this.sealInfo.basicFunctionFee;
-                    this.stepThreeForm.bottomFee = this.sealInfo.bottomFee;
-                    this.stepThreeForm.durationPresentation = this.sealInfo.durationPresentation;
-                    this.stepThreeForm.excessPriceType = this.sealInfo.excessPriceType;
-                    this.stepThreeForm.excessTariff = this.sealInfo.excessTariff;
-                    this.stepThreeForm.unitPrice = this.sealInfo.unitPrice;
-                    this.stepThreeForm.unitPriceType = this.sealInfo.unitPriceType;
-                    this.stepThreeForm.units = this.sealInfo.units;
-                })
+            getAllByPackage0(index) {
+                console.log(index);
+                console.log("this.mealList",this.mealList);
+                this.tabId = this.mealList[index].id;
+                console.log("this.tabId ",this.tabId);
+                console.log("this.$refs.child1", this.$refs.child1);
+                this.$refs.child1[index].getAllByPackage2(this.tabId);
             },
 
             // 删除已选400号码
@@ -1009,10 +1009,14 @@
                     console.log("business", this.business);
                     console.log("destNumber", this.destNumber);
                     console.log("number400Concession", this.number400Concession);
+                    if(this.businessIn!=3){
+                        this.nextDisabled=true;
+                    }
                 }
             },
             // 暂存
             addBusinessSave() {
+                console.log("this.valueAdd",this.valueAdd);
                 console.log("this.business",this.business);
                 console.log("this.business.companyId",this.business.companyId);
                 console.log("第三步获取flowed",sessionStorage.getItem('entireFlowId'));
@@ -1024,6 +1028,9 @@
                 this.stepThreeForm.number400 = this.selectedNum[0].number400;
                 this.stepThreeForm.tariffName = this.selectedNum[0].tariffName;
                 this.stepThreeForm.packageContent = this.selectedNum[0].packageContent;
+                this.stepThreeForm.units = this.selectedNum[0].units;
+                this.stepThreeForm.durationPresentation = this.selectedNum[0].durationPresentation;
+                this.stepThreeForm.basicFunctionFee = this.selectedNum[0].basicFunctionFee;
                 this.stepThreeForm.type = this.selectedNum[0].type;
                 this.stepThreeForm.tariffPackageId = this.selectedNum[0].packgeId;
                 console.log(this.stepThreeForm);
@@ -1049,7 +1056,7 @@
                     "number400ValueAdded": this.valueAdd,
                     "number400Concession": this.number400Concession,
                     "companyFlow": {
-                        "flowId": sessionStorage.getItem('businessIn')==2?sessionStorage.getItem('entireFlowId'):this.stepThreeFlowId
+                        "flowId": sessionStorage.getItem('businessIn')==2 || sessionStorage.getItem('businessIn')==3?sessionStorage.getItem('entireFlowId'):this.stepThreeFlowId
                     }
                 }).then((res) => {
                     if (res.code == '200') {
@@ -1064,6 +1071,7 @@
                         }).then((res) => {
                             if (res.code == 200) {
                                 console.log(res);
+                                    this.nextDisabled=false;
                             } else {
                                 this.$message({type: 'warning', message: res.message});
                             }
@@ -1073,11 +1081,39 @@
                     }
                 });
             },
+            getAllByPackage(data){
+                console.log("itemInfo",data);
+                this.$ajax.post('/vos/number400/searchByPackage',{
+                    "num400Package":{
+                        "number400":data.number400,
+                        "packgeId":""
+                    },
+                    "page":{
+                        "pageNo":this.pageObj.page,
+                        "pageSize":this.pageObj.pageSize
+                    }
+
+                }).then((res)=>{
+                    console.log("itemInfo",res);
+                    console.log("itemInfo",res.data.number400s);
+                    this.selectedNum=res.data.number400s;
+                    this.selectedNum[0].unitsCopy = res.data.number400s[0].units+'月';
+                    this.selectedNum[0].durationPresentationCopy = res.data.number400s[0].durationPresentation+'元';
+                    this.selectedNum[0].basicFunctionFeeCopy = res.data.number400s[0].basicFunctionFee+'元';
+                    // this.selectedNum.push(res.data);
+                    // console.log(res.data.number400s);
+                    // this.numberList = res.data.number400s;
+                    // this.pageObj.total = res.data.totalCount;
+                })
+            },
             // 点击tab获取相应信息
             parentMethod(val) {
                 console.log(val);
-                    console.log("this.$refs.child1", this.$refs.child1);
-                    this.$refs.child1[val.index].getAllByPackage2(val.index);
+                console.log("this.mealList",this.mealList);
+                this.tabId = this.mealList[val.index].id;
+                console.log("this.tabId ",this.tabId);
+                console.log("this.$refs.child1", this.$refs.child1);
+                this.$refs.child1[val.index].getAllByPackage2(this.tabId);
             },
             // 存vuex更新业务信息模块入参
             ChangeBusinessStatus(val) {

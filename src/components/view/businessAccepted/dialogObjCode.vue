@@ -47,6 +47,7 @@
                             <el-upload
                                     class="avatar-uploader"
                                     :action="$global.uploadUrl"
+                                    accept=".png,.jpeg,.jpg"
                                     :show-file-list="false"
                                     :on-success="handleAvatarSuccess"
                                     :before-upload="beforeAvatarUpload">
@@ -62,7 +63,7 @@
                                     <el-button type="primary" size="mini" @click="addObjCodes()">+新增目的码</el-button>
                                     <div v-for="(item,index) in objCodeList" :key="index">
                                         <div class="addObjCode">
-                                            <el-input v-model="item.destnumber" size="mini"></el-input>
+                                            <el-input v-model="item.destNumber" size="mini"></el-input>
                                             <el-button type="primary" icon="el-icon-minus" size="mini" @click="delObjCodes(index)"></el-button>
                                         </div>
                                     </div>
@@ -166,7 +167,7 @@
             console.log(sessionStorage.getItem('objFlowId'));
             console.log(sessionStorage.getItem('objCodeIn'));
             // this.objFlowId = sessionStorage.getItem('objFlowId');
-            this.entireFlowId = sessionStorage.getItem('entireFlowId');
+
             this.busIdentity = sessionStorage.getItem('businessType');
             this.usageList();
             this.$root.eventHub.$on('dialog1Visible', (res)=>{
@@ -180,8 +181,13 @@
                         this.acceptForm.imageUrl='';
                         this.acceptForm.fourNum='';
                         this.objCodeList=[];
-                    }else{
-                        this.objFlowId=res.objCodeIn==2?this.entireFlowId:sessionStorage.getItem('objFlowId');
+                    }else if(res.objCodeIn==2){
+                        this.entireFlowId = sessionStorage.getItem('entireFlowId');
+                        this.objFlowId = this.entireFlowId;
+                        console.log("this.objFlowId",this.objFlowId);
+                        this.objCodeDetail();
+                    }else if(res.objCodeIn==5){
+                        this.objFlowId =  sessionStorage.getItem('objFlowId');
                         console.log("this.objFlowId",this.objFlowId);
                         this.objCodeDetail();
                     }
@@ -285,6 +291,9 @@
                         }else{
                             this.changeMsgDisabled(false);
                         }
+                        if(this.acceptForm.fourNum==item.number400){
+                            this.searchObjCode();
+                        }
                     })
                 })
             },
@@ -312,6 +321,7 @@
                 this.$ajax.get('/vos/destnum/getDestNumbersToModify?number400='+this.acceptForm.fourNum).then((res)=>{
                     console.log(res.data.destNumber);
                     this.objCodeList = res.data.destNumber;
+                    console.log("objCodeList",this.objCodeList);
                 })
             },
             // 增值资费
@@ -341,16 +351,17 @@
 
             // 目的码暂存
             objCodeSave(acceptForm){
+                console.log(" this.companyId",this.companyId);
                 var companyInfo = {};
-                companyInfo.company = this.acceptForm.firmName;
-                companyInfo.companyId = this.companyId;
+                companyInfo.companyName = this.acceptForm.firmName;
+                companyInfo.id = this.companyId;
                 this.$refs[acceptForm].validate((valid) => {
                     if (valid) {
                         let paramList=[];
                         this.objCodeList.map((item)=>{
                             let param={};
-                            param.id=this.companyId;
-                            param.destnumber=item.destnumber;
+                            param.id=item.id;
+                            param.destNumber=item.destNumber;
                             param.destnumproofpic=this.acceptForm.imageUrl;
                             param.destnumUsage=this.acceptForm.usage;
                             param.number400=this.acceptForm.fourNum;
@@ -363,8 +374,11 @@
                             "number400": this.acceptForm.fourNum,
                             "company":companyInfo,
                             "companyFlow":{
-                                "flowId":this.objCodeIn=='2'?this.objFlowId:'',
+                                "flowId":(this.objCodeIn=='2'||this.objCodeIn=='5')?this.objFlowId:'',
                             }
+
+
+
                         }).then((res)=>{
                             console.log(res);
                             if(res.code==200){
@@ -385,15 +399,15 @@
             // 目的码送审
             objCodeSubmit(acceptForm){
                 var companyInfo = {};
-                companyInfo.company = this.acceptForm.firmName;
-                companyInfo.companyId = this.companyId;
+                companyInfo.companyName = this.acceptForm.firmName;
+                companyInfo.id = this.companyId;
                 this.$refs[acceptForm].validate((valid) => {
                     if (valid) {
                         let paramList=[];
                         this.objCodeList.map((item)=>{
                             let param={};
-                            param.id=this.companyId;
-                            param.destnumber=item.destnumber;
+                            param.id=item.id;
+                            param.destNumber=item.destNumber;
                             param.destnumproofpic=this.acceptForm.imageUrl;
                             param.destnumUsage=this.acceptForm.usage;
                             param.number400=this.acceptForm.fourNum;
@@ -413,7 +427,7 @@
                                 this.visible = false;
                                 this.$root.eventHub.$emit('addAcceptSave', null);
                                 // this.objCodeLists();
-                                this.$parent.entireLists();
+                                // this.$parent.entireLists();
                             }else{
                             }
                         })
@@ -427,6 +441,7 @@
             objCodeDetail(){
                 console.log("目的码详情");
                 console.log("目的码flowId");
+                console.log(this.entireFlowId);
                 console.log(this.objFlowId);
                 this.$ajax.get('/vos/destnum/getCacheData?flowId='+this.objFlowId).then((res)=>{
                     if(res.code==200){
@@ -434,7 +449,9 @@
                         console.log(res.data.destNumber);
                         console.log(res.data.company);
                         console.log(res.data.company.companyName);
-                        this.acceptForm.firmName = res.data.company.company;
+                        this.objCodeList = res.data.destNumber;
+                        this.acceptForm.firmName = res.data.company.companyName;
+                        this.companyId = res.data.company.id;
                         // this.acceptForm.imageUrl = res.data.company.companyProofPic;
                         this.acceptForm.fourNum = res.data.number400;
                         res.data.destNumber.map((item)=>{
@@ -442,6 +459,7 @@
                             this.acceptForm.fourNum = item.number400;
                             this.acceptForm.usage = item.destnumUsage;
                         })
+
 
                     }
                 })

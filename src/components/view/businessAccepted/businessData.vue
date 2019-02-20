@@ -7,9 +7,9 @@
                 </p>
             </div>
             <div class="block left">
-                <p class="fmini">经办人姓名： {{this.business.agentName}} </p>
-                <p class="fmini">经办人电话：{{this.business.agentMobilePhone}} </p>
-                <p class="fmini">经办人证件： {{this.business.agentDocumentType+""+this.business.agentDocumentNum}}</p>
+                <p class="fmini">经办人姓名： {{this.businessDetailBusinessInfo.agentName}} </p>
+                <p class="fmini">经办人电话：{{this.businessDetailBusinessInfo.agentMobilePhone}} </p>
+                <p class="fmini">经办人证件： {{this.businessDetailBusinessInfo.agentDocumentType+""+this.businessDetailBusinessInfo.agentDocumentNum}}</p>
                 <!--<p class="fmini">证件有效期： 2011.5.5-2031.5.5</p>-->
                 <div>
                     <!-- <div style="float:left;">
@@ -17,17 +17,17 @@
                     </div> -->
                     <ul class="abc">
                         <li>
-                            <img class="exampleh" :src="this.business.agentCardFront" alt="">
+                            <img class="exampleh" :src="this.businessDetailBusinessInfo.agentCardFront" alt="">
                             <p class="fmini center">经办人身份证（正面）</p>
                         </li>
                         <li>
-                            <img class="exampleh" :src="this.business.agentCardBack" alt="">
+                            <img class="exampleh" :src="this.businessDetailBusinessInfo.agentCardBack" alt="">
                             <p class="fmini center">经办人身份证（反面）</p>
                         </li>
                     </ul>
                     <ul class="abc">
                         <li>
-                            <img class="exampleh" :src="this.business.agentCardWIthHand" alt="">
+                            <img class="exampleh" :src="this.businessDetailBusinessInfo.agentCardWIthHand" alt="">
                             <p class="fmini center">经办人手持身份证（正面）</p>
                         </li>
                     </ul>
@@ -62,8 +62,8 @@
                                 </el-table-column>
 
                                 <el-table-column
-                                        prop="bottomFee"
-                                        label="最低年消费">
+                                        prop="basicFunctionFee"
+                                        label="基本功能费">
                                 </el-table-column>
 
                                 <el-table-column
@@ -87,9 +87,9 @@
                 <!--<div>-->
                     <p class="fmini" v-for="(item,index) in destNumberList">{{"目的码"+(index+1)+"："+ item.destnumber}}</p>
                 <!--</div>-->
-                <p class="fmini">归属地区： {{this.business.provinceBelong+this.business.cityBelong+this.business.cityBelong}}</p>
-                <p class="fmini">业务身份： {{this.business.channel}} </p>
-                <p class="fmini"> 优惠：{{this.business.discounts}}</p>
+                <p class="fmini">归属地区： {{this.businessDetailBusinessInfo.provinceBelong+this.businessDetailBusinessInfo.cityBelong+this.businessDetailBusinessInfo.cityBelong}}</p>
+                <p class="fmini">业务身份： {{this.businessDetailBusinessInfo.channel}} </p>
+                <p class="fmini"> 优惠：{{this.businessDetailBusinessInfo.discounts}}</p>
                 <div>
                     <div style="float:left;">
                         <span class="fmini">增值服务：</span>
@@ -141,7 +141,7 @@
                     </div>
                     <ul class="abc">
                         <li class="l2">
-                            <img class="imgSize" :src="this.business.unionAgreementPic" alt="">
+                            <img class="imgSize" :src="this.businessDetailBusinessInfo.unionAgreementPic" alt="">
                         </li>
                     </ul>
                 </div>
@@ -151,7 +151,7 @@
                     </div>
                     <ul class="abc">
                         <li class="l2">
-                            <img class="imgSize" :src="this.business.businessHandlePic" alt="">
+                            <img class="imgSize" :src="this.businessDetailBusinessInfo.businessHandlePic" alt="">
                         </li>
                     </ul>
                 </div>
@@ -161,7 +161,7 @@
                     </div>
                     <ul class="abc">
                         <li class="l2">
-                            <img class="imgSize" :src="this.business.authorizationPic" alt="">
+                            <img class="imgSize" :src="this.businessDetailBusinessInfo.authorizationPic" alt="">
                         </li>
                     </ul>
                 </div>
@@ -171,7 +171,7 @@
                     </div>
                     <ul class="abc">
                         <li class="l2">
-                            <img class="imgSize" :src="this.business.safeAgreementPic" alt="">
+                            <img class="imgSize" :src="this.businessDetailBusinessInfo.safeAgreementPic" alt="">
                         </li>
                     </ul>
                 </div>
@@ -181,7 +181,7 @@
                     </div>
                     <ul class="abc">
                         <li class="l2">
-                            <img class="imgSize" :src="this.business.destNumProfPic" alt="">
+                            <img class="imgSize" :src="this.businessDetailBusinessInfo.destNumProfPic" alt="">
                         </li>
                     </ul>
                 </div>
@@ -192,7 +192,7 @@
                     </div>
                     <ul class="abc">
                         <li class="l2">
-                            <img class="imgSize" :src="this.business.otherPic" alt="">
+                            <img class="imgSize" :src="this.businessDetailBusinessInfo.otherPic" alt="">
                         </li>
                     </ul>
                 </div>
@@ -204,82 +204,77 @@
     import {mapState} from "vuex";
     export default {
         name: 'businessData',
-        props: ["detialInfos"],
+        props: [
+            "detialInfos",
+            "companyInfos"
+        ],
+        watch: {
+            companyInfos(val) {
+                console.log("companyInfos",val);
+                this.businessDetialInfo = val.data;
+                console.log("businessDetialInfo.company",this.businessDetialInfo.company);
+                this.businessDetailBusinessInfo = this.businessDetialInfo.business;
+                this.destNumberList = this.businessDetialInfo.destNumber;
+                this.addValueList = this.businessDetialInfo.number400ValueAdded;
+                console.log("addValueList",this.addValueList);
+                //增值资费
+                this.addValueList.map((item)=>{
+                    console.log("addItem",item);
+                    item.amount = item.numOfMonth;
+                    item.numOfone = item.numOfone;
+                    if(item.units=="perMonth"){
+                        item.unit=item.valueAddedFee+"元/月";
+                        item.amounts = item.amount +"月";
+                    }else if(item.units=="perOne"){
+                        item.unit="元/个";
+                        item.amounts = item.numOfone +"个";
+                    }else if(item.units=="perMonthOne"){
+                        item.unit=item.numOfone+"元/月/个";
+                        item.amounts = item.amount+"月" + item.numOfone +"个";
+                    }
+
+                    if(item.presents==1){
+                        item.present="赠送"
+                    }else{
+                        item.present="付费"
+                    }
+                });
+
+                //400号码表格
+                let num400Obj = {};
+                num400Obj.number400 = this.businessDetailBusinessInfo.number400;
+                num400Obj.tariffName = this.businessDetailBusinessInfo.tariffName;
+                num400Obj.basicFunctionFee = this.businessDetailBusinessInfo.basicFunctionFee;
+                num400Obj.durationPresentation = this.businessDetailBusinessInfo.durationPresentation;
+                num400Obj.units = this.businessDetailBusinessInfo.units;
+                num400Obj.packageContent = this.businessDetailBusinessInfo.packageContent;
+                this.objCodeTable.push(num400Obj);
+                console.log(this.objCodeTable);
+            }
+        },
         data() {
             return {
                 objCodeTable: [],
                 addValueList:[],
                 destNumberList:[],
+                businessDetailBusinessInfo:{},
             };
         },
         components: {},
         created(){
-            console.log("company",this.company);
-            console.log("business",this.business);
-            console.log("destNumber",this.destNumber);
-            console.log("number400ValueAdded",this.number400ValueAdded);
-            console.log("number400Concession",this.number400Concession);
-            this.destNumberList = this.destNumber;
-
-            //增值资费
-            this.addValueList = this.number400ValueAdded;
-            this.addValueList.map((item)=>{
-                item.amount = item.numOfMonth;
-                item.numOfone = item.numOfone;
-                if(item.units=="perMonth"){
-                    item.unit=item.valueAddedFee+"元/月";
-                    item.amounts = item.amount +"月";
-                }else if(item.units=="perOne"){
-                    item.unit="元/个";
-                    item.amounts = item.numOfone +"个";
-                }else if(item.units=="perMonthOne"){
-                    item.unit=item.numOfone+"元/月/个";
-                    item.amounts = item.amount+"月" + item.numOfone +"个";
-                }
-
-                if(item.presents==1){
-                    item.present="赠送"
-                }else{
-                    item.present="付费"
-                }
-            });
             console.log("addValueList",this.addValueList);
-            //400号码表格
-            let num400Obj = {};
-                num400Obj.number400 = this.business.number400;
-                num400Obj.tariffName = this.business.tariffName;
-                num400Obj.bottomFee = this.business.bottomFee;
-                num400Obj.durationPresentation = this.business.durationPresentation;
-                num400Obj.units = this.business.units;
-                num400Obj.packageContent = this.business.packageContent;
-                this.objCodeTable.push(num400Obj);
-                console.log(this.objCodeTable);
+
         },
         methods: {
-            // 存vuex更新企业信息模块入参
-            ChangeCompanyStatus(val) {
-                return this.$store.dispatch("ChangeCompanyStatus", val);
-            },
-            ChangeBusinessStatus(val) {
-                return this.$store.dispatch("ChangeBusinessStatus", val);
-            },
-            ChangeDestNumber(val) {
-                return this.$store.dispatch("ChangeDestNumberStatus", val);
-            },
-            ChangeNumber400ValueAdded(val) {
-                return this.$store.dispatch("ChangeNumber400ValueAddedStatus", val);
-            },
-            ChangeNumber400Concession(val) {
-                return this.$store.dispatch("ChangeNumber400ConcessionStatus", val);
-            },
+
         },
         computed: {
             ...mapState({
-                company: state => state.createActivities.company,
-                business: state => state.createActivities.business,
-                destNumber: state => state.createActivities.destNumber,
-                number400ValueAdded: state => state.createActivities.number400ValueAdded,
-                number400Concession: state => state.createActivities.number400Concession,
+                // company: state => state.createActivities.company,
+                // business: state => state.createActivities.business,
+                // destNumber: state => state.createActivities.destNumber,
+                // number400ValueAdded: state => state.createActivities.number400ValueAdded,
+                // number400Concession: state => state.createActivities.number400Concession,
             })
         }
     }

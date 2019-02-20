@@ -8,23 +8,31 @@
 						<el-input v-model="form.firmName" size="mini"></el-input>
 					</el-form-item>
 
+					<el-form-item label="400电话：">
+						<el-input v-model="form.phoneNum" size="mini"></el-input>
+					</el-form-item>
+
 					<el-form-item label="时间：">
+						<!--<el-date-picker-->
+								<!--size="mini"-->
+								<!--v-model="form.time"-->
+								<!--type="daterange"-->
+								<!--range-separator="至"-->
+								<!--start-placeholder="开始日期"-->
+								<!--end-placeholder="结束日期">-->
+						<!--</el-date-picker>-->
 						<el-date-picker
-								size="mini"
 								v-model="form.time"
-								type="daterange"
+								size="mini"
+								type="datetimerange"
 								range-separator="至"
 								start-placeholder="开始日期"
 								end-placeholder="结束日期">
 						</el-date-picker>
 					</el-form-item>
 
-					<el-form-item label="400电话：">
-						<el-input v-model="form.phoneNum" size="mini"></el-input>
-					</el-form-item>
-
 					<el-form-item class="searchBtn">
-						<el-button type="primary" size="mini">搜索</el-button>
+						<el-button type="primary" size="mini" @click="voiceFileLists()">搜索</el-button>
 						<el-button @click="resetForm('form')" size="mini">重置</el-button>
 					</el-form-item>
 				</div>
@@ -160,6 +168,9 @@
             this.$root.eventHub.$on('voiceList',(resp)=>{
                 this.voiceFileLists();
 			})
+            this.$root.eventHub.$on('addAcceptSave', (resp) => {
+                this.voiceFileLists();
+            })
 		},
 		components: {
             DialogVoice
@@ -192,8 +203,8 @@
                 // console.log(this.form.time[1]);
                 let dateStart = new Date(this.form.time[0]);
                 let dateEnd = new Date(this.form.time[1]);
-                let dateStart_value=dateStart.getFullYear() + '-' + (dateStart.getMonth() + 1) + '-' + dateStart.getDate();
-                let dateEnd_value=dateEnd.getFullYear() + '-' + (dateEnd.getMonth() + 1) + '-' + dateEnd.getDate();
+                let dateStart_value=dateStart.getFullYear() + '-' + (dateStart.getMonth() + 1) + '-' + dateStart.getDate()+dateStart.getHours()+':'+dateStart.getMinutes()+':'+dateStart.getSeconds();
+                let dateEnd_value=dateEnd.getFullYear() + '-' + (dateEnd.getMonth() + 1) + '-' + dateEnd.getDate()+dateStart.getHours()+':'+dateStart.getMinutes()+':'+dateStart.getSeconds();
                 // console.log(dateStart_value);
                 // console.log(dateEnd_value);
                 this.$ajax.post('/vos/business/getBusinessFlowList',{
@@ -226,7 +237,8 @@
                             item.busStatus='通过审核';
                             item.btnList=[];
                             if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
-                                item.btnList.push({label:'变更'},{label:'注销'},{label:'详情'});
+                                // item.btnList.push({label:'变更'},{label:'注销'},{label:'详情'});
+                                item.btnList.push({label:'详情'});
                             }else{
                                 item.btnList.push({label:'详情'});
                             }
@@ -242,7 +254,8 @@
                             item.busStatus='变更审核中';
                             item.btnList=[];
                             if(this.baseData.roleName=='ROLE_admin' || item.assigneeRole==this.baseData.roleName){
-                                item.btnList.push({label:'变更审核通过'},{label:'驳回'},{label:'终止'},{label:'详情'});
+                                // item.btnList.push({label:'变更审核通过'},{label:'驳回'},{label:'终止'},{label:'详情'});
+                                item.btnList.push({label:'驳回'},{label:'终止'},{label:'详情'});
                             }else{
                                 item.btnList.push({label:'详情'});
                             }
@@ -250,7 +263,8 @@
                             item.busStatus='变更审核驳回';
                             item.btnList=[];
                             if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
-                                item.btnList.push({label:'变更'},{label:'注销'},{label:'详情'});
+                                // item.btnList.push({label:'变更'},{label:'注销'},{label:'详情'});
+                                item.btnList.push({label:'注销'},{label:'详情'});
                             }else{
                                 item.btnList.push({label:'详情'});
                             }
@@ -312,24 +326,17 @@
                         }
                     });
                 }else if(val=='送审'){
-                    this.$root.eventHub.$emit('dialog1VisibleVoice',{visibleVoice:true,voiceIn:3,flowId:this.voiceFlowId});
+                    this.$root.eventHub.$emit('dialog1VisibleVoice',{visibleVoice:true,voiceIn:2,flowId:this.voiceFlowId});
                 }else if(val=='通过审核'){
                     console.log("11111");
                     this.passCompany(val,data);
                 }else if(val=='驳回'){
                     console.log("tttttttt");
                     this.backCompany(val,data);
+				}else if(val=='变更'){
+                    this.$root.eventHub.$emit('dialog1VisibleVoice',{visibleVoice:true,voiceIn:3,flowId:this.voiceFlowId});
 				}else if(val=='删除'){
                     this.$ajax.post('/vos/business/deleteFlow',{
-                        // "companyFlow": {
-                        //     "creator": "admin",
-                        //     "businessId": 188,
-                        //     "updateTime": "2019-01-24 14:50:36",
-                        //     "type": "Business",
-                        //     "companyId": 66,
-                        //     "id": 22,
-                        //     "flowId": this.entireFlowId
-                        // }
                         "companyFlow": data
                     }).then((res)=>{
                         console.log(res);

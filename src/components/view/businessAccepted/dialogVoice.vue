@@ -70,17 +70,17 @@
                                         <template slot-scope="scope">
                                             <el-upload action=""
                                                        size="mini"
-                                                       :file-list="scope.row.voicefile"
+                                                       :file-list="scope.row.voicefiles"
                                                        :on-change="handleChange"
                                                        :http-request="uploadFile"
                                                        :before-upload ="beforeAvatarUpload"
-                                                       accept="mp3"
+                                                       accept=".flv,.mp3,.wma,.swf,.wmv,.mid,.avi,.mpg,.asf,.rm,.rmvb"
                                                        :limit="1">
                                                 <el-button size="small" type="primary">点击上传</el-button>
                                             </el-upload>
                                         </template>
                             </el-table-column>
-                            <!--accept=".flv,.mp3,.wma,.swf,.wmv,.mid,.avi,.mpg,.asf,.rm,.rmvb"-->
+
                             <el-table-column
                                     prop="operation"
                                     label="操作">
@@ -117,7 +117,7 @@
                 </el-form>
             </div>
             <span slot="footer" class="dialog-footer">
-            <el-button size="mini" @click="voiceSave()">暂存信息</el-button>
+            <el-button size="mini" v-if="saveBtnHidden" @click="voiceSave()">暂存信息</el-button>
             <el-button type="primary" @click="voiveAudit()" size="mini">送 审</el-button>
         </span>
         </el-dialog>
@@ -140,7 +140,7 @@
                 voiceForm:{
                     firmName:'',
                     voiceNum:'',
-                    voicefile:'',
+                    voicefiles:'',
                     voicename:'',
                     voiceNumAndFile:'',
                     addValueType:'',
@@ -153,12 +153,12 @@
                 tableData:[{
                     voicetype:'',
                     voicename:'',
-                    voicefile:[],
+                    voicefiles:[],
                 }],
                 voiceTypeList:[],
                 businessType:'', //登录信息
                 file: '',
-                voicefile:[],    //语音文件
+                voicefiles:[],    //语音文件
                 changeVoiceType:'',//语音类型
                 addValueId:'',
                 valueAddedList:'', //资费增值信息数组
@@ -167,9 +167,11 @@
                 // companyInfo:'',    //公司信息
                 busIdentity:'',     //登录信息channel
                 voiceFlowId:'',     //语音表格flowId
+                saveBtnHidden:true,
             }
         },
         created(){
+            console.log(sessionStorage.getItem("voiceIn"));
             this.$root.eventHub.$on('dialog1VisibleVoice', (res)=>{
                 console.log('voiceInfo',res);
                 if(res.voiceIn){
@@ -185,16 +187,19 @@
                         this.tableData=[{
                             voicetype:'',
                             voicename:'',
-                            voicefile:[],
+                            voicefiles:[],
                         }];
                         this.tableData.map((item)=>{
-                            item.voicefile = [];
+                            item.voicefiles = [];
                         });
-                    }else{
+                    }else if(res.voiceIn==3) {
+                        this.saveBtnHidden=false;
+                        this.voiceFlowId=(res.voiceIn==3)?sessionStorage.getItem('entireFlowId'):res.flowId;
+                    }else {
                         console.log("res.voiceIn",res.voiceIn);
                         this.voiceIn = res.voiceIn;
                         console.log("this.voiceIn",this.voiceIn);
-                        this.voiceFlowId=res.voiceIn==2?sessionStorage.getItem('entireFlowId'):res.flowId;
+                        this.voiceFlowId=(res.voiceIn==2)?sessionStorage.getItem('entireFlowId'):res.flowId;
                         this.voiceDetail();
                     }
                 }
@@ -241,6 +246,7 @@
                     }
                 })
             },
+
             //企业名称li
             // firmNameLi(val){
             //     console.log(val);
@@ -290,7 +296,7 @@
                         this.tableData.push({
                             voicetype:'',
                             voicename:'',
-                            voicefile:[],
+                            voicefiles:[],
                         });
                     // }
             });
@@ -303,7 +309,7 @@
                 this.tableData.push({
                     voicetype:'',
                     voicename:'',
-                    voicefile:[],
+                    voicefiles:[],
                 })
             },
             // 文件上传限制
@@ -321,12 +327,13 @@
                 return isVoiceType && isVoiceSize;
             },
             // 自定义上传
-            uploadFile() {
+            uploadFile(item,item1) {
                 let form=new FormData();
                 form.append('voice',this.file);
                 this.$ajax.post('/vos/common/uploadVoice',form).then((res)=>{
                   console.log(res);
-                  this.voicefile = res;
+                  console.log(this.tableData);
+                  this.voicefiles = res;
                 })
 
             },
@@ -388,16 +395,17 @@
             },
             // 暂存
             voiceSave(){
-                console.log(this.voicefile);
+                console.log(this.voicefiles);
                 console.log(this.voiceIn);
                 var companyInfo = {};
-                companyInfo.company = this.voiceForm.firmName;
-                companyInfo.companyId = this.companyId;
+                companyInfo.companyName = this.voiceForm.firmName;
+                companyInfo.id = this.companyId;
                 this.tableData.map((item)=>{
                     item.id = this.companyId;
                     item.companyid = this.companyId;
                     item.number400 = this.voiceForm.voiceNum;
                     item.valueaddedid = this.valueAddedList[0].id;
+                    item.voicefile=this.voicefiles;
                 });
                 this.$ajax.post('/vos/voice/startAndSave',{
                     "number400":this.voiceForm.voiceNum,
@@ -410,6 +418,7 @@
                     console.log(res);
                     if(res.code==200){
                         this.visibleVoice = false;
+                        this.$root.eventHub.$emit('addAcceptSave', null);
                         this.$root.eventHub.$emit('voiceList');
                     }else{
                         if(res.message){
@@ -423,8 +432,8 @@
             // 语音送审
             voiveAudit(){
                 var companyInfo = {};
-                companyInfo.company = this.voiceForm.firmName;
-                companyInfo.companyId = this.companyId;
+                companyInfo.companyName = this.voiceForm.firmName;
+                companyInfo.id = this.companyId;
                 this.tableData.map((item)=>{
                     item.id = this.companyId;
                     item.companyid = this.companyId;
@@ -443,6 +452,7 @@
                     if(res.code==200){
                         this.visibleVoice = false;
                         this.$root.eventHub.$emit('addAcceptSave', null);
+                        this.$root.eventHub.$emit('voiceList');
                     }else{
                         this.$message.warning(res.message);
                     }
@@ -453,17 +463,17 @@
              console.log(this.voiceFlowId);
              this.$ajax.get('/vos/voice/getCacheData?flowId='+this.voiceFlowId).then((res)=>{
                  console.log(res.data);
-
                  this.voiceForm.voiceNum = res.data.number400;
                  this.tableData = res.data.voice;
-                 this.voiceForm.firmName = res.data.company.company;
+                 this.voiceForm.firmName = res.data.company.companyName;
+                 this.companyId = res.data.company.id;
                  this.tableData.map((item)=>{
                      let sss=[];
                      sss.push({
                          name:item.voicefile,
-                         url:item.voicefile
+                         url:item.voicefiles
                      });
-                     item.voicefile = sss;
+                     item.voicefiles = sss;
                  });
 
              })
