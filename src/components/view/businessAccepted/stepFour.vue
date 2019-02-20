@@ -300,6 +300,12 @@
             },
             //业务送审
             addBusinessSend() {
+                // 必填校验
+                if(this.stepFourForm.unionAgreementPic=='' || this.stepFourForm.businessHandlePic=='' || this.stepFourForm.authorizationPic=='' || this.stepFourForm.safeAgreementPic=='' || this.stepFourForm.destNumProfPic=='' || this.stepFourForm.otherPic==''){
+                    this.$message.warning("请完善图片信息");
+                }else{
+
+                }
                 this.dialogVisible = false;
                 console.log("business:", this.business);
                 this.businessObj = Object.assign(this.business, this.stepFourForm);

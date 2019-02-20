@@ -210,12 +210,21 @@
                 return isJPG && isLt2M;
             },
             next(val) {
-                this.$emit('childNext', val);
-                // 改变vuex的值
-                if (val == 3) {
-                    this.campanyObj = Object.assign(this.company, this.stepTwoForm);
-                    console.log(this.campanyObj);
-                    this.ChangeCompanyStatus(this.campanyObj);
+                if(val==1){
+                    this.$emit('childNext', val);
+                }else{
+                    //必填校验
+                    if(this.stepTwoForm.companyProofPic=='' || this.stepTwoForm.legalCardFrontPic=='' || this.stepTwoForm.legalCardBackPic=='' || this.stepTwoForm.legalCardHandPic==''){
+                        this.$message.warning('请完善图片信息');
+                    }else{
+                        this.$emit('childNext', val);
+                        // 改变vuex的值
+                        if (val == 3) {
+                            this.campanyObj = Object.assign(this.company, this.stepTwoForm);
+                            console.log(this.campanyObj);
+                            this.ChangeCompanyStatus(this.campanyObj);
+                        }
+                    }
                 }
             },
             // 暂存按钮
@@ -234,6 +243,10 @@
                     }
                 }).then((res) => {
                     console.log(res);
+                    if(res.code==200){
+                        this.dialogVisible = false;
+                        this.$root.eventHub.$emit('addAcceptSave');
+                    }
                 });
             },
             // 存vuex更新企业信息模块入参
