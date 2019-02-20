@@ -58,20 +58,20 @@
 						<el-button type="primary" size="mini" @click="addNumSetAction">
 							<i class="el-icon-plus"></i> 新增业务动作
 						</el-button>
-						<el-button type="info" plain size="mini">删除</el-button>
+						<el-button type="info" plain size="mini" @click="removeNumSetAction">删除</el-button>
 					</section>
 					<el-collapse v-model="activeName" accordion>
 						<div id="moveList" ref="moveList">
 							<el-collapse-item :name="index" v-for="(item,index) in numSetActionData" :key="index">
 								<template slot="title">
-									<el-checkbox v-model="businessAction" :label="item.temName"></el-checkbox>
+									<el-checkbox v-model="businessAction" :label="index">{{item.temName}}</el-checkbox>
 									<!-- <div style="text-align: right;width: 100%;">
                                         <el-button size="mini" type="text" @click.stop="moveup(item.order,$event,index)">上移</el-button>
                                         <el-button size="mini" type="text" @click.stop="movedown(item.order)">下移</el-button>
                                         &#12288;
                                     </div>-->
 								</template>
-								<numSetAction :allType="allType" :number400Data="number400Data" :order="item.order" :allData="item" :index="index" @typeChange="typeChange" :isFirst="true"></numSetAction>
+								<numSetAction :allType="allType" :number400Data="number400Data" :order="item.order" :allData="item" :index="index" @typeChange="typeChange" :isFirst="true" :voiceOptions="voiceOptions"></numSetAction>
 							</el-collapse-item>
 						</div>
 					</el-collapse>
@@ -96,7 +96,6 @@
 		components: {
 			numSetAction
 		},
-		mixins: [{ methods: { updata() { numSetAction.methods.updata } } }],
 		watch: {
 			show(newV, oldV) {
 				this.dialogVisible = newV;
@@ -108,6 +107,9 @@
 				if (oldV == 1) {
 					this.upbaseSet();
 				}
+			},
+			"number400Data.number400": function (n, o) {
+				this.getAllBy400();
 			},
 			numSetActionData(newV, oldV) {
 				this.allTypeChange(newV);
@@ -128,12 +130,13 @@
 				},
 				businessAction: [],
 				numSetActionData: [],
+				voiceOptions: [],
 				allType: [],
 				dialogVisible: false,
 				type: "1",
 				numSetup: "",
 				active: "1",
-				activeName: 2,
+				activeName: 0,
 				options: [{
 						value: "transfer",
 						label: "转接"
@@ -198,52 +201,119 @@
 							Object.assign(this.baseSet, res.data);
 						}
 					});
+				this.numSetActionData = [];
 				this.getDetail("Transfer", "转接", "transfer");
 				this.getDetail("Playback", "放音挂机", "playback");
 				this.getDetail("IVR", "IVR", "IVR");
 			},
-			submit(data) {
-				data.map(item => {
-					this.updata(item);
+			getAllBy400() {
+				this.$ajax.get('/vos/voice/getAllBy400?number400=' + this.number400Data.number400).then(res => {
+					this.voiceOptions = res.data.voice;
 				});
 			},
+			submit(data) {
+				//this.checkData(data)
+				if (this.checkData(data)) {
+					data.map(item => {
+						this.updata(item);
+					});
+					this.$emit('close');
+				}
+			},
 			getDetail(url, tem, temSet) {
-				this.$ajax.get("/vos/num400config/get" + url + "Detail/" + this.number400Data.number400).then(res => {
-					if (res.code == 200 && res.data.length > 0) {
-						let obj = this.createdSet();
-						obj.businessType = res.data[0].businessType;
-						obj.temName = tem;
-						if (url == "Transfer") {
-							res.data.map(item => {
-								obj[temSet].ruleType.push(item.ruleType);
-								Object.assign(obj[temSet].ruleConfig[item.ruleType], {
-									id: item.id,
-									workTime: [
-										[item.workTime1Start || '', item.workTime1End || ''],
-										[item.workTime2Start || '', item.workTime2End || '']
-									],
-									codeWork: item.workDestNumbers.split(","),
-									codeUnWork: item.nonWorkDestNumbers.split(","),
-									specificDate: item.specificDate ? item.specificDate.split(",") : item.specificDate
+				this.$ajax
+					.get(
+						"/vos/num400config/get" +
+						url +
+						"Detail/" +
+						this.number400Data.number400
+					)
+					.then(res => {
+						if (res.code == 200 && res.data.length > 0) {
+							let obj = this.createdSet();
+							let _this = this;
+							obj.businessType = res.data[0].businessType;
+							obj.temName = tem;
+							if (url == "Transfer") {
+								res.data.map(item => {
+									obj[temSet].ruleType.push(item.ruleType);
+									Object.assign(obj[temSet].ruleConfig[item.ruleType], {
+										id: item.id,
+										workTime: [
+											[item.workTime1Start || "", item.workTime1End || ""],
+											[item.workTime2Start || "", item.workTime2End || ""]
+										],
+										codeWork: item.workDestNumbers.split(","),
+										codeUnWork: item.nonWorkDestNumbers.split(","),
+										specificDate: item.specificDate ?
+											item.specificDate.split(",") : (item.ruleType == 'ignore' || item.ruleType == 'day' ? '' : [])
+									});
 								});
-							});
-						} else {
-							res.data.map(item => {
-								obj[temSet].ruleType.push(item.ruleType);
-								Object.assign(obj[temSet].ruleConfig[item.ruleType], {
-									id: item.id,
-									workTime: [
-										[item.workTime1Start, item.workTime1End],
-										[item.workTime2Start, item.workTime2End]
-									],
-									specificDate: item.specificDate.split(",")
+							} else {
+								res.data.map(item => {
+									obj[temSet].voice = {
+										id: item.voiceId,
+										voicePath: item.voicePath
+									};
+									obj[temSet].ruleType.push(item.ruleType);
+									Object.assign(obj[temSet].ruleConfig[item.ruleType], {
+										id: item.id,
+										workTime: [
+											[item.workTime1Start || "", item.workTime1End || ""],
+											[item.workTime2Start || "", item.workTime2End || ""]
+										],
+										specificDate: item.specificDate ?
+											item.specificDate.split(",") : (item.ruleType == 'ignore' || item.ruleType == 'day' ? '' : [])
+									});
 								});
-							});
+							};
+							if (url == "IVR") {
+								let _this = this;
+								this.$ajax
+									.get(
+										"/vos/num400config/getAllKey/" + this.number400Data.number400
+									)
+									.then(resp => {
+										if (resp.code == 200) {
+											obj.children = [];
+
+											function trans(data, parent) {
+												for (let key in data) {
+													let child = _this.createdSet();
+													child.id = data[key].id;
+													child.keyNumber = data[key].keyNumber;
+													child.businessType = data[key].businessType;
+													child.actionName = data[key].actionName;
+													if (data[key].businessType == "transfer") {
+														child[data[key].businessType].ruleType.push(data[key].ruleType || "ignore");
+														child[data[key].businessType].ruleConfig[data[key].ruleType || "ignore"] = {
+															codeWork: data[key].workDestNumbers.split(","),
+															codeUnWork: data[key].nonWorkDestNumbers.split(",")
+														};
+													} else if (data[key].businessType == "playback") {
+														child[data[key].businessType].voice = {
+															id: data[key].voiceId,
+															voicePath: data[key].voicePath
+														};
+													} else if (data[key].businessType == "IVR") {
+														child[data[key].businessType].voice = {
+															id: data[key].voiceId,
+															voicePath: data[key].voicePath
+														};
+														trans(data[key].children, child.children);
+													}
+													parent.push(child);
+												}
+											};
+											trans(resp.data, obj.children);
+											_this.numSetActionData.push(obj);
+										}
+									});
+							} else {
+								this.numSetActionData.push(obj);
+							}
 						}
-						console.log(obj);
-						this.numSetActionData.push(obj);
-					}
-				});
+					});
 			},
 			typeChange(type, index, temName) {
 				this.numSetActionData[index].businessType = type;
@@ -302,9 +372,30 @@
 			upbaseSet() {
 				var data = {};
 				data = Object.assign(this.number400Data, this.baseSet);
+				if (data.id == "") {
+					return;
+				}
 				this.$ajax.post("/vos/num400config/saveBasic", {
 					num400BasicConfig: data
 				});
+			},
+			removeNumSetAction() {
+				this.businessAction.map(index => {
+					if (this.numSetActionData[index].businessType == 'transfer') {
+						this.$ajax.post('/vos/num400config/deleteTransfer/' + this.number400Data.number400).then(res => {
+							this.numSetActionData.splice(index, 1);
+						})
+					} else if (this.numSetActionData[index].businessType == 'playback') {
+						this.$ajax.post('/vos/num400config/deletePlayback/' + this.number400Data.number400).then(res => {
+							this.numSetActionData.splice(index, 1);
+						})
+					} else if (this.numSetActionData[index].businessType == 'IVR') {
+						this.$ajax.post('/vos/num400config/deleteIVR/' + this.number400Data.number400).then(res => {
+							this.numSetActionData.splice(index, 1);
+						})
+					}
+				})
+
 			},
 			addNumSetAction() {
 				var numSetAction = "";
@@ -324,19 +415,20 @@
 						};
 						break;
 					}
-				};
+				}
 				let obj = this.createdSet();
 				obj.businessType = numSetAction.type;
 				obj.temName = numSetAction.temName;
 				obj.order = numSetAction.order;
 				obj.actionName = numSetAction.actionName;
 				numSetAction ? this.numSetActionData.push(obj) : "";
+				this.activeName = this.numSetActionData.length - 1;
 			},
 			createdSet() {
 				var obj = {
 					id: "",
-					businessType: '',
-					temName: '',
+					businessType: "",
+					temName: "",
 					order: 0,
 					actionName: "一级",
 					transfer: {
@@ -344,12 +436,12 @@
 						ruleConfig: {}
 					},
 					playback: {
-						voiceType: 0,
+						voice: {},
 						ruleType: [],
 						ruleConfig: {}
 					},
 					IVR: {
-						voiceType: 0,
+						voice: {},
 						ruleType: [],
 						ruleConfig: {}
 					},
@@ -357,75 +449,105 @@
 					children: []
 				};
 				this.ruleOptions.map(item => {
-					obj.transfer.ruleConfig[item.value] = {
-						id: "",
-						label: item.label,
-						workTime: [''],
-						codeWork: [''],
-						codeUnWork: [''],
-						specificDate: []
-					};
-					obj.playback.ruleConfig[item.value] = {
-						id: "",
-						label: item.label,
-						workTime: [''],
-						specificDate: []
-					};
-					obj.IVR.ruleConfig[item.value] = {
-						id: "",
-						label: item.label,
-						workTime: [''],
-						specificDate: []
-					};
+					if (item.value == "ignore" || item.value == "day") {
+						obj.transfer.ruleConfig[item.value] = {
+							id: "",
+							label: item.label,
+							workTime: [""],
+							codeWork: [""],
+							codeUnWork: [""],
+							specificDate: ""
+						};
+						obj.playback.ruleConfig[item.value] = {
+							id: "",
+							label: item.label,
+							workTime: [""],
+							specificDate: ""
+						};
+						obj.IVR.ruleConfig[item.value] = {
+							id: "",
+							label: item.label,
+							workTime: [""],
+							specificDate: ""
+						};
+					} else {
+						obj.transfer.ruleConfig[item.value] = {
+							id: "",
+							label: item.label,
+							workTime: [""],
+							codeWork: [""],
+							codeUnWork: [""],
+							specificDate: []
+						};
+						obj.playback.ruleConfig[item.value] = {
+							id: "",
+							label: item.label,
+							workTime: [""],
+							specificDate: []
+						};
+						obj.IVR.ruleConfig[item.value] = {
+							id: "",
+							label: item.label,
+							workTime: [""],
+							specificDate: []
+						};
+					}
 				});
 				return obj;
 			},
 			updata(objData) {
-				console.log(objData);
 				var postdata = {};
-				postdata.parentId = '';
 				postdata.number400 = this.number400Data.number400;
 				postdata.businessType = objData.businessType;
-				if (objData.businessType == 'transfer') {
+				if (objData.businessType == "transfer") {
 					let pData = [];
 					objData.transfer.ruleType.map(item => {
 						let cData = Object.assign({}, postdata);
 						cData.id = item.id;
 						cData.ruleType = item;
-						cData.workDestNumbers = objData.transfer.ruleConfig[item].codeWork.join(',');
-						cData.nonWorkDestNumbers = objData.transfer.ruleConfig[item].codeUnWork.join(',');
+						cData.workDestNumbers = objData.transfer.ruleConfig[
+							item
+						].codeWork.join(",");
+						cData.nonWorkDestNumbers = objData.transfer.ruleConfig[
+							item
+						].codeUnWork.join(",");
 						objData.transfer.ruleConfig[item].workTime.map((_item, _index) => {
-							cData['workTime' + (_index + 1) + 'Start'] = _item[0];
-							cData['workTime' + (_index + 1) + 'End'] = _item[1];
+							cData["workTime" + (_index + 1) + "Start"] = _item[0];
+							cData["workTime" + (_index + 1) + "End"] = _item[1];
 						});
-						if (item == 'week' || item == 'month') {
-							cData.specificDate = objData.transfer.ruleConfig[item].specificDate.join(',');
+						if (item == "week" || item == "month") {
+							cData.specificDate = objData.transfer.ruleConfig[
+								item
+							].specificDate.join(",");
 						} else {
 							cData.specificDate = objData.transfer.ruleConfig[item].specificDate;
-						};
+						}
 						pData.push(cData);
 					});
-					this.sendUp('saveTransfer', pData)
-				} else if (objData.businessType == 'playback') {
+					this.sendUp("saveTransfer", pData);
+				} else if (objData.businessType == "playback") {
 					let pData = [];
 					objData.playback.ruleType.map(item => {
 						let cData = Object.assign({}, postdata);
 						cData.id = item.id;
 						cData.ruleType = item;
 						objData.playback.ruleConfig[item].workTime.map((_item, _index) => {
-							cData['workTime' + (_index + 1) + 'Start'] = _item[0];
-							cData['workTime' + (_index + 1) + 'End'] = _item[1];
+							cData["workTime" + (_index + 1) + "Start"] = _item[0];
+							cData["workTime" + (_index + 1) + "End"] = _item[1];
 						});
-						if (item == 'week' || item == 'month') {
-							cData.specificDate = objData.playback.ruleConfig[item].specificDate.join(',');
+						if (item == "week" || item == "month") {
+							cData.specificDate = objData.playback.ruleConfig[
+								item
+							].specificDate.join(",");
 						} else {
 							cData.specificDate = objData.playback.ruleConfig[item].specificDate;
-						};
-						cData.voiceId = objData.playback.voiceType;
+						}
+						cData.voiceId = objData.playback.voice.id;
+						cData.voicePath = objData.playback.voice.voiceFile;
 						pData.push(cData);
 					});
-					this.sendUp('savePlayback', pData)
-				} else if (objData.businessType == 'IVR') {
+					this.sendUp("savePlayback", pData);
+				} else if (objData.businessType == "IVR") {
 					let pData = [];
 					objData.IVR.ruleType.map(item => {
 						let cData = Object.assign({}, postdata);
@@ -433,29 +555,134 @@
 						cData.ruleType = item;
 						cData.actionName = objData.actionName;
 						objData.IVR.ruleConfig[item].workTime.map((_item, _index) => {
-							cData['workTime' + (_index + 1) + 'Start'] = _item[0];
-							cData['workTime' + (_index + 1) + 'End'] = _item[1];
+							cData["workTime" + (_index + 1) + "Start"] = _item[0];
+							cData["workTime" + (_index + 1) + "End"] = _item[1];
 						});
-						if (item == 'week' || item == 'month') {
-							cData.specificDate = objData.IVR.ruleConfig[item].specificDate.join(',');
+						if (item == "week" || item == "month") {
+							cData.specificDate = objData.IVR.ruleConfig[item].specificDate.join(
+								","
+							);
 						} else {
 							cData.specificDate = objData.IVR.ruleConfig[item].specificDate;
-						};
-						cData.voiceId = objData.IVR.voiceType;
+						}
+						cData.voiceId = objData.IVR.voice.id;
+						cData.voicePath = objData.IVR.voice.voiceFile;
 						pData.push(cData);
 					});
-					this.sendUp('saveIVR', cData);
+					this.sendUp("saveIVR", pData);
 				}
 			},
 			sendUp(url, postdata) {
-				this.$ajax.post('/vos/num400config/' + url, {
-					num400TransferConfigs: postdata
-				}).then(res => {
-					if (res.code == 200) {
-						this.$message.success(res.data);
-					}
-				});
+				this.$ajax
+					.post("/vos/num400config/" + url, {
+						num400Configs: postdata
+					})
+					.then(res => {
+						if (res.code == 200) {
+							this.$message.success(res.data);
+						}
+					});
 			},
+			checkData(data) {
+				let isrequire = true;
+				const _this = this;
+				let a = {};
+				let objs = [];
+				data.map(item => {
+					item[item.businessType].ruleType.map(_item => {
+						item[item.businessType].ruleConfig[_item].workTime.map(
+							($item, $index) => {
+								if ($item[0] != "" && $item[1] != "") {
+									for (let val of _this.ruleOptions) {
+										if (val.value == _item) {
+											const n = Object.assign({}, {
+												temName: item.temName,
+												stime: new Date("2019/1/1 " + $item[0]).getTime(),
+												etime: new Date("2019/1/1 " + $item[1]).getTime(),
+												type: val.label,
+												index: $index + 1
+											});
+											console.log(n);
+											objs.push(n);
+											return;
+										}
+									}
+								}
+							}
+						);
+					});
+				});
+
+				// function quickSC(array, left, right, bol) {
+				// 	if (left < right) {
+				// 		var temp;
+				// 		if (
+				// 			array[left].stime >= array[right].etime ||
+				// 			array[left].etime <= array[right].stime
+				// 		) {
+				// 			if (array[left].stime >= array[right].etime && left > 0) {
+				// 				temp = array[right];
+				// 				array[right] = array[left];
+				// 				array[left] = temp;
+				// 				if (bol) {
+				// 					quickSC(array, left - 1, left, false);
+				// 					quickSC(array, left + 1, right, true);
+				// 				};
+				// 			} else if (array[left].stime >= array[right].etime && left == 0) {
+				// 				temp = array[right];
+				// 				array[right] = array[left];
+				// 				array[left] = temp;
+				// 				if (bol) {
+				// 					quickSC(array, left + 1, right, true);
+				// 				};
+				// 			} else {
+				// 				if (bol) {
+				// 					quickSC(array, left + 1, right, true);
+				// 				};
+				// 			}
+				// 		} else {
+				// 			_this.$message.error({
+				// 				showClose: true,
+				// 				duration: 10000,
+				// 				message: array[left].temName +
+				// 					"的" + array[left].type + "工作时间" +
+				// 					array[left].index +
+				// 					"与" +
+				// 					array[right].temName +
+				// 					"的" + array[right].type + "工作时间" +
+				// 					array[right].index +
+				// 					"时间有部分冲突"
+				// 			});
+				// 			isrequire = false;
+				// 		}
+				// 	}
+				// };
+				objs.map((item, index) => {
+					for (let i = index + 1; i < objs.length; i++) {
+						if (
+							item.stime >= objs[i].etime ||
+							item.etime <= objs[i].stime
+						) {
+							console.log('时间不冲突');
+						} else {
+							_this.$message.error({
+								showClose: true,
+								duration: 10000,
+								message: item.temName +
+									"的" + item.type + "工作时间" +
+									item.index +
+									"与" +
+									objs[i].temName +
+									"的" + objs[i].type + "工作时间" +
+									objs[i].index +
+									"时间有部分冲突"
+							});
+							isrequire = false;
+						}
+					}
+				})
+				return isrequire;
+			}
 		}
 	};
 </script>

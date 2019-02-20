@@ -19,11 +19,11 @@ module.exports = {
 			//   }
 			// },
 			'/vos': {
-				// target: 'http://172.20.10.3:5480',
+				//target: 'http://127.0.0.1:8888',
 				//阿里云
-				target: 'http://47.94.168.117:5480',
+				//target: 'http://47.94.168.117:5480',
 				//将恩情
-				//target: 'http://192.168.0.104:5480',
+				target: 'http://192.168.0.104:5480',
 				//吕圣
 				// target: 'http://192.168.0.154:5480',
 				//廖文
@@ -36,7 +36,7 @@ module.exports = {
 		},
 
 		// Various Dev Server settings
-		host: 'localhost', // can be overwritten by process.env.HOST
+		host: '0.0.0.0', // can be overwritten by process.env.HOST
 		port: 8080, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
 		autoOpenBrowser: false,
 		errorOverlay: true,

@@ -1,8 +1,8 @@
 <template>
 	<div id="businessDetail" class="managerFormTitle" v-loading="loading">
 		<div id="base">
-			<header class="left" @click="back">
-				企业管理 > 详情
+			<header class="left flg" @click="back">
+				<span class="return flg">企业管理</span> / 详情
 			</header>
 			<section>
 				<div class="title left">
@@ -60,7 +60,7 @@
 				</div>
 			</section>
 		</div>
-		<div id="progress">
+		<div id="progress" v-if="$route.query.status">
 			<header class="left">
 				审核流程 > 企业审核/变更/注销
 			</header>
@@ -106,7 +106,7 @@
 			this.baseData.username = sessionStorage.getItem("username");
 			this.baseData.roleName = sessionStorage.getItem("roleName");
 			this.loading = true;
-			this.$ajax.get('/vos/company/getCacheData?flowId=' + this.$route.query.flowId).then(res => {
+			this.$ajax.post('/vos/company/getDetail', { company: { id: this.$route.query.Id } }).then(res => {
 				if (res.code == 200) {
 					this.loading = false;
 					const companyCharacterOptions = [{
@@ -179,19 +179,19 @@
 						label: '注销冷冻'
 					}, ];
 					for (let item of companyCharacterOptions) {
-						if (item.value == res.data.company.companyCharacter) {
-							res.data.company.companyCharacterStr = item.label;
+						if (item.value == res.data.company1.companyCharacter) {
+							res.data.company1.companyCharacterStr = item.label;
 							//return;
 						}
 					}
 					for (let item of legalCardOptions) {
-						if (item.value == res.data.company.legalCard) {
-							res.data.company.legalCardStr = item.label;
+						if (item.value == res.data.company1.legalCard) {
+							res.data.company1.legalCardStr = item.label;
 							//return;
 						}
 					}
-					this.detail = res.data.company;
-					res.data.flowRecord.map(item => {
+					this.detail = res.data.company1;
+					res.data.company1.map(item => {
 						item.title = `${item.assginessRole=='ROLE_admin'?'管理员':'业务员'}(${item.operator})`;
 						var m = '';
 						for (let _item of statusOptions) {
@@ -202,7 +202,7 @@
 						};
 						item.description = `${m} ${item.operateTime}`;
 					})
-					this.record = res.data.flowRecord;
+					this.record = res.data.company1;
 				}
 			});
 		},
