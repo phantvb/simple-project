@@ -193,10 +193,11 @@
 									type: "warning"
 								});
 							}
-						});
+                        });
+                        this.addTimePacketFormDialogVisible = false;
 				}
 
-				this.addTimePacketFormDialogVisible = false;
+				
 			},
 
 			updateTimePacket(num, index) {
@@ -280,10 +281,11 @@
 								});
 								this.loadData();
 							}
-						});
+                        });
+                        this.addTimePacketFormDialogVisible = false;
 				}
 
-				this.addTimePacketFormDialogVisible = false;
+				
 			},
 
 			//删除信息
