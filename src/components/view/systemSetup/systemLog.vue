@@ -17,8 +17,10 @@
 								</el-select>
 							</el-form-item>
 							<el-form-item label="状态：">
-								<el-radio v-model="addTopForm.status" label="true">启用</el-radio>
-								<el-radio v-model="addTopForm.status" label="false">停用</el-radio>
+								<el-radio-group v-model="addTopForm.status">
+									<el-radio :label="true">启用</el-radio>
+									<el-radio :label="false">停用</el-radio>
+								</el-radio-group>
 							</el-form-item>
 						</div>
 						<div class="accountMessage">
@@ -39,15 +41,21 @@
 								<el-input v-model="addTopForm.phoneNum" size="mini"></el-input>
 							</el-form-item>
 
-							<el-form-item label="归属地区：" class="homeLocation">
-								<el-select v-model="addTopForm.province" placeholder="请选择省份" size="mini">
-									<el-option :label="item.label" :value="item.value" v-for="(item,index) in provinceList" :key="index"></el-option>
+                            <el-form-item label="业务身份：">
+								<el-select v-model="addTopForm.channel" placeholder="请选择" size="mini">
+									<el-option :label="item.label" :value="item.value" v-for="(item,index) in channelList" :key="index"></el-option>
 								</el-select>
-								<el-select v-model="addTopForm.city" placeholder="请选择市" size="mini">
-									<el-option :label="item.label" :value="item.value" v-for="(item,index) in cityList" :key="index"></el-option>
+							</el-form-item>
+
+							<el-form-item label="归属地区：" class="homeLocation">
+								<el-select v-model="addTopForm.province" placeholder="请选择省份" size="mini" @focus="loadProvince" @change="loadCity">
+									<el-option :label="item.label" :value="item.value" v-for="(item,index) in options.province" :key="index"></el-option>
+								</el-select>
+								<el-select v-model="addTopForm.city" placeholder="请选择市" size="mini" @change="loadArea">
+									<el-option :label="item.label" :value="item.value" v-for="(item,index) in options.city" :key="index"></el-option>
 								</el-select>
 								<el-select v-model="addTopForm.district" placeholder="请选择区/镇/县" size="mini">
-									<el-option :label="item.label" :value="item.value" v-for="(item,index) in districtList" :key="index"></el-option>
+									<el-option :label="item.label" :value="item.value" v-for="(item,index) in options.area" :key="index"></el-option>
 								</el-select>
 							</el-form-item>
 
@@ -164,7 +172,8 @@
 					userName: '',
 					phoneNum: '',
 					sex: 'man',
-					status: 1,
+					channel: '',
+					status: true,
 					province: '', //省
 					city: '', //市
 					district: '', //区
@@ -176,95 +185,84 @@
 					operateType: '',
 					operateRole: '',
 				},
-				operateTypeList: [],//操作类型列表
-                operateRoleList: [], //操作角色列表
-                operateType: '', //操作类型
+				operateTypeList: [], //操作类型列表
+				operateRoleList: [], //操作角色列表
+				operateType: '', //操作类型
 				operateRole: '', //操作角色
-				provinceList: [{
-						value: '1',
-						label: '广东省'
-					},
-					{
-						value: '1',
-						label: '浙江省'
-					}
-				], //省列表
-				cityList: [{
-						value: '1',
-						label: '中山市'
-					},
-					{
-						value: '1',
-						label: '杭州市'
-					}
-				], //市列表
-				districtList: [{
-						value: '1',
-						label: '小榄镇'
-					},
-					{
-						value: '1',
-						label: '滨江区'
-					}
-				], //区列表
+				options: {
+					province: [],
+					city: [],
+					area: []
+				},
+
 				tableData: [],
 				currentPage: 4,
 				totalPage: 0,
 				pageSize: 10,
 				page: 1,
-				
-				roleData: []
+
+				roleData: [],
+
+				channelList: [{
+						value: "self",
+						label: "自助直销"
+					},
+					{
+						value: "channel",
+						label: "渠道"
+					}
+				]
 			}
 		},
 		created() {
 			this.systemLogList();
 			// 获取所有角色
-            this.getRole();
-            //获取所有操作类型
-            this.getOperate();
+			this.getRole();
+			//获取所有操作类型
+			this.getOperate();
 
-            this.resetForm();   //日期范围初始值不是当前时间，在重置后更新为当前时间。
+			this.resetForm(); //日期范围初始值不是当前时间，在重置后更新为当前时间。
 		},
 		methods: {
 			getRole() {
-                this.operateRoleList.push({
+				this.operateRoleList.push({
 					name: '',
 					nameZh: '全部'
 				});
 				this.$ajax.get("/vos/role/getAllRoleWithoutAdmin").then(res => {
 					if (res.code == 200) {
-                        
-                        this.roleData = res.data.data;
-                        // this.operateRoleList=res.data.data;
-                        for(let i=0;i<res.data.data.length;i++){
-                            this.operateRoleList.push({
-                                name: res.data.data[i].name,
-                                nameZh: res.data.data[i].nameZh
-                            });
-                        }
+
+						this.roleData = res.data.data;
+						// this.operateRoleList=res.data.data;
+						for (let i = 0; i < res.data.data.length; i++) {
+							this.operateRoleList.push({
+								name: res.data.data[i].name,
+								nameZh: res.data.data[i].nameZh
+							});
+						}
 					}
 				});
-            },
-            getOperate(){
-                this.operateTypeList.push({
+			},
+			getOperate() {
+				this.operateTypeList.push({
 					dicKey: '',
 					dicValue: '全部'
 				});
-                this.$ajax.post("/vos/dic/getDicsByType",{
-                    "dicType":"actionLogType",
-                    "status":1
-                }).then(res => {
+				this.$ajax.post("/vos/dic/getDicsByType", {
+					"dicType": "actionLogType",
+					"status": 1
+				}).then(res => {
 					if (res.code == 200) {
-                        for(let i=0;i<res.data.dicList.length;i++){
-                            this.operateTypeList.push({
-                                dicKey: res.data.dicList[i].dicKey,
-                                dicValue: res.data.dicList[i].dicValue
-                            });
-                        }
+						for (let i = 0; i < res.data.dicList.length; i++) {
+							this.operateTypeList.push({
+								dicKey: res.data.dicList[i].dicKey,
+								dicValue: res.data.dicList[i].dicValue
+							});
+						}
 					}
 				});
-            },
-            resetForm() {
+			},
+			resetForm() {
 				this.form.descMsg = "";
 				this.form.operAccount = "";
 				this.form.time = [];
@@ -285,11 +283,11 @@
 						done();
 					})
 					.catch(_ => {});
-            },
+			},
 
 			//日志表格
 			systemLogList() {
-                if (this.form.time.length == 0) {
+				if (this.form.time.length == 0) {
 					this.form.time[0] = "";
 					this.form.time[1] = "";
 				}
@@ -335,9 +333,11 @@
 				}).then((res) => {
 					// ;
 					let data = res.data;
+					console.log(data.enabled)
 					this.addTopForm.loginId = data.username;
 					this.addTopForm.role = data.roleName;
 					this.addTopForm.status = data.enabled;
+					this.addTopForm.channel = data.businessType == "channel" ? '渠道' : '自助';
 					this.addTopForm.userName = data.name;
 					this.addTopForm.sex = data.sex;
 					this.addTopForm.phoneNum = data.phone;
@@ -349,6 +349,59 @@
 					this.addTopForm.remark = data.remark;
 				})
 			},
+
+			loadProvince() {
+				this.options.province = [];
+				this.$ajax.get("/vos/address/getAllProvince").then(res => {
+					if (res.code == 200) {
+						for (let i = 0; i < res.data.length; i++) {
+							this.options.province.push({
+								value: res.data[i].provinceId,
+								label: res.data[i].province
+							});
+						}
+					}
+				});
+			},
+			loadCity() {
+				this.addTopForm.city = "";
+				this.addTopForm.district = "";
+				this.options.city = [];
+				this.$ajax
+					.get(
+						"/vos/address/getCitiesByProvinceId?provinceId=" +
+						this.addTopForm.province
+					)
+					.then(res => {
+						if (res.code == 200) {
+							for (let i = 0; i < res.data.length; i++) {
+								this.options.city.push({
+									value: res.data[i].cityId,
+									label: res.data[i].city
+								});
+							}
+						}
+					});
+			},
+			loadArea() {
+				this.addTopForm.district = "";
+				this.options.area = [];
+				this.$ajax
+					.get(
+						"/vos/address/getAreasByCityId?cityId=" +
+						this.addTopForm.city
+					)
+					.then(res => {
+						if (res.code == 200) {
+							for (let i = 0; i < res.data.length; i++) {
+								this.options.area.push({
+									value: res.data[i].areaId,
+									label: res.data[i].area
+								});
+							}
+						}
+					});
+			}
 		}
 	}
 </script>

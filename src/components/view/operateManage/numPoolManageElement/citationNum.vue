@@ -33,11 +33,13 @@
 				</el-button>
 				<el-button type="primary" plain size="mini" @click="batchDelete">批量删除</el-button>
 			</div>
-			<div style="float: right;">
-				<input type="file" @change="handleFile" class="hiddenInput">
-				<el-button type="text" size="mini" @click="downloadTemplate">批量导入Excel 模板下载</el-button>
-				<el-button type="primary" plain size="mini" @click="importInfo">批量导入</el-button>
-				<el-button type="primary" plain size="mini" @click="exportInfo">导出</el-button>
+			
+            <div style="float: right;">
+				<el-button type="text" size="mini" style="float:left;" @click="downloadTemplate">批量导入Excel 模板下载</el-button>
+                <el-button type="primary" plain size="mini" @click="exportInfo">导出</el-button>
+				<el-upload class="upload-demo" style="float:left;margin-left:10px;" :show-file-list=false :with-credentials="true" action="/vos/excel/importGuideNumber" :on-success="uploaded">
+					<el-button type="primary" plain size="mini">批量导入</el-button>
+				</el-upload>
 			</div>
 		</div>
 
@@ -92,6 +94,29 @@
 				</span>
 			</el-dialog>
 		</div>
+
+        <div>
+			<el-dialog title="引示导入校验" :visible.sync="importNumberFormDialogVisible" width="50%">
+				<div>
+					<el-form ref="addNumberForm" :model="importNumberForm" label-width="150px">
+						<el-form-item label="校验比对结果：">
+							<span style="float: left;">有{{importNumberForm.errorNum}}个号码有误</span>
+						</el-form-item>
+						<el-form-item label="有误号码列表：">
+							<el-table :data="importNumberForm.tableData" border style="width: 100%">
+								<el-table-column prop="guideNumber" label="引示号码" width="150"></el-table-column>
+								<el-table-column prop="channel" label="可见渠道" width="120"></el-table-column>
+								<el-table-column prop="error" label="错误"></el-table-column>
+							</el-table>
+						</el-form-item>
+					</el-form>
+				</div>
+				<span slot="footer" class="dialog-footer">
+					<el-button @click="importNumberFormDialogVisible = false" size="mini">取 消</el-button>
+					<el-button type="primary" @click="importNumberFormDialogVisible = false" size="mini">确 定</el-button>
+				</span>
+			</el-dialog>
+		</div>
 	</div>
 </template>
 
@@ -99,7 +124,8 @@
 	export default {
 		data() {
 			return {
-				addCitationNumberFormDialogVisible: false,
+                addCitationNumberFormDialogVisible: false,
+                importNumberFormDialogVisible:false,
 				multipleSelection: [],
 				citationNumForm: {
 					number: "",
@@ -151,7 +177,11 @@
 
 				disabledSelf: false,
                 disabledChannel: false,
-                loading:false
+                loading:false,
+                importNumberForm: {
+					errorNum: "1",
+					tableData: []
+				},
 			};
 		},
 		methods: {
@@ -449,28 +479,25 @@
 			},
 
 			downloadTemplate() {
-				const url = "http://192.168.0.117:5480/vos/excel/guideNumberModel";
+                // const url = "http://192.168.0.117:5480/vos/excel/guideNumberModel";
+                const url = this.$global.serverSrc+'excel/guideNumberModel'
 				window.open(url, "_blank");
 			},
 
-			importInfo() {
-				this.$el.querySelector(".hiddenInput").click();
-			},
-			handleFile(event) {
-				this.$ajax
-					.post(
-						"/vos/excel/importGuideNumber?file=" +
-						event.target.files[0].name
-					)
-					.then(res => {
-						if (res.code == 200) {
-							this.$message({
-								message: "导入成功!",
-								type: "success"
-							});
-							this.loadData();
-						}
-					});
+			uploaded(res, file, fileList) {
+                if(res.code == 200 & res.data.duplicatedList == null){
+                    this.$message({
+							message: '导入成功!',
+							type: 'success'
+						});
+                }else{
+                    this.importNumberFormDialogVisible=true;
+                    this.importNumberForm.errorNum=res.data.duplicatedList.length;
+                    this.importNumberForm.tableData=res.data.duplicatedList;
+                    
+                }
+                this.loadData();
+                
 			},
 
 			exportInfo() {
@@ -486,7 +513,7 @@
 						this.tableData[i].channel = "自助直销";
 					} else if (this.tableData[i].channel == "channel") {
 						this.tableData[i].channel = "渠道";
-					} else {
+					} else if (this.tableData[i].channel == "self,channel"){
 						this.tableData[i].channel = "自助直销,渠道";
 					}
 
