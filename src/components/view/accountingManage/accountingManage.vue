@@ -130,6 +130,11 @@
 				loading: false
 			}
 		},
+		watch: {
+			'form.channel': function (n, o) {
+				this.fetchData();
+			}
+		},
 		mounted() {
 			this.getPackage();
 			this.fetchData();

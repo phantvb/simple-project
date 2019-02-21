@@ -116,7 +116,6 @@
 				var src = e.target.getAttribute('src');
 				var alt = e.target.getAttribute('alt');
 				this.$refs.preview.setAttribute('src', src);
-				console.log(alt);
 				this.fileAlt = alt;
 			},
 			uploaded(res, file, fileList) {
