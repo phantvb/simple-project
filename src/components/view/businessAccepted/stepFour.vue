@@ -157,11 +157,14 @@
                 flowId: '',
                 businessIn:'',
                 saveBtnHidden:true,
+                storageConpanyFlow:{},
             };
         },
         components: {},
         created() {
             console.log(sessionStorage.getItem('businessIn'));
+            this.storageConpanyFlow = JSON.parse(sessionStorage.getItem('objMsg'));
+            console.log("storageConpanyFlow",this.storageConpanyFlow);
             this.businessIn = sessionStorage.getItem('businessIn');
             //新增受理
             if (sessionStorage.getItem('businessIn') == 1) {
@@ -171,6 +174,7 @@
                 });
             }else if(sessionStorage.getItem('businessIn') == 3){
                 this.saveBtnHidden=false;
+                this.flowId = sessionStorage.getItem('entireFlowId');
                 console.log("saveBtnHidden",this.saveBtnHidden);
             }
 
@@ -276,8 +280,6 @@
                 var url;
                 if(this.businessIn==1 || this.businessIn==2){       //新增和编辑的暂存
                       url='/vos/business/startAndSave';
-                }else if(this.businessIn==3){                       //变更
-                      url='/vos/business/sendToModifyAudit';
                 }
                 this.$ajax.post(url, {
                     "company": this.company,
@@ -285,9 +287,7 @@
                     "destNumber": this.destNumber,
                     "number400ValueAdded": this.number400ValueAdded,
                     "number400Concession": this.number400Concession,
-                    "companyFlow": {
-                        "flowId": this.flowId
-                    }
+                    "companyFlow":{"flowId": this.flowId}
                 }).then((res) => {
                     if (res.code == '200') {
                         console.log(res);
@@ -300,6 +300,12 @@
             },
             //业务送审
             addBusinessSend() {
+                // 必填校验
+                if(this.stepFourForm.unionAgreementPic=='' || this.stepFourForm.businessHandlePic=='' || this.stepFourForm.authorizationPic=='' || this.stepFourForm.safeAgreementPic=='' || this.stepFourForm.destNumProfPic=='' || this.stepFourForm.otherPic==''){
+                    this.$message.warning("请完善图片信息");
+                }else{
+
+                }
                 this.dialogVisible = false;
                 console.log("business:", this.business);
                 this.businessObj = Object.assign(this.business, this.stepFourForm);
@@ -324,9 +330,7 @@
                     "destNumber": this.destNumber,
                     "number400ValueAdded": this.number400ValueAdded,
                     "number400Concession": this.number400Concession,
-                    "companyFlow": {
-                        "flowId": this.flowId
-                    }
+                    "companyFlow": url='/vos/business/sendToModifyAudit'?this.storageConpanyFlow: {"flowId": this.flowId}
                 }).then((res) => {
                     console.log(res);
                     this.$message.success(res.data);

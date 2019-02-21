@@ -142,10 +142,13 @@
                 campanyObj: {},        //企业信息对象
                 flowId: '',
                 saveBtnHidden:true,
+                companySaveInfo:[],
             };
         },
         components: {},
         created() {
+            // this.companySaveInfo = JSON.parse(sessionStorage.getItem("firmNameListItem"));
+            // console.log("this.companySaveInfo",this.companySaveInfo);
             console.log(sessionStorage.getItem('businessIn'));
             this.$root.eventHub.$on('flowId', (resp) => {
                 console.log("flowId", resp);
@@ -164,6 +167,10 @@
                   console.log("11111111111111");
                   this.stepThreeDetail();
                  }
+            this.$root.eventHub.$on('firmNameListItem',(resp)=>{
+                console.log("firmNameListItem",resp);
+                this.stepTwoForm = resp;
+            });
         },
         methods: {
             // 详情
@@ -210,12 +217,21 @@
                 return isJPG && isLt2M;
             },
             next(val) {
-                this.$emit('childNext', val);
-                // 改变vuex的值
-                if (val == 3) {
-                    this.campanyObj = Object.assign(this.company, this.stepTwoForm);
-                    console.log(this.campanyObj);
-                    this.ChangeCompanyStatus(this.campanyObj);
+                if(val==1){
+                    this.$emit('childNext', val);
+                }else{
+                    //必填校验
+                    if(this.stepTwoForm.companyProofPic=='' || this.stepTwoForm.legalCardFrontPic=='' || this.stepTwoForm.legalCardBackPic=='' || this.stepTwoForm.legalCardHandPic==''){
+                        this.$message.warning('请完善图片信息');
+                    }else{
+                        this.$emit('childNext', val);
+                        // 改变vuex的值
+                        if (val == 3) {
+                            this.campanyObj = Object.assign(this.company, this.stepTwoForm);
+                            console.log(this.campanyObj);
+                            this.ChangeCompanyStatus(this.campanyObj);
+                        }
+                    }
                 }
             },
             // 暂存按钮
@@ -234,6 +250,10 @@
                     }
                 }).then((res) => {
                     console.log(res);
+                    if(res.code==200){
+                        this.dialogVisible = false;
+                        this.$root.eventHub.$emit('addAcceptSave');
+                    }
                 });
             },
             // 存vuex更新企业信息模块入参
