@@ -28,11 +28,11 @@
 				<el-button type="primary" plain size="mini" @click="batchDelete">批量删除</el-button>
 			</div>
 			<div style="float: right;">
-				<input type="file" @change="handleFile" class="hiddenInput">
-
-				<el-button type="text" size="mini" @click="downloadTemplate">批量导入Excel 模板下载</el-button>
-				<el-button type="primary" plain size="mini" @click.stop="importInfo">批量导入</el-button>
-				<el-button type="primary" plain size="mini" @click="exportInfo">导出</el-button>
+				<el-button type="text" size="mini" style="float:left;" @click="downloadTemplate">批量导入Excel 模板下载</el-button>
+                <el-button type="primary" plain size="mini" @click="exportInfo">导出</el-button>
+				<el-upload class="upload-demo" style="float:left;margin-left:10px;" :show-file-list=false :with-credentials="true" action="/vos/excel/importNumber400" :on-success="uploaded">
+					<el-button type="primary" plain size="mini">批量导入</el-button>
+				</el-upload>
 			</div>
 		</div>
 
@@ -102,17 +102,17 @@
 		</div>
 
 		<div>
-			<el-dialog title="400号码导入校验" :visible.sync="importNumberFormDialogVisible" width="40%">
+			<el-dialog title="400号码导入校验" :visible.sync="importNumberFormDialogVisible" width="50%">
 				<div>
 					<el-form ref="addNumberForm" :model="importNumberForm" label-width="150px">
 						<el-form-item label="校验比对结果：">
-							<span style="float: left;">可导入号码{{importNumberForm.totalNum}}个，有{{importNumberForm.errorNum}}个号码有误</span>
+							<span style="float: left;">有{{importNumberForm.errorNum}}个号码有误</span>
 						</el-form-item>
 						<el-form-item label="有误号码列表：">
 							<el-table :data="importNumberForm.tableData" border style="width: 100%">
-								<el-table-column prop="number" label="400号码" width="100"></el-table-column>
+								<el-table-column prop="number400" label="400号码" width="150"></el-table-column>
 								<el-table-column prop="channel" label="可见渠道" width="120"></el-table-column>
-								<el-table-column prop="combo" label="关联套餐" width="180"></el-table-column>
+								<el-table-column prop="packageIds" label="关联套餐" width="150"></el-table-column>
 								<el-table-column prop="error" label="错误"></el-table-column>
 							</el-table>
 						</el-form-item>
@@ -158,14 +158,8 @@
 					activeName: "first"
 				},
 				importNumberForm: {
-					totalNum: "2",
 					errorNum: "1",
-					tableData: [{
-						number: "400123",
-						channel: "自助直销",
-						combo: "400商务热线6000套餐",
-						error: "400号码有误"
-					}]
+					tableData: []
 				},
 				packages: [], // 保存关联的套餐名 翻译用
 				selectedItems: [],
@@ -230,7 +224,7 @@
 					})
 					.then(res => {
 						if (res.code == 200) {
-							// this.translate(res.data);
+							this.translate(res.data);
 						}
 					});
 			},
@@ -335,30 +329,22 @@
 				// 下载导入模板
 				const url = this.$global.serverSrc + '/excel/number400Model';
 				window.open(url, "_blank");
-			},
+            },
 
-			importInfo() {
-				this.$el.querySelector(".hiddenInput").click();
-
-				// this.importNumberFormDialogVisible = true;
-			},
-			handleFile(event) {
-				// ;
-
-				this.$ajax
-					.post(
-						"/vos/excel/importNumber400?file=" +
-						event.target.files[0].name
-					)
-					.then(res => {
-						if (res.code == 200) {
-							this.$message({
-								message: "导入成功!",
-								type: "success"
-							});
-							this.loadData();
-						}
-					});
+			uploaded(res, file, fileList) {
+                if(res.code == 200 & res.data.duplicatedList == null){
+                    this.$message({
+							message: '导入成功!',
+							type: 'success'
+						});
+                }else{
+                    this.importNumberFormDialogVisible=true;
+                    this.importNumberForm.errorNum=res.data.duplicatedList.length;
+                    this.importNumberForm.tableData=res.data.duplicatedList;
+                    
+                }
+                this.loadData();
+                
 			},
 
 			exportInfo() {

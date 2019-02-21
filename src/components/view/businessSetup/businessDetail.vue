@@ -1,8 +1,8 @@
 <template>
 	<div id="businessDetail" class="managerFormTitle" v-loading="loading">
 		<div id="base">
-			<header class="left" @click="back">
-				企业管理 > 详情
+			<header class="left flg" @click="back">
+				<span class="return flg">企业管理</span> / 详情
 			</header>
 			<section>
 				<div class="title left">
@@ -21,7 +21,7 @@
 						</div>
 						<ul>
 							<li class="l2">
-								<img class="examplew" :src="'http://192.168.0.117:5480/vos/'+detail.companyProofPic" alt="">
+								<img class="examplew" :src="$global.serverSrc+detail.companyProofPic" alt="">
 							</li>
 						</ul>
 					</div>
@@ -42,17 +42,17 @@
                         </div> -->
 						<ul class="basedata">
 							<li>
-								<img class="exampleh" :src="'http://192.168.0.117:5480/vos/'+detail.legalCardFrontPic" alt="">
+								<img class="exampleh" :src="$global.serverSrc+detail.legalCardFrontPic" alt="">
 								<p class="fmini center">法人身份证（正面）</p>
 							</li>
 							<li>
-								<img class="exampleh" :src="'http://192.168.0.117:5480/vos/'+detail.legalCardBackPic" alt="">
+								<img class="exampleh" :src="$global.serverSrc+detail.legalCardBackPic" alt="">
 								<p class="fmini center">法人身份证（反面）</p>
 							</li>
 						</ul>
 						<ul class="basedata">
 							<li>
-								<img class="exampleh" :src="'http://192.168.0.117:5480/vos/'+detail.legalCardHandPic" alt="">
+								<img class="exampleh" :src="$global.serverSrc+detail.legalCardHandPic" alt="">
 								<p class="fmini center">法人手持身份证（正面）</p>
 							</li>
 						</ul>
@@ -60,7 +60,7 @@
 				</div>
 			</section>
 		</div>
-		<div id="progress">
+		<div id="progress" v-if="$route.query.flowId">
 			<header class="left">
 				审核流程 > 企业审核/变更/注销
 			</header>
@@ -70,16 +70,16 @@
 						<el-step v-for="(item,index) in record" :key="item.operateTime" :title="item.title" :description="item.description+'\n'+item.message" :status='index==(record.length-1)?"finish":""'></el-step>
 					</el-steps>
 				</div>
-				<button class="pass"><i class="el-icon-circle-check" style="color:#67C23A;font-size:16px;transform: translateY(1px);" v-if="$route.query.status=='Audit_Success'"></i> 审核通过</button>
+				<button class="pass"><i class="el-icon-circle-check" style="color:#67C23A;font-size:16px;transform: translateY(1px);" v-if="companyFlowData.status=='Audit_Success'"></i> 审核通过</button>
 			</div>
-			<el-input class="block" v-if="($route.query.status=='Company_Auditing'||$route.query.status=='Canceling_Auditing'||$route.query.status=='Modify_Auditing')&&(baseData.roleName==$route.query.assigneeRole||baseData.roleName=='ROLE_admin')" type="textarea" :rows="6" placeholder="请输入审核意见" v-model="desc">
+			<el-input class="block" v-if="(companyFlowData.status=='Company_Auditing'||companyFlowData.status=='Canceling_Auditing'||companyFlowData.status=='Modify_Auditing')&&(baseData.roleName==companyFlowData.assigneeRole||baseData.roleName=='ROLE_admin')" type="textarea" :rows="6" placeholder="请输入审核意见" v-model="desc">
 			</el-input>
 			<div class="block">
 				<div>
-					<button class="fleft passgo" v-if="$route.query.status=='Wait_To_Audit'&&($route.query.creator==baseData.username||baseData.roleName=='ROLE_admin')" @click="submit">送审</button>
-					<button class="fleft passgo" v-if="($route.query.status=='Company_Auditing'||$route.query.status=='Canceling_Auditing'||$route.query.status=='Modify_Auditing')&&(baseData.roleName==$route.query.assigneeRole||baseData.roleName=='ROLE_admin')" @click="passCompany">通过审核</button>
-					<button class="fright passback" v-if="($route.query.status=='Company_Auditing'||$route.query.status=='Canceling_Auditing'||$route.query.status=='Modify_Auditing')&&(baseData.roleName==$route.query.assigneeRole||baseData.roleName=='ROLE_admin')" @click="backCompany">驳回</button>
-					<button class="fright passback" style="width:100%" v-if="$route.query.status=='Audit_Success'" @click="back">返回</button>
+					<button class="fleft passgo" v-if="companyFlowData.status=='Wait_To_Audit'&&(companyFlowData.creator==baseData.username||baseData.roleName=='ROLE_admin')" @click="submit">送审</button>
+					<button class="fleft passgo" v-if="(companyFlowData.status=='Company_Auditing'||companyFlowData.status=='Canceling_Auditing'||companyFlowData.status=='Modify_Auditing')&&(baseData.roleName==companyFlowData.assigneeRole||baseData.roleName=='ROLE_admin')" @click="passCompany">通过审核</button>
+					<button class="fright passback" v-if="(companyFlowData.status=='Company_Auditing'||companyFlowData.status=='Canceling_Auditing'||companyFlowData.status=='Modify_Auditing')&&(baseData.roleName==companyFlowData.assigneeRole||baseData.roleName=='ROLE_admin')" @click="backCompany">驳回</button>
+					<button class="fright passback" style="width:100%" v-if="companyFlowData.status=='Audit_Success'" @click="back">返回</button>
 
 				</div>
 			</div>
@@ -99,112 +99,147 @@
 				desc: '',
 				baseData: {},
 				record: {},
-				loading: false
+				loading: false,
+				companyFlowData: {}
 			}
 		},
 		mounted() {
+			const companyCharacterOptions = [{
+				value: 'state-owned',
+				label: '国有'
+			}, {
+				value: 'cooperation',
+				label: '合作'
+			}, {
+				value: 'joint_venture',
+				label: '合资'
+			}, {
+				value: 'sole_proprietorship',
+				label: '独资'
+			}, {
+				value: 'collective',
+				label: '集体'
+			}, {
+				value: 'private',
+				label: '私营'
+			}, {
+				value: 'individual_business',
+				label: '个体工商户'
+			}];
+			const legalCardOptions = [{
+				value: 'id_card',
+				label: '身份证'
+			}, {
+				value: 'officer_card',
+				label: '军官证'
+			}, {
+				value: 'passport',
+				label: '护照'
+			}];
+			const statusOptions = [{
+				value: 'Wait_To_Audit',
+				label: '等待送审'
+			}, {
+				value: 'Company_Auditing',
+				label: '企业审核中'
+			}, {
+				value: 'Business_Auditing',
+				label: '业务受理审核'
+			}, {
+				value: 'Voice_Auditing',
+				label: '语音审核'
+			}, {
+				value: 'DestNum_Auditing',
+				label: '目的码审核'
+			}, {
+				value: 'Audit_Success',
+				label: '审核通过'
+			}, {
+				value: 'Canceling_Auditing',
+				label: '注销审核中'
+			}, {
+				value: 'Modify_Auditing',
+				label: '变更审核中'
+			}, {
+				value: 'Terminate_Flow',
+				label: '受理终止'
+			}, {
+				value: 'Cancelled',
+				label: '已注销'
+			}, {
+				value: 'Modify_Rejected',
+				label: '变更审核驳回'
+			}, {
+				value: 'Freezed',
+				label: '注销冷冻'
+			}, ];
 			this.baseData.username = sessionStorage.getItem("username");
 			this.baseData.roleName = sessionStorage.getItem("roleName");
 			this.loading = true;
-			this.$ajax.get('/vos/company/getCacheData?flowId=' + this.$route.query.flowId).then(res => {
-				if (res.code == 200) {
-					this.loading = false;
-					const companyCharacterOptions = [{
-						value: 'state-owned',
-						label: '国有'
-					}, {
-						value: 'cooperation',
-						label: '合作'
-					}, {
-						value: 'joint_venture',
-						label: '合资'
-					}, {
-						value: 'sole_proprietorship',
-						label: '独资'
-					}, {
-						value: 'collective',
-						label: '集体'
-					}, {
-						value: 'private',
-						label: '私营'
-					}, {
-						value: 'individual_business',
-						label: '个体工商户'
-					}];
-					const legalCardOptions = [{
-						value: 'id_card',
-						label: '身份证'
-					}, {
-						value: 'officer_card',
-						label: '军官证'
-					}, {
-						value: 'passport',
-						label: '护照'
-					}];
-					const statusOptions = [{
-						value: 'Wait_To_Audit',
-						label: '等待送审'
-					}, {
-						value: 'Company_Auditing',
-						label: '企业审核中'
-					}, {
-						value: 'Business_Auditing',
-						label: '业务受理审核'
-					}, {
-						value: 'Voice_Auditing',
-						label: '语音审核'
-					}, {
-						value: 'DestNum_Auditing',
-						label: '目的码审核'
-					}, {
-						value: 'Audit_Success',
-						label: '审核通过'
-					}, {
-						value: 'Canceling_Auditing',
-						label: '注销审核中'
-					}, {
-						value: 'Modify_Auditing',
-						label: '变更审核中'
-					}, {
-						value: 'Terminate_Flow',
-						label: '受理终止'
-					}, {
-						value: 'Cancelled',
-						label: '已注销'
-					}, {
-						value: 'Modify_Rejected',
-						label: '变更审核驳回'
-					}, {
-						value: 'Freezed',
-						label: '注销冷冻'
-					}, ];
-					for (let item of companyCharacterOptions) {
-						if (item.value == res.data.company.companyCharacter) {
-							res.data.company.companyCharacterStr = item.label;
-							//return;
-						}
-					}
-					for (let item of legalCardOptions) {
-						if (item.value == res.data.company.legalCard) {
-							res.data.company.legalCardStr = item.label;
-							//return;
-						}
-					}
-					this.detail = res.data.company;
-					res.data.flowRecord.map(item => {
-						item.title = `${item.assginessRole=='ROLE_admin'?'管理员':'业务员'}(${item.operator})`;
-						var m = '';
-						for (let _item of statusOptions) {
-							if (_item.value == item.currentStatus) {
-								m = _item.label;
+			if (this.$route.query.flowId) {
+				this.$ajax.get('/vos/company/getCacheData?flowId=' + this.$route.query.flowId).then(res => {
+					if (res.code == 200) {
+						this.loading = false;
+						for (let item of companyCharacterOptions) {
+							if (item.value == res.data.company.companyCharacter) {
+								res.data.company.companyCharacterStr = item.label;
 								//return;
+							}
+						}
+						for (let item of legalCardOptions) {
+							if (item.value == res.data.company.legalCard) {
+								res.data.company.legalCardStr = item.label;
+								//return;
+							}
+						}
+						this.detail = res.data.company;
+						res.data.flowRecord.map(item => {
+							item.title = `${item.assginessRole=='ROLE_admin'?'管理员':'业务员'}(${item.operator})`;
+							var m = '';
+							for (let _item of statusOptions) {
+								if (_item.value == item.currentStatus) {
+									m = _item.label;
+									//return;
+								};
 							};
-						};
-						item.description = `${m} ${item.operateTime}`;
-					})
-					this.record = res.data.flowRecord;
-				}
-			});
+							item.description = `${m} ${item.operateTime}`;
+						})
+						this.record = res.data.flowRecord;
+						this.companyFlowData = res.data.companyFlow;
+					}
+				});
+			} else {
+				this.$ajax.post('/vos/company/getDetail', { company: { id: this.$route.query.Id } }).then(res => {
+					if (res.code == 200) {
+						this.loading = false;
+						for (let item of companyCharacterOptions) {
+							if (item.value == res.data.company1.companyCharacter) {
+								res.data.company1.companyCharacterStr = item.label;
+								//return;
+							}
+						}
+						for (let item of legalCardOptions) {
+							if (item.value == res.data.company1.legalCard) {
+								res.data.company1.legalCardStr = item.label;
+								//return;
+							}
+						}
+						this.detail = res.data.company1;
+						res.data.company1.map(item => {
+							item.title = `${item.assginessRole=='ROLE_admin'?'管理员':'业务员'}(${item.operator})`;
+							var m = '';
+							for (let _item of statusOptions) {
+								if (_item.value == item.currentStatus) {
+									m = _item.label;
+									//return;
+								};
+							};
+							item.description = `${m} ${item.operateTime}`;
+						})
+						this.record = res.data.company1;
+					}
+				});
+			}
 		},
 		methods: {
 			back() {
@@ -213,22 +248,22 @@
 			passCompany() {
 				var obj = {};
 				var url;
-				if (this.$route.query.status == 'Company_Auditing') {
+				if (this.companyFlowData.status == 'Company_Auditing') {
 					url = '/vos/company/companyAuditPass';
-				} else if (this.$route.query.status == 'Modify_Auditing') {
+				} else if (this.companyFlowData.status == 'Modify_Auditing') {
 					url = '/vos/company/modifyAuditPass';
-				} else if (this.$route.query.status == 'Canceling_Auditing') {
+				} else if (this.companyFlowData.status == 'Canceling_Auditing') {
 					url = '/vos/company/cancelAuditPass';
 				};
 				obj.companyFlow = {
-					flowId: this.$route.query.flowId,
-					creator: this.$route.query.creator,
-					assigneeRole: this.$route.query.assigneeRole
+					flowId: this.companyFlowData.flowId,
+					creator: this.companyFlowData.creator,
+					assigneeRole: this.companyFlowData.assigneeRole
 				};
 				obj.message = this.desc;
 				this.$ajax.post(url, obj).then(res => {
 					if (res.code == 200) {
-						this.$router.push({ path: '/BusinessInform/businessDetail', query: { flowId: this.$route.query.flowId, status: res.data, creator: this.$route.query.creator, assigneeRole: this.$route.query.assigneeRole } });
+						this.$router.push({ path: '/BusinessInform/businessDetail', query: { flowId: this.companyFlowData.flowId, status: res.data, creator: this.companyFlowData.creator, assigneeRole: this.companyFlowData.assigneeRole } });
 						this.$message.success('操作成功');
 					}
 				});
@@ -236,22 +271,22 @@
 			backCompany() {
 				var obj = {};
 				var url;
-				if (this.$route.query.status == 'Company_Auditing') {
+				if (this.companyFlowData.status == 'Company_Auditing') {
 					url = '/vos/company/companyAuditReject';
-				} else if (this.$route.query.status == 'Modify_Auditing') {
+				} else if (this.companyFlowData.status == 'Modify_Auditing') {
 					url = '/vos/company/modifyAuditReject';
-				} else if (this.$route.query.status == 'Canceling_Auditing') {
+				} else if (this.companyFlowData.status == 'Canceling_Auditing') {
 					url = '/vos/company/cancelAuditReject';
 				};
 				obj.companyFlow = {
-					flowId: this.$route.query.flowId,
-					creator: this.$route.query.creator,
-					assigneeRole: this.$route.query.assigneeRole
+					flowId: this.companyFlowData.flowId,
+					creator: this.companyFlowData.creator,
+					assigneeRole: this.companyFlowData.assigneeRole
 				};
 				obj.message = this.desc;
 				this.$ajax.post(url, obj).then(res => {
 					if (res.code == 200) {
-						this.$router.push({ path: '/BusinessInform/businessDetail', query: { flowId: this.$route.query.flowId, status: res.data, creator: this.$route.query.creator, assigneeRole: this.$route.query.assigneeRole } });
+						this.$router.push({ path: '/BusinessInform/businessDetail', query: { flowId: this.companyFlowData.flowId, status: res.data, creator: this.companyFlowData.creator, assigneeRole: this.companyFlowData.assigneeRole } });
 						this.$message.success('操作成功');
 					}
 				});
@@ -261,7 +296,7 @@
 				var data = {};
 				data.company = this.detail;
 				data.companyFlow = {
-					flowId: this.$route.query.flowId
+					flowId: this.companyFlowData.flowId
 				};
 				this.$ajax.post(url, data).then(res => {
 					if (res.code == 200) {

@@ -40,6 +40,7 @@
 		methods: {
 			reset() {
 				this.form.mess = "";
+				this.search();
 			},
 
 			search() {

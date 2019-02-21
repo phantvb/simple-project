@@ -152,6 +152,9 @@
                             if (this.tableData[i].channel == 'channel') {
                                 this.tableData[i].channel = '渠道';
                             }
+                            if (this.tableData[i].channel == 'self,channel') {
+                                this.tableData[i].channel = '自助直销,渠道';
+                            }
 
                             if (this.tableData[i].status == 'Auditing') {
                                 this.tableData[i].status = '审核中';

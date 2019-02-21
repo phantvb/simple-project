@@ -25,7 +25,7 @@
 			</div>
 			<div class="part message">
 				<p>角色：{{form.nameZh}}</p>
-				<p>业务身份：{{form.channel=="channel"?'渠道':'自助'}}</p>
+				<p>业务身份：{{form.businessType=="channel"?'渠道':'自助'}}</p>
 				<p>地区：{{form.province}}{{form.city}}{{form.area}}</p>
 				<p>状态：{{form.enabled?'启用':'关闭'}}</p>
 				<p>备注：{{form.remark}}</p>
@@ -79,7 +79,9 @@
 		created() {
 			this.$ajax.get('/vos/user/getDetail').then(res => {
 				if (res.code == 200) {
-					this.form = res.data;
+                    this.form = res.data;
+                    // console.log('res.data: ', res.data);
+                    
 				}
 			});
 		}

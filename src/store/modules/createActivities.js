@@ -7,10 +7,10 @@ const createActivities = {
 		destNumber: [], //目的码
 		number400ValueAdded: [], //增值服务
 		number400Concession: [], //优惠信息
-		msgDisabled:false,       //信息输入框禁用
+		msgDisabled: false, //信息输入框禁用
 		permission: {}, //当前路由信息
 
-        flowRecord:[], // 全部详情右侧信息
+		flowRecord: [], // 全部详情右侧信息
 		routes: [],
 
 
@@ -41,29 +41,27 @@ const createActivities = {
 		changeNumber400Concession(state, number400Concession) {
 			state.number400Concession = number400Concession
 		},
-		changePermission(state, data) {
-			state.permission = data;
-		},
-        addRoute(state, data) {
-            let r = [];
+		addRoute(state, data) {
+			let r = [];
 
-            function format(data, parentPath) {
-                var parentPath = parentPath || '';
-                data.map(item => {
-                    if (item.children.length > 0 && item.children[0].type != 'b') {
-                        format(item.children, parentPath + item.url);
-                    } else {
-                        r.push(parentPath + item.url);
-                    }
-                })
-            };
-            format(data);
-            state.routes = r;
-        }
+			function format(data, parentPath) {
+				var parentPath = parentPath || '';
+				data.map(item => {
+					if (item.children.length > 0 && item.children[0].type != 'b') {
+						format(item.children, parentPath + item.url);
+					} else {
+						r.push(parentPath + item.url);
+						state.permission[parentPath + item.url] = item.children;
+					}
+				})
+			};
+			format(data);
+			state.routes = r;
+		}
 	},
 	getters: {
-		getPermission: state => {
-			return state.permission.children;
+		getPermission: (state) => (key) => {
+			return state.permission[key];
 		},
 		getRoute: state => {
 			return state.routes;
@@ -71,7 +69,7 @@ const createActivities = {
 	},
 	actions: {
 		//控制企业信息的变化
-        changeMsgDisabledStatus({ commit }, msgDisabled) {
+		changeMsgDisabledStatus({ commit }, msgDisabled) {
 			commit("changeMsgDisabled", msgDisabled)
 		},
 		//控制企业信息的变化
@@ -95,7 +93,7 @@ const createActivities = {
 			commit("changeNumber400Concession", number400Concession)
 		},
 		//控制详情右侧信息栏
-        ChangeFlowRecord({ commit }, flowRecord) {
+		ChangeFlowRecord({ commit }, flowRecord) {
 			commit("changeFlowRecord", flowRecord)
 		},
 	}

@@ -151,6 +151,7 @@
 					officeProvinceId: '',
 					officeArea: '',
 					officeAddress: '',
+					source: 'self',
 					phone: '',
 					legalPerson: '',
 					legalPhone: '',
