@@ -80,11 +80,12 @@
                                     :value="item.areaId">
                             </el-option>
                         </el-select>
+                        <div class="onlyInput">
+                            <el-input v-model="acceptForm.registAddress" size="mini" :disabled="msgDisabled"
+                                      placeholder="填入企业营业执照上的详细地址"></el-input>
+                        </div>
                     </el-form-item>
-                    <div class="onlyInput" prop="registAddress">
-                        <el-input v-model="acceptForm.registAddress" size="mini" :disabled="msgDisabled"
-                                  placeholder="填入企业营业执照上的详细地址"></el-input>
-                    </div>
+
                 </div>
 
                 <div class="businessAddress">
@@ -104,10 +105,11 @@
                             <el-option :label="item.area" :value="item.areaId" v-for="item in busAreaList"
                                        :key="item.areaId"></el-option>
                         </el-select>
+                        <div class="onlyInput" prop="officeAddress">
+                            <el-input v-model="acceptForm.officeAddress" :disabled="msgDisabled" size="mini" placeholder="填入企业办公所在地址"></el-input>
+                        </div>
                     </el-form-item>
-                    <div class="onlyInput" prop="officeAddress">
-                        <el-input v-model="acceptForm.officeAddress" :disabled="msgDisabled" size="mini" placeholder="填入企业办公所在地址"></el-input>
-                    </div>
+
                 </div>
 
                 <el-form-item label="企业电话：" class="identity" prop="phone">
@@ -118,13 +120,13 @@
             <div class="acceptMsg">
                 <p>法人基本信息</p>
                 <div class="legalInfo">
-                    <el-form-item label="法人姓名：" class="legalPerson">
+                    <el-form-item label="法人姓名：" class="legalPerson" prop="legalPerson">
                         <el-input v-model="acceptForm.legalPerson" size="mini" placeholder="填入法人真实姓名" :disabled="msgDisabled"></el-input>
                     </el-form-item>
-                    <el-form-item label="法人电话：" class="legalPhone">
+                    <el-form-item label="法人电话：" class="legalPhone" prop="legalPhone">
                         <el-input v-model="acceptForm.legalPhone" size="mini" placeholder="填入法人联系电话（固话或手机）" :disabled="msgDisabled"></el-input>
                     </el-form-item>
-                    <el-form-item label="法人证件：" class="legalCard">
+                    <el-form-item label="法人证件：" class="legalCard" prop="legalCard">
                         <el-select v-model="acceptForm.legalCard" @change="change123" placeholder="请选择" size="mini" :disabled="msgDisabled">
                             <el-option
                                     v-for="item in legalCardTypeList"
@@ -174,7 +176,7 @@
             </div>
         </el-form>
         <div class="stepBtn">
-            <el-button type="primary" size="mini" @click="next">下一步</el-button>
+            <el-button type="primary" size="mini" @click="next('acceptForm')">下一步</el-button>
 
         </div>
     </div>
@@ -191,6 +193,8 @@
             return {
                 needCompanySave: false,
                 acceptForm: {
+                    id:'',
+                    company:'',
                     companyName: '',
                     companyCardType: '',
                     companyCardNo: '',
@@ -221,7 +225,6 @@
                 rules: {
                     companyName: [
                         {required: true, message: '请输入企业名称', trigger: 'blur'},
-                        {min: 2, max: 16, message: '长度在 3 到 5 个字符', trigger: 'blur'}
                     ],
                     companyCardNo: [
                         {required: true, message: '请填写证件编号', trigger: 'change'}
@@ -310,8 +313,9 @@
                 console.log("qqqqqqqqqqqqqqqqq");
                 this.stepTwoDetail();
                 this.searchFirm(this.acceptForm.companyName);
+                console.log("firmNameList",this.firmNameList);
                 this.firmNameList.map((zool, index) => {
-                    console.log("909090909090909000090909009090");
+                    console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
                     if (zool.companyName == this.acceptForm.companyName) {
                         this.acceptForm = this.firmNameList[index];
                         this.changeMsgDisabled(true);
@@ -330,28 +334,61 @@
                 this.acceptForm = this.company;
             },
             // 下一步
-            next() {
-                if(this.business!=null){
-                    console.log("this.business",this.business);
-                }else{
-                    let companyIdInfo ={};
-                    companyIdInfo.companyId=null;
-                    this.ChangeBusinessStatus(companyIdInfo);
-                    console.log("this.business",this.business);
-                }
-                this.$emit('childNext', 2);
-                // 改变vuex的值
-                this.ChangeCompanyStatus(this.acceptForm);
-                console.log(this.company);
-                // this.business.companyName = this.acceptForm.companyName;
-                console.log(this.business);
-                if (this.firmNameList.some((item) => {
-                    return this.acceptForm.companyName == item.companyName;
-                })) {
-                    this.$root.eventHub.$emit('needCompanySave', false);
-                } else {
-                    this.$root.eventHub.$emit('needCompanySave', true);
-                }
+            // next() {
+            //     // 保存companyId到vuex
+            //     if(this.business!=null){
+            //         console.log("this.business",this.business);
+            //     }else{
+            //         let companyIdInfo ={};
+            //         companyIdInfo.companyId=null;
+            //         this.ChangeBusinessStatus(companyIdInfo);
+            //         console.log("this.business",this.business);
+            //     }
+            //     this.$emit('childNext', 2);
+            //     // 改变vuex的值
+            //     this.ChangeCompanyStatus(this.acceptForm);
+            //     console.log(this.company);
+            //     // this.business.companyName = this.acceptForm.companyName;
+            //     console.log(this.business);
+            //     if (this.firmNameList.some((item) => {
+            //         return this.acceptForm.companyName == item.companyName;
+            //     })) {
+            //         this.$root.eventHub.$emit('needCompanySave', false);
+            //     } else {
+            //         this.$root.eventHub.$emit('needCompanySave', true);
+            //     }
+            // },
+            next(formName) {
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        // 保存companyId到vuex
+                        if(this.business!=null){
+                            console.log("this.business",this.business);
+                        }else{
+                            let companyIdInfo ={};
+                            companyIdInfo.companyId=null;
+                            this.ChangeBusinessStatus(companyIdInfo);
+                            console.log("this.business",this.business);
+                        }
+                        this.$emit('childNext', 2);
+                        // 改变vuex的值
+                        this.ChangeCompanyStatus(this.acceptForm);
+                        console.log(this.company);
+                        // this.business.companyName = this.acceptForm.companyName;
+                        console.log(this.business);
+                        if (this.firmNameList.some((item) => {
+                            return this.acceptForm.companyName == item.companyName;
+                        })) {
+                            this.$root.eventHub.$emit('needCompanySave', false);
+                        } else {
+                            this.$root.eventHub.$emit('needCompanySave', true);
+                        }
+                    } else {
+                        this.$message.warning('请把信息填写完整');
+                        return false;
+                    }
+                });
+
             },
             change123(event) {
                 console.log("event", event);
@@ -374,7 +411,11 @@
                     }
                     this.firmNameList.map((zool, index) => {
                         if (zool.companyName == this.acceptForm.companyName) {
+                            console.log("zool",zool);
+                            // sessionStorage.setItem("firmNameListItem",JSON.stringify(zool));
                             this.acceptForm = this.firmNameList[index];
+                            this.$root.eventHub.$emit('firmNameListItem',zool);
+                            // sessionStorage.setItem("firmNameList",JSON.stringify(this.firmNameList[index]));
                             this.changeMsgDisabled(true);
                         }else{
                             this.changeMsgDisabled(false);
@@ -390,7 +431,7 @@
             firmNameLi(val) {
                 let companyIdInfo ={};
                 if(val.id!=null){
-                    console.log(val);
+                    console.log('企业信息',val);
                     console.log(val.id);
                     companyIdInfo.companyId = val.id;
                 }

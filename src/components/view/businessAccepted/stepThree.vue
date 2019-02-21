@@ -157,19 +157,19 @@
         </div>
 
 
-        <el-form ref="stepThreeForm" :model="stepThreeForm" label-width="100px">
+        <el-form ref="stepThreeForm" :model="stepThreeForm" :rules="rules" label-width="120px">
             <div class="title left">
                 经办人基本信息
             </div>
             <div class="handleInfo">
-                <el-form-item label="经办人姓名：" class="firmName">
+                <el-form-item label="经办人姓名：" class="firmName" prop="agentName">
                     <el-input v-model="stepThreeForm.agentName" size="mini" placeholder="填入法人真实姓名"></el-input>
                 </el-form-item>
-                <el-form-item label="经办人电话：" class="firmName">
+                <el-form-item label="经办人电话：" class="firmName" prop="agentMobilePhone">
                     <el-input v-model="stepThreeForm.agentMobilePhone" size="mini"
                               placeholder="填入法人联系电话（固话或手机）"></el-input>
                 </el-form-item>
-                <el-form-item label="经办人证件：" class="identity">
+                <el-form-item label="经办人证件：" class="identity" prop="agentDocumentType">
                     <el-select v-model="stepThreeForm.agentDocumentType" @change="change123" placeholder="请选择"
                                size="mini">
                         <el-option :label="item.label" :value="item.value" v-for="(item,index) in identityTypeList"
@@ -311,9 +311,12 @@
                     </div>
                 </div>
 
-                <div class="num400" style="margin-bottom:30px;">
-                    <span>归属地区：</span>
+
+                <div class="num400">
+
+                    <!--<span>归属地区：</span>-->
                     <div class="QCellCore">
+                        <el-form-item label="归属地区：" prop="provinceBelong">
                         <el-select v-model="stepThreeForm.provinceBelong" placeholder="请选择" size="mini"
                                    @change="proChange">
                             <el-option
@@ -332,9 +335,12 @@
                                     :value="item.cityId">
                             </el-option>
                         </el-select>
+                        </el-form-item>
                     </div>
+
                     <div class="QCellCore">
-                        <span>优惠：</span>
+                        <el-form-item label="优惠套餐：" prop="discounts">
+                        <!--<span>优惠：</span>-->
                         <el-select v-model="stepThreeForm.discounts" placeholder="请选择" size="mini"
                                    @change="discountChange">
                             <el-option
@@ -344,7 +350,9 @@
                                     :value="item">
                             </el-option>
                         </el-select>
+                        </el-form-item>
                     </div>
+
                 </div>
 
                 <div style="float:left;">
@@ -429,7 +437,7 @@
             <el-button type="primary" size="mini" @click="next(2)">上一步</el-button>
             <el-button type="primary" size="mini" @click="addBusinessSave()" v-if="saveBtnHidden">暂存信息</el-button>
             <el-tooltip content="请先暂存信息" placement="top" effect="light">
-                <div class="saveTips" @click="next(4)"></div>
+                <div class="saveTips" @click="next(4,'stepThreeForm')"></div>
         </el-tooltip>
             <el-button type="primary" size="mini"  :disabled="nextDisabled">下一步</el-button>
         </div>
@@ -495,6 +503,17 @@
                     //业务id
                     id:'',
                 },
+                rules: {
+                    agentName: [
+                        {required: true, message: '请输入经办人姓名', trigger: 'blur'},
+                    ],
+                    agentMobilePhone: [
+                        {required: true, message: '请填写经办人电话', trigger: 'change'}
+                    ],
+                    agentDocumentType: [
+                        {type: 'string', required: true, message: '请选择经办人证件', trigger: 'change'}
+                    ]
+                },
                 valueAdd: [],       // 选中的增值业务数组
                 discountsList: [],  //优惠数组
                 disList: [],
@@ -513,6 +532,7 @@
                     // stepThreeFlowId: "",
                 }],
                 stepThreeFlowId: "",
+                companyIdInfo:{},
                 selectedNum: [],    //已选号码列表
                 searchNumList: [],  //400号码模糊搜索列表
                 objCodeTable: [],  //增值表格
@@ -536,6 +556,7 @@
                 delObjCode: '',  //删减目的码
                 busIdentity: '', //业务身份
                 mealList: [],    //套餐数组
+                firstPackageId:'', //第一个套餐id
                 searchNumPage: {
                     pageSize: 10,
                     page: 1,
@@ -752,7 +773,7 @@
                 this.getTariff(this.busIdentity);
                 setTimeout(() => {
                     console.log("this.$refs.child1", this.$refs.child1);
-                    this.$refs.child1[0].getAllByPackage2();
+                    this.$refs.child1[0].getAllByPackage2(this.firstPackageId);
                 }, 1000);
             },
             // 弹窗关闭
@@ -770,7 +791,7 @@
                 this.$ajax.post('/vos/tariffPackage/getConcessionScheme', {
                     "concessionScheme": {
                         "channel": val,
-                        "id": "",
+                        "concessionWay": 2,
                     }
                 }).then((res) => {
                     console.log(val);
@@ -903,6 +924,8 @@
                 }).then((res) => {
                     console.log(res.data);
                     console.log(res.data.tariffPackageList);
+                    console.log(res.data.tariffPackageList[0].id);
+                    this.firstPackageId = res.data.tariffPackageList[0].id;
                     this.mealList = res.data.tariffPackageList;
                 })
             },
@@ -997,9 +1020,70 @@
                 this.cityId = val;
                 // this.getAreasByCityId();
             },
-            next(val) {
-                this.$emit('childNext', val);
-                if (val == 4) {
+            next(val,formName) {
+                if(val==2){
+                    this.$emit('childNext', val);
+                }else{
+                    this.$refs[formName].validate((valid) => {
+                        if (valid) {
+                            if(this.stepThreeForm.agentCardFront=='' || this.stepThreeForm.agentCardBack=='' || this.stepThreeForm.agentCardWIthHand==''){
+                                this.$message.warning("请完善经办人图片信息");
+                            }else if(this.objCodeList.length==0){
+                                this.$message.warning("请新增目的码");
+                            }else{
+                                console.log("this.objCodeList",this.objCodeList);
+                                this.objCodeList.map((item)=>{
+                                    if(!item.destnumber){
+                                        this.$message.warning("请填写空白目的码");
+                                    }
+                                });
+                                    this.$emit('childNext', val);
+                                    console.log(this.disList);
+                                    this.ChangeBusinessStatus(this.stepThreeForm);
+                                    this.ChangeDestNumberStatus(this.objCodeList);
+                                    this.ChangeNumber400ValueAddedStatus(this.valueAdd);
+                                    this.ChangeNumber400ConcessionStatus(this.disList);
+                                    console.log("company", this.company);
+                                    console.log("business", this.business);
+                                    console.log("destNumber", this.destNumber);
+                                    console.log("number400Concession", this.number400Concession);
+                                    if(this.businessIn!=3){
+                                        this.nextDisabled=true;
+                                    }
+
+                            }
+                        } else {
+                            this.$message.warning("请完善信息");
+                            return false;
+                        }
+                    });
+                }
+
+            },
+
+            // 暂存
+            addBusinessSave() {
+                if(this.selectedNum.length==0){
+                    this.$message.warning("请添加400号码");
+                }else{
+                    console.log("this.valueAdd",this.valueAdd);
+                    console.log("this.business",this.business);
+                    console.log("this.business.companyId",this.business.companyId);
+                    console.log("第三步获取flowed",sessionStorage.getItem('entireFlowId'));
+                    console.log("入口：",sessionStorage.getItem('businessIn'));
+                    this.stepThreeForm.companyName = this.company.companyName;
+                    this.stepThreeForm.companyId = this.business.companyId;
+                    // this.stepThreeForm.companyId = this.company.companyId;
+                    console.log("selectedNum",this.selectedNum);
+                    this.stepThreeForm.number400 = this.selectedNum[0].number400;
+                    this.stepThreeForm.tariffName = this.selectedNum[0].tariffName;
+                    this.stepThreeForm.packageContent = this.selectedNum[0].packageContent;
+                    this.stepThreeForm.units = this.selectedNum[0].units;
+                    this.stepThreeForm.durationPresentation = this.selectedNum[0].durationPresentation;
+                    this.stepThreeForm.basicFunctionFee = this.selectedNum[0].basicFunctionFee;
+                    this.stepThreeForm.type = this.selectedNum[0].type;
+                    this.stepThreeForm.tariffPackageId = this.selectedNum[0].packgeId;
+                    console.log(this.stepThreeForm);
                     console.log(this.disList);
                     this.ChangeBusinessStatus(this.stepThreeForm);
                     this.ChangeDestNumberStatus(this.objCodeList);
@@ -1009,77 +1093,58 @@
                     console.log("business", this.business);
                     console.log("destNumber", this.destNumber);
                     console.log("number400Concession", this.number400Concession);
-                    if(this.businessIn!=3){
-                        this.nextDisabled=true;
+                    var url;
+                    if(this.businessIn==1 || this.businessIn==2){       //新增和编辑的暂存
+                        url='/vos/business/startAndSave';
+                    }else if(this.businessIn==3){                       //变更
+                        url='/vos/business/sendToModifyAudit';
                     }
-                }
-            },
-            // 暂存
-            addBusinessSave() {
-                console.log("this.valueAdd",this.valueAdd);
-                console.log("this.business",this.business);
-                console.log("this.business.companyId",this.business.companyId);
-                console.log("第三步获取flowed",sessionStorage.getItem('entireFlowId'));
-                console.log("入口：",sessionStorage.getItem('businessIn'));
-                this.stepThreeForm.companyName = this.company.companyName;
-                this.stepThreeForm.companyId = this.business.companyId;
-                // this.stepThreeForm.companyId = this.company.companyId;
-                console.log("selectedNum",this.selectedNum);
-                this.stepThreeForm.number400 = this.selectedNum[0].number400;
-                this.stepThreeForm.tariffName = this.selectedNum[0].tariffName;
-                this.stepThreeForm.packageContent = this.selectedNum[0].packageContent;
-                this.stepThreeForm.units = this.selectedNum[0].units;
-                this.stepThreeForm.durationPresentation = this.selectedNum[0].durationPresentation;
-                this.stepThreeForm.basicFunctionFee = this.selectedNum[0].basicFunctionFee;
-                this.stepThreeForm.type = this.selectedNum[0].type;
-                this.stepThreeForm.tariffPackageId = this.selectedNum[0].packgeId;
-                console.log(this.stepThreeForm);
-                console.log(this.disList);
-                this.ChangeBusinessStatus(this.stepThreeForm);
-                this.ChangeDestNumberStatus(this.objCodeList);
-                this.ChangeNumber400ValueAddedStatus(this.valueAdd);
-                this.ChangeNumber400ConcessionStatus(this.disList);
-                console.log("company", this.company);
-                console.log("business", this.business);
-                console.log("destNumber", this.destNumber);
-                console.log("number400Concession", this.number400Concession);
-                var url;
-                if(this.businessIn==1 || this.businessIn==2){       //新增和编辑的暂存
-                    url='/vos/business/startAndSave';
-                }else if(this.businessIn==3){                       //变更
-                    url='/vos/business/sendToModifyAudit';
-                }
-                this.$ajax.post(url, {
-                    "company": this.company,
-                    "business": this.stepThreeForm,
-                    "destNumber": this.destNumber,
-                    "number400ValueAdded": this.valueAdd,
-                    "number400Concession": this.number400Concession,
-                    "companyFlow": {
-                        "flowId": sessionStorage.getItem('businessIn')==2 || sessionStorage.getItem('businessIn')==3?sessionStorage.getItem('entireFlowId'):this.stepThreeFlowId
-                    }
-                }).then((res) => {
-                    if (res.code == '200') {
-                        console.log(res);
-                        this.$root.eventHub.$emit('flowId', res.data);
-                        this.stepThreeFlowId = res.data.flowId;        //flowId
-                        this.stepThreeForm.id = res.data.businessId;   //业务id
-                        console.log(this.stepThreeFlowId = res.data.flowId);
-                        //第三步点击下一步之前检查number400是否绑定了引示号
-                        this.$ajax.post('/vos/business/matchGuideNumber', {
-                            "number400": this.stepThreeFlowId!=null?this.stepThreeForm.number400:this.titleNum,
-                        }).then((res) => {
-                            if (res.code == 200) {
-                                console.log(res);
+                    this.$ajax.post(url, {
+                        "company": this.company,
+                        "business": this.stepThreeForm,
+                        "destNumber": this.destNumber,
+                        "number400ValueAdded": this.valueAdd,
+                        "number400Concession": this.number400Concession,
+                        "companyFlow": {
+                            "flowId": sessionStorage.getItem('businessIn')==2 || sessionStorage.getItem('businessIn')==3?sessionStorage.getItem('entireFlowId'):this.stepThreeFlowId
+                        }
+                    }).then((res) => {
+                        if (res.code == '200') {
+                            console.log(res);
+                            this.$root.eventHub.$emit('flowId', res.data);
+                            this.stepThreeFlowId = res.data.flowId;        //flowId
+                            this.stepThreeForm.id = res.data.businessId;   //业务id
+                            console.log("vuex.company",this.company);
+                            // 把第三步返回的companyId存到vuex的company
+                            // let companyIdSave ={};
+                            // companyIdSave.companyId = res.data.companyId;
+                            // console.log("companyIdSave.companyId",companyIdSave.companyId);
+                            // this.companyIdInfo = Object.assign(this.company, companyIdSave);
+                            // this.ChangeCompanyStatus(this.companyIdInfo);
+                            this.company.id = res.data.companyId;
+                            this.business.companyId = res.data.companyId;
+                            console.log("vuex.company",this.company);
+                            console.log("vuex.business",this.business);
+
+                            console.log(this.stepThreeFlowId = res.data.flowId);
+                            //第三步点击下一步之前检查number400是否绑定了引示号
+                            this.$ajax.post('/vos/business/matchGuideNumber', {
+                                "number400": this.stepThreeFlowId!=null?this.stepThreeForm.number400:this.titleNum,
+                            }).then((res) => {
+                                if (res.code == 200) {
+                                    console.log(res);
+                                    // res.
                                     this.nextDisabled=false;
-                            } else {
-                                this.$message({type: 'warning', message: res.message});
-                            }
-                        })
-                    } else {
-                        this.$message.warning(res.message);
-                    }
-                });
+                                } else {
+                                    this.$message({type: 'warning', message: res.message});
+                                }
+                            })
+                        } else {
+                            this.$message.warning(res.message);
+                        }
+                    });
+                }
+
             },
             getAllByPackage(data){
                 console.log("itemInfo",data);
@@ -1114,6 +1179,11 @@
                 console.log("this.tabId ",this.tabId);
                 console.log("this.$refs.child1", this.$refs.child1);
                 this.$refs.child1[val.index].getAllByPackage2(this.tabId);
+            },
+
+            //控制企业信息的变化
+            ChangeCompanyStatus(val){
+                return this.$store.dispatch("ChangeCompanyStatus", val);
             },
             // 存vuex更新业务信息模块入参
             ChangeBusinessStatus(val) {

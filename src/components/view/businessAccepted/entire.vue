@@ -280,96 +280,97 @@
 							item.btnList.push({ label: '详情' });
 						}
 
-						//判断类型
-						if (item.type == 'Voice') {
-							item.type = '语音'
-						} else if (item.type == 'Business') {
-							item.type = '业务'
-						} else if (item.type == 'Destnum') {
-							item.type = '目的码'
-						}
-					})
-				})
-			},
-			//新增业务受理
-			businessAdd() {
-				sessionStorage.setItem("businessIn", 1);
-				this.ChangeCompanyStatus(null);
-				this.ChangeBusinessStatus(null);
-				this.ChangeDestNumber(null);
-				this.ChangeNumber400ValueAdded(null);
-				this.ChangeNumber400Concession(null);
-				this.changeMsgDisabled(false);
-				this.$root.eventHub.$emit('dialogVisibleBusiness', { visibleBusiness: true, businessIn: 1 });
-				this.$root.eventHub.$emit('clearData');
-				this.$root.eventHub.$on('active', (resp) => {
-					this.active = resp;
-				})
-			},
-			//新增目的码按钮
-			addObjCodeBtn() {
-				this.$root.eventHub.$emit('dialog1Visible', { visible: true, objCodeIn: 1 });
-			},
-			//新增语音
-			voiceAdd() {
-				this.$root.eventHub.$emit('dialog1VisibleVoice', { visibleVoice: true, voiceIn: 1 });
-			},
-			// 状态改变
-			statusChange() {
-				this.entireLists();
-			},
-			// 编辑业务受理
-			businessEdit(val, objData) {
-				console.log(val);
-				console.log(objData);
-				let objMsg = objData;
-				this.entireFlowId = objData.flowId;
-				this.entireStatus = objData.status;
-				this.entireCreator = objData.creator;
-				this.entireAssigneeRole = objData.assigneeRole;
-				this.entireType = objData.type;
-				console.log(this.entireFlowId);
-				sessionStorage.setItem('entireFlowId', this.entireFlowId);
-				if (val == '送审') {
-					sessionStorage.setItem("businessIn", 2);
-					this.getCacheData(val);
-				} else if (val == '详情') {
-					console.log('详情入口');
-					sessionStorage.setItem("businessIn", 4);
-					console.log(this.entireStatus);
-					this.getCacheData(val);
-				} else if (val == '通过审核') {
-					console.log("11111");
-					this.passCompany(val, objMsg);
-				} else if (val == '变更') {
-					sessionStorage.setItem("businessIn", 3);
-					this.getCacheData(val);
-				} else if (val == '驳回') {
-					console.log("22222");
-					this.backCompany(val, objMsg);
-				} else if (val == '注销') {
-					this.$ajax.post('/vos/business/sendToCancelAudit', {
-						"companyFlow": {
-							"flowId": objData.flowId,
-							"companyId": objData.companyId,
-							"assignee": objData.assignee,
-						}
-					}).then((res) => {
-						console.log(res);
-						if (res.code == 200) {
-							this.$message.success(res.data);
-							this.entireLists();
-							this.$root.eventHub.$emit('addAcceptSave');
-						}
-					})
-				} else if (val == '删除') {
-					this.$ajax.post('/vos/business/deleteFlow', {
-						"companyFlow": objData
-					}).then((res) => {
-						console.log(res);
-						this.entireLists();
-					})
-				}
+                    //判断类型
+                    if(item.type=='Voice'){
+                        item.type='语音'
+                    }else if(item.type=='Business'){
+                        item.type='业务'
+                    }else if(item.type=='Destnum'){
+                        item.type='目的码'
+                    }
+                })
+            })
+        },
+        //新增业务受理
+        businessAdd(){
+            sessionStorage.setItem("businessIn",1);
+            this.ChangeCompanyStatus(null);
+            this.ChangeBusinessStatus(null);
+            this.ChangeDestNumber(null);
+            this.ChangeNumber400ValueAdded(null);
+            this.ChangeNumber400Concession(null);
+            this.changeMsgDisabled(false);
+            this.$root.eventHub.$emit('dialogVisibleBusiness',{visibleBusiness:true,businessIn:1});
+            this.$root.eventHub.$emit('clearData');
+            this.$root.eventHub.$on('active', (resp)=>{
+                this.active=resp;
+            })
+        },
+        //新增目的码按钮
+        addObjCodeBtn(){
+            this.$root.eventHub.$emit('dialog1Visible',{visible:true,objCodeIn:1});
+        },
+        //新增语音
+        voiceAdd(){
+            this.$root.eventHub.$emit('dialog1VisibleVoice',{visibleVoice:true,voiceIn:1});
+        },
+        // 状态改变
+        statusChange(){
+            this.entireLists();
+        },
+        // 编辑业务受理
+        businessEdit(val,objData){
+          console.log(val);
+          console.log(objData);
+          let objMsg = objData;
+          this.entireFlowId = objData.flowId;
+          this.entireStatus = objData.status;
+          this.entireCreator = objData.creator;
+          this.entireAssigneeRole = objData.assigneeRole;
+          this.entireType = objData.type;
+          console.log(this.entireFlowId);
+            sessionStorage.setItem('entireFlowId',this.entireFlowId);
+            sessionStorage.setItem('objMsg', JSON.stringify(objMsg));
+          if(val=='送审'){
+              sessionStorage.setItem("businessIn",2);
+              this.getCacheData(val);
+          }else if(val=='详情'){
+              console.log('详情入口');
+              sessionStorage.setItem("businessIn",4);
+              console.log(this.entireStatus);
+              this.getCacheData(val);
+          }else if(val=='通过审核' || val=='变更审核通过'){
+              console.log("11111");
+              this.passCompany(val,objMsg);
+          }else if(val=='变更'){
+              sessionStorage.setItem("businessIn",3);
+              this.getCacheData(val);
+          }else if(val=='驳回'){
+              console.log("22222");
+              this.backCompany(val,objMsg);
+          }else if(val=='注销'){
+              this.$ajax.post('/vos/business/sendToCancelAudit',{
+                  "companyFlow":{
+                      "flowId":objData.flowId,
+                      "companyId":objData.companyId,
+                      "assignee":objData.assignee,
+                  }
+              }).then((res)=>{
+                  console.log(res);
+                  if(res.code==200){
+                      this.$message.success(res.data);
+                      this.entireLists();
+                      this.$root.eventHub.$emit('addAcceptSave');
+                  }
+              })
+          }else if(val=='删除'){
+              this.$ajax.post('/vos/business/deleteFlow',{
+                  "companyFlow": objData
+			  }).then((res)=>{
+			      console.log(res);
+			      this.entireLists();
+			  })
+		  }
 
 			},
 			//“全部”表格详情
@@ -546,94 +547,76 @@
 						this.fetchData(this.pageObj.page);
 						this.entireLists();
 
-					}
-				});
-			},
-			async backCompany(val, data) {
-				console.log(val);
-				console.log(data);
-				var obj = {};
-				var url;
-				if (data.status == 'Business_Auditing' || data.type == '业务') {
-					//业务受理驳回
-					url = '/vos/business/businessAuditReject';
-				} else if (data.status == 'Modify_Auditing' || data.type == '目的码') {
-					//目的码驳回
-					url = '/vos/destnum/auditReject';
-				} else if (data.status == 'Canceling_Auditing' || data.type == '语音') {
-					//语音驳回
-					url = '/vos/voice/auditReject';
-				} else if (data.status == 'Modify_Auditing') {
-					//变更审核驳回
-					url = '/vos/company/modifyAuditReject';
-				} else if (data.status == 'Cancel_AuditReject') {
-					//注销审核驳回
-					url = '/vos/business/cancelAuditReject';
-				};
-				obj.companyFlow = {
-					flowId: data.flowId,
-					creator: data.creator,
-					assigneeRole: data.assigneeRole
-				};
-				if (data.status == 'Cancel_AuditReject') { //注销审核被驳回才有的入参
-					obj.business = {
-						id: data.business.id,
-					};
-				}
-				obj.message = await this.prompt(val);
-				if (obj.message === false) {
-					return;
-				}
-				this.$ajax.post(url, obj).then(res => {
-					if (res.code == 200) {
-						this.$message.success(res.data);
-						this.fetchData(this.pageObj.page);
-						// this.entireLists();
-					}
-				});
-			},
-			fetchData(pageNum) {
-				this.loading = true;
-				this.pageObj.page = pageNum || 1;
-				var data = {};
-				data.page = {
-					pageNo: this.pageObj.page,
-					pageSize: this.pageObj.pageSize
-				};
-				data.blacklist = Object.assign({}, this.form);
-				data.blacklist.blackType = this.active;
-				delete data.blacklist["time"];
-				data.beforeTime = this.form.time[0] || '';
-				data.afterTime = this.form.time[1] || '';
-				this.$ajax.post("/vos/blacklist/search", data).then(res => {
-					if (res.code == 200) {
-						this.loading = false;
-						this.tableData = res.data.blacklists;
-						this.pageObj.total = res.data.totalCount;
-						this.entireLists();
-					}
-				});
-			},
-			search() {
-				this.entireLists();
-			},
-			cancelCompany(data) {
-				var obj = {};
-				var url;
-				url = '/vos/company/sendToCancelAudit';
-				obj.companyFlow = {
-					flowId: data.flowId,
-					creator: data.creator,
-					assigneeRole: data.assigneeRole,
-					assignee: data.assignee
-				};
-				obj.message = '';
-				this.$ajax.post(url, obj).then(res => {
-					if (res.code == 200) {
-						this.$message.success('操作成功');
-						this.fetchData(this.pageObj.page);
-					}
-				});
+                }
+            });
+        },
+        async backCompany(val,data) {
+			    console.log(val);
+			    console.log(data);
+            var obj = {};
+            var url;
+            if (data.status == 'Business_Auditing' && data.type == '业务') {
+                //业务受理驳回
+                url = '/vos/business/businessAuditReject';
+            } else if (data.status == 'Modify_Auditing' && data.type == '目的码') {
+                //目的码驳回
+                url = '/vos/destnum/auditReject';
+            } else if (data.status == 'Canceling_Auditing' && data.type == '语音') {
+                //语音驳回
+                url = '/vos/voice/auditReject';
+            }else if (data.status == 'Modify_Auditing') {
+                //变更审核驳回
+                url = '/vos/business/modifyAuditReject';
+            }else if (data.status == 'Cancel_AuditReject') {
+                //注销审核驳回
+                url = '/vos/business/cancelAuditReject';
+            };
+            obj.companyFlow = {
+                flowId: data.flowId,
+                creator: data.creator,
+                assigneeRole: data.assigneeRole
+            };
+            if(data.status == 'Cancel_AuditReject'){   //注销审核被驳回才有的入参
+                obj.business = {
+                    id:data.business.id,
+                };
+			}
+            obj.message = await this.prompt(val);
+            if (obj.message === false) {
+                return;
+            }
+            this.$ajax.post(url, obj).then(res => {
+                if (res.code == 200) {
+                    this.$message.success(res.data);
+                    this.fetchData(this.pageObj.page);
+                    // this.entireLists();
+                }
+            });
+        },
+            fetchData(pageNum) {
+                this.loading = true;
+                this.pageObj.page = pageNum || 1;
+                var data = {};
+                data.page = {
+                    pageNo: this.pageObj.page,
+                    pageSize: this.pageObj.pageSize
+                };
+                data.blacklist = Object.assign({}, this.form);
+                data.blacklist.blackType = this.active;
+                delete data.blacklist["time"];
+                data.beforeTime = this.form.time[0] || '';
+                data.afterTime = this.form.time[1] || '';
+                this.$ajax.post("/vos/blacklist/search", data).then(res => {
+                    if (res.code == 200) {
+                        this.loading = false;
+                        this.tableData = res.data.blacklists;
+                        this.pageObj.total = res.data.totalCount;
+                        this.entireLists();
+                    }
+                });
+            },
+            search(){
+			    this.entireLists();
 			},
 
 			// 存vuex更新企业信息模块入参

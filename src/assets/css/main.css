@@ -303,8 +303,8 @@
 
 .regUrl .onlyInput,
 .businessAddress .onlyInput {
-	margin-left: 140px;
-	width: 44%;
+	/*margin-left: 140px;*/
+	/*width: 44%;*/
 	margin-bottom: 22px;
 }
 
@@ -328,7 +328,13 @@
 	width: 67%;
 	margin-left: 10px;
 }
-
+.QCellCore .el-form-item .el-form-item__label{
+	text-align: left;
+	width:82px !important;
+}
+.QCellCore .el-form-item .el-form-item__content{
+	margin-left:0 !important;
+}
 .voiceForm .voiceType .el-select,
 .voiceForm .el-button {
 	float: left;
