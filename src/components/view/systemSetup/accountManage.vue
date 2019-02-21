@@ -274,12 +274,23 @@
 
 			// 分页
 			handleSizeChange(val) {
-				this.page.size = val;
-				this.changeTableData();
+                this.page.size = val;
+                if (this.form.accountNumber != '' ||
+					this.form.userName != '' ) {
+					this.searchMess();
+				} else {
+					this.changeTableData();
+				}
+				
 			},
 			handleCurrentChange(val) {
 				this.page.currentPage = val;
-				this.changeTableData();
+				if (this.form.accountNumber != '' ||
+					this.form.userName != '' ) {
+					this.searchMess();
+				} else {
+					this.changeTableData();
+				}
 			},
 
 			//弹窗关闭按钮

@@ -7,7 +7,7 @@
 					<el-input v-model="citationNumForm.number" placeholder="请输入内容" size="mini" style="width:300px;"></el-input>
 					<div style="display: inline-block; margin-left: 15px;">
 						<span>状态：</span>
-						<el-select v-model="citationNumForm.value1" placeholder="请选择" size="mini" @change="search">
+						<el-select v-model="citationNumForm.value1" placeholder="请选择" size="mini" @change="loadData">
 							<el-option v-for="item in citationNumForm.options1" :key="item.value" :label="item.label" :value="item.value"></el-option>
 						</el-select>
 					</div>
@@ -20,7 +20,7 @@
 					</el-checkbox-group>
 				</el-form-item>
 				<el-form-item style="margin-left: 15px;">
-					<el-button type="primary" size="mini" class="searchButton" @click="search">搜索</el-button>
+					<el-button type="primary" size="mini" class="searchButton" @click="loadData">搜索</el-button>
 					<el-button type="primary" plain size="mini" class="resetButton" @click="reset">重置</el-button>
 				</el-form-item>
 			</el-form>
@@ -106,7 +106,7 @@
 							<el-table :data="importNumberForm.tableData" border style="width: 100%">
 								<el-table-column prop="guideNumber" label="引示号码" width="150"></el-table-column>
 								<el-table-column prop="channel" label="可见渠道" width="120"></el-table-column>
-								<el-table-column prop="error" label="错误"></el-table-column>
+								<el-table-column prop="errMsg" label="错误"></el-table-column>
 							</el-table>
 						</el-form-item>
 					</el-form>
@@ -195,55 +195,6 @@
 			handleCurrentChange(val) {
 				this.page.currentPage = val;
 				this.loadData();
-			},
-
-			search() {
-				let str = "";
-				if (this.citationNumForm.checkList.length == 2) {
-					str = "self,channel";
-				}
-				if (
-					this.citationNumForm.checkList.length == 1 &&
-					this.citationNumForm.checkList[0] == "自助直销"
-				) {
-					str = "self";
-				}
-				if (
-					this.citationNumForm.checkList.length == 1 &&
-					this.citationNumForm.checkList[0] == "渠道"
-				) {
-					str = "channel";
-				}
-
-				let status = "";
-				if (this.citationNumForm.value1 == "1") {
-					status = "Binded";
-				}
-				if (this.citationNumForm.value1 == "2") {
-					status = "Unbind";
-				}
-				if (this.citationNumForm.value1 == "3") {
-					status = "";
-				}
-
-				this.$ajax
-					.post("/vos/guideNumber/search", {
-						page: {
-							pageNo: "1",
-							pageSize: this.page.size
-						},
-						guideNumber: {
-							line: "",
-							status: status,
-							channel: str,
-							guideNumber: this.citationNumForm.number
-						}
-					})
-					.then(res => {
-						if (res.code == 200) {
-							this.loadTable(res.data);
-						}
-					});
 			},
 
 			reset() {
@@ -531,6 +482,33 @@
 			},
 
 			loadData() {
+                let str = "";
+				if (this.citationNumForm.checkList.length == 2) {
+					str = "self,channel";
+				}
+				if (
+					this.citationNumForm.checkList.length == 1 &&
+					this.citationNumForm.checkList[0] == "自助直销"
+				) {
+					str = "self";
+				}
+				if (
+					this.citationNumForm.checkList.length == 1 &&
+					this.citationNumForm.checkList[0] == "渠道"
+				) {
+					str = "channel";
+				}
+
+				let status = "";
+				if (this.citationNumForm.value1 == "1") {
+					status = "Binded";
+				}
+				if (this.citationNumForm.value1 == "2") {
+					status = "Unbind";
+				}
+				if (this.citationNumForm.value1 == "3") {
+					status = "";
+				}
                 this.loading=true;
 				this.$ajax.post("/vos/guideNumber/search", {
 					page: {
@@ -538,9 +516,9 @@
 						pageSize: this.page.size
 					},
 					guideNumber: {
-						status: "",
-						channel: "",
-						guideNumber: ""
+						status: status,
+						channel: str,
+						guideNumber: this.citationNumForm.number
 					}
 				}).then(res => {
 					if (res.code == 200) {

@@ -27,7 +27,7 @@
 
 <script>
 	export default {
-		props: ['searchMessage'],
+		props: ['auditInfoMess'],
 		data() {
 			return {
 				form: {
@@ -57,13 +57,22 @@
 			// 修改页面显示数据大小
 			handleSizeChange(val) {
 				this.page.size = val;
-				this.loadData();
+                
+				if (this.auditInfoMess != '') {
+					this.search(this.auditInfoMess);
+				} else {
+					this.loadData();
+				}
 			},
 
 			// 修改当前显示页面
 			handleCurrentChange(val) {
 				this.page.currentPage = val;
-				this.loadData();
+				if (this.auditInfoMess != '') {
+					this.search(this.auditInfoMess);
+				} else {
+					this.loadData();
+				}
 			},
 
 			search(mess) {

@@ -109,13 +109,27 @@
             // 修改页面显示数据大小
             handleSizeChange(val) {
                 this.page.size = val;
-                this.loadData();
+                if(this.auditNumForm.number!=''||
+                this.auditNumForm.citationNumber!=''||
+                this.auditNumForm.companyName!=''||
+                this.auditNumForm.checkList.length!=0){
+                    this.search();
+                }else{
+                    this.loadData();
+                }
             },
 
             // 修改当前显示页面
             handleCurrentChange(val) {
                 this.page.currentPage = val;
-                this.loadData();
+                if(this.auditNumForm.number!=''||
+                this.auditNumForm.citationNumber!=''||
+                this.auditNumForm.companyName!=''||
+                this.auditNumForm.checkList.length!=0){
+                    this.search();
+                }else{
+                    this.loadData();
+                }
             },
 
             search() {

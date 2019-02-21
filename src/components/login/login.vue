@@ -50,7 +50,7 @@
 				} else if (value.length < 6) {
 					callback(new Error('密码长度不足'));
 				} else if (!(/[a-z]/.test(value) && /[a-zA-Z]/.test(value) && /\W/.test(value))) {
-					callback(new Error('密码强度弱，须包含数字、字母及特殊字符'));
+					callback(new Error('密码强度弱,建议修改'));
 				} else {
 					callback();
 				}

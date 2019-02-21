@@ -78,21 +78,37 @@
 					size: 10,
 					total: 1
 				},
-                selectedItems: [],
-                loading:false
+				selectedItems: [],
+				loading: false
 			};
 		},
 		methods: {
 			// 修改页面显示数据大小
 			handleSizeChange(val) {
 				this.page.size = val;
-				this.loadData();
+				if (this.freezingNumForm.date.length != 0 ||
+					this.freezingNumForm.checkList.length != 0 ||
+					this.freezingNumForm.number != '' ||
+					this.freezingNumForm.citationNumber != '' ||
+					this.freezingNumForm.companyName != '') {
+					this.search();
+				} else {
+					this.loadData();
+				}
 			},
 
 			// 修改当前显示页面
 			handleCurrentChange(val) {
 				this.page.currentPage = val;
-				this.loadData();
+				if (this.freezingNumForm.date.length != 0 ||
+					this.freezingNumForm.checkList.length != 0 ||
+					this.freezingNumForm.number != '' ||
+					this.freezingNumForm.citationNumber != '' ||
+					this.freezingNumForm.companyName != '') {
+					this.search();
+				} else {
+					this.loadData();
+				}
 			},
 
 			search() {
@@ -130,8 +146,8 @@
 							companyName: this.freezingNumForm.companyName,
 							guideNumber: this.freezingNumForm.citationNumber
 						},
-						thawTimeStart: this.freezingNumForm.date[0] || '',
-						thawTimeEnd: this.freezingNumForm.date[1] || ''
+						thawTimeStart: this.freezingNumForm.date[0],
+						thawTimeEnd: this.freezingNumForm.date[1]
 					})
 					.then(res => {
 						if (res.code == 200) {
@@ -157,7 +173,7 @@
 				this.freezingNumForm.number = "";
 				this.freezingNumForm.citationNumber = "";
 				this.freezingNumForm.companyName = "";
-				this.freezingNumForm.date = "";
+				this.freezingNumForm.date = [];
 				this.freezingNumForm.checkList = [];
 			},
 
@@ -228,7 +244,7 @@
 					});
 			},
 			loadData() {
-                this.loading=true;
+				this.loading = true;
 				this.$ajax
 					.post("/vos/number400/getAll", {
 						page: {
@@ -257,8 +273,8 @@
 								if (this.tableData[i].status == "Freezed") {
 									this.tableData[i].status = "冷冻中";
 								}
-                            }
-                            this.loading=false;
+							}
+							this.loading = false;
 						}
 					});
 			}

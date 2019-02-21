@@ -4,11 +4,11 @@
 		<div style="position: relative;margin-top: 20px">
 			<el-tabs v-model="active" type="border-card">
 				<el-tab-pane label="系统公告" name="1">
-					<systemNotice ref="sysNotice"></systemNotice>
+					<systemNotice ref="sysNotice" :sysNoticeMess="form.mess"></systemNotice>
 				</el-tab-pane>
 
 				<el-tab-pane label="审核信息" name="2">
-					<allMessages ref="auditInfo"></allMessages>
+					<allMessages ref="auditInfo" :auditInfoMess="form.mess"></allMessages>
 				</el-tab-pane>
 			</el-tabs>
 			<div class="searchMessage">

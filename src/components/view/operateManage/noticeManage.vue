@@ -129,8 +129,14 @@
 
 			// 修改页面显示数据大小
 			handleSizeChange(val) {
-				this.page.size = val;
-				this.loadData();
+                this.page.size = val;
+                if (this.form.title != 0 ||
+					this.form.person != 0 ||
+					this.form.date.length != 0 ) {
+					this.searchNotice();
+				} else {
+					this.loadData();
+				}
 			},
 
 			// 修改当前显示页面

@@ -26,6 +26,7 @@
 
 <script>
 	export default {
+        props:['sysNoticeMess'],
 		data() {
 			return {
 				form: {
@@ -38,21 +39,31 @@
 					total: 1
 				},
 				selectedItems: [],
-                ids: [],
-                loading:false
+				ids: [],
+				loading: false
 			};
 		},
 		methods: {
 			// 修改页面显示数据大小
 			handleSizeChange(val) {
+                console.log("sysNoticeMess",this.sysNoticeMess);
 				this.page.size = val;
-				this.loadData();
+				if (this.sysNoticeMess != '') {
+					this.search(this.sysNoticeMess);
+				} else {
+					this.loadData();
+				}
+
 			},
 
 			// 修改当前显示页面
 			handleCurrentChange(val) {
 				this.page.currentPage = val;
-				this.loadData();
+				if (this.sysNoticeMess != '') {
+					this.search(this.sysNoticeMess);
+				} else {
+					this.loadData();
+				}
 			},
 
 			search(mess) {
@@ -119,7 +130,7 @@
 			},
 
 			loadData() {
-                this.loading=true;
+				this.loading = true;
 				this.$ajax
 					.post("/vos/announcement/getAll", {
 						ann: {
@@ -135,8 +146,8 @@
 					.then(res => {
 						if (res.code == 200) {
 							this.tableData = res.data.announcements;
-                            this.page.total = res.data.totalCount;
-                            this.loading=false;
+							this.page.total = res.data.totalCount;
+							this.loading = false;
 						}
 					});
 			}

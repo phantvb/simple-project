@@ -7,7 +7,7 @@
 			<div class="search">
 				<ul>
 					<li>
-						<span class="demonstration" @click="listen">企业名称：</span>
+						<span class="demonstration">企业名称：</span>
 						<el-input v-model="form.companyName" placeholder="企业名称" size="mini">
 						</el-input>
 					</li>
@@ -49,7 +49,7 @@
 				</div>
 			</div>
 			<section class="right block lineTop">
-				<el-button type="primary" plain size="mini">导出</el-button>
+				<el-button type="primary" plain size="mini" @click="outPut">导出</el-button>
 			</section>
 			<el-table :data="tableData" style="width: 100%;margin-bottom:15px;">
 				<el-table-column prop="companyName" label="企业名称" min-width="100">
@@ -139,6 +139,9 @@
 				this.$clear(this.form);
 				this.fetchData();
 			},
+			outPut() {
+				window.open('/vos/excel/callRecord');
+			},
 			listen(src) {
 				if (this.voiceSrc != src) {
 					this.voiceSrc = src;
@@ -185,7 +188,7 @@
 						this.page.total = res.data.totalCount;
 					}
 				});
-			},
+			}
 		}
 	}
 </script>

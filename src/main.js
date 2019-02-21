@@ -56,7 +56,7 @@ axios.interceptors.response.use(res => {
 		//location.href='#/login?error_type=1'
 		break
 	}
-	if (res.data.code != 200) {
+	if (res.data.code != 200 && res.data.code !== undefined) {
 		Vue.prototype.$message({
 			message: res.data.message,
 			type: 'warning'
@@ -77,9 +77,7 @@ Vue.config.productionTip = false;
 Vue.prototype.$global = {
 	pageSize: [10, 20, 30, 50],
 	uploadUrl: '/vos/common/uploadImg',
-	// uploadUrl2: 'http://47.94.168.117/vos/',
-	uploadUrl2: 'http://.168.0.104/vos/',
-	// serverSrc: 'http://47.94.168.117:5480/vos/',
+	uploadUrl2: 'http://192.168.0.104/vos/',
 	serverSrc: 'http://192.168.0.104:5480/vos/',
 };
 router.beforeEach((to, from, next) => {
