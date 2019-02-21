@@ -37,8 +37,8 @@
 					</el-form-item>
 
 					<el-form-item class="searchBtn">
-						<el-button type="primary" size="mini" @click="search()">搜索</el-button>
-						<el-button @click="resetForm('form')" size="mini">重置</el-button>
+						<el-button type="primary" size="mini" @click="entireLists()">搜索</el-button>
+						<el-button @click="resetForm()" size="mini">重置</el-button>
 					</el-form-item>
 				</div>
 			</el-form>
@@ -623,9 +623,12 @@
                     }
                 });
             },
-            search(){
+            resetForm(){
+                this.form.firmName='';
+                this.form.phoneNum='';
+				this.form.time='';
                 this.entireLists();
-            },
+			},
             cancelCompany(data) {
                 var obj = {};
                 var url;

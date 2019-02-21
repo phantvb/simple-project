@@ -312,7 +312,7 @@
             if (sessionStorage.getItem('businessIn') == 2 || sessionStorage.getItem('businessIn') == 3 ||sessionStorage.getItem('businessIn') == 4) {
                 console.log("qqqqqqqqqqqqqqqqq");
                 this.stepTwoDetail();
-                this.searchFirm(this.acceptForm.companyName);
+                // this.searchFirm(this.acceptForm.companyName);
                 console.log("firmNameList",this.firmNameList);
                 this.firmNameList.map((zool, index) => {
                     console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
