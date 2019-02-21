@@ -620,7 +620,7 @@
 				}
 			},
 			handleNodeClick(data) {
-				console.log(this.treeData);
+				//console.log(this.treeData);
 			},
 			handleRuleTypeChange(val, businessType) {
 				if (val.indexOf("ignore") != -1) {

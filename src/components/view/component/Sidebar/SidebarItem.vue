@@ -14,7 +14,7 @@
 					<sidebar-item :data="item.children" :key="item.url" :base-path="resolvePath(item.url)" />
 				</template>
 			</el-submenu>
-			<app-link v-else-if="!item.children||item.children.length==0||item.children[0].type=='b'" :to="resolvePath(item.url)" @click.native="getPermission(item)">
+			<app-link v-else-if="!item.children||item.children.length==0||item.children[0].type=='b'" :to="resolvePath(item.url)">
 				<el-menu-item :index="resolvePath(item.url)">
 					<!-- <i class="el-icon-location"></i> -->
 					<span slot="title">{{item.name}}</span>
@@ -35,10 +35,6 @@
 					return this.basePath + routePath;
 				}
 				return routePath;
-			},
-			getPermission(data) {
-				this.$store.commit('changePermission', data);
-				//this.$store.getters.getPermission;
 			}
 		}
 	};
