@@ -40,13 +40,19 @@
 					total: 1
 				},
 				selectedItems: [],
-                ids: [],
-                loading:false
+				ids: [],
+				loading: false
 			}
 		},
 		methods: {
 			lcb(row) {
-				this.$router.push({ path: '/BusinessInform/businessDetail', query: { flowId: row.messageUrl } });
+				if (row.messageUrl.indexOf('CPY') != -1) {
+					this.$router.push({ path: '/BusinessInform/businessDetail', query: { flowId: row.messageUrl } });
+				} else if (row.messageUrl.indexOf('VOI') != -1) {
+					this.$router.push({ path: '/BusinessAccepted/voiceDetial', query: { flowId: row.messageUrl } });
+				} else {
+					this.$router.push({ path: '/BusinessAccepted/objCodeDetail', query: { flowId: row.messageUrl } });
+				}
 			},
 			// 修改页面显示数据大小
 			handleSizeChange(val) {
@@ -122,7 +128,7 @@
 			},
 
 			loadData() {
-                this.loading=true;
+				this.loading = true;
 				this.$ajax.post('/vos/messagecenter/getAll', {
 					"messagecenter": {
 						"messageTitle": ""
@@ -143,8 +149,8 @@
 							if (this.tableData[i].messageType == 'audit') {
 								this.tableData[i].messageType = '审核信息';
 							}
-                        }
-                        this.loading=false;
+						}
+						this.loading = false;
 					}
 				});
 			}

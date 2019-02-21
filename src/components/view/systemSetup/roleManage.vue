@@ -101,7 +101,6 @@
 				}
 			},
 			handleNodeClick(data, node, el) {
-				console.log(123);
 				var _this = this;
 				this.isEdit = false;
 				this.chooseData = data;

@@ -69,7 +69,7 @@
                                         <el-button size="mini" type="text" @click.stop="moveup(item.order,$event,index)">上移</el-button>
                                         <el-button size="mini" type="text" @click.stop="movedown(item.order)">下移</el-button>
                                         &#12288;
-                                    </div>-->
+                  </div>-->
 								</template>
 								<numSetAction :allType="allType" :number400Data="number400Data" :order="item.order" :allData="item" :index="index" @typeChange="typeChange" :isFirst="true" :voiceOptions="voiceOptions"></numSetAction>
 							</el-collapse-item>
@@ -207,9 +207,11 @@
 				this.getDetail("IVR", "IVR", "IVR");
 			},
 			getAllBy400() {
-				this.$ajax.get('/vos/voice/getAllBy400?number400=' + this.number400Data.number400).then(res => {
-					this.voiceOptions = res.data.voice;
-				});
+				this.$ajax
+					.get("/vos/voice/getAllBy400?number400=" + this.number400Data.number400)
+					.then(res => {
+						this.voiceOptions = res.data.voice;
+					});
 			},
 			submit(data) {
 				//this.checkData(data)
@@ -217,7 +219,7 @@
 					data.map(item => {
 						this.updata(item);
 					});
-					this.$emit('close');
+					this.$emit("close");
 				}
 			},
 			getDetail(url, tem, temSet) {
@@ -246,14 +248,15 @@
 										codeWork: item.workDestNumbers.split(","),
 										codeUnWork: item.nonWorkDestNumbers.split(","),
 										specificDate: item.specificDate ?
-											item.specificDate.split(",") : (item.ruleType == 'ignore' || item.ruleType == 'day' ? '' : [])
+											item.specificDate.split(",") : item.ruleType == "ignore" || item.ruleType == "day" ?
+											"" : []
 									});
 								});
 							} else {
 								res.data.map(item => {
 									obj[temSet].voice = {
 										id: item.voiceId,
-										voicePath: item.voicePath
+										voiceFile: item.voicePath
 									};
 									obj[temSet].ruleType.push(item.ruleType);
 									Object.assign(obj[temSet].ruleConfig[item.ruleType], {
@@ -263,10 +266,11 @@
 											[item.workTime2Start || "", item.workTime2End || ""]
 										],
 										specificDate: item.specificDate ?
-											item.specificDate.split(",") : (item.ruleType == 'ignore' || item.ruleType == 'day' ? '' : [])
+											item.specificDate.split(",") : item.ruleType == "ignore" || item.ruleType == "day" ?
+											"" : []
 									});
 								});
-							};
+							}
 							if (url == "IVR") {
 								let _this = this;
 								this.$ajax
@@ -285,26 +289,30 @@
 													child.businessType = data[key].businessType;
 													child.actionName = data[key].actionName;
 													if (data[key].businessType == "transfer") {
-														child[data[key].businessType].ruleType.push(data[key].ruleType || "ignore");
-														child[data[key].businessType].ruleConfig[data[key].ruleType || "ignore"] = {
+														child[data[key].businessType].ruleType.push(
+															data[key].ruleType || "ignore"
+														);
+														child[data[key].businessType].ruleConfig[
+															data[key].ruleType || "ignore"
+														] = {
 															codeWork: data[key].workDestNumbers.split(","),
 															codeUnWork: data[key].nonWorkDestNumbers.split(",")
 														};
 													} else if (data[key].businessType == "playback") {
 														child[data[key].businessType].voice = {
 															id: data[key].voiceId,
-															voicePath: data[key].voicePath
+															voiceFile: data[key].voicePath
 														};
 													} else if (data[key].businessType == "IVR") {
 														child[data[key].businessType].voice = {
 															id: data[key].voiceId,
-															voicePath: data[key].voicePath
+															voiceFile: data[key].voicePath
 														};
 														trans(data[key].children, child.children);
 													}
 													parent.push(child);
 												}
-											};
+											}
 											trans(resp.data, obj.children);
 											_this.numSetActionData.push(obj);
 										}
@@ -381,21 +389,30 @@
 			},
 			removeNumSetAction() {
 				this.businessAction.map(index => {
-					if (this.numSetActionData[index].businessType == 'transfer') {
-						this.$ajax.post('/vos/num400config/deleteTransfer/' + this.number400Data.number400).then(res => {
-							this.numSetActionData.splice(index, 1);
-						})
-					} else if (this.numSetActionData[index].businessType == 'playback') {
-						this.$ajax.post('/vos/num400config/deletePlayback/' + this.number400Data.number400).then(res => {
-							this.numSetActionData.splice(index, 1);
-						})
-					} else if (this.numSetActionData[index].businessType == 'IVR') {
-						this.$ajax.post('/vos/num400config/deleteIVR/' + this.number400Data.number400).then(res => {
-							this.numSetActionData.splice(index, 1);
-						})
+					if (this.numSetActionData[index].businessType == "transfer") {
+						this.$ajax
+							.post(
+								"/vos/num400config/deleteTransfer/" + this.number400Data.number400
+							)
+							.then(res => {
+								this.numSetActionData.splice(index, 1);
+							});
+					} else if (this.numSetActionData[index].businessType == "playback") {
+						this.$ajax
+							.post(
+								"/vos/num400config/deletePlayback/" + this.number400Data.number400
+							)
+							.then(res => {
+								this.numSetActionData.splice(index, 1);
+							});
+					} else if (this.numSetActionData[index].businessType == "IVR") {
+						this.$ajax
+							.post("/vos/num400config/deleteIVR/" + this.number400Data.number400)
+							.then(res => {
+								this.numSetActionData.splice(index, 1);
+							});
 					}
-				})
-
+				});
 			},
 			addNumSetAction() {
 				var numSetAction = "";
@@ -564,7 +581,7 @@
 							);
 						} else {
 							cData.specificDate = objData.IVR.ruleConfig[item].specificDate;
-						}
+						};
 						cData.voiceId = objData.IVR.voice.id;
 						cData.voicePath = objData.IVR.voice.voiceFile;
 						pData.push(cData);
@@ -602,7 +619,6 @@
 												type: val.label,
 												index: $index + 1
 											});
-											console.log(n);
 											objs.push(n);
 											return;
 										}
@@ -627,14 +643,14 @@
 				// 				if (bol) {
 				// 					quickSC(array, left - 1, left, false);
 				// 					quickSC(array, left + 1, right, true);
-				// 				};
+				// 				}else{quickSC(array, left - 1, left, false);};
 				// 			} else if (array[left].stime >= array[right].etime && left == 0) {
 				// 				temp = array[right];
 				// 				array[right] = array[left];
 				// 				array[left] = temp;
 				// 				if (bol) {
 				// 					quickSC(array, left + 1, right, true);
-				// 				};
+				// 				}else{quickSC(array, left - 1, left, false);};
 				// 			} else {
 				// 				if (bol) {
 				// 					quickSC(array, left + 1, right, true);
@@ -659,28 +675,30 @@
 				// };
 				objs.map((item, index) => {
 					for (let i = index + 1; i < objs.length; i++) {
-						if (
-							item.stime >= objs[i].etime ||
-							item.etime <= objs[i].stime
-						) {
-							console.log('时间不冲突');
+						if (item.stime >= objs[i].etime || item.etime <= objs[i].stime) {
+							console.log("时间不冲突");
 						} else {
 							_this.$message.error({
 								showClose: true,
 								duration: 10000,
 								message: item.temName +
-									"的" + item.type + "工作时间" +
+									"的" +
+									item.type +
+									"工作时间" +
 									item.index +
 									"与" +
 									objs[i].temName +
-									"的" + objs[i].type + "工作时间" +
+									"的" +
+									objs[i].type +
+									"工作时间" +
 									objs[i].index +
 									"时间有部分冲突"
 							});
 							isrequire = false;
+							return;
 						}
 					}
-				})
+				});
 				return isrequire;
 			}
 		}
