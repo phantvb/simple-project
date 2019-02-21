@@ -47,17 +47,15 @@ Vue.prototype.$format = function (obj) {
 axios.defaults.withCredentials = true;
 axios.defaults.headers.common['Content-Type'] = 'application/json;charset=UTF-8';
 axios.interceptors.response.use(res => {
-	// switch (res.status) {
-	// case 302:
-	// 	this.$router.push({ path: '/login' });
-	// 	break
-	// case 304:
-	// 	this.$router.push({ path: '/login' });
-	// 	break
-	// case 530:
-	// 	//location.href='#/login?error_type=1'
-	// 	break
-	// }
+	switch (res.data.code) {
+	case 302:
+		location.href = '#/login';
+		location.reload();
+		break
+	case 530:
+		//location.href='#/login?error_type=1'
+		break
+	}
 	if (res.data.code != 200) {
 		Vue.prototype.$message({
 			message: res.data.message,
@@ -66,9 +64,11 @@ axios.interceptors.response.use(res => {
 	}
 	return res.data;
 }, err => {
+	console.log(2, err)
 	//处理302
 	if (typeof err.response === 'undefined') {
 		location.href = '#/login';
+		location.reload();
 	}
 	return err;
 })
@@ -86,9 +86,10 @@ router.beforeEach((to, from, next) => {
 	var allPath = store.getters.getRoute;
 	let currentPath = to.path;
 	var isPass = false;
-	if (currentPath == '/login') {
+	if (currentPath.indexOf('/login') != -1) {
 		isPass = true;
 		next();
+		return;
 	};
 	if (allPath.length == 0) {
 		if (sessionStorage.getItem('roleId') != null) {

@@ -26,7 +26,7 @@
 					<div class="block left">
 						<span class="demonstration">企业来源：</span>
 						<el-select v-model="form.source" placeholder="请选择内容" size="mini" style="width:200px;" @change="fetchData()">
-							<el-option v-for="item in sourceOptions" :key="item.tariffName" :label="item.tariffName" :value="item.tariffName">
+							<el-option v-for="item in sourceOptions" :key="item.label" :label="item.label" :value="item.value">
 							</el-option>
 						</el-select>
 						<span class="demonstration" style="margin-left:15px;">提交日期：</span>
@@ -59,7 +59,7 @@
 					<div class="block left">
 						<span class="demonstration">企业来源：</span>
 						<el-select v-model="form2.source" placeholder="请选择内容" size="mini" style="width:200px;" @change="fetchAllData()">
-							<el-option v-for="item in sourceOptions" :key="item.tariffName" :label="item.tariffName" :value="item.tariffName">
+							<el-option v-for="item in sourceOptions" :key="item.label" :label="item.label" :value="item.value">
 							</el-option>
 						</el-select>
 						<el-button type="primary" size="mini" style="width:80px;" @click="fetchAllData()">搜索</el-button>
@@ -198,7 +198,8 @@
 					num: 1,
 					size: 10,
 					total: 1
-				}
+				},
+				permission: []
 			}
 		},
 		watch: {
@@ -211,6 +212,8 @@
 			}
 		},
 		mounted() {
+			console.log(this.$store.getters.getPermission(location.hash.replace(/#/, '')))
+			this.permission = this.$store.getters.getPermission(location.hash.replace(/#/, ''));
 			this.baseData.businessType = sessionStorage.getItem("businessType");
 			this.baseData.roleName = sessionStorage.getItem("roleName");
 			this.baseData.username = sessionStorage.getItem("username");
@@ -219,7 +222,12 @@
 		methods: {
 			checkDetail(data) {
 				this.flowIdData = data;
-				this.$router.push({ path: '/BusinessInform/businessDetail', query: { Id: data.company.id, status: data.status, creator: data.creator, assigneeRole: data.assigneeRole } });
+				if (this.active == 0) {
+					this.$router.push({ path: '/BusinessInform/businessDetail', query: { Id: data.company.id } });
+				} else {
+					this.$router.push({ path: '/BusinessInform/businessDetail', query: { flowId: data.flowId } });
+				}
+
 			},
 			closeCompany(bol) {
 				if (bol) {
