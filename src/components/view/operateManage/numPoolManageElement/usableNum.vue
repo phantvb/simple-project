@@ -14,7 +14,7 @@
 					</el-checkbox-group>
 				</el-form-item>
 				<el-form-item style="margin-left: 15px;">
-					<el-button type="primary" size="mini" class="searchButton" @click="search">搜索</el-button>
+					<el-button type="primary" size="mini" class="searchButton" @click="loadData">搜索</el-button>
 					<el-button type="primary" plain size="mini" class="resetButton" @click="reset">重置</el-button>
 				</el-form-item>
 			</el-form>
@@ -29,7 +29,7 @@
 			</div>
 			<div style="float: right;">
 				<el-button type="text" size="mini" style="float:left;" @click="downloadTemplate">批量导入Excel 模板下载</el-button>
-                <el-button type="primary" plain size="mini" @click="exportInfo">导出</el-button>
+				<el-button type="primary" plain size="mini" @click="exportInfo">导出</el-button>
 				<el-upload class="upload-demo" style="float:left;margin-left:10px;" :show-file-list=false :with-credentials="true" action="/vos/excel/importNumber400" :on-success="uploaded">
 					<el-button type="primary" plain size="mini">批量导入</el-button>
 				</el-upload>
@@ -113,7 +113,7 @@
 								<el-table-column prop="number400" label="400号码" width="150"></el-table-column>
 								<el-table-column prop="channel" label="可见渠道" width="120"></el-table-column>
 								<el-table-column prop="packageIds" label="关联套餐" width="150"></el-table-column>
-								<el-table-column prop="error" label="错误"></el-table-column>
+								<el-table-column prop="errMsg" label="错误"></el-table-column>
 							</el-table>
 						</el-form-item>
 					</el-form>
@@ -187,46 +187,9 @@
 
 			// 修改当前显示页面
 			handleCurrentChange(val) {
+                // console.log(val)
 				this.page.currentPage = val;
 				this.loadData();
-			},
-
-			search() {
-				let str = "";
-				if (this.usableNumForm.checkList.length == 2) {
-					str = "self,channel";
-				}
-				if (
-					this.usableNumForm.checkList.length == 1 &&
-					this.usableNumForm.checkList[0] == "自助直销"
-				) {
-					str = "self";
-				}
-				if (
-					this.usableNumForm.checkList.length == 1 &&
-					this.usableNumForm.checkList[0] == "渠道"
-				) {
-					str = "channel";
-				}
-				this.$ajax
-					.post("/vos/number400/search", {
-						page: {
-							pageNo: "1",
-							pageSize: this.page.size
-						},
-						number400: {
-							number400: this.usableNumForm.number,
-							channel: str,
-							status: "CanUse",
-							companyName: "",
-							guideNumber: ""
-						}
-					})
-					.then(res => {
-						if (res.code == 200) {
-							this.translate(res.data);
-						}
-					});
 			},
 
 			reset() {
@@ -329,22 +292,22 @@
 				// 下载导入模板
 				const url = this.$global.serverSrc + '/excel/number400Model';
 				window.open(url, "_blank");
-            },
+			},
 
 			uploaded(res, file, fileList) {
-                if(res.code == 200 & res.data.duplicatedList == null){
-                    this.$message({
-							message: '导入成功!',
-							type: 'success'
-						});
-                }else{
-                    this.importNumberFormDialogVisible=true;
-                    this.importNumberForm.errorNum=res.data.duplicatedList.length;
-                    this.importNumberForm.tableData=res.data.duplicatedList;
-                    
-                }
-                this.loadData();
-                
+				if (res.code == 200 & res.data.duplicatedList == null) {
+					this.$message({
+						message: '导入成功!',
+						type: 'success'
+					});
+				} else {
+					this.importNumberFormDialogVisible = true;
+					this.importNumberForm.errorNum = res.data.duplicatedList.length;
+					this.importNumberForm.tableData = res.data.duplicatedList;
+
+				}
+				this.loadData();
+
 			},
 
 			exportInfo() {
@@ -685,9 +648,8 @@
 				return ids;
 			},
 
+
 			loadData() {
-
-
 				this.$ajax
 					.post("/vos/tariffPackage/getTariff", {
 						tariff: {
@@ -711,17 +673,33 @@
 							this.aTableData2 = res.data.tariffPackageList;
 							this.addNumberForm.channelTableData = res.data.tariffPackageList;
 						}
-					});
-
+                    });
+                
+                let str = "";
+				if (this.usableNumForm.checkList.length == 2) {
+					str = "self,channel";
+				}
+				if (
+					this.usableNumForm.checkList.length == 1 &&
+					this.usableNumForm.checkList[0] == "自助直销"
+				) {
+					str = "self";
+				}
+				if (
+					this.usableNumForm.checkList.length == 1 &&
+					this.usableNumForm.checkList[0] == "渠道"
+				) {
+					str = "channel";
+				}
 				this.$ajax
 					.post("/vos/number400/getAll", {
 						page: {
-							pageNo: this.page.currentPage,
-							pageSize: this.page.size
+							pageNo: this.page.currentPage || 1,
+							pageSize: this.page.size || 1
 						},
 						number400: {
-							number400: "",
-							channel: "",
+							number400: this.usableNumForm.number,
+							channel: str,
 							status: "CanUse",
 							companyName: "",
 							guideNumber: ""
