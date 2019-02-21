@@ -25,7 +25,7 @@
 
 					<el-form-item class="searchBtn">
 						<el-button type="primary" size="mini" @click="objCodeLists()">搜索</el-button>
-						<el-button @click="resetForm('form')" size="mini">重置</el-button>
+						<el-button @click="resetForm()" size="mini">重置</el-button>
 					</el-form-item>
 				</div>
 			</el-form>
@@ -365,6 +365,12 @@
                         this.pageObj.total = res.data.totalCount;
                     }
                 });
+            },
+            resetForm(){
+                this.form.firmName='';
+                this.form.phoneNum='';
+                this.form.time='';
+                this.objCodeLists();
             },
             // 目的码列表
             objCodeLists(){
