@@ -193,6 +193,8 @@
             return {
                 needCompanySave: false,
                 acceptForm: {
+                    id:'',
+                    company:'',
                     companyName: '',
                     companyCardType: '',
                     companyCardNo: '',
@@ -223,7 +225,6 @@
                 rules: {
                     companyName: [
                         {required: true, message: '请输入企业名称', trigger: 'blur'},
-                        {min: 2, max: 16, message: '长度在 3 到 5 个字符', trigger: 'blur'}
                     ],
                     companyCardNo: [
                         {required: true, message: '请填写证件编号', trigger: 'change'}
@@ -312,8 +313,9 @@
                 console.log("qqqqqqqqqqqqqqqqq");
                 this.stepTwoDetail();
                 this.searchFirm(this.acceptForm.companyName);
+                console.log("firmNameList",this.firmNameList);
                 this.firmNameList.map((zool, index) => {
-                    console.log("909090909090909000090909009090");
+                    console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
                     if (zool.companyName == this.acceptForm.companyName) {
                         this.acceptForm = this.firmNameList[index];
                         this.changeMsgDisabled(true);
@@ -409,7 +411,11 @@
                     }
                     this.firmNameList.map((zool, index) => {
                         if (zool.companyName == this.acceptForm.companyName) {
+                            console.log("zool",zool);
+                            // sessionStorage.setItem("firmNameListItem",JSON.stringify(zool));
                             this.acceptForm = this.firmNameList[index];
+                            this.$root.eventHub.$emit('firmNameListItem',zool);
+                            // sessionStorage.setItem("firmNameList",JSON.stringify(this.firmNameList[index]));
                             this.changeMsgDisabled(true);
                         }else{
                             this.changeMsgDisabled(false);
@@ -425,7 +431,7 @@
             firmNameLi(val) {
                 let companyIdInfo ={};
                 if(val.id!=null){
-                    console.log(val);
+                    console.log('企业信息',val);
                     console.log(val.id);
                     companyIdInfo.companyId = val.id;
                 }

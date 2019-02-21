@@ -13,12 +13,12 @@
 			<el-tab-pane label="目的码审核">
 				<objCodeAudit></objCodeAudit>
 			</el-tab-pane>
-			<el-tab-pane label="注销审核">
-				<logoutAudit></logoutAudit>
-			</el-tab-pane>
-			<el-tab-pane label="变更审核">
-				<changeAudit></changeAudit>
-			</el-tab-pane>
+			<!--<el-tab-pane label="注销审核">-->
+				<!--<logoutAudit></logoutAudit>-->
+			<!--</el-tab-pane>-->
+			<!--<el-tab-pane label="变更审核">-->
+				<!--<changeAudit></changeAudit>-->
+			<!--</el-tab-pane>-->
 			<el-tab-pane label="语音文件管理">
 				<voiceFile></voiceFile>
 			</el-tab-pane>

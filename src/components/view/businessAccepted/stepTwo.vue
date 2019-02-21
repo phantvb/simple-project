@@ -142,10 +142,13 @@
                 campanyObj: {},        //企业信息对象
                 flowId: '',
                 saveBtnHidden:true,
+                companySaveInfo:[],
             };
         },
         components: {},
         created() {
+            // this.companySaveInfo = JSON.parse(sessionStorage.getItem("firmNameListItem"));
+            // console.log("this.companySaveInfo",this.companySaveInfo);
             console.log(sessionStorage.getItem('businessIn'));
             this.$root.eventHub.$on('flowId', (resp) => {
                 console.log("flowId", resp);
@@ -164,6 +167,10 @@
                   console.log("11111111111111");
                   this.stepThreeDetail();
                  }
+            this.$root.eventHub.$on('firmNameListItem',(resp)=>{
+                console.log("firmNameListItem",resp);
+                this.stepTwoForm = resp;
+            });
         },
         methods: {
             // 详情

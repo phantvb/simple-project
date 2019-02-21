@@ -338,6 +338,7 @@
           this.entireType = objData.type;
           console.log(this.entireFlowId);
             sessionStorage.setItem('entireFlowId',this.entireFlowId);
+            sessionStorage.setItem('objMsg', JSON.stringify(objMsg));
           if(val=='送审'){
               sessionStorage.setItem("businessIn",2);
               this.getCacheData(val);
@@ -346,7 +347,7 @@
               sessionStorage.setItem("businessIn",4);
               console.log(this.entireStatus);
               this.getCacheData(val);
-          }else if(val=='通过审核'){
+          }else if(val=='通过审核' || val=='变更审核通过'){
               console.log("11111");
               this.passCompany(val,objMsg);
           }else if(val=='变更'){
@@ -562,18 +563,18 @@
 			    console.log(data);
             var obj = {};
             var url;
-            if (data.status == 'Business_Auditing' || data.type == '业务') {
+            if (data.status == 'Business_Auditing' && data.type == '业务') {
                 //业务受理驳回
                 url = '/vos/business/businessAuditReject';
-            } else if (data.status == 'Modify_Auditing' || data.type == '目的码') {
+            } else if (data.status == 'Modify_Auditing' && data.type == '目的码') {
                 //目的码驳回
                 url = '/vos/destnum/auditReject';
-            } else if (data.status == 'Canceling_Auditing' || data.type == '语音') {
+            } else if (data.status == 'Canceling_Auditing' && data.type == '语音') {
                 //语音驳回
                 url = '/vos/voice/auditReject';
             }else if (data.status == 'Modify_Auditing') {
                 //变更审核驳回
-                url = '/vos/company/modifyAuditReject';
+                url = '/vos/business/modifyAuditReject';
             }else if (data.status == 'Cancel_AuditReject') {
                 //注销审核驳回
                 url = '/vos/business/cancelAuditReject';

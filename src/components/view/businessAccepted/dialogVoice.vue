@@ -40,7 +40,7 @@
                                     width="180">
                                         <template slot-scope="scope">
                                             <div>
-                                                <el-select v-model="scope.row.voicetype" placeholder="请选择" size="mini" @change="voiceTypeChange">
+                                                <el-select v-model="scope.row.voiceType" placeholder="请选择" size="mini" @change="voiceTypeChange">
                                                     <el-option
                                                             v-for="item in voiceTypeList"
                                                             :key="item.dicKey"
@@ -58,14 +58,14 @@
                                         <template slot-scope="scope">
                                             <div>
                                                 <el-input
-                                                        v-model="scope.row.voicename"
+                                                        v-model="scope.row.voiceName"
                                                         @input="voiceNameChange"
                                                         placeholder="请输入内容" size="mini"></el-input>
                                             </div>
                                         </template>
                             </el-table-column>
                             <el-table-column
-                                    prop="voiceFile"
+                                    prop="voicefiles"
                                     label="语音文件">
                                         <template slot-scope="scope">
                                             <el-upload action=""
@@ -141,7 +141,7 @@
                     firmName:'',
                     voiceNum:'',
                     voicefiles:'',
-                    voicename:'',
+                    voiceName:'',
                     voiceNumAndFile:'',
                     addValueType:'',
                 },
@@ -151,8 +151,8 @@
                 },
                 voiceList:[],
                 tableData:[{
-                    voicetype:'',
-                    voicename:'',
+                    voiceType:'',
+                    voiceName:'',
                     voicefiles:[],
                 }],
                 voiceTypeList:[],
@@ -185,8 +185,8 @@
                         this.voiceInfo.voiName='';
                         this.voiceForm.addValueType='';
                         this.tableData=[{
-                            voicetype:'',
-                            voicename:'',
+                            voiceType:'',
+                            voiceName:'',
                             voicefiles:[],
                         }];
                         this.tableData.map((item)=>{
@@ -294,8 +294,8 @@
                     // if(res.data.voice.length!=0){
                         this.tableData = res.data.voice;
                         this.tableData.push({
-                            voicetype:'',
-                            voicename:'',
+                            voiceType:'',
+                            voiceName:'',
                             voicefiles:[],
                         });
                     // }
@@ -304,11 +304,11 @@
                 this.companyId = val.companyId;
             },
             add(scope){
-                console.log(scopev);
+                console.log(scope);
                 console.log(this.tableData.length);
                 this.tableData.push({
-                    voicetype:'',
-                    voicename:'',
+                    voiceType:'',
+                    voiceName:'',
                     voicefiles:[],
                 })
             },
@@ -405,7 +405,7 @@
                     item.companyid = this.companyId;
                     item.number400 = this.voiceForm.voiceNum;
                     item.valueaddedid = this.valueAddedList[0].id;
-                    item.voicefile=this.voicefiles;
+                    item.voiceFile=this.voicefiles;
                 });
                 this.$ajax.post('/vos/voice/startAndSave',{
                     "number400":this.voiceForm.voiceNum,
@@ -470,7 +470,7 @@
                  this.tableData.map((item)=>{
                      let sss=[];
                      sss.push({
-                         name:item.voicefile,
+                         name:item.voiceFile,
                          url:item.voicefiles
                      });
                      item.voicefiles = sss;
