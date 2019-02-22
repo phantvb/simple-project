@@ -169,7 +169,7 @@
 
 						<el-form-item label="手机号：">{{detailsDialogForm.phone}}</el-form-item>
 						<el-form-item label="业务身份：" prop="channel">
-							{{detailsDialogForm.channel=="channel"?'渠道':'自助'}}
+							{{detailsDialogForm.businessType=="channel"?'渠道':'自助'}}
 						</el-form-item>
 
 						<el-form-item label="归属地区：">{{detailsDialogForm.province}}{{detailsDialogForm.city}}{{detailsDialogForm.area}}</el-form-item>
