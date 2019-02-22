@@ -70,7 +70,7 @@
 				this.$ajax
 					.post("/vos/announcement/search", {
 						page: {
-							pageNo: "1",
+							pageNo: this.page.currentPage,
 							pageSize: this.page.size
 						},
 

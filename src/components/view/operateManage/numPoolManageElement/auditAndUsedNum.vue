@@ -145,7 +145,7 @@
                 }
                 this.$ajax.post('/vos/number400/search', {
                     "page": {
-                        "pageNo": '1',
+                        "pageNo": this.page.currentPage,
                         "pageSize": this.page.size
                     },
                     "number400": {
