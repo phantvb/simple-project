@@ -29,23 +29,23 @@
 				<el-table :data="recordData" border style="width: 100%" :header-row-class-name="'lightblue'">
 					<el-table-column prop="accountNo" label="到账编号" min-width="80">
 						<template slot-scope="scope">
-							<el-input v-model="scope.row.accountNo" size="mini"></el-input>
+							<el-input v-model="scope.row.accountNo" size="small"></el-input>
 						</template>
 					</el-table-column>
 					<el-table-column prop="accountTime" label="到账日期" min-width="120">
 						<template slot-scope="scope">
-							<el-date-picker style="margin-right:15px;" v-model="scope.row.accountTime" type="datetime" placeholder="请选择日期" size="mini" value-format="yyyy-MM-dd HH:mm:00">
+							<el-date-picker style="margin-right:15px;" v-model="scope.row.accountTime" type="datetime" placeholder="请选择日期" size="small" value-format="yyyy-MM-dd HH:mm:00">
 							</el-date-picker>
 						</template>
 					</el-table-column>
 					<el-table-column prop="realIncome" label="实收" min-width="120">
 						<template slot-scope="scope">
-							<el-input v-model="scope.row.realIncome" size="mini"></el-input>
+							<el-input v-model="scope.row.realIncome" size="small"></el-input>
 						</template>
 					</el-table-column>
 				</el-table>
 				<div class="lightblue center">
-					<el-button type="text" size="mini" @click="addRecord">新增到账信息</el-button>
+					<el-button type="text" size="small" @click="addRecord">新增到账信息</el-button>
 				</div>
 			</div>
 			<div class="title" v-if="transferType==0">
@@ -53,7 +53,7 @@
 			</div>
 			<div class="block" v-if="transferType==0">
 				号码开通时间：
-				<el-date-picker style="margin-right:15px;" v-model="openTime" type="datetime" placeholder="请选择日期" size="mini" value-format="yyyy-MM-dd HH:mm:00" :picker-options="pickerOptions">
+				<el-date-picker style="margin-right:15px;" v-model="openTime" type="datetime" placeholder="请选择日期" size="small" value-format="yyyy-MM-dd HH:mm:00" :picker-options="pickerOptions">
 				</el-date-picker>
 			</div>
 			<div class="title" v-if="transferType==1||transferType==2">
@@ -104,8 +104,8 @@
 				</el-table>
 			</div>
 			<footer class="right">
-				<el-button type="primary" size="mini" plain @click="close(false)">取消</el-button>
-				<el-button type="primary" size="mini" @click="submit">确定</el-button>
+				<el-button type="primary" size="small" plain @click="close(false)">取消</el-button>
+				<el-button type="primary" size="small" @click="submit">确定</el-button>
 			</footer>
 		</el-dialog>
 	</div>

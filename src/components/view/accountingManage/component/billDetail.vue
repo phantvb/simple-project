@@ -72,8 +72,8 @@
 				</p>
 			</div>
 			<footer class="right">
-				<el-button type="primary" size="mini" @click="dialogVisible=false">确定</el-button>
-				<el-button type="primary" size="mini" plain @click="dialogVisible=false">取消</el-button>
+				<el-button type="primary" size="small" @click="dialogVisible=false">确定</el-button>
+				<el-button type="primary" size="small" plain @click="dialogVisible=false">取消</el-button>
 			</footer>
 		</el-dialog>
 	</div>

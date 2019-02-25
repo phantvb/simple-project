@@ -5,20 +5,20 @@
 				<div class="form_item" v-if="type=='one'">
 					<div class="form_title right">400号码：</div>
 					<div class="form_con">
-						<el-select v-model="number400" filterable remote reserve-keyword placeholder="请输入400号" :remote-method="remoteMethod" :loading="loading" size="mini" value-key="id">
+						<el-select v-model="number400" filterable remote reserve-keyword placeholder="请输入400号" :remote-method="remoteMethod" :loading="loading" size="small" value-key="id">
 							<el-option v-for="(item,index) in numberOptions" :key="index" :label="item.number400" :value="item">
 							</el-option>
 						</el-select>
-						<el-button type="primary" size="mini">搜索</el-button>
+						<el-button type="primary" size="small">搜索</el-button>
 					</div>
 				</div>
 				<div class="form_item">
 					<div class="form_title right">黑名单号码：</div>
 					<div class="form_con">
 						<div v-for="(item,index) in blackList" :key="index" style="margin-bottom:10px;">
-							<el-input v-model="item.num" size="mini" placeholder="请输入黑名单号码"></el-input>
-							<el-button v-if="type=='all'&&index==0" type="primary" icon="el-icon-plus" size="mini" @click="addBlack(true)"></el-button>
-							<el-button v-if="type=='all'&&index>0" type="primary" icon="el-icon-minus" size="mini" @click="addBlack(false,index)"></el-button>
+							<el-input v-model="item.num" size="small" placeholder="请输入黑名单号码"></el-input>
+							<el-button v-if="type=='all'&&index==0" type="primary" icon="el-icon-plus" size="small" @click="addBlack(true)"></el-button>
+							<el-button v-if="type=='all'&&index>0" type="primary" icon="el-icon-minus" size="small" @click="addBlack(false,index)"></el-button>
 						</div>
 					</div>
 				</div>
@@ -35,8 +35,8 @@
 			</div>
 			<div class="greyline"></div>
 			<footer class="right">
-				<el-button type="primary" size="mini" @click="submit">确定</el-button>
-				<el-button type="primary" size="mini" plain @click="dialogVisible=false">取消</el-button>
+				<el-button type="primary" size="small" @click="submit">确定</el-button>
+				<el-button type="primary" size="small" plain @click="dialogVisible=false">取消</el-button>
 			</footer>
 		</el-dialog>
 	</div>

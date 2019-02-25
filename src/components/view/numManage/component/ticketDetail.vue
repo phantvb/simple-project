@@ -49,8 +49,8 @@
 			</div>
 			<div class="greyline"></div>
 			<footer class="right">
-				<el-button type="primary" size="mini" @click="close">确定</el-button>
-				<el-button type="primary" size="mini" plain @click="close">取消</el-button>
+				<el-button type="primary" size="small" @click="close">确定</el-button>
+				<el-button type="primary" size="small" plain @click="close">取消</el-button>
 			</footer>
 		</el-dialog>
 	</div>

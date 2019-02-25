@@ -19,15 +19,15 @@
 			<div class="form_item">
 				<div class="form_title right">系统优惠：</div>
 				<div class="form_con">
-					<el-select v-model="favourable" placeholder="请选择" size="mini" value-key="concessionName">
+					<el-select v-model="favourable" placeholder="请选择" size="small" value-key="concessionName">
 						<el-option v-for="item in options" :key="item.id" :label="item.concessionName" :value="item">
 						</el-option>
 					</el-select>
 				</div>
 			</div>
 			<footer class="right">
-				<el-button type="primary" size="mini" plain @click="close(false)">取消</el-button>
-				<el-button type="primary" size="mini" @click="submit">确定</el-button>
+				<el-button type="primary" size="small" plain @click="close(false)">取消</el-button>
+				<el-button type="primary" size="small" @click="submit">确定</el-button>
 			</footer>
 		</el-dialog>
 	</div>

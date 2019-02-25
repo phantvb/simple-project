@@ -4,7 +4,7 @@
 			<div class="form_item">
 				<div class="form_title right">400号码：</div>
 				<div class="form_con">
-					<el-select v-model="form.number400" @change="number400Change" filterable remote reserve-keyword placeholder="请输入400号" :remote-method="remoteMethod" :loading="loading" size="mini" value-key="id">
+					<el-select v-model="form.number400" @change="number400Change" filterable remote reserve-keyword placeholder="请输入400号" :remote-method="remoteMethod" :loading="loading" size="small" value-key="id">
 						<el-option v-for="item in numberOptions" :key="item.id" :label="item.number400" :value="item">
 						</el-option>
 					</el-select>
@@ -17,7 +17,7 @@
 			<div class="form_item">
 				<div class="form_title right">时长包：</div>
 				<div class="form_con">
-					<el-select v-model="form.charge" placeholder="请选择" size="mini" value-key="id">
+					<el-select v-model="form.charge" placeholder="请选择" size="small" value-key="id">
 						<el-option v-for="item in timePacketOptions" :key="item.id" :label="item.timePacketName" :value="item">
 						</el-option>
 					</el-select>
@@ -26,21 +26,21 @@
 			<div class="form_item">
 				<div class="form_title right">数量：</div>
 				<div class="form_con">
-					<el-input v-model="form.amount" style="max-width:220px;" size="mini" placeholder="填写该优惠方案名称"></el-input> 个
+					<el-input v-model="form.amount" style="max-width:220px;" size="small" placeholder="填写该优惠方案名称"></el-input> 个
 				</div>
 			</div>
 			<div class="form_item">
 				<div class="form_title right">优惠：</div>
 				<div class="form_con">
-					<el-select v-model="form.concession" placeholder="请选择" size="mini" value-key="id">
+					<el-select v-model="form.concession" placeholder="请选择" size="small" value-key="id">
 						<el-option v-for="item in concessionOptions" :key="item.id" :label="item.concessionName" :value="item">
 						</el-option>
 					</el-select>
 				</div>
 			</div>
 			<footer class="right">
-				<el-button type="primary" size="mini" plain @click="dialogVisible=false">取消</el-button>
-				<el-button type="primary" size="mini" @click="submit">确定</el-button>
+				<el-button type="primary" size="small" plain @click="dialogVisible=false">取消</el-button>
+				<el-button type="primary" size="small" @click="submit">确定</el-button>
 			</footer>
 		</el-dialog>
 	</div>

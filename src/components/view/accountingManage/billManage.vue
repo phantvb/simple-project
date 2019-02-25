@@ -11,32 +11,32 @@
 				<ul v-if="billType==0">
 					<li>
 						<span class="demonstration">400号码：</span>
-						<el-input v-model="form.number400" placeholder="请输入内容" size="mini"></el-input>
+						<el-input v-model="form.number400" placeholder="请输入内容" size="small"></el-input>
 					</li>
 					<li>
 						<span class="demonstration">企业名称：</span>
-						<el-input v-model="form.companyName" placeholder="请输入内容" size="mini"></el-input>
+						<el-input v-model="form.companyName" placeholder="请输入内容" size="small"></el-input>
 					</li>
 					<li>
 						<span class="demonstration">套餐：</span>
-						<el-select v-model="form.packageName" placeholder="请选择" size="mini">
+						<el-select v-model="form.packageName" placeholder="请选择" size="small">
 							<el-option v-for="item in packageOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
 						</el-select>
 					</li>
 				</ul>
 				<div class="block left">
 					<span class="demonstration" v-if="billType==0">月份：</span>
-					<el-date-picker style="margin-right:15px;" v-if="billType==0" v-model="form.time" type="month" placeholder="请选择月份" size="mini" format="yyyy 年 MM 月" value-format="yyyy-MM" @change="fetchData()"></el-date-picker>
+					<el-date-picker style="margin-right:15px;" v-if="billType==0" v-model="form.time" type="month" placeholder="请选择月份" size="small" format="yyyy 年 MM 月" value-format="yyyy-MM" @change="fetchData()"></el-date-picker>
 					<span class="demonstration" v-if="billType==1">开始月份：</span>
-					<el-date-picker style="margin-right:15px;" v-if="billType==1" v-model="monthTotalBillForm.timeS" type="month" placeholder="请选择月份" size="mini" format="yyyy 年 MM 月" value-format="yyyy-MM" @change="fetchData()"></el-date-picker>
+					<el-date-picker style="margin-right:15px;" v-if="billType==1" v-model="monthTotalBillForm.timeS" type="month" placeholder="请选择月份" size="small" format="yyyy 年 MM 月" value-format="yyyy-MM" @change="fetchData()"></el-date-picker>
 					<span class="demonstration" v-if="billType==1">结束月份：</span>
-					<el-date-picker style="margin-right:15px;" v-if="billType==1" v-model="monthTotalBillForm.timeE" type="month" placeholder="请选择月份" size="mini" format="yyyy 年 MM 月" value-format="yyyy-MM" @change="fetchData()"></el-date-picker>
-					<el-button type="primary" size="mini" style="width:80px;" @click="fetchData()">搜索</el-button>
-					<el-button type="primary" plain size="mini" style="width:80px;" @click="reset">重置</el-button>
+					<el-date-picker style="margin-right:15px;" v-if="billType==1" v-model="monthTotalBillForm.timeE" type="month" placeholder="请选择月份" size="small" format="yyyy 年 MM 月" value-format="yyyy-MM" @change="fetchData()"></el-date-picker>
+					<el-button type="primary" size="small" style="width:80px;" @click="fetchData()">搜索</el-button>
+					<el-button type="primary" plain size="small" style="width:80px;" @click="reset">重置</el-button>
 				</div>
 			</div>
 			<section class="right block lineTop">
-				<el-button type="primary" plain size="mini">导出</el-button>
+				<el-button type="primary" plain size="small">导出</el-button>
 			</section>
 			<el-table v-show="billType==0" :data="tableData" style="width: 100%;margin-bottom:15px;">
 				<el-table-column type="selection" width="55"></el-table-column>
@@ -53,7 +53,7 @@
 				<el-table-column prop="totalFee" label="·费用合计" min-width="80"></el-table-column>
 				<el-table-column prop="name" label="操作" min-width="200">
 					<template slot-scope="scope">
-						<el-button size="mini" type="text" @click="showBillDetail(true,scope.row)">详情</el-button>
+						<el-button size="small" type="text" @click="showBillDetail(true,scope.row)">详情</el-button>
 					</template>
 				</el-table-column>
 			</el-table>

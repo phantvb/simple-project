@@ -5,18 +5,18 @@
 				<div class="form_item">
 					<div class="form_title right">企业名称：</div>
 					<div class="form_con">
-						<el-input v-model="detail.companyName" size="mini" placeholder="请输入企业名称，在列表中选择企业">
+						<el-input v-model="vData.business.companyName" size="small" placeholder="请输入企业名称，在列表中选择企业">
 						</el-input>
 					</div>
 				</div>
 				<div class="form_item">
 					<div class="form_title right">400号码：</div>
 					<div class="form_con">
-						<el-select v-model="detail.number400" filterable remote reserve-keyword placeholder="请输入400号" :remote-method="remoteMethod" :loading="loading" size="mini" value-key="id">
-							<el-option v-for="(item,index) in numberOptions" :key="index" :label="item.number400" :value="item">
+						<el-select v-model="detail.number400" filterable remote reserve-keyword placeholder="请输入400号" :remote-method="remoteMethod" :loading="loading" size="small" value-key="id">
+							<el-option v-for="(item,index) in numberOptions" :key="index" :label="item.number400" :value="item.number400">
 							</el-option>
 						</el-select>
-						<el-button type="primary" size="mini">搜索</el-button>
+						<el-button type="primary" size="small">搜索</el-button>
 					</div>
 				</div>
 				<div class="form_item">
@@ -26,7 +26,7 @@
 							<el-table-column prop="voiceType" label="语音类型" min-width="100">
 								<template slot-scope="scope">
 									<div>
-										<el-select v-model="scope.row.voiceType" placeholder="请选择" size="mini">
+										<el-select v-model="scope.row.voiceType" placeholder="请选择" size="small">
 											<el-option v-for="item in voiceTypeList" :key="item.dicKey" :label="item.dicValue" :value="item.dicKey">
 											</el-option>
 										</el-select>
@@ -36,13 +36,13 @@
 							<el-table-column prop="voiceName" label="语音名称" min-width="100">
 								<template slot-scope="scope">
 									<div>
-										<el-input v-model="scope.row.voiceName" placeholder="请输入内容" size="mini"></el-input>
+										<el-input v-model="scope.row.voiceName" placeholder="请输入内容" size="small"></el-input>
 									</div>
 								</template>
 							</el-table-column>
 							<el-table-column prop="voiceFile" label="语音文件" min-width="150">
 								<template slot-scope="scope">
-									<el-upload size="mini" action="/vos/common/uploadVoice" :http-request="uploadFile" :file-list="scope.row.voicefiles" :before-upload="beforeAvatarUpload" accept=".flv,.mp3,.wma,.swf,.wmv,.mid,.avi,.mpg,.asf,.rm,.rmvb" :limit="1">
+									<el-upload size="small" action="/vos/common/uploadVoice" :http-request="uploadFile" :file-list="scope.row.voicefiles" :before-upload="beforeAvatarUpload" accept=".flv,.mp3,.wma,.swf,.wmv,.mid,.avi,.mpg,.asf,.rm,.rmvb" :limit="1">
 										<el-button size="small" type="primary" @click="activeIndex=scope.$index">点击上传</el-button>
 									</el-upload>
 								</template>
@@ -50,8 +50,8 @@
 							<el-table-column prop="operation" label="操作" min-width="100">
 								<template slot-scope="scope">
 									<div>
-										<el-button size="mini" type="text" @click="addVoice(true)">添加</el-button>
-										<el-button size="mini" type="text" @click="addVoice(false,scope.$index)">删除</el-button>
+										<el-button size="small" type="text" @click="addVoice(true)">添加</el-button>
+										<el-button size="small" type="text" @click="addVoice(false,scope.$index)">删除</el-button>
 									</div>
 								</template>
 							</el-table-column>
@@ -76,8 +76,8 @@
 			</div>
 			<div class="greyline"></div>
 			<footer class="right">
-				<el-button type="primary" size="mini" @click="submit">确定</el-button>
-				<el-button type="primary" size="mini" plain @click="close">取消</el-button>
+				<el-button type="primary" size="small" @click="submit">确定</el-button>
+				<el-button type="primary" size="small" plain @click="close">取消</el-button>
 			</footer>
 		</el-dialog>
 	</div>
@@ -95,7 +95,9 @@
 				this.dialogVisible = newV;
 			},
 			'vData.flowId': function (n, o) {
-				this.getData(this.vData.flowId);
+				if (n != undefined) {
+					this.getData(this.vData.flowId);
+				};
 			}
 		},
 		data() {
@@ -104,7 +106,6 @@
 				detail: {
 					id: '',
 					number400: '',
-					companyName: '',
 					flowId: ''
 				},
 				activeIndex: '',
@@ -112,8 +113,7 @@
 				dialogVisible: false,
 				voiceTypeList: [],
 				valueAddedList: [],
-				numberOptions: [],
-				fileList: []
+				numberOptions: []
 			};
 		},
 		created() {
@@ -121,8 +121,8 @@
 			this.getValueAdded();
 		},
 		methods: {
-			close() {
-				this.$emit("close");
+			close(bol) {
+				this.$emit("close", false, null, bol);
 			},
 			submit() {
 				var data = {};
@@ -134,7 +134,7 @@
 				data.voice = this.voiceData;
 				this.$ajax.post('/vos/voice/updateAuditDirectly', data).then(res => {
 					if (res.code == 200) {
-						this.close();
+						this.close(true);
 					}
 				});
 			},
@@ -178,9 +178,7 @@
 							item.voicefiles = [{ name: item.voiceFile }];
 						});
 						this.voiceData = res.data.voice;
-						this.detail.id = res.data.company.id;
-						this.detail.companyName = res.data.company.companyName;
-						this.detail.flowId = res.data.companyFlow.flowId;
+						this.detail = res.data.companyFlow;
 						this.detail.number400 = res.data.number400;
 					}
 				});
@@ -223,7 +221,6 @@
 				form.append('voice', file.file);
 				this.$ajax.post('/vos/common/uploadVoice', form).then(res => {
 					this.voiceData[this.activeIndex].voiceFile = res;
-					console.log(this.voiceData[this.activeIndex].voiceFile)
 				})
 			}
 		}

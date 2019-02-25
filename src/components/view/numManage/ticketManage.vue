@@ -8,48 +8,48 @@
 				<ul>
 					<li>
 						<span class="demonstration">企业名称：</span>
-						<el-input v-model="form.companyName" placeholder="企业名称" size="mini">
+						<el-input v-model="form.companyName" placeholder="企业名称" size="small">
 						</el-input>
 					</li>
 					<li>
 						<span class="demonstration">时间：</span>
-						<el-date-picker style="margin-right:15px;" v-model="form.time" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" size="mini" format="yyyy 年 MM 月 dd 日" value-format="yyyy-MM-dd 00:00:00" @change="fetchData()">
+						<el-date-picker style="margin-right:15px;" v-model="form.time" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" size="small" format="yyyy 年 MM 月 dd 日" value-format="yyyy-MM-dd 00:00:00" @change="fetchData()">
 						</el-date-picker>
 					</li>
 				</ul>
 				<ul>
 					<li>
 						<span class="demonstration">400号码：</span>
-						<el-input v-model="form.number400" placeholder="请输入内容" size="mini">
+						<el-input v-model="form.number400" placeholder="请输入内容" size="small">
 						</el-input>
 					</li>
 					<li>
 						<span class="demonstration">主叫号码：</span>
-						<el-input v-model="form.callingNumber" placeholder="请输入内容" size="mini">
+						<el-input v-model="form.callingNumber" placeholder="请输入内容" size="small">
 						</el-input>
 					</li>
 					<li>
 						<span class="demonstration">被叫号码：</span>
-						<el-input v-model="form.calledNumber" placeholder="请输入内容" size="mini">
+						<el-input v-model="form.calledNumber" placeholder="请输入内容" size="small">
 						</el-input>
 					</li>
 				</ul>
 				<div class="block left">
 					<div style="float:left;margin-right:15px;">
 						<span class="demonstration">通话时长：</span>
-						<el-input v-model="form.callDurationStart" size="mini" style="max-width:100px;">
+						<el-input v-model="form.callDurationStart" size="small" style="max-width:100px;">
 						</el-input>
 						<span class="demonstration"> - </span>
-						<el-input v-model="form.callDurationEnd" size="mini" style="max-width:100px;">
+						<el-input v-model="form.callDurationEnd" size="small" style="max-width:100px;">
 						</el-input>
 						<span class="demonstration"> 秒</span>
 					</div>
-					<el-button type="primary" size="mini" style="width:80px;" @click="fetchData()">搜索</el-button>
-					<el-button type="primary" plain size="mini" style="width:80px;" @click="reset">重置</el-button>
+					<el-button type="primary" size="small" style="width:80px;" @click="fetchData()">搜索</el-button>
+					<el-button type="primary" plain size="small" style="width:80px;" @click="reset">重置</el-button>
 				</div>
 			</div>
 			<section class="right block lineTop">
-				<el-button type="primary" plain size="mini" @click="outPut">导出</el-button>
+				<el-button type="primary" plain size="small" @click="outPut">导出</el-button>
 			</section>
 			<el-table :data="tableData" style="width: 100%;margin-bottom:15px;">
 				<el-table-column prop="companyName" label="企业名称" min-width="100">
@@ -66,8 +66,8 @@
 				</el-table-column>
 				<el-table-column prop="name" label="操作" min-width="200">
 					<template slot-scope="scope">
-						<el-button size="mini" type="text" @click="listen(scope.row.recordAddress)">试听</el-button>
-						<el-button size="mini" type="text" @click="showTicketDetail(true,scope.row)">详情</el-button>
+						<el-button size="small" type="text" @click="listen(scope.row.recordAddress)">试听</el-button>
+						<el-button size="small" type="text" @click="showTicketDetail(true,scope.row)">详情</el-button>
 					</template>
 				</el-table-column>
 			</el-table>

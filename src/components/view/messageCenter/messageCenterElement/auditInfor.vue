@@ -50,6 +50,8 @@
 					this.$router.push({ path: '/BusinessInform/businessDetail', query: { flowId: row.messageUrl } });
 				} else if (row.messageUrl.indexOf('VOI') != -1) {
 					this.$router.push({ path: '/BusinessAccepted/voiceDetial', query: { flowId: row.messageUrl } });
+				} else if (row.messageUrl.indexOf('BIS') != -1) {
+					this.$router.push({ path: '/BusinessAccepted/businessDetial', query: { flowId: row.messageUrl } });
 				} else {
 					this.$router.push({ path: '/BusinessAccepted/objCodeDetail', query: { flowId: row.messageUrl } });
 				}
@@ -57,7 +59,7 @@
 			// 修改页面显示数据大小
 			handleSizeChange(val) {
 				this.page.size = val;
-                
+
 				if (this.auditInfoMess != '') {
 					this.search(this.auditInfoMess);
 				} else {

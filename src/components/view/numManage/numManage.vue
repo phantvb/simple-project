@@ -7,28 +7,28 @@
 				<ul>
 					<li>
 						<span class="demonstration">400号码：</span>
-						<el-input v-model="form.number400" placeholder="请输入内容" size="mini"></el-input>
+						<el-input v-model="form.number400" placeholder="请输入内容" size="small"></el-input>
 					</li>
 					<li>
 						<span class="demonstration">引示号码：</span>
-						<el-input v-model="form.guideNumber" placeholder="请输入内容" size="mini"></el-input>
+						<el-input v-model="form.guideNumber" placeholder="请输入内容" size="small"></el-input>
 					</li>
 					<li>
 						<span class="demonstration">企业名称：</span>
-						<el-input v-model="form.companyName" placeholder="请输入内容" size="mini"></el-input>
+						<el-input v-model="form.companyName" placeholder="请输入内容" size="small"></el-input>
 					</li>
 				</ul>
 				<div class="block left" style="margin-left:68px;">
-					<el-button type="primary" size="mini" style="width:80px;" @click="fetchData()">搜索</el-button>
-					<el-button type="primary" plain size="mini" style="width:80px;" @click="reset">重置</el-button>
+					<el-button type="primary" size="small" style="width:80px;" @click="fetchData()">搜索</el-button>
+					<el-button type="primary" plain size="small" style="width:80px;" @click="reset">重置</el-button>
 				</div>
 			</div>
 			<section class="left block lineTop">
-				<el-button type="primary" size="mini" @click="formatusageStatus(true)">启用</el-button>
-				<el-button type="primary" plain size="mini" @click="formatusageStatus(false)">关停</el-button>
+				<el-button type="primary" size="small" @click="formatusageStatus(true)">启用</el-button>
+				<el-button type="primary" plain size="small" @click="formatusageStatus(false)">关停</el-button>
 				<div style="float:right">
 					<span class="fmini">状态：</span>
-					<el-select v-model="form.usageStatus" placeholder="请选择" size="mini" @change="fetchData()">
+					<el-select v-model="form.usageStatus" placeholder="请选择" size="small" @change="fetchData()">
 						<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
 					</el-select>
 				</div>
@@ -47,10 +47,10 @@
 				</el-table-column>
 				<el-table-column prop="name" label="操作" min-width="200">
 					<template slot-scope="scope">
-						<el-button size="mini" type="text" @click="formatusageStatusSimple(scope.row)">{{scope.row.usageStatus=="Started"?'停用':'启用'}}</el-button>
-						<el-button size="mini" type="text">注销</el-button>
-						<el-button size="mini" type="text" @click="editnumSetup(true,scope.row)">号码设置</el-button>
-						<el-button size="mini" type="text">详情</el-button>
+						<el-button size="small" type="text" @click="formatusageStatusSimple(scope.row)">{{scope.row.usageStatus=="Started"?'停用':'启用'}}</el-button>
+						<el-button size="small" type="text">注销</el-button>
+						<el-button size="small" type="text" @click="editnumSetup(true,scope.row)">号码设置</el-button>
+						<el-button size="small" type="text">详情</el-button>
 					</template>
 				</el-table-column>
 			</el-table>

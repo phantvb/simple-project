@@ -100,10 +100,13 @@
 				baseData: {},
 				record: {},
 				loading: false,
-				companyFlowData: {}
+				companyFlowData: {},
+				roledata: []
 			}
 		},
-		mounted() {
+		async mounted() {
+			let _this = this;
+			await this.getRole();
 			const companyCharacterOptions = [{
 				value: 'state-owned',
 				label: '国有'
@@ -172,7 +175,7 @@
 			}, {
 				value: 'Freezed',
 				label: '注销冷冻'
-			}, ];
+			}];
 			this.baseData.username = sessionStorage.getItem("username");
 			this.baseData.roleName = sessionStorage.getItem("roleName");
 			this.loading = true;
@@ -183,23 +186,25 @@
 						for (let item of companyCharacterOptions) {
 							if (item.value == res.data.company.companyCharacter) {
 								res.data.company.companyCharacterStr = item.label;
-								//return;
 							}
 						}
 						for (let item of legalCardOptions) {
 							if (item.value == res.data.company.legalCard) {
 								res.data.company.legalCardStr = item.label;
-								//return;
 							}
 						}
 						this.detail = res.data.company;
 						res.data.flowRecord.map(item => {
-							item.title = `${item.assginessRole=='ROLE_admin'?'管理员':'业务员'}(${item.operator})`;
+							for (let val of _this.roledata) {
+								if (val.name == item.operatorRole) {
+									item.operatorRoleStr = val.nameZh;
+								}
+							};
+							item.title = `${item.operatorRoleStr?item.operatorRoleStr:'业务员'}(${item.operator})`;
 							var m = '';
 							for (let _item of statusOptions) {
 								if (_item.value == item.currentStatus) {
 									m = _item.label;
-									//return;
 								};
 							};
 							item.description = `${m} ${item.operateTime}`;
@@ -225,23 +230,16 @@
 							}
 						}
 						this.detail = res.data.company1;
-						res.data.company1.map(item => {
-							item.title = `${item.assginessRole=='ROLE_admin'?'管理员':'业务员'}(${item.operator})`;
-							var m = '';
-							for (let _item of statusOptions) {
-								if (_item.value == item.currentStatus) {
-									m = _item.label;
-									//return;
-								};
-							};
-							item.description = `${m} ${item.operateTime}`;
-						})
-						this.record = res.data.company1;
 					}
 				});
 			}
 		},
 		methods: {
+			getRole() {
+				return this.$ajax.get("/vos/role/getAllRole").then(res => {
+					this.roledata = res.data.data;
+				});
+			},
 			back() {
 				this.$router.push({ path: "/Layout/businessInform" });
 			},
