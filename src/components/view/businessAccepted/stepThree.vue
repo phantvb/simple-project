@@ -253,7 +253,7 @@
                 <div style="overflow: hidden;margin-bottom:30px">
                     <ul class="abc">
                         <li style="float:unset;margin-left:70px">
-                            <p style="text-align: right">业务身份：{{busIdentity}}</p>
+                            <p style="text-align: right">业务身份：{{businessStanding}}</p>
                             <el-table :data="selectedNum"
                                       border
                                       style="width: 100%">
@@ -338,7 +338,7 @@
                         </el-form-item>
                     </div>
 
-                    <div class="QCellCore">
+                    <div class="QCellCore" v-if="ali">
                         <el-form-item label="优惠套餐：" prop="discounts">
                             <!--<span>优惠：</span>-->
                             <el-select v-model="stepThreeForm.discounts" placeholder="请选择" size="mini"
@@ -495,6 +495,7 @@
                     tariffPackageId: '',
                     excessTariff: '',
                     unitPriceType: '',
+                    unitPrice: '',
                     excessPriceType: '',
 
                     //登录信息
@@ -555,6 +556,7 @@
                 addObjCode: '',  //添加目的码
                 delObjCode: '',  //删减目的码
                 busIdentity: '', //业务身份
+                businessStanding:'',//业务身份中文
                 mealList: [],    //套餐数组
                 firstPackageId: '', //第一个套餐id
                 searchNumPage: {
@@ -627,6 +629,11 @@
             console.log("saveBtnHidden", this.saveBtnHidden);
             console.log("nextDisabled", this.nextDisabled);
             this.busIdentity = sessionStorage.getItem('businessType');
+            if(this.busIdentity == "self"){
+                this.businessStanding = '自营'
+            }else{
+                this.businessStanding = '阿里'
+            }
             this.stepThreeForm.channel = this.busIdentity;
             this.getConcessionScheme(this.busIdentity);
 
@@ -1085,6 +1092,8 @@
                     this.stepThreeForm.basicFunctionFee = this.selectedNum[0].basicFunctionFee;
                     this.stepThreeForm.type = this.selectedNum[0].type;
                     this.stepThreeForm.tariffPackageId = this.selectedNum[0].packgeId;
+                    this.stepThreeForm.excessTariff = this.selectedNum[0].excessTariff;
+                    this.stepThreeForm.unitPrice = this.selectedNum[0].unitPrice;
                     console.log(this.stepThreeForm);
                     console.log(this.disList);
                     this.ChangeBusinessStatus(this.stepThreeForm);
@@ -1092,8 +1101,10 @@
                     this.ChangeNumber400ValueAddedStatus(this.valueAdd);
                     this.ChangeNumber400ConcessionStatus(this.disList);
                     console.log("company", this.company);
-                    this.company.cardStartDate = this.company.idIndate[0];
-                    this.company.cardEndDate = this.company.idIndate[1];
+                    if(this.company.idIndate && this.company.idIndate.length!=0){
+                        this.company.cardStartDate = this.company.idIndate[0];
+                        this.company.cardEndDate = this.company.idIndate[1];
+                    }
                     console.log("company", this.company);
                     console.log("business", this.business);
                     console.log("destNumber", this.destNumber);

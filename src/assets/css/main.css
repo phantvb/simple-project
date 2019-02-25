@@ -194,7 +194,14 @@
 
 .entireForm .el-form-item,
 .handlingForm .el-form-item {
-	width: 40%;
+	width:33%;
+	float: left;
+}
+.entireForm .el-form-item .el-select{
+	width:100%;
+}
+.handlingForm .el-form-item {
+	width:40%;
 	float: left;
 }
 

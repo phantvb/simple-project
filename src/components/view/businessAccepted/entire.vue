@@ -36,6 +36,19 @@
 						</div>
 					</el-form-item>
 
+					<el-form-item label="业务来源：">
+						<el-select v-model="form.source" placeholder="请选择" size="mini">
+							<el-option
+									v-for="item in sourceList"
+									:key="item.value"
+									:label="item.label"
+									:value="item.value">
+							</el-option>
+						</el-select>
+					</el-form-item>
+
+
+
 					<el-form-item class="searchBtn">
 						<el-button type="primary" size="mini" @click="entireLists()">搜索</el-button>
 						<el-button @click="resetForm()" size="mini">重置</el-button>
@@ -63,13 +76,16 @@
 			</div>
 
 			<el-table :data="tableData" style="width: 100%">
-				<el-table-column prop="type" label="类型">
+				<el-table-column prop="type" label="类型" width="100">
 				</el-table-column>
 
 				<el-table-column prop="business.companyName" label="企业名称" width="300">
 				</el-table-column>
 
 				<el-table-column prop="business.number400" label="400电话">
+				</el-table-column>
+
+				<el-table-column prop="sourceCn" label="业务来源" width="100">
 				</el-table-column>
 
 				<el-table-column prop="createTime" label="日期">
@@ -110,7 +126,18 @@
                     firmName: '',
                     phoneNum: '',
                     time: '',
+                    source:'',
                 },
+                sourceList:[
+					{
+                        value:'self',
+                        label:'自营',
+					},
+                    {
+                        value:'ali',
+                        label:'阿里',
+                    }
+				],
                 entrance: 1, //新增，详情入口区分
                 tableData: [],
                 statusOptions: [{
@@ -216,6 +243,7 @@
                     "companyName": this.form.firmName,
                     "status": this.accountStatus,
                     "number400": this.form.phoneNum,
+                    "source":this.form.source,
                     "page": {
                         "pageNo": this.pageObj.page,
                         "pageSize": this.pageObj.pageSize,
@@ -226,7 +254,7 @@
                     this.tableData = res.data.businessFlows;
                     this.pageObj.total = res.data.totalCount;
                     this.tableData.map((item) => {
-
+                        console.log("item",item);
                         //判断操作
                         if(item.status=='Wait_To_Audit'){
                             item.busStatus='等待送审';
@@ -300,6 +328,13 @@
                         }else if(item.type=='Destnum'){
                             item.type='目的码'
                         }
+
+                        //业务来源
+                        if(item.business.source && item.business.source == "self"){
+                            item.sourceCn = "自营"
+                        }else{
+                            item.sourceCn = "阿里"
+						}
                     })
                 })
             },

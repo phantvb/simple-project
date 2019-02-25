@@ -217,7 +217,7 @@
                     idCardAddress: '',
                     cardStartDate:'',   //证件开始时间
                     cardEndDate:'',     //证件结束时间
-                    idIndate: [],           //证件有效期
+                    idIndate: [],       //证件有效期
 
                     // cardStartDate:this.acceptForm.idIndate[0],  //证件有限开始时间
                     // cardEndDate:this.acceptForm.idIndate[1],    //证件有限結束时间
@@ -331,7 +331,13 @@
             // 详情
             stepTwoDetail() {
                 console.log("this.company",this.company);
+                // this.company.idIndate[0] = this.company.cardStartDate;
+                // this.company.idIndate[1] = this.company.cardEndDate;
                 this.acceptForm = this.company;
+                // this.acceptForm.idIndate[0] = this.company.cardStartDate;
+                // this.acceptForm.idIndate[1] = this.company.cardEndDate;
+                // console.log("idIndate[0]",this.acceptForm.idIndate);
+                // console.log("idIndate[1]",this.acceptForm.idIndate[1]);
             },
             // 下一步
             // next() {
