@@ -181,10 +181,11 @@
 				data.company.legalCardFrontPic = this.file.p2;
 				data.company.legalCardBackPic = this.file.p3;
 				data.company.legalCardHandPic = this.file.p4;
+				data.company.creatorRole = sessionStorage.getItem("roleName");
 				data.companyFlow = {
 					flowId: this.idData.flowId || ''
 				};
-				if (this.file.p1 == '' || this.file.p2 == '' || this.file.p3 == '' || this.file.p4 == '') {
+				if (bol && (this.file.p1 == '' || this.file.p2 == '' || this.file.p3 == '' || this.file.p4 == '')) {
 					this.$message.error('请先完善图片信息');
 					return;
 				};

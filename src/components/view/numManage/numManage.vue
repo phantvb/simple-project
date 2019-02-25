@@ -1,5 +1,5 @@
 <template>
-	<div id="numManage" class="managerFormTitle">
+	<div id="numManage" class="managerFormTitle" v-loading="loading">
 		<el-tabs v-model="active">
 			<el-tab-pane label="自助直销" name="self"></el-tab-pane>
 			<el-tab-pane label="渠道" name="channel"></el-tab-pane>
@@ -99,14 +99,19 @@
 					num: 1,
 					size: 10,
 					total: 1
-				}
+				},
+				loading: false
 			};
+		},
+		watch: {
+			active: function (n, o) {
+				this.fetchData();
+			}
 		},
 		mounted() {
 			this.fetchData();
 		},
 		methods: {
-
 			reset() {
 				this.$clear(this.form);
 				this.fetchData();
@@ -153,10 +158,12 @@
 				this.changeusageStatus(arr);
 			},
 			changeusageStatus(data) {
+				this.loading = true;
 				this.$ajax.post('/vos/num400config/setStatus', {
 					number400: data
 				}).then(res => {
 					if (res.code = 200) {
+						this.loading = false;
 						this.fetchData();
 					}
 				})
@@ -180,6 +187,7 @@
 			},
 			fetchData(pageNum) {
 				var data = {};
+				this.loading = true;
 				this.page.num = pageNum || 1;
 				data.page = {
 					pageNo: this.page.num,
@@ -189,6 +197,7 @@
 				data.number400.channel = this.active;
 				this.$ajax.post("/vos/num400config/search", this.$format(data)).then(res => {
 					if (res.code == 200) {
+						this.loading = false;
 						this.tableData = res.data.number400s;
 						this.page.total = res.data.totalCount;
 					}

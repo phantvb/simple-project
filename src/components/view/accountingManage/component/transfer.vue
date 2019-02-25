@@ -78,7 +78,10 @@
 					</el-table-column>
 					<el-table-column prop="accountsType" label="单位" min-width="60">
 						<template slot-scope="scope">
-							{{scope.row.numOfMonth?'月':''}} <span v-show="scope.row.numOfMonth!=null&&scope.row.numOfOne!=null">/</span> {{scope.row.numOfOne?'个':''}}
+							<span v-show="scope.row.accountsType!='Concession'">
+								{{scope.row.numOfMonth?'月':''}} <span v-show="scope.row.numOfMonth!=null&&scope.row.numOfOne!=null">/</span> {{scope.row.numOfOne?'个':''}}</span>
+							<span v-show="scope.row.accountsType=='Concession'">
+								{{scope.row.units=="year"?'年':'月'}}</span>
 						</template>
 					</el-table-column>
 					<el-table-column prop="accountTime" label="起止时间" min-width="120">

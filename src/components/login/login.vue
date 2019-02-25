@@ -74,6 +74,7 @@
 				codeImg: true
 			}
 		},
+		mounted() {},
 		methods: {
 			submitForm() {
 				var _this = this;
@@ -101,7 +102,7 @@
 				this.codeImg = false;
 				this.$nextTick(() => {
 					this.codeImg = true;
-				})
+				});
 			}
 		}
 	}
