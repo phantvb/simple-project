@@ -200,10 +200,10 @@
 								if (_item.value == item.currentStatus) {
 									m = _item.label;
 									//return;
-								};
-							};
+								}
+							}
 							item.description = `${m} ${item.operateTime}`;
-						})
+						});
 						this.record = res.data.flowRecord;
 						this.companyFlowData = res.data.companyFlow;
 					}

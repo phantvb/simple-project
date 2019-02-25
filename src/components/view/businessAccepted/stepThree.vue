@@ -122,8 +122,8 @@
                                 </el-table-column>
 
                                 <el-table-column
-                                prop="unit"
-                                label="单位">
+                                        prop="unit"
+                                        label="单位">
                                 </el-table-column>
 
                                 <el-table-column
@@ -283,10 +283,10 @@
                                         label='单位'>
                                 </el-table-column>
 
-                                <el-table-column
-                                        prop="packageContent"
-                                        label='套餐详情'>
-                                </el-table-column>
+                                <!--<el-table-column-->
+                                <!--prop="packageContent"-->
+                                <!--label='套餐详情'>-->
+                                <!--</el-table-column>-->
 
                             </el-table>
                         </li>
@@ -317,39 +317,39 @@
                     <!--<span>归属地区：</span>-->
                     <div class="QCellCore">
                         <el-form-item label="归属地区：" prop="provinceBelong">
-                        <el-select v-model="stepThreeForm.provinceBelong" placeholder="请选择" size="mini"
-                                   @change="proChange">
-                            <el-option
-                                    v-for="item in provinceList"
-                                    :key="item.provinceId"
-                                    :label="item.province"
-                                    :value="item.provinceId">
-                            </el-option>
-                        </el-select>
-                        <el-select v-model="stepThreeForm.cityBelong" placeholder="请选择" size="mini"
-                                   @change="cityChange">
-                            <el-option
-                                    v-for="item in cityList"
-                                    :key="item.cityId"
-                                    :label="item.city"
-                                    :value="item.cityId">
-                            </el-option>
-                        </el-select>
+                            <el-select v-model="stepThreeForm.provinceBelong" placeholder="请选择" size="mini"
+                                       @change="proChange">
+                                <el-option
+                                        v-for="item in provinceList"
+                                        :key="item.provinceId"
+                                        :label="item.province"
+                                        :value="item.provinceId">
+                                </el-option>
+                            </el-select>
+                            <el-select v-model="stepThreeForm.cityBelong" placeholder="请选择" size="mini"
+                                       @change="cityChange">
+                                <el-option
+                                        v-for="item in cityList"
+                                        :key="item.cityId"
+                                        :label="item.city"
+                                        :value="item.cityId">
+                                </el-option>
+                            </el-select>
                         </el-form-item>
                     </div>
 
                     <div class="QCellCore">
                         <el-form-item label="优惠套餐：" prop="discounts">
-                        <!--<span>优惠：</span>-->
-                        <el-select v-model="stepThreeForm.discounts" placeholder="请选择" size="mini"
-                                   @change="discountChange">
-                            <el-option
-                                    v-for="(item,index) in discountsList"
-                                    :key="index"
-                                    :label="item.concessionName"
-                                    :value="item">
-                            </el-option>
-                        </el-select>
+                            <!--<span>优惠：</span>-->
+                            <el-select v-model="stepThreeForm.discounts" placeholder="请选择" size="mini"
+                                       @change="discountChange">
+                                <el-option
+                                        v-for="(item,index) in discountsList"
+                                        :key="index"
+                                        :label="item.concessionName"
+                                        :value="item">
+                                </el-option>
+                            </el-select>
                         </el-form-item>
                     </div>
 
@@ -379,25 +379,25 @@
                                 <el-table-column
                                         label='数量'
                                         width="250">
-                                        <template slot-scope="scope">
-                                            <el-input-number
-                                                    size="mini"
-                                                    v-model="scope.row.numOfMonth"
-                                                    @change="handleChange(scope.row,scope.$index)"
-                                                    :min="1"
-                                                    label="描述文字">
-                                            </el-input-number>
-                                            <span>{{scope.row.cost}}</span>
-                                            <el-input-number
-                                                    v-if="scope.row.units=='perMonthOne'"
-                                                    size="mini"
-                                                    v-model="scope.row.numOfone"
-                                                    @change="handleChange(scope.row,scope.$index)"
-                                                    :min="1"
-                                                    label="描述文字">
-                                            </el-input-number>
-                                            <span v-if="scope.row.units=='perMonthOne'">{{scope.row.cost2}}</span>
-                                        </template>
+                                    <template slot-scope="scope">
+                                        <el-input-number
+                                                size="mini"
+                                                v-model="scope.row.numOfMonth"
+                                                @change="handleChange(scope.row,scope.$index)"
+                                                :min="1"
+                                                label="描述文字">
+                                        </el-input-number>
+                                        <span>{{scope.row.cost}}</span>
+                                        <el-input-number
+                                                v-if="scope.row.units=='perMonthOne'"
+                                                size="mini"
+                                                v-model="scope.row.numOfone"
+                                                @change="handleChange(scope.row,scope.$index)"
+                                                :min="1"
+                                                label="描述文字">
+                                        </el-input-number>
+                                        <span v-if="scope.row.units=='perMonthOne'">{{scope.row.cost2}}</span>
+                                    </template>
                                 </el-table-column>
 
                                 <el-table-column
@@ -438,8 +438,8 @@
             <el-button type="primary" size="mini" @click="addBusinessSave()" v-if="saveBtnHidden">暂存信息</el-button>
             <el-tooltip content="请先暂存信息" placement="top" effect="light">
                 <div class="saveTips" @click="next(4,'stepThreeForm')"></div>
-        </el-tooltip>
-            <el-button type="primary" size="mini"  :disabled="nextDisabled">下一步</el-button>
+            </el-tooltip>
+            <el-button type="primary" size="mini" :disabled="nextDisabled">下一步</el-button>
         </div>
     </div>
 </template>
@@ -458,7 +458,7 @@
                     activeName: '',
                 },
                 stepThreeForm: {
-                    source:"self",
+                    source: "self",
                     //是否需要保存公司到后台
                     needCompanySave: false,
                     //公司信息
@@ -482,7 +482,7 @@
                     units: '',                 //单位
                     packageContent: '',        //套餐详情
                     type: '',                  //1是月，2是年
-                    amount:1,                  //数量
+                    amount: 1,                  //数量
 
                     // 归属地入参
                     provinceBelong: '',        //归属地(省)
@@ -501,7 +501,7 @@
                     channel: '',
 
                     //业务id
-                    id:'',
+                    id: '',
                 },
                 rules: {
                     agentName: [
@@ -532,7 +532,7 @@
                     // stepThreeFlowId: "",
                 }],
                 stepThreeFlowId: "",
-                companyIdInfo:{},
+                companyIdInfo: {},
                 selectedNum: [],    //已选号码列表
                 searchNumList: [],  //400号码模糊搜索列表
                 objCodeTable: [],  //增值表格
@@ -556,7 +556,7 @@
                 delObjCode: '',  //删减目的码
                 busIdentity: '', //业务身份
                 mealList: [],    //套餐数组
-                firstPackageId:'', //第一个套餐id
+                firstPackageId: '', //第一个套餐id
                 searchNumPage: {
                     pageSize: 10,
                     page: 1,
@@ -569,13 +569,13 @@
                 },
                 currentPage: 1,   //分页
                 titleNum: '',
-                tabId:'',
-                tabNum400:'',
+                tabId: '',
+                tabNum400: '',
                 sealInfo: '',      //套餐信息
-                businessIn:'',
-                saveBtnHidden:true,
-                nextDisabled:true,
-                packgeId:'',
+                businessIn: '',
+                saveBtnHidden: true,
+                nextDisabled: true,
+                packgeId: '',
             };
 
         },
@@ -583,7 +583,7 @@
             setMeal
         },
 
-         mounted(){
+        mounted() {
             if (sessionStorage.getItem('businessIn') == 2 || sessionStorage.getItem('businessIn') == 3) {
                 //详情
                 console.log(this.business);
@@ -602,20 +602,20 @@
                     this.stepThreeForm.discounts = item.concessionName;
                 });
                 //400号码表格回显
-                let selectedNumCopy={};
+                let selectedNumCopy = {};
                 selectedNumCopy.units = this.business.units;
-                selectedNumCopy.unitsCopy = this.business.units+'月';
+                selectedNumCopy.unitsCopy = this.business.units + '月';
                 selectedNumCopy.number400 = this.business.number400;
                 selectedNumCopy.tariffName = this.business.tariffName;
                 selectedNumCopy.basicFunctionFee = this.business.basicFunctionFee;
-                selectedNumCopy.basicFunctionFeeCopy = this.business.basicFunctionFee+'元';
+                selectedNumCopy.basicFunctionFeeCopy = this.business.basicFunctionFee + '元';
                 selectedNumCopy.packageContent = this.business.packageContent;
                 selectedNumCopy.durationPresentation = this.business.durationPresentation;
-                selectedNumCopy.durationPresentationCopy = this.business.durationPresentation+'元';
+                selectedNumCopy.durationPresentationCopy = this.business.durationPresentation + '元';
                 selectedNumCopy.durationPresentation = this.business.durationPresentation;
                 this.selectedNum.push(selectedNumCopy);
                 this.getAllProvince();
-            }else{
+            } else {
                 this.getAllProvince();
             }
             console.log(this.number400ValueAdded);
@@ -624,8 +624,8 @@
         },
         created() {
             console.log(sessionStorage.getItem('businessType'));
-            console.log("saveBtnHidden",this.saveBtnHidden);
-            console.log("nextDisabled",this.nextDisabled);
+            console.log("saveBtnHidden", this.saveBtnHidden);
+            console.log("nextDisabled", this.nextDisabled);
             this.busIdentity = sessionStorage.getItem('businessType');
             this.stepThreeForm.channel = this.busIdentity;
             this.getConcessionScheme(this.busIdentity);
@@ -635,12 +635,12 @@
                 this.stepThreeForm.needCompanySave = resp;
             });
 
-            this.$root.eventHub.$on('dialogVisibleBusiness', (res)=>{
-                this.visibleBusiness=res.visibleBusiness;
-                if(res.businessIn){
+            this.$root.eventHub.$on('dialogVisibleBusiness', (res) => {
+                this.visibleBusiness = res.visibleBusiness;
+                if (res.businessIn) {
                     this.businessIn = res.businessIn;
                 }
-            } );
+            });
 
             console.log(sessionStorage.getItem('businessIn'));
             this.businessIn = sessionStorage.getItem('businessIn');
@@ -651,12 +651,12 @@
                     console.log("flowId", resp);
                     this.flowId = resp;
                 });
-            }else if(sessionStorage.getItem('businessIn') == 3){
-                this.saveBtnHidden=false;
+            } else if (sessionStorage.getItem('businessIn') == 3) {
+                this.saveBtnHidden = false;
                 this.nextDisabled = false;
-                console.log("saveBtnHidden",this.saveBtnHidden);
+                console.log("saveBtnHidden", this.saveBtnHidden);
             }
-            if(sessionStorage.getItem('businessIn') == 2 || sessionStorage.getItem('businessIn') == 3 || sessionStorage.getItem('businessIn') == 4){
+            if (sessionStorage.getItem('businessIn') == 2 || sessionStorage.getItem('businessIn') == 3 || sessionStorage.getItem('businessIn') == 4) {
                 this.stepFourDetail();
             }
 
@@ -665,7 +665,7 @@
         methods: {
             // 详情
             stepFourDetail() {
-                console.log("this.business",this.business);
+                console.log("this.business", this.business);
                 this.stepThreeForm = this.business;
                 // this.selectedNum[0].basicFunctionFeeCopy = this.business.basicFunctionFee;
                 // this.selectedNum[0].durationPresentationCopy = this.business.durationPresentation;
@@ -681,14 +681,14 @@
                 console.log(`当前页: ${val}`);
             },
             // 数量变化
-            handleChange(value,index) {
+            handleChange(value, index) {
                 console.log(value);
                 console.log(this.objCodeTable);
                 console.log(this.valueAdd);
-                this.$set(this.objCodeTable,index,value);
-                this.valueAdd.map((item,index)=>{
-                    if(item.valueAddedId==value.id){
-                        this.valueAdd[index]=value;
+                this.$set(this.objCodeTable, index, value);
+                this.valueAdd.map((item, index) => {
+                    if (item.valueAddedId == value.id) {
+                        this.valueAdd[index] = value;
                     }
                 });
                 // this.stepThreeForm.amount = value;
@@ -696,10 +696,10 @@
             lalalal(val) {
                 console.log(val);
                 console.log(this.selectedNum);
-                let newValueAdd=[];
-                val.map((item)=>{
-                    let obj ={};
-                    obj.number400 = this.selectedNum && this.selectedNum.length!=0?this.selectedNum[0].number400:null;
+                let newValueAdd = [];
+                val.map((item) => {
+                    let obj = {};
+                    obj.number400 = this.selectedNum && this.selectedNum.length != 0 ? this.selectedNum[0].number400 : null;
                     obj.valueAddedName = item.tariffName;
                     obj.tariffName = item.tariffName;
                     obj.valueAddedId = item.id;
@@ -711,12 +711,12 @@
                     obj.unitsName = item.unitsName;
                     obj.presentsName = item.presentsName;
                     // obj.numOfone = item.numOfone;
-                    if(item.units=='perMonthOne'){
+                    if (item.units == 'perMonthOne') {
                         obj.numOfone = item.numOfone;
                     }
                     newValueAdd.push(obj);
                 });
-                this.valueAdd=newValueAdd;
+                this.valueAdd = newValueAdd;
             },
             // 图片上传
             handleAvatarSuccess(res, file) {
@@ -811,23 +811,23 @@
                     this.objCodeTable = res.data.valueAddedList;
                     this.objCodeTable.map((item) => {
                         console.log(item);
-                        item.numOfMonth=1;
-                        item.numOfone=1;
-                        if(item.units=='perMonth'){
+                        item.numOfMonth = 1;
+                        item.numOfone = 1;
+                        if (item.units == 'perMonth') {
                             item.cost = "月";
-                            item.unitsName = (item.tariffFee/item.numOfMonth)+'元/月'
-                        }else if(item.units=='perOne'){
+                            item.unitsName = (item.tariffFee / item.numOfMonth) + '元/月'
+                        } else if (item.units == 'perOne') {
                             item.cost = "个";
-                            item.unitsName = (item.tariffFee/item.numOfMonth)+'元/个'
-                        }else if(item.units=='perMonthOne'){
+                            item.unitsName = (item.tariffFee / item.numOfMonth) + '元/个'
+                        } else if (item.units == 'perMonthOne') {
                             item.cost = "月";
                             item.cost2 = "个";
-                            item.unitsName = (item.tariffFee/item.numOfMonth)+'元/月/个'
+                            item.unitsName = (item.tariffFee / item.numOfMonth) + '元/月/个'
                         }
                         item.valueAddedName = item.tariffName;
                         item.valueAddedId = item.id;
                         item.valueAddedFee = item.tariffFee;
-                        if(item.units=='perMonthOne'){
+                        if (item.units == 'perMonthOne') {
                             item.numOfone = item.numOfone;
                         }
                         if (item.presents == '1') {
@@ -839,20 +839,20 @@
                         }
 
                     });
-                    console.log('aaa',this.objCodeTable);
-                    console.log('bbb',this.number400ValueAdded);
-                    let newValueAdd=[];
-                    this.$nextTick(()=>{
+                    console.log('aaa', this.objCodeTable);
+                    console.log('bbb', this.number400ValueAdded);
+                    let newValueAdd = [];
+                    this.$nextTick(() => {
                         console.log(this.selectedNum);
-                        console.log('ccc',this.number400ValueAdded);
-                        this.objCodeTable.map((item,index)=>{
-                            console.log(1111,this.objCodeTable);
-                            if(this.number400ValueAdded&&this.number400ValueAdded.length!=0){
-                                this.number400ValueAdded.map((item1)=>{
-                                    if(item1.valueAddedId==item.id){
+                        console.log('ccc', this.number400ValueAdded);
+                        this.objCodeTable.map((item, index) => {
+                            console.log(1111, this.objCodeTable);
+                            if (this.number400ValueAdded && this.number400ValueAdded.length > 0) {
+                                this.number400ValueAdded.map((item1) => {
+                                    if (item1.valueAddedId == item.id) {
                                         //把选中的复选框信息赋值给原数组勾选的选项
-                                        item1.tariffFee=item.valueAddedFee;
-                                        this.$set(this.objCodeTable,index,item1);
+                                        item1.tariffFee = item.valueAddedFee;
+                                        // this.$set(this.objCodeTable, index, item1);
                                         //回显勾选的
                                         console.log("回显勾选的");
                                         this.$refs.addValueTable.toggleRowSelection(this.objCodeTable[index], true);
@@ -868,7 +868,7 @@
                                         obj.units = item.units;
                                         obj.numOfMonth = item.numOfMonth;
                                         // obj.numOfone = item.numOfone;
-                                        if(item.units=='perMonthOne'){
+                                        if (item.units == 'perMonthOne') {
                                             obj.numOfone = item.numOfone;
                                         }
                                         newValueAdd.push(obj);
@@ -877,14 +877,12 @@
                                 });
 
 
-
-
-                            }else{
-                                if(item.presents==1){
+                            } else {
+                                if (item.presents == 1) {
                                     //赠送勾选
                                     console.log("赠送勾选");
-                                    this.$refs.addValueTable.toggleRowSelection(item,true);
-                                    let obj ={};
+                                    this.$refs.addValueTable.toggleRowSelection(item, true);
+                                    let obj = {};
                                     if (this.selectedNum && this.selectedNum.length != 0) {
                                         obj.number400 = this.selectedNum[0].number400;
                                     }
@@ -896,7 +894,7 @@
                                     obj.units = item.units;
                                     obj.numOfMonth = item.numOfMonth;
                                     // obj.numOfone = item.numOfone;
-                                    if(item.units=='perMonthOne'){
+                                    if (item.units == 'perMonthOne') {
                                         obj.numOfone = item.numOfone;
                                     }
                                     newValueAdd.push(obj);
@@ -905,7 +903,7 @@
                             }
                         });
                     });
-                    this.valueAdd=newValueAdd;
+                    this.valueAdd = newValueAdd;
                     console.log(this.valueAdd);
                     this.$set(this.objCodeTable);
                     return new Promise(resolve => {
@@ -934,7 +932,7 @@
                 this.$ajax.get('/vos/address/getAllProvince').then((res) => {
                     console.log(res.data);
                     this.provinceList = res.data;
-                    if(sessionStorage.getItem('businessIn') == 2 || sessionStorage.getItem('businessIn') == 3){
+                    if (sessionStorage.getItem('businessIn') == 2 || sessionStorage.getItem('businessIn') == 3) {
                         console.log(this.stepThreeForm.provinceBelong);
                         this.getCitiesByProvinceId(this.stepThreeForm.provinceBelong);
                     }
@@ -989,7 +987,7 @@
                 let disObj = val;
                 delete disObj.id;
                 this.disList = [];
-                disObj.amount=1;
+                disObj.amount = 1;
                 this.disList.push(disObj);
                 console.log(this.disList);
             },
@@ -997,9 +995,9 @@
             // 选择400号码，添加到已选号码
             getAllByPackage0(index) {
                 console.log(index);
-                console.log("this.mealList",this.mealList);
+                console.log("this.mealList", this.mealList);
                 this.tabId = this.mealList[index].id;
-                console.log("this.tabId ",this.tabId);
+                console.log("this.tabId ", this.tabId);
                 console.log("this.$refs.child1", this.$refs.child1);
                 this.$refs.child1[index].getAllByPackage2(this.tabId);
             },
@@ -1007,7 +1005,7 @@
             // 删除已选400号码
             delNum(val) {
                 console.log(val);
-                this.selectedNum.splice(val, 1)
+                this.selectedNum.splice(val, 1);
             },
             // 省份切换
             proChange(val) {
@@ -1020,37 +1018,41 @@
                 this.cityId = val;
                 // this.getAreasByCityId();
             },
-            next(val,formName) {
-                if(val==2){
+            next(val, formName) {
+                if (val == 2) {
                     this.$emit('childNext', val);
-                }else{
+                } else {
                     this.$refs[formName].validate((valid) => {
+                        let returnBoolean = false;
                         if (valid) {
-                            if(this.stepThreeForm.agentCardFront=='' || this.stepThreeForm.agentCardBack=='' || this.stepThreeForm.agentCardWIthHand==''){
+                            if (this.stepThreeForm.agentCardFront == '' || this.stepThreeForm.agentCardBack == '' || this.stepThreeForm.agentCardWIthHand == '') {
                                 this.$message.warning("请完善经办人图片信息");
-                            }else if(this.objCodeList.length==0){
+                            } else if (this.objCodeList.length == 0) {
                                 this.$message.warning("请新增目的码");
-                            }else{
-                                console.log("this.objCodeList",this.objCodeList);
-                                this.objCodeList.map((item)=>{
-                                    if(!item.destnumber){
-                                        this.$message.warning("请填写空白目的码");
+                            } else {
+                                console.log("this.objCodeList", this.objCodeList);
+                                this.objCodeList.map((item) => {
+                                    if (!item.destnumber) {
+                                        returnBoolean = true;
                                     }
                                 });
-                                    this.$emit('childNext', val);
-                                    console.log(this.disList);
-                                    this.ChangeBusinessStatus(this.stepThreeForm);
-                                    this.ChangeDestNumberStatus(this.objCodeList);
-                                    this.ChangeNumber400ValueAddedStatus(this.valueAdd);
-                                    this.ChangeNumber400ConcessionStatus(this.disList);
-                                    console.log("company", this.company);
-                                    console.log("business", this.business);
-                                    console.log("destNumber", this.destNumber);
-                                    console.log("number400Concession", this.number400Concession);
-                                    if(this.businessIn!=3){
-                                        this.nextDisabled=true;
-                                    }
-
+                                if (returnBoolean) {
+                                    this.$message.warning("请填写空白目的码");
+                                    return
+                                }
+                            }
+                            this.$emit('childNext', val);
+                            console.log(this.disList);
+                            this.ChangeBusinessStatus(this.stepThreeForm);
+                            this.ChangeDestNumberStatus(this.objCodeList);
+                            this.ChangeNumber400ValueAddedStatus(this.valueAdd);
+                            this.ChangeNumber400ConcessionStatus(this.disList);
+                            console.log("company", this.company);
+                            console.log("business", this.business);
+                            console.log("destNumber", this.destNumber);
+                            console.log("number400Concession", this.number400Concession);
+                            if (this.businessIn != 3) {
+                                this.nextDisabled = true;
                             }
                         } else {
                             this.$message.warning("请完善信息");
@@ -1063,18 +1065,18 @@
 
             // 暂存
             addBusinessSave() {
-                if(this.selectedNum.length==0){
+                if (this.selectedNum.length == 0) {
                     this.$message.warning("请添加400号码");
-                }else{
-                    console.log("this.valueAdd",this.valueAdd);
-                    console.log("this.business",this.business);
-                    console.log("this.business.companyId",this.business.companyId);
-                    console.log("第三步获取flowed",sessionStorage.getItem('entireFlowId'));
-                    console.log("入口：",sessionStorage.getItem('businessIn'));
+                } else {
+                    console.log("this.valueAdd", this.valueAdd);
+                    console.log("this.business", this.business);
+                    console.log("this.business.companyId", this.business.companyId);
+                    console.log("第三步获取flowed", sessionStorage.getItem('entireFlowId'));
+                    console.log("入口：", sessionStorage.getItem('businessIn'));
                     this.stepThreeForm.companyName = this.company.companyName;
                     this.stepThreeForm.companyId = this.business.companyId;
                     // this.stepThreeForm.companyId = this.company.companyId;
-                    console.log("selectedNum",this.selectedNum);
+                    console.log("selectedNum", this.selectedNum);
                     this.stepThreeForm.number400 = this.selectedNum[0].number400;
                     this.stepThreeForm.tariffName = this.selectedNum[0].tariffName;
                     this.stepThreeForm.packageContent = this.selectedNum[0].packageContent;
@@ -1090,14 +1092,17 @@
                     this.ChangeNumber400ValueAddedStatus(this.valueAdd);
                     this.ChangeNumber400ConcessionStatus(this.disList);
                     console.log("company", this.company);
+                    this.company.cardStartDate = this.company.idIndate[0];
+                    this.company.cardEndDate = this.company.idIndate[1];
+                    console.log("company", this.company);
                     console.log("business", this.business);
                     console.log("destNumber", this.destNumber);
                     console.log("number400Concession", this.number400Concession);
                     var url;
-                    if(this.businessIn==1 || this.businessIn==2){       //新增和编辑的暂存
-                        url='/vos/business/startAndSave';
-                    }else if(this.businessIn==3){                       //变更
-                        url='/vos/business/sendToModifyAudit';
+                    if (this.businessIn == 1 || this.businessIn == 2) {       //新增和编辑的暂存
+                        url = '/vos/business/startAndSave';
+                    } else if (this.businessIn == 3) {                       //变更
+                        url = '/vos/business/sendToModifyAudit';
                     }
                     this.$ajax.post(url, {
                         "company": this.company,
@@ -1106,7 +1111,7 @@
                         "number400ValueAdded": this.valueAdd,
                         "number400Concession": this.number400Concession,
                         "companyFlow": {
-                            "flowId": sessionStorage.getItem('businessIn')==2 || sessionStorage.getItem('businessIn')==3?sessionStorage.getItem('entireFlowId'):this.stepThreeFlowId
+                            "flowId": sessionStorage.getItem('businessIn') == 2 || sessionStorage.getItem('businessIn') == 3 ? sessionStorage.getItem('entireFlowId') : this.stepThreeFlowId
                         }
                     }).then((res) => {
                         if (res.code == '200') {
@@ -1114,7 +1119,7 @@
                             this.$root.eventHub.$emit('flowId', res.data);
                             this.stepThreeFlowId = res.data.flowId;        //flowId
                             this.stepThreeForm.id = res.data.businessId;   //业务id
-                            console.log("vuex.company",this.company);
+                            console.log("vuex.company", this.company);
                             // 把第三步返回的companyId存到vuex的company
                             // let companyIdSave ={};
                             // companyIdSave.companyId = res.data.companyId;
@@ -1123,18 +1128,18 @@
                             // this.ChangeCompanyStatus(this.companyIdInfo);
                             this.company.id = res.data.companyId;
                             this.business.companyId = res.data.companyId;
-                            console.log("vuex.company",this.company);
-                            console.log("vuex.business",this.business);
+                            console.log("vuex.company", this.company);
+                            console.log("vuex.business", this.business);
 
                             console.log(this.stepThreeFlowId = res.data.flowId);
                             //第三步点击下一步之前检查number400是否绑定了引示号
                             this.$ajax.post('/vos/business/matchGuideNumber', {
-                                "number400": this.stepThreeFlowId!=null?this.stepThreeForm.number400:this.titleNum,
+                                "number400": this.stepThreeFlowId != null ? this.stepThreeForm.number400 : this.titleNum,
                             }).then((res) => {
                                 if (res.code == 200) {
                                     console.log(res);
                                     // res.
-                                    this.nextDisabled=false;
+                                    this.nextDisabled = false;
                                 } else {
                                     this.$message({type: 'warning', message: res.message});
                                 }
@@ -1146,25 +1151,25 @@
                 }
 
             },
-            getAllByPackage(data){
-                console.log("itemInfo",data);
-                this.$ajax.post('/vos/number400/searchByPackage',{
-                    "num400Package":{
-                        "number400":data.number400,
-                        "packgeId":""
+            getAllByPackage(data) {
+                console.log("itemInfo", data);
+                this.$ajax.post('/vos/number400/searchByPackage', {
+                    "num400Package": {
+                        "number400": data.number400,
+                        "packgeId": ""
                     },
-                    "page":{
-                        "pageNo":this.pageObj.page,
-                        "pageSize":this.pageObj.pageSize
+                    "page": {
+                        "pageNo": this.pageObj.page,
+                        "pageSize": this.pageObj.pageSize
                     }
 
-                }).then((res)=>{
-                    console.log("itemInfo",res);
-                    console.log("itemInfo",res.data.number400s);
-                    this.selectedNum=res.data.number400s;
-                    this.selectedNum[0].unitsCopy = res.data.number400s[0].units+'月';
-                    this.selectedNum[0].durationPresentationCopy = res.data.number400s[0].durationPresentation+'元';
-                    this.selectedNum[0].basicFunctionFeeCopy = res.data.number400s[0].basicFunctionFee+'元';
+                }).then((res) => {
+                    console.log("itemInfo", res);
+                    console.log("itemInfo", res.data.number400s);
+                    this.selectedNum = res.data.number400s;
+                    this.selectedNum[0].unitsCopy = res.data.number400s[0].units + '月';
+                    this.selectedNum[0].durationPresentationCopy = res.data.number400s[0].durationPresentation + '元';
+                    this.selectedNum[0].basicFunctionFeeCopy = res.data.number400s[0].basicFunctionFee + '元';
                     // this.selectedNum.push(res.data);
                     // console.log(res.data.number400s);
                     // this.numberList = res.data.number400s;
@@ -1174,15 +1179,15 @@
             // 点击tab获取相应信息
             parentMethod(val) {
                 console.log(val);
-                console.log("this.mealList",this.mealList);
+                console.log("this.mealList", this.mealList);
                 this.tabId = this.mealList[val.index].id;
-                console.log("this.tabId ",this.tabId);
+                console.log("this.tabId ", this.tabId);
                 console.log("this.$refs.child1", this.$refs.child1);
                 this.$refs.child1[val.index].getAllByPackage2(this.tabId);
             },
 
             //控制企业信息的变化
-            ChangeCompanyStatus(val){
+            ChangeCompanyStatus(val) {
                 return this.$store.dispatch("ChangeCompanyStatus", val);
             },
             // 存vuex更新业务信息模块入参

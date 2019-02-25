@@ -96,6 +96,7 @@
     import DialogObjCode from './dialogObjCode';
     import DialogVoice from './dialogVoice';
     import { mapState } from "vuex";
+    import {formatDate} from '../../../utils/screen';
     export default {
         name: 'entire',
         data() {
@@ -201,8 +202,11 @@
                 console.log(this.form.time[1]);
                 let dateStart = new Date(this.form.time[0]);
                 let dateEnd = new Date(this.form.time[1]);
-                let dateStart_value = dateStart.getFullYear() + '-' + (dateStart.getMonth() + 1) + '-' + dateStart.getDate()+dateStart.getHours()+':'+dateStart.getMinutes()+':'+dateStart.getSeconds();
-                let dateEnd_value = dateEnd.getFullYear() + '-' + (dateEnd.getMonth() + 1) + '-' + dateEnd.getDate()+dateStart.getHours()+':'+dateStart.getMinutes()+':'+dateStart.getSeconds();
+                console.log(formatDate(dateStart,"yyyy-MM-dd hh:mm:ss"));
+                // let dateStart_value = dateStart.getFullYear() + '-' + (dateStart.getMonth() + 1) + '-' + dateStart.getDate()+dateStart.getHours()+':'+dateStart.getMinutes()+':'+dateStart.getSeconds();
+                let dateStart_value = formatDate(dateStart,"yyyy-MM-dd hh:mm:ss");
+                // let dateEnd_value = dateEnd.getFullYear() + '-' + (dateEnd.getMonth() + 1) + '-' + dateEnd.getDate()+dateStart.getHours()+':'+dateStart.getMinutes()+':'+dateStart.getSeconds();
+                let dateEnd_value = formatDate(dateEnd,"yyyy-MM-dd hh:mm:ss");
                 console.log(dateStart_value);
                 console.log(dateEnd_value);
                 this.$ajax.post('/vos/business/getBusinessFlowList', {
@@ -384,15 +388,6 @@
             //“全部”表格详情
             getCacheData(val){
                 console.log(val);
-                // var url;
-                // if(this.entireType=='业务'){
-                //     url = '/vos/business/getCacheData?flowId=';
-                // }else if(this.entireType=='目的码'){
-                //     url = '/vos/destnum/getCacheData?flowId=';
-                // }else if(this.entireType=='语音'){
-                //     url = '/vos/voice/getCacheData?flowId=';
-                // }
-                // console.log(url);
                 console.log("entireType",this.entireType);
                 if(val=='送审'){
                     if(this.entireType=='业务'){
@@ -566,10 +561,10 @@
                 if (data.status == 'Business_Auditing' && data.type == '业务') {
                     //业务受理驳回
                     url = '/vos/business/businessAuditReject';
-                } else if (data.status == 'Modify_Auditing' && data.type == '目的码') {
+                } else if (data.status == 'DestNum_Auditing' && data.type == '目的码') {
                     //目的码驳回
                     url = '/vos/destnum/auditReject';
-                } else if (data.status == 'Canceling_Auditing' && data.type == '语音') {
+                } else if (data.status == 'Voice_Auditing' && data.type == '语音') {
                     //语音驳回
                     url = '/vos/voice/auditReject';
                 }else if (data.status == 'Modify_Auditing') {

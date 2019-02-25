@@ -77,8 +77,15 @@ Vue.config.productionTip = false;
 Vue.prototype.$global = {
 	pageSize: [10, 20, 30, 50],
 	uploadUrl: '/vos/common/uploadImg',
-	uploadUrl2: 'http://192.168.0.104/vos/',
-	serverSrc: 'http://192.168.0.104:5480/vos/',
+	// 阿里云
+	// uploadUrl2: 'http://47.94.168.117/vos/',
+    // serverSrc: 'http://47.94.168.117:5480/vos/',
+	// 将恩情
+	// uploadUrl2: 'http://.168.0.104/vos/',
+	// serverSrc: 'http://192.168.0.104:5480/vos/',
+	// 廖文
+    uploadUrl2: 'http://192.168.0.167/vos/',
+    serverSrc: 'http://192.168.0.167:5480/vos/',
 };
 router.beforeEach((to, from, next) => {
 	var allPath = store.getters.getRoute;
