@@ -67,10 +67,12 @@
         methods: {
             handleSizeChange(val) {
                 this.pageObj.pageSize = val;
+                this.getAllByPackage2();
                 console.log(`每页 ${val} 条`);
             },
             handleCurrentChange(val) {
                 this.pageObj.page = val;
+                this.getAllByPackage2();
                 console.log(`当前页: ${val}`);
             },
             // 以套餐分类400号码

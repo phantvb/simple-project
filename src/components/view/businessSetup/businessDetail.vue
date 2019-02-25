@@ -205,8 +205,9 @@
 							for (let _item of statusOptions) {
 								if (_item.value == item.currentStatus) {
 									m = _item.label;
-								};
-							};
+									//return;
+								}
+							}
 							item.description = `${m} ${item.operateTime}`;
 						});
 						this.record = res.data.flowRecord;
