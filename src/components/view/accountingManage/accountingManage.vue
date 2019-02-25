@@ -7,17 +7,17 @@
 				<ul>
 					<li>
 						<span class="demonstration">400号码：</span>
-						<el-input v-model="form.number400" placeholder="请输入内容" size="mini">
+						<el-input v-model="form.number400" placeholder="请输入内容" size="small">
 						</el-input>
 					</li>
 					<li>
 						<span class="demonstration">企业名称：</span>
-						<el-input v-model="form.companyName" placeholder="请输入内容" size="mini">
+						<el-input v-model="form.companyName" placeholder="请输入内容" size="small">
 						</el-input>
 					</li>
 					<li>
 						<span class="demonstration">套餐：</span>
-						<el-select v-model="form.packageName" placeholder="请选择" size="mini">
+						<el-select v-model="form.packageName" placeholder="请选择" size="small">
 							<el-option v-for="item in packageOptions" :key="item.tariffName" :label="item.tariffName" :value="item.tariffName" @change="fetchData()">
 							</el-option>
 						</el-select>
@@ -25,20 +25,20 @@
 				</ul>
 				<div class="block left">
 					<span class="demonstration">起止时间：</span>
-					<el-date-picker style="margin-right:15px;" v-model="form.time" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" size="mini" format="yyyy 年 MM 月 dd日" value-format="yyyy-MM-dd 00:00:00" @change="fetchData()">
+					<el-date-picker style="margin-right:15px;" v-model="form.time" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" size="small" format="yyyy 年 MM 月 dd日" value-format="yyyy-MM-dd 00:00:00" @change="fetchData()">
 					</el-date-picker>
 					<span class="demonstration">到账状态：</span>
-					<el-select v-model="form.accountStatus" placeholder="请选择" size="mini" @change="fetchData()">
+					<el-select v-model="form.accountStatus" placeholder="请选择" size="small" @change="fetchData()">
 						<el-option v-for="item in accountStatusOptions" :key="item.value" :label="item.label" :value="item.value">
 						</el-option>
 					</el-select>
-					<el-button type="primary" size="mini" style="width:80px;" @click="fetchData()">搜索</el-button>
-					<el-button type="primary" plain size="mini" style="width:80px;" @click="reset">重置</el-button>
+					<el-button type="primary" size="small" style="width:80px;" @click="fetchData()">搜索</el-button>
+					<el-button type="primary" plain size="small" style="width:80px;" @click="reset">重置</el-button>
 				</div>
 			</div>
 			<section class="right block lineTop">
-				<el-button type="primary" plain size="mini">导出列表</el-button>
-				<el-button type="primary" plain size="mini">导出详单</el-button>
+				<el-button type="primary" plain size="small">导出列表</el-button>
+				<el-button type="primary" plain size="small">导出详单</el-button>
 			</section>
 			<el-table :data="tableData" style="width: 100%;margin-bottom:15px;">
 				<el-table-column type="selection" width="55">
@@ -67,9 +67,9 @@
 				</el-table-column>
 				<el-table-column prop="name" label="操作" min-width="200">
 					<template slot-scope="scope">
-						<el-button size="mini" type="text" @click="addfavourable(true,scope.row)">添加优惠</el-button>
-						<el-button size="mini" type="text" @click="addtransfer(true,scope.row,0)">确认到账</el-button>
-						<el-button size="mini" type="text" @click="addtransfer(true,scope.row,1)">详情</el-button>
+						<el-button size="small" type="text" @click="addfavourable(true,scope.row)">添加优惠</el-button>
+						<el-button size="small" type="text" @click="addtransfer(true,scope.row,0)">确认到账</el-button>
+						<el-button size="small" type="text" @click="addtransfer(true,scope.row,1)">详情</el-button>
 					</template>
 				</el-table-column>
 			</el-table>

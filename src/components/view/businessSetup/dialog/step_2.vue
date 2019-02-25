@@ -81,9 +81,9 @@
 			</div>
 		</div>
 		<footer class="right">
-			<el-button type="primary" size="mini" @click="next(1)" plain>上一步</el-button>
-			<el-button type="primary" size="mini" plain @click="submit(false)" v-if="editType==0">暂存信息</el-button>
-			<el-button type="primary" size="mini" @click="submit(true)">立刻送审</el-button>
+			<el-button type="primary" size="small" @click="next(1)" plain>上一步</el-button>
+			<el-button type="primary" size="small" plain @click="submit(false)" v-if="editType==0">暂存信息</el-button>
+			<el-button type="primary" size="small" @click="submit(true)">立刻送审</el-button>
 		</footer>
 	</div>
 </template>

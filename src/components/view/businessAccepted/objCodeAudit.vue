@@ -25,7 +25,7 @@
 
 					<el-form-item class="searchBtn">
 						<el-button type="primary" size="mini" @click="objCodeLists()">搜索</el-button>
-						<el-button @click="resetForm('form')" size="mini">重置</el-button>
+						<el-button @click="resetForm()" size="mini">重置</el-button>
 					</el-form-item>
 				</div>
 			</el-form>
@@ -86,6 +86,7 @@
 </template>
 <script>
     import DialogObjCode from './dialogObjCode';
+    import {formatDate} from '../../../utils/screen';
     export default {
         name: 'objCodeAudit',
         data() {
@@ -314,6 +315,7 @@
                 var url;
                 //目的码驳回
                 url = '/vos/destnum/auditReject';
+                console.log(url);
                 obj.companyFlow = {
                     flowId: data.flowId,
                     creator: data.creator,
@@ -366,14 +368,22 @@
                     }
                 });
             },
+            resetForm(){
+                this.form.firmName='';
+                this.form.phoneNum='';
+                this.form.time='';
+                this.objCodeLists();
+            },
             // 目的码列表
             objCodeLists(){
                 // console.log(this.form.time[0]);
                 // console.log(this.form.time[1]);
                 let dateStart = new Date(this.form.time[0]);
                 let dateEnd = new Date(this.form.time[1]);
-                let dateStart_value=dateStart.getFullYear() + '-' + (dateStart.getMonth() + 1) + '-' + dateStart.getDate()+dateStart.getHours()+':'+dateStart.getMinutes()+':'+dateStart.getSeconds();
-                let dateEnd_value=dateEnd.getFullYear() + '-' + (dateEnd.getMonth() + 1) + '-' + dateEnd.getDate()+dateStart.getHours()+':'+dateStart.getMinutes()+':'+dateStart.getSeconds();
+                // let dateStart_value=dateStart.getFullYear() + '-' + (dateStart.getMonth() + 1) + '-' + dateStart.getDate()+dateStart.getHours()+':'+dateStart.getMinutes()+':'+dateStart.getSeconds();
+                // let dateEnd_value=dateEnd.getFullYear() + '-' + (dateEnd.getMonth() + 1) + '-' + dateEnd.getDate()+dateStart.getHours()+':'+dateStart.getMinutes()+':'+dateStart.getSeconds();
+                let dateStart_value = formatDate(dateStart,"yyyy-MM-dd hh:mm:ss");
+                let dateEnd_value = formatDate(dateEnd,"yyyy-MM-dd hh:mm:ss");
                 // console.log(dateStart_value);
                 // console.log(dateEnd_value);
                 console.log("companyName",this.form.firmName);

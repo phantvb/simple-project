@@ -136,7 +136,7 @@
 				this.$ajax
 					.post("/vos/number400/searchCooled", {
 						page: {
-							pageNo: "1",
+							pageNo: this.page.currentPage,
 							pageSize: this.page.size
 						},
 						number400: {

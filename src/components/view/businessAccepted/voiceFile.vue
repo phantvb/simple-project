@@ -33,7 +33,7 @@
 
 					<el-form-item class="searchBtn">
 						<el-button type="primary" size="mini" @click="voiceFileLists()">搜索</el-button>
-						<el-button @click="resetForm('form')" size="mini">重置</el-button>
+						<el-button @click="resetForm()" size="mini">重置</el-button>
 					</el-form-item>
 				</div>
 			</el-form>
@@ -91,10 +91,6 @@
 						label="操作">
 					<template slot-scope="scope">
 						<el-button size="mini" type="text" v-for="(item,index) in scope.row.btnList" :key="index" @click="voiceDetial(item.label,scope.row)">{{item.label}}</el-button>
-						<!--<el-button size="mini" type="text" @click="voiceDetial(scope.row)">详情</el-button>-->
-						<!--<el-button size="mini" type="text" @click="voiceEdit(scope.row)">编辑</el-button>-->
-						<!--<el-button size="mini" type="text">送审</el-button>-->
-						<!--<el-button size="mini" type="text">删除</el-button>-->
 					</template>
 				</el-table-column>
 			</el-table>
@@ -112,7 +108,8 @@
 	</div>
 </template>
 <script>
-	import DialogVoice from './dialogVoice'
+	import DialogVoice from './dialogVoice';
+    import {formatDate} from '../../../utils/screen';
 	export default {
 		name: 'voiceFile',
 		data() {
@@ -123,7 +120,6 @@
                     firmName:'',
                     phoneNum:'',
                     time:'',
-                    receiver:'',
                 },
                 tableData: [],
                 statusOptions: [
@@ -196,15 +192,22 @@
             voiceAdd(){
                 this.$root.eventHub.$emit('dialog1VisibleVoice',{visibleVoice:true,voiceIn:1});
 			},
-
+            resetForm(){
+                this.form.firmName='';
+                this.form.phoneNum='';
+                this.form.time='';
+                this.voiceFileLists();
+            },
 			// 语音列表
             voiceFileLists(){
                 // console.log(this.form.time[0]);
                 // console.log(this.form.time[1]);
                 let dateStart = new Date(this.form.time[0]);
                 let dateEnd = new Date(this.form.time[1]);
-                let dateStart_value=dateStart.getFullYear() + '-' + (dateStart.getMonth() + 1) + '-' + dateStart.getDate()+dateStart.getHours()+':'+dateStart.getMinutes()+':'+dateStart.getSeconds();
-                let dateEnd_value=dateEnd.getFullYear() + '-' + (dateEnd.getMonth() + 1) + '-' + dateEnd.getDate()+dateStart.getHours()+':'+dateStart.getMinutes()+':'+dateStart.getSeconds();
+                // let dateStart_value=dateStart.getFullYear() + '-' + (dateStart.getMonth() + 1) + '-' + dateStart.getDate()+dateStart.getHours()+':'+dateStart.getMinutes()+':'+dateStart.getSeconds();
+                // let dateEnd_value=dateEnd.getFullYear() + '-' + (dateEnd.getMonth() + 1) + '-' + dateEnd.getDate()+dateStart.getHours()+':'+dateStart.getMinutes()+':'+dateStart.getSeconds();
+                let dateStart_value = formatDate(dateStart,"yyyy-MM-dd hh:mm:ss");
+                let dateEnd_value = formatDate(dateEnd,"yyyy-MM-dd hh:mm:ss");
                 // console.log(dateStart_value);
                 // console.log(dateEnd_value);
                 this.$ajax.post('/vos/business/getBusinessFlowList',{

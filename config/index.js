@@ -21,7 +21,7 @@ module.exports = {
 			'/vos': {
 				//target: 'http://127.0.0.1:8888',
 				//阿里云
-				// target: 'http://47.94.168.117:5480',
+				//target: 'http://47.94.168.117:5480',
 				//将恩情
 				target: 'http://192.168.0.104:5480',
 				//吕圣
@@ -61,10 +61,10 @@ module.exports = {
 
 	build: {
 		// Template for index.html
-		index: path.resolve(__dirname, '../dist/index.html'),
+		index: path.resolve(__dirname, '../voice/index.html'),
 
 		// Paths
-		assetsRoot: path.resolve(__dirname, '../dist'),
+		assetsRoot: path.resolve(__dirname, '../voice'),
 		assetsSubDirectory: 'static',
 		assetsPublicPath: './',
 

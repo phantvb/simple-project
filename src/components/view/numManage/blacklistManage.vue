@@ -7,35 +7,35 @@
 				<ul>
 					<li>
 						<span class="demonstration">企业名称：</span>
-						<el-input v-model="form.companyName" placeholder="请输入内容" size="mini">
+						<el-input v-model="form.companyName" placeholder="请输入内容" size="small">
 						</el-input>
 					</li>
 					<li>
 						<span class="demonstration">拉黑时间：</span>
-						<el-date-picker style="margin-right:15px;" v-model="form.time" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" size="mini" format="yyyy 年 MM 月 dd 日" value-format="yyyy-MM-dd 00:00:00" @change="fetchData()">
+						<el-date-picker style="margin-right:15px;" v-model="form.time" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" size="small" format="yyyy 年 MM 月 dd 日" value-format="yyyy-MM-dd 00:00:00" @change="fetchData()">
 						</el-date-picker>
 					</li>
 				</ul>
 				<div class="block left" :class="{'indent':active==2}">
 					<div style="float:left;margin-right:15px;" v-if="active==1">
 						<span class="demonstration">400号码：</span>
-						<el-input v-model="form.number400" placeholder="请输入内容" size="mini">
+						<el-input v-model="form.number400" placeholder="请输入内容" size="small">
 						</el-input>
 					</div>
 					<div style="float:left;margin-right:15px;" v-if="active==1">
 						<span class="demonstration">拉黑号码：</span>
-						<el-input v-model="form.blackNumber" placeholder="请输入内容" size="mini">
+						<el-input v-model="form.blackNumber" placeholder="请输入内容" size="small">
 						</el-input>
 					</div>
-					<el-button type="primary" size="mini" style="width:80px;" @click="fetchData()">搜索</el-button>
-					<el-button type="primary" plain size="mini" style="width:80px;" @click="reset">重置</el-button>
+					<el-button type="primary" size="small" style="width:80px;" @click="fetchData()">搜索</el-button>
+					<el-button type="primary" plain size="small" style="width:80px;" @click="reset">重置</el-button>
 				</div>
 			</div>
 			<section class="left block lineTop">
-				<el-button type="primary" size="mini" @click="showblackEdit(true,{})"><i class="el-icon-plus"></i> {{active=='one'?'新增企业黑名单':'新增全局黑名单'}}</el-button>
-				<el-button type="primary" plain size="mini" @click="removeBlackEditSel">删除</el-button>
+				<el-button type="primary" size="small" @click="showblackEdit(true,{})"><i class="el-icon-plus"></i> {{active=='one'?'新增企业黑名单':'新增全局黑名单'}}</el-button>
+				<el-button type="primary" plain size="small" @click="removeBlackEditSel">删除</el-button>
 				<div style="float:right">
-					<el-button type="primary" plain size="mini">导出</el-button>
+					<el-button type="primary" plain size="small">导出</el-button>
 				</div>
 			</section>
 			<el-table :data="tableData" style="width: 100%;margin-bottom:15px;" @selection-change="handleSelectionChange">
@@ -51,8 +51,8 @@
 				</el-table-column>
 				<el-table-column prop="name" label="操作" min-width="200">
 					<template slot-scope="scope">
-						<el-button size="mini" type="text" @click="showblackEdit(true,scope.row)">修改</el-button>
-						<el-button size="mini" type="text" @click="removeBlackEdit(scope.row)">删除</el-button>
+						<el-button size="small" type="text" @click="showblackEdit(true,scope.row)">修改</el-button>
+						<el-button size="small" type="text" @click="removeBlackEdit(scope.row)">删除</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
