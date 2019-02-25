@@ -89,7 +89,7 @@
                 <!--</div>-->
                 <p class="fmini">归属地区： {{this.businessDetailBusinessInfo.provinceBelong+this.businessDetailBusinessInfo.cityBelong+this.businessDetailBusinessInfo.cityBelong}}</p>
                 <p class="fmini">业务身份： {{this.businessDetailBusinessInfo.channel}} </p>
-                <p class="fmini"> 优惠：{{this.businessDetailBusinessInfo.discounts}}</p>
+                <p class="fmini"> 优惠：{{this.concessionList[0].concessionName}}</p>
                 <div>
                     <div style="float:left;">
                         <span class="fmini">增值服务：</span>
@@ -215,6 +215,7 @@
                 console.log("businessDetialInfo.company",this.businessDetialInfo.company);
                 this.businessDetailBusinessInfo = this.businessDetialInfo.business;
                 this.destNumberList = this.businessDetialInfo.destNumber;
+                this.concessionList = this.businessDetialInfo.number400Concession;
                 this.addValueList = this.businessDetialInfo.number400ValueAdded;
                 console.log("addValueList",this.addValueList);
                 //增值资费
@@ -257,6 +258,7 @@
                 objCodeTable: [],
                 addValueList:[],
                 destNumberList:[],
+                concessionList:[],
                 businessDetailBusinessInfo:{},
             };
         },

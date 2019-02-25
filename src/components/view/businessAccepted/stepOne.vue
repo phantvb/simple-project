@@ -213,11 +213,11 @@
                     legalPerson: '',
                     legalPhone: '',
                     legalCard: '',
-                    cardNum: '',
+                    cardNum: '',        //证件号
                     idCardAddress: '',
-                    idIndate: '',         //身份证有效期
-                    // passportIndate:'',   //护照有效期
-                    // officerCardIndate:'',//军官证有效期
+                    cardStartDate:'',   //证件开始时间
+                    cardEndDate:'',     //证件结束时间
+                    idIndate: [],           //证件有效期
 
                     // cardStartDate:this.acceptForm.idIndate[0],  //证件有限开始时间
                     // cardEndDate:this.acceptForm.idIndate[1],    //证件有限結束时间

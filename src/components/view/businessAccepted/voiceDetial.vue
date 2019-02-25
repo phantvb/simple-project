@@ -20,8 +20,10 @@
                     <p class="fmini"><span>企业性质：{{voiceDetails.companyCharacter}}</span></p>
                     <p class="fmini"><span>企业等级：{{voiceDetails.companyRank}}</span></p>
                     <p class="fmini"><span>行业类型：{{voiceDetails.industryType}}</span></p>
-                    <p class="fmini">注册地址：{{voiceDetails.registProvince+voiceDetails.registCity+voiceDetails.registArea+voiceDetails.registAddress}}</p>
-                    <p class="fmini">办公地址：{{voiceDetails.officeProvince+voiceDetails.officeCity+voiceDetails.officeArea+voiceDetails.officeAddress}}</p>
+                    <p class="fmini">
+                        注册地址：{{voiceDetails.registProvince+voiceDetails.registCity+voiceDetails.registArea+voiceDetails.registAddress}}</p>
+                    <p class="fmini">
+                        办公地址：{{voiceDetails.officeProvince+voiceDetails.officeCity+voiceDetails.officeArea+voiceDetails.officeAddress}}</p>
                     <p class="fmini">企业电话：{{voiceDetails.phone}}</p>
                     <div>
                         <div style="float:left;">
@@ -52,33 +54,34 @@
                                           style="width: 100%">
 
                                     <el-table-column
-                                            prop="type"
+                                            prop="voiceType"
                                             label="语音类型">
                                     </el-table-column>
 
                                     <el-table-column
-                                            prop="voicename"
+                                            prop="voiceName"
                                             label="语音名称">
                                     </el-table-column>
 
-                                    <el-table-column
-                                            prop="number400"
-                                            label="是否制作计费">
-                                    </el-table-column>
+                                    <!--<el-table-column-->
+                                    <!--prop="number400"-->
+                                    <!--label="是否制作计费">-->
+                                    <!--</el-table-column>-->
 
                                     <el-table-column
-                                            prop="destnumber"
+                                            prop="voiceFile"
                                             label='语音文件'
                                             width="320px">
                                         <template slot-scope="scope">
                                             <!--<el-button @click="an(scope.row)">an</el-button>-->
                                             <!--<audio controls>-->
-                                                <!--<source-->
-                                                     <!--src="http://sc1.111ttt.cn:8282/2018/1/03m/13/396131232171.m4a?tflag=1519095601&pin=6cd414115fdb9a950d827487b16b5f97#.mp3"-->
-                                                     <!--type="audio/ogg">-->
+                                            <!--<source-->
+                                            <!--src="http://sc1.111ttt.cn:8282/2018/1/03m/13/396131232171.m4a?tflag=1519095601&pin=6cd414115fdb9a950d827487b16b5f97#.mp3"-->
+                                            <!--type="audio/ogg">-->
                                             <!--</audio>-->
                                             <!--<Aplayer name="Aplayer" :music_url="'http://sc1.111ttt.cn:8282/2018/1/03m/13/396131232171.m4a?tflag=1519095601&pin=6cd414115fdb9a950d827487b16b5f97#.mp3'"></Aplayer>-->
-                                            <Aplayer name="Aplayer" :music_url="$global.serverSrc+scope.row.voiceflie"></Aplayer>
+                                            <Aplayer name="Aplayer"
+                                                     :music_url="scope.row.voiceFile" v-if="toPlay"></Aplayer>
                                         </template>
                                     </el-table-column>
                                 </el-table>
@@ -94,20 +97,40 @@
             <header class="left">
                 审核流程 > 目的码审核
             </header>
+            <!--<div class="block underline">-->
+            <!--<div class="step">-->
+            <!--<el-steps direction="vertical" :active="1">-->
+            <!--<el-step title="业务员(姚明)" description="递交 12月08日 16:59"></el-step>-->
+            <!--<el-step title="管理员" description="审批 12月08日 16:59"></el-step>-->
+            <!--</el-steps>-->
+            <!--</div>-->
+            <!--<button class="pass"><i class="el-icon-circle-check" style="color:#67C23A;font-size:16px;transform: translateY(1px);"></i> 审核通过</button>-->
+            <!--</div>-->
             <div class="block underline">
                 <div class="step">
                     <el-steps direction="vertical" :active="1">
-                        <el-step title="业务员(姚明)" description="递交 12月08日 16:59"></el-step>
-                        <el-step title="管理员" description="审批 12月08日 16:59"></el-step>
+                        <el-step :title="item.orole+'('+item.operator+')'"
+                                 :description="item.opeation+'-'+item.arole+'('+item.assginee+')-'+item.operateTime"
+                                 v-for="item in flowRecordList" :key="item.operateTime"></el-step>
+                        <el-step v-if="item.message" :title="item.orole+'('+item.operator+')'"
+                                 :description="item.opeation+'-'+item.arole+'('+item.assginee+')-'+item.operateTime+'-'+item.message"
+                                 v-for="item in flowRecordList" :key="item.operateTime"></el-step>
                     </el-steps>
                 </div>
-                <button class="pass"><i class="el-icon-circle-check" style="color:#67C23A;font-size:16px;transform: translateY(1px);"></i> 审核通过</button>
+                <button class="pass" v-if="passShow"><i class="el-icon-circle-check"
+                                                        style="color:#67C23A;font-size:16px;transform: translateY(1px);"></i>
+                    审核通过
+                </button>
             </div>
+
             <div class="block">
-                <button class="pass passback">撤回</button>
+                <button class="pass passback" @click="getBack">返回</button>
                 <div>
-                    <button class="fleft passgo">送审</button>
-                    <button class="fright passback">删除</button>
+                    <!--<button class="fleft passgo" style="width:100%" v-if="this.$route.query.status=='Wait_To_Audit'" @click="submit()">送审</button>-->
+                    <button class="fleft passgo" v-if="this.$route.query.status=='Voice_Auditing'"
+                            @click="voiceAuditPass()">通过审核
+                    </button>
+                    <button class="fright passback" v-if="this.$route.query.status=='Voice_Auditing'">驳回</button>
                 </div>
             </div>
         </div>
@@ -115,6 +138,7 @@
 </template>
 <script>
     import Aplayer from '../component/Aplayer/a_player.vue'
+
     export default {
         name: 'voiceDetial',
         data() {
@@ -123,30 +147,32 @@
                     number: '234567',
                     objCode: '',
                 }],
-                voiceInfoList:[{
+                voiceInfoList: [{}],
+                voiceFlowId: '',     //语音表格flowId
+                voiceDetails: {
+                    companyName: '',
+                    number400: '',
+                    companyCardNo: '',
+                    companyCharacter: '',
+                    companyRank: '',
+                    industryType: '',
+                    registProvince: '',
+                    registCity: '',
+                    registArea: '',
+                    registAddress: '',
+                    officeProvince: '',
+                    officeCity: '',
+                    officeArea: '',
+                    officeAddress: '',
+                    phone: '',
 
-                }],
-                voiceFlowId:'',     //语音表格flowId
-                voiceDetails:{
-                    companyName:'',
-                    number400:'',
-                    companyCardNo:'',
-                    companyCharacter:'',
-                    companyRank:'',
-                    industryType:'',
-                    registProvince:'',
-                    registCity:'',
-                    registArea:'',
-                    registAddress:'',
-                    officeProvince:'',
-                    officeCity:'',
-                    officeArea:'',
-                    officeAddress:'',
-                    phone:'',
                 },
+                passShow: false,
+                flowRecordList: [],
+                toPlay: false,
             };
         },
-        created(){
+        created() {
             console.log(this.$route.query.flowId);
             this.voiceFlowId = this.$route.query.flowId;
             this.voiceDetail();
@@ -155,26 +181,85 @@
             Aplayer
         },
         methods: {
-            an(val){
+            an(val) {
                 console.log(val);
             },
             //语音详情
-            voiceDetail(){
+            voiceDetail() {
                 console.log(this.voiceFlowId);
-                this.$ajax.get('/vos/voice/getCacheData?flowId='+this.voiceFlowId).then((res)=>{
+                this.$ajax.get('/vos/voice/getCacheData?flowId=' + this.voiceFlowId).then((res) => {
                     console.log(res.data);
                     this.voiceDetails = res.data.company;
                     this.voiceDetails.number400 = res.data.number400;
+
                     this.voiceInfoList = res.data.voice;
-                    this.voiceInfoList.map((item)=>{
-                        if(item.voicetype=="IVR"){
-                            item.type = "IVR导航"
-                        }else if(item.voicetype=="ring"){
-                            item.type = "彩铃"
+                    this.voiceInfoList.map((item) => {
+                        if (item.voiceType == "IVR") {
+                            item.voiceType = "IVR导航"
+                        } else if (item.voiceType == "ring") {
+                            item.voiceType = "彩铃"
+                        }
+                        item.voiceFile = this.$global.serverSrc + item.voiceFile;
+                    });
+                    this.toPlay = true;
+
+                    this.flowRecordList = res.data.flowRecord;
+                    this.flowRecordList.map((item) => {
+                        if (item.operatorRole == 'ROLE_admin') {
+                            item.orole = '管理员'
+                        } else if (item.operatorRole == 'ROLE_salesman') {
+                            item.oole = '业务员'
+                        } else if (item.operatorRole == 'ROLE_auditor') {
+                            item.orole = '审核员'
+                        }
+
+                        if (item.assginessRole == 'ROLE_admin') {
+                            item.arole = '管理员'
+                        } else if (item.assginessRole == 'ROLE_salesman') {
+                            item.arole = '业务员'
+                        } else if (item.assginessRole == 'ROLE_auditor') {
+                            item.arole = '审核员'
+                        }
+
+                        switch (item.currentStatus) {
+                            case 'Wait_To_Audit':
+                                item.status = '等待送审';
+                                break;
+                            case 'Voice_Auditing':
+                                item.status = '审核中';
+                                break;
+                            case 'Audit_Success':
+                                item.status = '审核通过';
+                                break;
+                            case 'Terminate_Flow':
+                                item.status = '受理终止';
+                                break;
                         }
                     })
                 })
-            }
+            },
+            // 通过审核
+            voiceAuditPass() {
+                this.$ajax.post('/vos/voice/auditPass', {
+                    "companyFlow": {
+                        "flowId": this.entireFlowId,
+                        "assigneeRole": this.$route.query.assigneeRole,
+                        "creator": this.$route.query.creators,
+                    },
+                    "message": this.desc   //输入框信息
+                }).then((res) => {
+                    if (res.code == 200) {
+                        this.passShow = true;
+                        console.log(res);
+                    } else {
+                        this.$message.error(res.message);
+                    }
+                })
+            },
+            // 返回
+            getBack() {
+                this.$router.push({path: "/BusinessAccepted/400businessManage"});
+            },
         },
         computed: {}
     }

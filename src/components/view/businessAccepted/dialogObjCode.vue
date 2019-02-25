@@ -116,9 +116,9 @@
                     objCount:1,     //目的码数量
                     delObjCode:'',  //删减目的码
                 },
-                companyInfo:{   //企业信息
+                companyInfo:{},  //企业信息
 
-                },
+
                 rules:{
                     firmName: [
                         { required: true, message: '请输入企业名称', trigger: 'blur' }
@@ -242,15 +242,16 @@
             },
             //新增目的码
             addObjCodes(){
-                if(this.objCodeList.length<3){
-                    let unit = {};
-                    this.objCodeList.push(unit);
-                }else{
-                    this.$message({
-                        message: '目的码最多添加3条',
-                        type: 'warning'
-                    });
-                }
+                let unit = {};
+                this.objCodeList.push(unit);
+                // if(this.objCodeList.length<3){
+                //
+                // }else{
+                //     this.$message({
+                //         message: '目的码最多添加3条',
+                //         type: 'warning'
+                //     });
+                // }
             },
             // 删除目的码
             delObjCodes(index){
@@ -319,8 +320,12 @@
             //目的码
             searchObjCode(){
                 this.$ajax.get('/vos/destnum/getDestNumbersToModify?number400='+this.acceptForm.fourNum).then((res)=>{
-                    console.log(res.data.destNumber);
-                    this.objCodeList = res.data.destNumber;
+                    if(res.data.destNumber.length!=0){
+                        console.log(res.data.destNumber);
+                        this.objCodeList = res.data.destNumber;
+                        this.acceptForm.imageUrl =  res.data.destNumber[0].destnumProofPic;
+                        this.acceptForm.usage =  res.data.destNumber[0].destnumUsage;
+                    }
                     console.log("objCodeList",this.objCodeList);
                 })
             },
@@ -350,59 +355,66 @@
             },
 
             // 目的码暂存
-            objCodeSave(acceptForm){
+            objCodeSave(){
                 console.log(" this.companyId",this.companyId);
                 var companyInfo = {};
                 companyInfo.companyName = this.acceptForm.firmName;
                 companyInfo.id = this.companyId;
-                this.$refs[acceptForm].validate((valid) => {
-                    if (valid) {
-                        let paramList=[];
-                        this.objCodeList.map((item)=>{
-                            let param={};
-                            param.id=item.id;
-                            param.destNumber=item.destNumber;
-                            param.destnumproofpic=this.acceptForm.imageUrl;
-                            param.destnumUsage=this.acceptForm.usage;
-                            param.number400=this.acceptForm.fourNum;
-                            param.companyid=this.companyId;
-                            paramList.push(param);
-                        });
-                        this.searchObjCode();
-                        this.$ajax.post('/vos/destnum/startAndSave',{
-                            "destNumber":paramList,
-                            "number400": this.acceptForm.fourNum,
-                            "company":companyInfo,
-                            "companyFlow":{
-                                "flowId":(this.objCodeIn=='2'||this.objCodeIn=='5')?this.objFlowId:'',
-                            }
-
-
-
-                        }).then((res)=>{
-                            console.log(res);
-                            if(res.code==200){
-                                this.visible = false;
-                                // this.objCodeLists();
-                                this.$root.eventHub.$emit('addAcceptSave', null);
-                            }else{
-                                this.$message({type:'warning',message:res.message});
-                            }
-                        })
-                    } else {
-                        console.log('error submit!!');
-                        return false;
-                    }
+                let paramList=[];
+                this.objCodeList.map((item)=>{
+                    let param={};
+                    param.id=item.id;
+                    param.destNumber=item.destNumber;
+                    param.destnumproofpic=this.acceptForm.imageUrl;
+                    param.destnumUsage=this.acceptForm.usage;
+                    param.number400=this.acceptForm.fourNum;
+                    param.companyid=this.companyId;
+                    paramList.push(param);
                 });
+                this.searchObjCode();
+                this.$ajax.post('/vos/destnum/startAndSave',{
+                    "destNumber":paramList,
+                    "number400": this.acceptForm.fourNum,
+                    "company":companyInfo,
+                    "companyFlow":{
+                        "flowId":(this.objCodeIn=='2'||this.objCodeIn=='5')?this.objFlowId:'',
+                    }
+                }).then((res)=>{
+                    console.log(res);
+                    if(res.code==200){
+                        this.visible = false;
+                        // this.objCodeLists();
+                        this.$root.eventHub.$emit('addAcceptSave', null);
+                    }else{
+                        this.$message({type:'warning',message:res.message});
+                    }
+                })
+
             },
 
             // 目的码送审
-            objCodeSubmit(acceptForm){
-                var companyInfo = {};
+            objCodeSubmit(formName){
+                let companyInfo = {};
+                let returnBoolean = false;
                 companyInfo.companyName = this.acceptForm.firmName;
                 companyInfo.id = this.companyId;
-                this.$refs[acceptForm].validate((valid) => {
+
+                this.$refs[formName].validate((valid) => {
                     if (valid) {
+                        if(this.objCodeList.length==0){
+                            this.$message.warning("请添加目的码");
+                            return
+                        }else{
+                            this.objCodeList.map((item)=>{
+                                if(!item.destNumber){
+                                    returnBoolean = true;
+                                }
+                            });
+                            if(returnBoolean){
+                                this.$message.warning("请填写空白目的码");
+                                return
+                            }
+                        }
                         let paramList=[];
                         this.objCodeList.map((item)=>{
                             let param={};
@@ -426,8 +438,6 @@
                             if(res.code==200){
                                 this.visible = false;
                                 this.$root.eventHub.$emit('addAcceptSave', null);
-                                // this.objCodeLists();
-                                // this.$parent.entireLists();
                             }else{
                             }
                         })
@@ -445,7 +455,7 @@
                 console.log(this.objFlowId);
                 this.$ajax.get('/vos/destnum/getCacheData?flowId='+this.objFlowId).then((res)=>{
                     if(res.code==200){
-                        console.log(res.data);
+                        console.log(res);
                         console.log(res.data.destNumber);
                         console.log(res.data.company);
                         console.log(res.data.company.companyName);

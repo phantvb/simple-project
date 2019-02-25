@@ -42,7 +42,7 @@
 		},
 		mounted() {
 			var _this = this;
-			if (this.model = 'auto') {
+			if (this.model == 'auto') {
 				this.$nextTick(() => {
 					this.listenMusic_auto();
 					this.timer = setInterval(this.listenMusic_auto, 1000);
