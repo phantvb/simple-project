@@ -345,32 +345,9 @@
             },
             // 下载pdf
             uploadPdf(){
-                // this.dialogVisible = false;
-                // console.log("business:", this.business);
-                this.businessObj = Object.assign(this.business, this.stepFourForm);
-                this.ChangeBusinessStatus(this.businessObj);
-                // 打印business入参对象
-                // console.log("businessObj:", this.businessObj);
-                //打印compang入参对像
-                // console.log("company", this.company);
-                // console.log("destNumber", this.destNumber);
-                // console.log("number400ValueAdded", this.number400ValueAdded);
-                // console.log("number400Concession", this.number400Concession);
-                // console.log("businessIn", this.businessIn);
-                this.$ajax.post('/vos/PdfOption/createAndDownloadPDF', {
-                    "company": this.company,
-                    "business": this.businessObj,
-                    "destNumber": this.destNumber,
-                    "number400ValueAdded": this.number400ValueAdded,
-                    "number400Concession": this.number400Concession,
-                    "companyFlow": {
-                        "flowId": this.flowId
-                    }
-                }).then((res) => {
-                    console.log(res);
-                    this.$message.success(res.data);
-                    // this.$root.eventHub.$emit('addAcceptSave', null);
-                });
+                const url = '/vos/PdfOption/createAndDownloadPDF/'+this.flowId;
+                // const url = 'http://192.168.0.167:5480/vos/PdfOption/createAndDownloadPDF/'+this.flowId;
+                window.open(url, '_blank');
             },
             // 存vuex更新企业信息模块入参
             ChangeBusinessStatus(val) {

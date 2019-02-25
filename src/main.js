@@ -81,11 +81,11 @@ Vue.prototype.$global = {
 	// uploadUrl2: 'http://47.94.168.117/vos/',
     // serverSrc: 'http://47.94.168.117:5480/vos/',
 	// 将恩情
-	// uploadUrl2: 'http://.168.0.104/vos/',
-	// serverSrc: 'http://192.168.0.104:5480/vos/',
+	uploadUrl2: 'http://.168.0.104/vos/',
+	serverSrc: 'http://192.168.0.104:5480/vos/',
 	// 廖文
-    uploadUrl2: 'http://192.168.0.167/vos/',
-    serverSrc: 'http://192.168.0.167:5480/vos/',
+    // uploadUrl2: 'http://192.168.0.167/vos/',
+    // serverSrc: 'http://192.168.0.167:5480/vos/',
 };
 router.beforeEach((to, from, next) => {
 	var allPath = store.getters.getRoute;
