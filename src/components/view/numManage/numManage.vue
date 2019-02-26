@@ -100,7 +100,8 @@
 					size: 10,
 					total: 1
 				},
-				loading: false
+				loading: false,
+				permission: []
 			};
 		},
 		watch: {
@@ -110,6 +111,10 @@
 		},
 		mounted() {
 			this.fetchData();
+			console.log(this.$store.getters.getPermission(location.hash.replace(/#/, '')))
+			this.$store.getters.getPermission(location.hash.replace(/#/, '')).map(item => {
+				this.permission.push(item.id);
+			});
 		},
 		methods: {
 			reset() {
