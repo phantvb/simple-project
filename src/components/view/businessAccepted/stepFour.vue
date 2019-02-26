@@ -8,9 +8,9 @@
                     </p>
                 </div>
                 <el-form ref="busMaterForm" :model="busMaterForm" label-width="200px" class="busMaterForm">
-                    <el-form-item label="标准协议编号：">
-                        <span>ZJ93681212</span>
-                    </el-form-item>
+                    <!--<el-form-item label="标准协议编号：">-->
+                        <!--<span>ZJ93681212</span>-->
+                    <!--</el-form-item>-->
                     <el-form-item label="全套业务单据PDF模板下载：" class="model">
                         <el-button type="primary" size="mini" @click="uploadPdf()">立刻下载PDF模板</el-button>
                         <span>说明：下载自动生成的标准协议、业务受理单、授权书、信息安全责任书PDF，并打彩色印盖章后上传</span>
@@ -163,21 +163,14 @@
         components: {},
         created() {
             console.log(sessionStorage.getItem('businessIn'));
-            this.storageConpanyFlow = JSON.parse(sessionStorage.getItem('objMsg'));
-            console.log("storageConpanyFlow",this.storageConpanyFlow);
             this.businessIn = sessionStorage.getItem('businessIn');
             //新增受理
-            if (sessionStorage.getItem('businessIn') == 1) {
-                this.$root.eventHub.$on('flowId', (resp) => {
-                    console.log("flowId", resp);
-                    this.flowId = resp.flowId;
-                });
-            }else if(sessionStorage.getItem('businessIn') == 3){
+            if(sessionStorage.getItem('businessIn') == 3){
+                this.storageConpanyFlow = JSON.parse(sessionStorage.getItem('objMsg'));
                 this.saveBtnHidden=false;
                 this.flowId = sessionStorage.getItem('entireFlowId');
                 console.log("saveBtnHidden",this.saveBtnHidden);
             }
-
             if(sessionStorage.getItem('entireFlowId')){
                 console.log("entireFlowId", sessionStorage.getItem('entireFlowId'));
                 this.flowId = sessionStorage.getItem('entireFlowId');
@@ -267,6 +260,9 @@
             },
             // 新增业务保存/变更保存
             addBusinessSave() {
+                if (sessionStorage.getItem('businessIn') == 1) {
+                    this.flowId = sessionStorage.getItem('stepThreeFlowId');
+                };
                 console.log("business:", this.business);
                 this.businessObj = Object.assign(this.business, this.stepFourForm);
                 this.ChangeBusinessStatus(this.businessObj);
@@ -300,15 +296,20 @@
             },
             //业务送审
             addBusinessSend() {
+                if (sessionStorage.getItem('businessIn') == 1) {
+                    this.flowId = sessionStorage.getItem('stepThreeFlowId');
+                };
+                console.log("第四步flowId",this.flowId);
+                console.log("storageConpanyFlow",this.storageConpanyFlow);
                 // 必填校验
-                if(this.stepFourForm.unionAgreementPic=='' ||
-                    this.stepFourForm.businessHandlePic=='' ||
-                    this.stepFourForm.authorizationPic=='' ||
-                    this.stepFourForm.safeAgreementPic=='' ||
-                    this.stepFourForm.destNumProfPic=='' ||
-                    this.stepFourForm.otherPic==''){
-                    this.$message.warning("请完善图片信息");
-                }else{
+                // if(this.stepFourForm.unionAgreementPic=='' ||
+                //     this.stepFourForm.businessHandlePic=='' ||
+                //     this.stepFourForm.authorizationPic=='' ||
+                //     this.stepFourForm.safeAgreementPic=='' ||
+                //     this.stepFourForm.destNumProfPic=='' ||
+                //     this.stepFourForm.otherPic==''){
+                //     this.$message.warning("请完善图片信息");
+                // }else{
                     console.log('没验证');
                     this.dialogVisible = false;
                     console.log("business:", this.business);
@@ -334,13 +335,13 @@
                         "destNumber": this.destNumber,
                         "number400ValueAdded": this.number400ValueAdded,
                         "number400Concession": this.number400Concession,
-                        "companyFlow": url='/vos/business/sendToModifyAudit'?this.storageConpanyFlow: {"flowId": this.flowId}
+                        "companyFlow": url=='/vos/business/sendToModifyAudit'?this.storageConpanyFlow: {"flowId": this.flowId}
                     }).then((res) => {
                         console.log(res);
                         this.$message.success(res.data);
                         this.$root.eventHub.$emit('addAcceptSave', null);
                     });
-                }
+                // }
 
             },
             // 下载pdf

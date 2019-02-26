@@ -171,9 +171,9 @@
             }
         },
         created(){
-            console.log(sessionStorage.getItem("voiceIn"));
+            // console.log(sessionStorage.getItem("voiceIn"));
             this.$root.eventHub.$on('dialog1VisibleVoice', (res)=>{
-                console.log('voiceInfo',res);
+                // console.log('voiceInfo',res);
                 if(res.voiceIn){
                     this.voiceIn = res.voiceIn;
                     this.visibleVoice=res.visibleVoice;
@@ -196,9 +196,9 @@
                         this.saveBtnHidden=false;
                         this.voiceFlowId=(res.voiceIn==3)?sessionStorage.getItem('entireFlowId'):res.flowId;
                     }else {
-                        console.log("res.voiceIn",res.voiceIn);
+                        // console.log("res.voiceIn",res.voiceIn);
                         this.voiceIn = res.voiceIn;
-                        console.log("this.voiceIn",this.voiceIn);
+                        // console.log("this.voiceIn",this.voiceIn);
                         this.voiceFlowId=(res.voiceIn==2)?sessionStorage.getItem('entireFlowId'):res.flowId;
                         this.voiceDetail();
                     }
@@ -206,8 +206,8 @@
 
             } );
 
-            console.log(sessionStorage.getItem('businessType'));
-            console.log("entireFlowId",sessionStorage.getItem('entireFlowId'));
+            // console.log(sessionStorage.getItem('businessType'));
+            // console.log("entireFlowId",sessionStorage.getItem('entireFlowId'));
             this.busIdentity = sessionStorage.getItem('businessType');
             this.getValueAdded(this.busIdentity);
             this.addValueChange(this.busIdentity);
@@ -229,17 +229,17 @@
             },
             handleChange(file) {
                 this.file = file.raw
-                console.log(file);
+                // console.log(file);
             },
             rowInfo(val,event){
-                console.log("rowInfo",val);
-                console.log("event",event);
+                // console.log("rowInfo",val);
+                // console.log("event",event);
             },
             // 企业模糊搜索
             searchFirm(val){
-                console.log(val);
+                // console.log(val);
                 this.$ajax.get('/vos/company/fuzzySearch?company='+this.voiceForm.firmName).then((res)=>{
-                    console.log(res.data);
+                    // console.log(res.data);
                     this.firmNameList = res.data;
                     if(this.voiceForm.firmName!='' && this.firmNameList.length!=0){
                         this.firmNameShow = true;
@@ -249,7 +249,7 @@
 
             //企业名称li
             // firmNameLi(val){
-            //     console.log(val);
+            // //     console.log(val);
             //     this.voiceForm.firmName = val.companyName;
             //     this.firmNameShow = false;
             //     this.companyInfo = val;
@@ -266,7 +266,7 @@
                     }
                 }).then((res)=>{
 
-                    console.log(res.data.number400s);
+                    // console.log(res.data.number400s);
                     this.num400List = res.data.number400s;
                     if(this.voiceForm.voiceNum!='' && this.voiceForm.length!=0){
                         this.numShow = true;
@@ -282,15 +282,15 @@
             },
             //400号码li
             num400Lists(val){
-                console.log(val);
+                // console.log(val);
                 this.voiceForm.voiceNum = val.number400;
                 if(this.voiceForm.firmName = val.companyName){
                     this.changeMsgDisabled(true);
                 }
                 this.numShow = false;
                 this.$ajax.get('/vos/voice/getAllBy400?number400='+this.voiceForm.voiceNum).then((res)=>{
-                    console.log(res.data);
-                    console.log(res.data.voice);
+                    // console.log(res.data);
+                    // console.log(res.data.voice);
                     // if(res.data.voice.length!=0){
                     this.tableData = res.data.voice;
                     this.tableData.push({
@@ -304,8 +304,8 @@
                 this.companyId = val.companyId;
             },
             add(scope){
-                console.log(scope);
-                console.log(this.tableData.length);
+                // console.log(scope);
+                // console.log(this.tableData.length);
                 this.tableData.push({
                     voiceType:'',
                     voiceName:'',
@@ -314,7 +314,7 @@
             },
             // 文件上传限制
             beforeAvatarUpload(file){
-                console.log(file.type);
+                // console.log(file.type);
                 const isVoiceType = file.type === 'audio/flv'|| file.type ==='audio/mp3' || file.type ==='audio/wma' || file.type ==='audio/swf'|| file.type ==='audio/wmv' || file.type ==='audio/mid' || file.type ==='audio/avi' || file.type ==='audio/mpg' || file.type ==='audio/asf' || file.type ==='audio/rm' || file.type ==='audio/rmvb';
                 const isVoiceSize = file.size / 1024 / 1024 < 10;
 
@@ -331,24 +331,24 @@
                 let form=new FormData();
                 form.append('voice',this.file);
                 this.$ajax.post('/vos/common/uploadVoice',form).then((res)=>{
-                    console.log(res);
-                    console.log(this.tableData);
+                    // console.log(res);
+                    // console.log(this.tableData);
                     this.voicefiles = res;
                 })
 
             },
             // 语音类型选择
             voiceTypeChange(val){
-                console.log("语音类型",val);
+                // console.log("语音类型",val);
                 this.changeVoiceType = val;
             },
             //语音名字监听
             voiceNameChange(val){
-                console.log(val);
+                // console.log(val);
             },
             // 增值资费列表
             getValueAdded(val){
-                console.log(val);
+                // console.log(val);
                 this.businessType = val;
                 this.$ajax.post('/vos/tariffPackage/getValueAdded',{
                     "valueAdded":{
@@ -357,16 +357,16 @@
                     }
                 }).then((res)=>{
                     if(res.code==200){
-                        console.log(res.data.valueAddedList);
+                        // console.log(res.data.valueAddedList);
                         this.voiceList =res.data.valueAddedList;
                     }
                 })
             },
             // 增值资费切换
             addValueChange(val){
-                console.log(val);
+                // console.log(val);
                 this.businessType=val;
-                console.log(this.businessType);
+                // console.log(this.businessType);
                 this.$ajax.post('/vos/tariffPackage/getValueAdded',{
                     "valueAdded":{
                         "channel":this.businessType,
@@ -374,9 +374,9 @@
                     }
                 }).then((res)=>{
                     if(res.code==200){
-                        console.log(res.data.valueAddedList);
+                        // console.log(res.data.valueAddedList);
                         this.valueAddedList =res.data.valueAddedList;
-                        console.log(this.valueAddedList[0].id);
+                        // console.log(this.valueAddedList[0].id);
                     }
                 })
             },
@@ -386,8 +386,8 @@
                     "dicType":"voiceType",
                     "status":"1"
                 }).then((res)=>{
-                    console.log(res);
-                    console.log(res.data);
+                    // console.log(res);
+                    // console.log(res.data);
                     if(res.code==200){
                         this.voiceTypeList = res.data.dicList;
                     }
@@ -395,8 +395,8 @@
             },
             // 暂存
             voiceSave(){
-                console.log(this.voicefiles);
-                console.log(this.voiceIn);
+                // console.log(this.voicefiles);
+                // console.log(this.voiceIn);
                 var companyInfo = {};
                 companyInfo.companyName = this.voiceForm.firmName;
                 companyInfo.id = this.companyId;
@@ -415,7 +415,7 @@
                     },
                     "company": companyInfo,
                 }).then((res)=>{
-                    console.log(res);
+                    // console.log(res);
                     if(res.code==200){
                         this.visibleVoice = false;
                         this.$root.eventHub.$emit('addAcceptSave', null);
@@ -448,7 +448,7 @@
                     },
                     "company": companyInfo,
                 }).then((res)=>{
-                    console.log(res);
+                    // console.log(res);
                     if(res.code==200){
                         this.visibleVoice = false;
                         this.$root.eventHub.$emit('addAcceptSave', null);
@@ -460,9 +460,9 @@
             },
             // 语音详情
             voiceDetail(){
-                console.log(this.voiceFlowId);
+                // console.log(this.voiceFlowId);
                 this.$ajax.get('/vos/voice/getCacheData?flowId='+this.voiceFlowId).then((res)=>{
-                    console.log(res.data);
+                    // console.log(res.data);
                     this.voiceForm.voiceNum = res.data.number400;
                     this.tableData = res.data.voice;
                     this.voiceForm.firmName = res.data.company.companyName;
@@ -485,9 +485,9 @@
 
 			},
             // getCacheData(val){
-            //     console.log(val);
+            // //     console.log(val);
             //     this.$ajax.get('/vos/destnum/getCacheData?flowId='+this.voiceFlowId).then((res)=>{
-            //         console.log(res.data);
+            // //         console.log(res.data);
             //         if(res.code==200){
             //             if(val=='详情'){
             //                 this.$router.push({

@@ -58,7 +58,7 @@
         methods: {},
         computed: {},
         created(){
-
+            console.log("权限",this.$store.getters.getPermission(location.hash.replace(/#/, '')));
         },
     }
 </script>

@@ -46,13 +46,9 @@
 					<el-button type="primary" size="mini" @click="voiceAdd()">+新增语音文件</el-button>
 				</div>
 				<div class="accountSelect">
+					<span style="font-size:12px">状态:</span>
 					<el-select v-model="accountStatus" placeholder="请选择" size="mini" @change="statusChange">
-						<el-option
-								v-for="item in statusOptions"
-								:key="item.value"
-								:label="item.label"
-								:value="item.value">
-						</el-option>
+						<el-option v-for="item in statusOptions" :key="item.dicKey" :label="item.dicValue" :value="item.dicKey"></el-option>
 					</el-select>
 					<el-button type="primary" plain size="mini">导出</el-button>
 				</div>
@@ -122,22 +118,7 @@
                     time:'',
                 },
                 tableData: [],
-                statusOptions: [
-                    {
-                        value: 'Wait_To_Audit',
-                        label: '等待送审'
-                    }, {
-                        value: 'Voice_Auditing',
-                        label: '审核中'
-                    }, {
-                        value: 'Audit_Success',
-                        label: '审核通过'
-                    },
-                    {
-                        value: 'Terminate_Flow',
-                        label: '受理终止'
-                    }
-                ],
+                statusOptions: [],
                 pageObj:{
                     total:0,
                     page:1,
@@ -161,6 +142,7 @@
             console.log("roleName",this.baseData.roleName);
             console.log("username",this.baseData.username);
 		    this.voiceFileLists();
+		    this.statusList();
             this.$root.eventHub.$on('voiceList',(resp)=>{
                 this.voiceFileLists();
 			})
@@ -188,6 +170,20 @@
                     })
                     .catch(_ => {
                     });
+            },
+            //状态列表
+            statusList(){
+                this.$ajax.post('/vos/dic/getDicsByType',{
+                    "dicType":"flowType",
+                    "status":this.accountStatus,
+                }).then((res)=>{
+                    console.log(res.data);
+                    console.log(res.data.dicList);
+                    console.log(res.data.totalCount);
+                    this.statusOptions = res.data.dicList;
+                    this.pageObj.total = res.data.totalCount;
+                    console.log(this.pageObj.total);
+                })
             },
             voiceAdd(){
                 this.$root.eventHub.$emit('dialog1VisibleVoice',{visibleVoice:true,voiceIn:1});
@@ -340,12 +336,27 @@
 				}else if(val=='变更'){
                     this.$root.eventHub.$emit('dialog1VisibleVoice',{visibleVoice:true,voiceIn:3,flowId:this.voiceFlowId});
 				}else if(val=='删除'){
-                    this.$ajax.post('/vos/business/deleteFlow',{
-                        "companyFlow": data
-                    }).then((res)=>{
-                        console.log(res);
-                        this.voiceFileLists();
-                    })
+                    this.$confirm('此操作将永久删除该业务, 是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        this.$message({
+                            type: 'success',
+                            message: '删除成功!'
+                        });
+                        this.$ajax.post('/vos/business/deleteFlow',{
+                            "companyFlow": data
+                        }).then((res)=>{
+                            console.log(res);
+                            this.voiceFileLists();
+                        })
+                    }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: '已取消删除'
+                        });
+                    });
                 }
             },
             async passCompany(val,data) {
@@ -391,6 +402,21 @@
                         this.$message.success('操作成功');
                         this.fetchData(this.page.num);
                     }
+                });
+            },
+            //通过审核和驳回弹窗
+            prompt(data) {
+                return this.$prompt('请输入审核意见', data, {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消'
+                }).then(({ value }) => {
+                    return value || '';
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '取消输入'
+                    });
+                    return false;
                 });
             },
 			voiceOperate(val,data){

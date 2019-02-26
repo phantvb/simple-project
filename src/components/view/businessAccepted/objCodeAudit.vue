@@ -250,12 +250,27 @@
                     console.log("22222");
                     this.backCompany(val,objData);
                 }else if(val=='删除'){
-                    this.$ajax.post('/vos/business/deleteFlow',{
-                        "companyFlow": objData
-                    }).then((res)=>{
-                        console.log(res);
-                        this.objCodeLists();
-                    })
+                    this.$confirm('此操作将永久删除该业务, 是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        this.$message({
+                            type: 'success',
+                            message: '删除成功!'
+                        });
+                        this.$ajax.post('/vos/business/deleteFlow',{
+                            "companyFlow": objData
+                        }).then((res)=>{
+                            console.log(res);
+                            this.objCodeLists();
+                        });
+                    }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: '已取消删除'
+                        });
+                    });
                 }
             },
             //详情接口
