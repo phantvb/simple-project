@@ -85,46 +85,49 @@
                     <!--</ul>-->
                 </div>
                 <!--<div>-->
-                    <p class="fmini" v-for="(item,index) in destNumberList">{{"目的码"+(index+1)+"："+ item.destnumber}}</p>
+                    <p class="fmini" v-for="(item,index) in destNumberList">{{"目的码"+(index+1)+"："+ item.destNumber}}</p>
                 <!--</div>-->
                 <p class="fmini">归属地区： {{this.businessDetailBusinessInfo.provinceBelong+this.businessDetailBusinessInfo.cityBelong+this.businessDetailBusinessInfo.cityBelong}}</p>
                 <p class="fmini">业务身份： {{this.businessDetailBusinessInfo.channel}} </p>
-                <p class="fmini"> 优惠：{{this.concessionList[0].concessionName}}</p>
-                <div>
-                    <div style="float:left;">
-                        <span class="fmini">增值服务：</span>
+                <div v-if="this.businessDetailBusinessInfo.source!='ali'">
+                    <p class="fmini" v-if="businessDetialInfo.number400Concession"> 优惠：{{this.concessionList[0].concessionName}}</p>
+                    <div>
+                        <div style="float:left;">
+                            <span class="fmini">增值服务：</span>
+                        </div>
+                        <el-table :data="addValueList"
+                                  border
+                                  style="width: 90%">
+
+                            <el-table-column
+                                    prop="valueAddedName"
+                                    label="增值服务名称">
+                            </el-table-column>
+
+                            <el-table-column
+                                    prop="amounts"
+                                    label="数量">
+                            </el-table-column>
+
+                            <el-table-column
+                                    prop="unit"
+                                    label="资费/单位">
+                            </el-table-column>
+
+                            <el-table-column
+                                    prop="remarks"
+                                    label="备注">
+                            </el-table-column>
+
+                            <el-table-column
+                                    prop="present"
+                                    label='是否赠送'>
+                            </el-table-column>
+
+                        </el-table>
                     </div>
-                    <el-table :data="addValueList"
-                              border
-                              style="width: 90%">
-
-                        <el-table-column
-                                prop="valueAddedName"
-                                label="增值服务名称">
-                        </el-table-column>
-
-                        <el-table-column
-                                prop="amounts"
-                                label="数量">
-                        </el-table-column>
-
-                        <el-table-column
-                                prop="unit"
-                                label="资费/单位">
-                        </el-table-column>
-
-                        <el-table-column
-                                prop="remarks"
-                                label="备注">
-                        </el-table-column>
-
-                        <el-table-column
-                                prop="present"
-                                label='是否赠送'>
-                        </el-table-column>
-
-                    </el-table>
                 </div>
+
             </div>
         </section>
         <section>
@@ -215,12 +218,14 @@
                 console.log("businessDetialInfo.company",this.businessDetialInfo.company);
                 this.businessDetailBusinessInfo = this.businessDetialInfo.business;
                 this.destNumberList = this.businessDetialInfo.destNumber;
-                this.concessionList = this.businessDetialInfo.number400Concession;
-                this.addValueList = this.businessDetialInfo.number400ValueAdded;
+                if(this.businessDetailBusinessInfo.source!='ali'){
+                    this.concessionList = this.businessDetialInfo.number400Concession;
+                    this.addValueList = this.businessDetialInfo.number400ValueAdded;
+                }
                 console.log("addValueList",this.addValueList);
                 //增值资费
-                console.log("业务身份",sessionStorage.getItem('businessType'));
-                if(sessionStorage.getItem('businessType')=='self'){
+                console.log("业务身份",val.data.business.source);
+                if(val.data.business.source!='ali'){
                     this.addValueList.map((item)=>{
                         console.log("addItem",item);
                         item.amount = item.numOfMonth;

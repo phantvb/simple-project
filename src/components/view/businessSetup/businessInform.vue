@@ -212,7 +212,7 @@
 			}
 		},
 		mounted() {
-			console.log(this.$store.getters.getPermission(location.hash.replace(/#/, '')))
+			console.log(this.$store.getters.getPermission(location.hash.replace(/#/, '')));
 			this.permission = this.$store.getters.getPermission(location.hash.replace(/#/, ''));
 			this.baseData.businessType = sessionStorage.getItem("businessType");
 			this.baseData.roleName = sessionStorage.getItem("roleName");

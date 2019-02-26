@@ -302,7 +302,7 @@
                             </el-button>
                             <div v-for="(item,index) in objCodeList" :key="index">
                                 <div class="addObjCode">
-                                    <el-input v-model="item.destnumber" size="mini"></el-input>
+                                    <el-input v-model="item.destNumber" size="mini"></el-input>
                                     <el-button type="primary" icon="el-icon-minus" size="mini"
                                                @click="delObjCodes(index)"></el-button>
                                 </div>
@@ -520,7 +520,7 @@
                 disList: [],
                 objCodeList: [{     //目的码数组
                     id: "",
-                    destnumber: "",
+                    destNumber: "",
                     number400: "",
                     destnumproofpic: "",
                     destnumUsage: "",
@@ -717,7 +717,7 @@
                     obj.unitsName = item.unitsName;
                     obj.presentsName = item.presentsName;
                     // obj.numOfone = item.numOfone;
-                    if (item.units == 'perMonthOne') {
+                    if (item.units == 'perMonthOne' || item.units == 'perOne') {
                         obj.numOfone = item.numOfone;
                     }
                     newValueAdd.push(obj);
@@ -816,7 +816,7 @@
                     // console.log(res.data.valueAddedList);
                     this.objCodeTable = res.data.valueAddedList;
                     this.objCodeTable.map((item) => {
-                        // console.log(item);
+                        console.log(item);
                         item.numOfMonth = 1;
                         item.numOfone = 1;
                         if (item.units == 'perMonth') {
@@ -824,7 +824,7 @@
                             item.unitsName = (item.tariffFee / item.numOfMonth) + '元/月'
                         } else if (item.units == 'perOne') {
                             item.cost = "个";
-                            item.unitsName = (item.tariffFee / item.numOfMonth) + '元/个'
+                            item.unitsName = (item.tariffFee / item.numOfone) + '元/个'
                         } else if (item.units == 'perMonthOne') {
                             item.cost = "月";
                             item.cost2 = "个";
@@ -833,15 +833,13 @@
                         item.valueAddedName = item.tariffName;
                         item.valueAddedId = item.id;
                         item.valueAddedFee = item.tariffFee;
-                        if (item.units == 'perMonthOne') {
+                        if (item.units == 'perMonthOne' || item.units == 'perOne') {
                             item.numOfone = item.numOfone;
                         }
                         if (item.presents == '1') {
                             item.presentsName = "赠送";
-                            // this.valueAdd.push(item);
                         } else {
                             item.presentsName = "付费";
-                            // this.valueAdd.push(item);
                         }
 
                     });
@@ -874,7 +872,7 @@
                                         obj.units = item.units;
                                         obj.numOfMonth = item.numOfMonth;
                                         // obj.numOfone = item.numOfone;
-                                        if (item.units == 'perMonthOne') {
+                                        if (item.units == 'perMonthOne' || item.units == 'perOne') {
                                             obj.numOfone = item.numOfone;
                                         }
                                         newValueAdd.push(obj);
@@ -900,7 +898,7 @@
                                     obj.units = item.units;
                                     obj.numOfMonth = item.numOfMonth;
                                     // obj.numOfone = item.numOfone;
-                                    if (item.units == 'perMonthOne') {
+                                    if (item.units == 'perMonthOne' || item.units == 'perOne') {
                                         obj.numOfone = item.numOfone;
                                     }
                                     newValueAdd.push(obj);
@@ -1038,7 +1036,7 @@
                             } else {
                                 console.log("this.objCodeList", this.objCodeList);
                                 this.objCodeList.map((item) => {
-                                    if (!item.destnumber) {
+                                    if (!item.destNumber) {
                                         returnBoolean = true;
                                     }
                                 });

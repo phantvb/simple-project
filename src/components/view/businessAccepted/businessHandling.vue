@@ -47,13 +47,9 @@
           <el-button type="primary" size="mini" @click="businessAdd()">+新增受理</el-button>
         </div>
         <div class="accountSelect">
+          <span style="font-size:12px">状态:</span>
           <el-select v-model="accountStatus" placeholder="请选择" size="mini" @change="statusChange">
-            <el-option
-                    v-for="item in statusOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-            </el-option>
+            <el-option v-for="item in statusOptions" :key="item.dicKey" :label="item.dicValue" :value="item.dicKey"></el-option>
           </el-select>
           <el-button type="primary" plain size="mini">导出</el-button>
         </div>
@@ -146,39 +142,7 @@
           legalIdentityNo:'',
         },
         tableData: [],
-        statusOptions: [
-          {
-            value: 'Wait_To_Audit',
-            label: '等待送审'
-          },{
-                value: 'Business_Auditing',
-                label: '审核中'
-            },{
-            value: 'Audit_Success',
-            label: '通过审核'
-          },
-          {
-            value: 'Modify_Auditing',
-            label: '变更审核中'
-          },
-            {
-                value: 'Modify_Rejected',
-                label: '变更审核驳回'
-            },
-            {
-                value: 'Canceling_Auditing',
-                label: '注销审核'
-            },
-            {
-                value: 'Cancelled',
-                label: '已注销'
-            },
-            {
-                value: 'Terminate_Flow',
-                label: '受理终止'
-            }
-        ],
-
+        statusOptions: [],
         accountStatus:'',
         pageObj:{
               total:0,
@@ -204,6 +168,7 @@
         console.log("roleName",this.baseData.roleName);
         console.log("username",this.baseData.username);
         this.businessLists();
+        this.statusList();
         this.$root.eventHub.$on('getLoginInfo', (resp)=>{
             console.log(resp);
             this.loginResp = resp;
@@ -230,6 +195,20 @@
           .catch(_ => {
           });
       },
+        //状态列表
+        statusList(){
+            this.$ajax.post('/vos/dic/getDicsByType',{
+                "dicType":"flowType",
+                "status":this.accountStatus,
+            }).then((res)=>{
+                console.log(res.data);
+                console.log(res.data.dicList);
+                console.log(res.data.totalCount);
+                this.statusOptions = res.data.dicList;
+                this.pageObj.total = res.data.totalCount;
+                console.log(this.pageObj.total);
+            })
+        },
         //点击详情
         details(val,objData){
             console.log(val);
@@ -261,12 +240,27 @@
                 sessionStorage.setItem("businessIn",3);
                 this.getCacheData(val);
             }else if(val=='删除'){
-                this.$ajax.post('/vos/business/deleteFlow',{
-                    "companyFlow": objData
-                }).then((res)=>{
-                    console.log(res);
-                    this.businessLists();
-                })
+                this.$confirm('此操作将永久删除该业务, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.$message({
+                        type: 'success',
+                        message: '删除成功!'
+                    });
+                    this.$ajax.post('/vos/business/deleteFlow',{
+                        "companyFlow": objData
+                    }).then((res)=>{
+                        console.log(res);
+                        this.businessLists();
+                    })
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
             }
         },
         getCacheData(val){
