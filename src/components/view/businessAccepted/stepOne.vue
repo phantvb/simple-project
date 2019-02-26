@@ -1,120 +1,88 @@
 <template>
-    <div id="stepOne" @click="nameListHidden">
-        <el-form ref="acceptForm" :rules="rules" :model="acceptForm" label-width="140px">
-            <div class="acceptMsg" >
-                <p>企业基本信息</p>
-                <el-form-item label="企业名称：" class="identity" prop="companyName">
-                    <el-input v-model="acceptForm.companyName"
-                              size="mini"
-                              @input="searchFirm"
-                              placeholder=" 营业执照上公司全称，个体工商户填写字号全称，组织机构上的机构全称"></el-input>
-                    <div id="firmNameList" v-if="firmNameShow" style="margin-top:40px">
-                        <ul>
-                            <li v-for="(item,index) in firmNameList" :key="index" @click="firmNameLi(item)">
-                                {{item.companyName}}
-                            </li>
-                        </ul>
-                    </div>
-                </el-form-item>
+	<div id="stepOne" @click="nameListHidden">
+		<el-form ref="acceptForm" :rules="rules" :model="acceptForm" label-width="140px">
+			<div class="acceptMsg">
+				<p>企业基本信息</p>
+				<el-form-item label="企业名称：" class="identity" prop="companyName">
+					<el-input v-model="acceptForm.companyName" size="mini" @input="searchFirm" placeholder=" 营业执照上公司全称，个体工商户填写字号全称，组织机构上的机构全称"></el-input>
+					<div id="firmNameList" v-if="firmNameShow" style="margin-top:40px">
+						<ul>
+							<li v-for="(item,index) in firmNameList" :key="index" @click="firmNameLi(item)">
+								{{item.companyName}}
+							</li>
+						</ul>
+					</div>
+				</el-form-item>
 
-                <el-form-item label="证件编号：" class="identity" prop="companyCardNo">
-                    <el-select v-model="acceptForm.companyCardType" @change="change123" :disabled="msgDisabled" placeholder="请选择" size="mini">
-                        <el-option
-                                v-for="item in companyCardNoList"
-                                :label="item.dicValue"
-                                :value="item.dicKey"
-                                :key="item.dicKey"></el-option>
-                    </el-select>
-                    <el-input v-model="acceptForm.companyCardNo" size="mini" placeholder="根据证件类型，填写相应的证件号码"  :disabled="msgDisabled"></el-input>
-                </el-form-item>
+				<el-form-item label="证件编号：" class="identity" prop="companyCardNo">
+					<el-select v-model="acceptForm.companyCardType" @change="change123" :disabled="msgDisabled" placeholder="请选择" size="mini">
+						<el-option v-for="item in companyCardNoList" :label="item.dicValue" :value="item.dicKey" :key="item.dicKey"></el-option>
+					</el-select>
+					<el-input v-model="acceptForm.companyCardNo" size="mini" placeholder="根据证件类型，填写相应的证件号码" :disabled="msgDisabled"></el-input>
+				</el-form-item>
 
-                <div class="threeSelect">
-                    <el-form-item label="企业性质：" class="identity" prop="companyCharacter">
-                        <el-select v-model="acceptForm.companyCharacter" placeholder="请选择" size="mini" :disabled="msgDisabled">
-                            <el-option v-for="item in companyCharacterList"
-                                       :label="item.dicValue"
-                                       :value="item.dicValue"
-                                       :key="item.dicKey"></el-option>
-                        </el-select>
-                    </el-form-item>
+				<div class="threeSelect">
+					<el-form-item label="企业性质：" class="identity" prop="companyCharacter">
+						<el-select v-model="acceptForm.companyCharacter" placeholder="请选择" size="mini" :disabled="msgDisabled">
+							<el-option v-for="item in companyCharacterList" :label="item.dicValue" :value="item.dicValue" :key="item.dicKey"></el-option>
+						</el-select>
+					</el-form-item>
 
-                    <el-form-item label="企业等级：" class="identity" prop="companyRank">
-                        <el-select v-model="acceptForm.companyRank" placeholder="请选择" size="mini" :disabled="msgDisabled">
-                            <el-option :label="item.dicValue" :value="item.dicValue" v-for="item in companyRankList"
-                                       :key="item.dicKey"></el-option>
-                        </el-select>
-                    </el-form-item>
+					<el-form-item label="企业等级：" class="identity" prop="companyRank">
+						<el-select v-model="acceptForm.companyRank" placeholder="请选择" size="mini" :disabled="msgDisabled">
+							<el-option :label="item.dicValue" :value="item.dicValue" v-for="item in companyRankList" :key="item.dicKey"></el-option>
+						</el-select>
+					</el-form-item>
 
-                    <el-form-item label="行业类型：" class="identity" prop="industryType">
-                        <el-select v-model="acceptForm.industryType" @change="change123" placeholder="请选择" size="mini" :disabled="msgDisabled">
-                            <el-option :label="item.dicValue" :value="item.dicValue" v-for="item in industryTypeList"
-                                       :key="item.dicKey"></el-option>
-                        </el-select>
-                    </el-form-item>
-                </div>
+					<el-form-item label="行业类型：" class="identity" prop="industryType">
+						<el-select v-model="acceptForm.industryType" @change="change123" placeholder="请选择" size="mini" :disabled="msgDisabled">
+							<el-option :label="item.dicValue" :value="item.dicValue" v-for="item in industryTypeList" :key="item.dicKey"></el-option>
+						</el-select>
+					</el-form-item>
+				</div>
 
-                <div class="regUrl">
-                    <el-form-item label="注册地址：" class="identity" prop="registProvince">
-                        <el-select v-model="acceptForm.registProvince" placeholder="请选择" size="mini"
-                                   @change="proChange" :disabled="msgDisabled">
-                            <el-option
-                                    v-for="item in registProvinceList"
-                                    :key="item.provinceId"
-                                    :label="item.province"
-                                    :value="item.provinceId">
-                            </el-option>
-                        </el-select>
-                        <el-select v-model="acceptForm.registCity" placeholder="请选择" size="mini"  :disabled="msgDisabled" @change="cityChange">
-                            <el-option
-                                    v-for="item in registCityList"
-                                    :key="item.cityId"
-                                    :label="item.city"
-                                    :value="item.cityId">
-                            </el-option>
-                        </el-select>
-                        <el-select v-model="acceptForm.registArea" placeholder="请选择" :disabled="msgDisabled" size="mini" @change="areasChange">
-                            <el-option
-                                    v-for="item in registAreaList"
-                                    :key="item.areaId"
-                                    :label="item.area"
-                                    :value="item.areaId">
-                            </el-option>
-                        </el-select>
-                        <div class="onlyInput">
-                            <el-input v-model="acceptForm.registAddress" size="mini" :disabled="msgDisabled"
-                                      placeholder="填入企业营业执照上的详细地址"></el-input>
-                        </div>
-                    </el-form-item>
+				<div class="regUrl">
+					<el-form-item label="注册地址：" class="identity" prop="registProvince">
+						<el-select v-model="acceptForm.registProvince" placeholder="请选择" size="mini" @change="proChange" :disabled="msgDisabled">
+							<el-option v-for="item in registProvinceList" :key="item.provinceId" :label="item.province" :value="item.provinceId">
+							</el-option>
+						</el-select>
+						<el-select v-model="acceptForm.registCity" placeholder="请选择" size="mini" :disabled="msgDisabled" @change="cityChange">
+							<el-option v-for="item in registCityList" :key="item.cityId" :label="item.city" :value="item.cityId">
+							</el-option>
+						</el-select>
+						<el-select v-model="acceptForm.registArea" placeholder="请选择" :disabled="msgDisabled" size="mini" @change="areasChange">
+							<el-option v-for="item in registAreaList" :key="item.areaId" :label="item.area" :value="item.areaId">
+							</el-option>
+						</el-select>
+						<div class="onlyInput">
+							<el-input v-model="acceptForm.registAddress" size="mini" :disabled="msgDisabled" placeholder="填入企业营业执照上的详细地址"></el-input>
+						</div>
+					</el-form-item>
 
-                </div>
+				</div>
 
-                <div class="businessAddress">
-                    <el-form-item label="办公地址：" class="identity" prop="officeProvince">
-                        <el-select v-model="acceptForm.officeProvince" placeholder="请选择" size="mini"
-                                   @change="busProChange" :disabled="msgDisabled">
-                            <el-option :label="item.province" :value="item.provinceId" v-for="item in busProvinceList"
-                                       :key="item.provinceId"></el-option>
-                        </el-select>
-                        <el-select v-model="acceptForm.officeCity" placeholder="请选择" size="mini" prop="officeCity"
-                                   @change="busCityChange" :disabled="msgDisabled">
-                            <el-option :label="item.city" :value="item.cityId" v-for="item in busCityList"
-                                       :key="item.cityId"></el-option>
-                        </el-select>
-                        <el-select v-model="acceptForm.officeArea" placeholder="请选择" size="mini" prop="officeArea"
-                                   @change="busAreasChange" :disabled="msgDisabled">
-                            <el-option :label="item.area" :value="item.areaId" v-for="item in busAreaList"
-                                       :key="item.areaId"></el-option>
-                        </el-select>
-                        <div class="onlyInput" prop="officeAddress">
-                            <el-input v-model="acceptForm.officeAddress" :disabled="msgDisabled" size="mini" placeholder="填入企业办公所在地址"></el-input>
-                        </div>
-                    </el-form-item>
+				<div class="businessAddress">
+					<el-form-item label="办公地址：" class="identity" prop="officeProvince">
+						<el-select v-model="acceptForm.officeProvince" placeholder="请选择" size="mini" @change="busProChange" :disabled="msgDisabled">
+							<el-option :label="item.province" :value="item.provinceId" v-for="item in busProvinceList" :key="item.provinceId"></el-option>
+						</el-select>
+						<el-select v-model="acceptForm.officeCity" placeholder="请选择" size="mini" prop="officeCity" @change="busCityChange" :disabled="msgDisabled">
+							<el-option :label="item.city" :value="item.cityId" v-for="item in busCityList" :key="item.cityId"></el-option>
+						</el-select>
+						<el-select v-model="acceptForm.officeArea" placeholder="请选择" size="mini" prop="officeArea" @change="busAreasChange" :disabled="msgDisabled">
+							<el-option :label="item.area" :value="item.areaId" v-for="item in busAreaList" :key="item.areaId"></el-option>
+						</el-select>
+						<div class="onlyInput" prop="officeAddress">
+							<el-input v-model="acceptForm.officeAddress" :disabled="msgDisabled" size="mini" placeholder="填入企业办公所在地址"></el-input>
+						</div>
+					</el-form-item>
 
-                </div>
+				</div>
 
-                <el-form-item label="企业电话：" class="identity" prop="phone">
-                    <el-input v-model="acceptForm.phone" size="mini"  :disabled="msgDisabled" placeholder="填入企业电话"></el-input>
-                </el-form-item>
+				<el-form-item label="企业电话：" class="identity" prop="phone">
+					<el-input v-model="acceptForm.phone" size="mini" :disabled="msgDisabled" placeholder="填入企业电话"></el-input>
+				</el-form-item>
 
             </div>
             <div class="acceptMsg">
@@ -185,46 +153,46 @@
         <div class="stepBtn">
             <el-button type="primary" size="mini" @click="next('acceptForm')">下一步</el-button>
 
-        </div>
-    </div>
+		</div>
+	</div>
 </template>
 <script>
-    import {mapState} from "vuex";
-    export default {
-        name: 'stepOne',
-        components: {},
-        props: [
-            "actives"
-        ],
-        data() {
-            return {
-                needCompanySave: false,
-                acceptForm: {
-                    id:'',
-                    company:'',
-                    companyName: '',
-                    companyCardType: '',
-                    companyCardNo: '',
-                    companyCharacter: '',
-                    companyRank: '',
-                    industryType: '',
-                    registProvince: '',
-                    registCity: '',
-                    registArea: '',
-                    registAddress: '',
-                    officeProvince: '',
-                    officeCity: '',
-                    officeArea: '',
-                    officeAddress: '',
-                    phone: '',
-                    legalPerson: '',
-                    legalPhone: '',
-                    legalCard: '',
-                    cardNum: '',        //证件号
-                    idCardAddress: '',
-                    cardStartDate:'',   //证件开始时间
-                    cardEndDate:'',     //证件结束时间
-                    idIndate: [],       //证件有效期
+	import { mapState } from "vuex";
+	export default {
+		name: 'stepOne',
+		components: {},
+		props: [
+			"actives"
+		],
+		data() {
+			return {
+				needCompanySave: false,
+				acceptForm: {
+					id: '',
+					company: '',
+					companyName: '',
+					companyCardType: '',
+					companyCardNo: '',
+					companyCharacter: '',
+					companyRank: '',
+					industryType: '',
+					registProvince: '',
+					registCity: '',
+					registArea: '',
+					registAddress: '',
+					officeProvince: '',
+					officeCity: '',
+					officeArea: '',
+					officeAddress: '',
+					phone: '',
+					legalPerson: '',
+					legalPhone: '',
+					legalCard: '',
+					cardNum: '', //证件号
+					idCardAddress: '',
+					cardStartDate: '', //证件开始时间
+					cardEndDate: '', //证件结束时间
+					idIndate: [], //证件有效期
 
                     // cardStartDate:this.acceptForm.idIndate[0],  //证件有限开始时间
                     // cardEndDate:this.acceptForm.idIndate[1],    //证件有限結束时间
@@ -331,7 +299,7 @@
                     }
                 });
 
-            }
+			}
 
         },
         methods: {
@@ -565,38 +533,38 @@
             },
 
 
-            // 存vuex更新企业信息模块入参
-            ChangeCompanyStatus(val) {
-                return this.$store.dispatch("ChangeCompanyStatus", val);
-            },
-            ChangeBusinessStatus(val) {
-                return this.$store.dispatch("ChangeBusinessStatus", val);
-            },
-            ChangeDestNumber(val) {
-                return this.$store.dispatch("ChangeDestNumberStatus", val);
-            },
-            ChangeNumber400ValueAdded(val) {
-                return this.$store.dispatch("ChangeNumber400ValueAddedStatus", val);
-            },
-            ChangeNumber400Concession(val) {
-                return this.$store.dispatch("ChangeNumber400ConcessionStatus", val);
-            },
-            changeMsgDisabled(val) {
-                return this.$store.dispatch("changeMsgDisabledStatus", val);
-            },
-        },
-        computed: {
-            ...mapState({
-                company: state => state.createActivities.company,
-                business: state => state.createActivities.business,
-                destNumber: state => state.createActivities.destNumber,
-                number400ValueAdded: state => state.createActivities.number400ValueAdded,
-                number400Concession: state => state.createActivities.number400Concession,
-                msgDisabled: state => state.createActivities.msgDisabled,
-            })
-        }
-    }
+			// 存vuex更新企业信息模块入参
+			ChangeCompanyStatus(val) {
+				return this.$store.dispatch("ChangeCompanyStatus", val);
+			},
+			ChangeBusinessStatus(val) {
+				return this.$store.dispatch("ChangeBusinessStatus", val);
+			},
+			ChangeDestNumber(val) {
+				return this.$store.dispatch("ChangeDestNumberStatus", val);
+			},
+			ChangeNumber400ValueAdded(val) {
+				return this.$store.dispatch("ChangeNumber400ValueAddedStatus", val);
+			},
+			ChangeNumber400Concession(val) {
+				return this.$store.dispatch("ChangeNumber400ConcessionStatus", val);
+			},
+			changeMsgDisabled(val) {
+				return this.$store.dispatch("changeMsgDisabledStatus", val);
+			},
+		},
+		computed: {
+			...mapState({
+				company: state => state.createActivities.company,
+				business: state => state.createActivities.business,
+				destNumber: state => state.createActivities.destNumber,
+				number400ValueAdded: state => state.createActivities.number400ValueAdded,
+				number400Concession: state => state.createActivities.number400Concession,
+				msgDisabled: state => state.createActivities.msgDisabled,
+			})
+		}
+	}
 </script>
 <style lang="scss" scoped>
-    @import './400businessManage.scss';
+	@import './400businessManage.scss';
 </style>

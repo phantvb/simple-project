@@ -1220,51 +1220,51 @@
     }
 </script>
 <style>
-    .avatar-uploader .el-upload {
-        border: 1px dashed #d9d9d9;
-        border-radius: 6px;
-        cursor: pointer;
-        position: relative;
-        overflow: hidden;
-        background-color: #ecf5ff;
-    }
+	.avatar-uploader .el-upload {
+		border: 1px dashed #d9d9d9;
+		border-radius: 6px;
+		cursor: pointer;
+		position: relative;
+		overflow: hidden;
+		background-color: #ecf5ff;
+	}
 
-    .avatar-uploader .el-upload:hover {
-        border-color: #409EFF;
-    }
+	.avatar-uploader .el-upload:hover {
+		border-color: #409EFF;
+	}
 
-    .examplew .avatar-uploader-icon {
-        width: 120px;
-        height: 148px;
-        line-height: 148px;
-    }
+	.examplew .avatar-uploader-icon {
+		width: 120px;
+		height: 148px;
+		line-height: 148px;
+	}
 
-    .examplew .avatar {
-        width: 120px;
-        height: 148px;
-    }
+	.examplew .avatar {
+		width: 120px;
+		height: 148px;
+	}
 
-    .exampleh .avatar-uploader-icon {
-        width: 148px;
-        height: 120px;
-        line-height: 120px;
-    }
+	.exampleh .avatar-uploader-icon {
+		width: 148px;
+		height: 120px;
+		line-height: 120px;
+	}
 
-    .exampleh .avatar {
-        width: 148px;
-        height: 120px;
-    }
+	.exampleh .avatar {
+		width: 148px;
+		height: 120px;
+	}
 
-    .avatar-uploader-icon {
-        font-size: 28px;
-        color: #8c939d;
-        text-align: center;
-    }
+	.avatar-uploader-icon {
+		font-size: 28px;
+		color: #8c939d;
+		text-align: center;
+	}
 
-    .avatar {
-        display: block;
-    }
+	.avatar {
+		display: block;
+	}
 </style>
 <style lang="scss" scoped>
-    @import './stepTwo.scss';
+	@import './stepTwo.scss';
 </style>

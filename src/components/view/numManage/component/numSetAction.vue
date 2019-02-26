@@ -3,7 +3,7 @@
 		<div class="form_item" v-if="!isFirst">
 			<div class="form_title right">动作名称：</div>
 			<div class="form_con">
-				<el-input v-model="allData.actionName" size="mini"></el-input>
+				<el-input v-model="allData.actionName" size="small"></el-input>
 			</div>
 		</div>
 		<div class="form_item" v-if="!isFirst">
@@ -15,7 +15,7 @@
 		<div class="form_item">
 			<div class="form_title right">业务类型：</div>
 			<div class="form_con">
-				<el-select v-model="allData.businessType" placeholder="请选择" size="mini">
+				<el-select v-model="allData.businessType" placeholder="请选择" size="small">
 					<el-option v-for="item in (isFirst?options:optionscopy)" :disabled="allType?allType.indexOf(item.value)!=-1:false" :key="item.value" :label="item.label" :value="item.value"></el-option>
 				</el-select>
 			</div>
@@ -23,7 +23,7 @@
 		<div class="form_item" v-if="allData.businessType=='playback'||allData.businessType=='IVR'">
 			<div class="form_title right">语音选择：</div>
 			<div class="form_con">
-				<el-select v-model="allData[allData.businessType].voice" placeholder="请选择" size="mini" value-key="id">
+				<el-select v-model="allData[allData.businessType].voice" placeholder="请选择" size="small" value-key="id">
 					<el-option v-for="item in voiceOptions" :key="item.id" :label="item.voiceName" :value="item"></el-option>
 				</el-select>
 				<span class="grey fmini">&#12288;语音文件需要审核后才能选用</span>
@@ -32,7 +32,7 @@
 		<div class="form_item" v-if="(allData.businessType=='transfer'||allData.businessType=='playback'||allData.businessType=='IVR')&&isFirst">
 			<div class="form_title right">规则类型：</div>
 			<div class="form_con">
-				<el-select v-model="allData[allData.businessType].ruleType" placeholder="请选择" size="mini" multiple collapse-tags @change="handleRuleTypeChange(allData[allData.businessType].ruleType,allData.businessType)">
+				<el-select v-model="allData[allData.businessType].ruleType" placeholder="请选择" size="small" multiple collapse-tags @change="handleRuleTypeChange(allData[allData.businessType].ruleType,allData.businessType)">
 					<el-option v-for="item in ruleOptions" :key="item.value" :label="item.label" :value="item.value" :disabled="(allData[allData.businessType].ruleType.indexOf('ignore')!=-1&&item.value!='ignore')||(item.value=='day'&&(allData[allData.businessType].ruleType.indexOf('week')!=-1||allData[allData.businessType].ruleType.indexOf('month')!=-1))||(item.value=='week'&&(allData[allData.businessType].ruleType.indexOf('day')!=-1||allData[allData.businessType].ruleType.indexOf('month')!=-1))||(item.value=='month'&&(allData[allData.businessType].ruleType.indexOf('day')!=-1||allData[allData.businessType].ruleType.indexOf('week')!=-1))"></el-option>
 				</el-select>
 			</div>
@@ -41,21 +41,21 @@
 			<el-tabs v-model="ActiveName[allData.businessType]" type="card" size="small">
 				<el-tab-pane :label="isFirst?_value.label:'按键设置'" :name="_key" v-for="(_value,_key,_index) in allData[allData.businessType].ruleConfig" :key="_index" v-if="allData[allData.businessType].ruleType.indexOf(_key)!=-1">
 					<div style="overflow: hidden;margin-bottom:15px;" v-if="isFirst">
-						<el-checkbox-group v-if="_key=='week'" v-model="_value.specificDate" size="mini">
+						<el-checkbox-group v-if="_key=='week'" v-model="_value.specificDate" size="small">
 							<div v-for="item in dayOptions" :key="item.value" style="float:left;">
-								<el-checkbox-button size="mini" :label="item.value">{{item.label}}</el-checkbox-button>&#12288;
+								<el-checkbox-button size="small" :label="item.value">{{item.label}}</el-checkbox-button>&#12288;
 							</div>
 						</el-checkbox-group>
-						<el-checkbox-group v-else-if="_key=='month'" v-model="_value.specificDate" size="mini">
+						<el-checkbox-group v-else-if="_key=='month'" v-model="_value.specificDate" size="small">
 							<div v-for="item in monthOptions" :key="item.value" style="float:left;">
-								<el-checkbox-button size="mini" :label="item.value">{{item.label}}</el-checkbox-button>&#12288;
+								<el-checkbox-button size="small" :label="item.value">{{item.label}}</el-checkbox-button>&#12288;
 							</div>
 						</el-checkbox-group>
 						<div v-else-if="_key=='specificDate'">
 							<div v-for="(item,index) in _value.specificDate" :key="index" style="margin:15px 0;">
-								<el-date-picker v-model="_value.specificDate[index]" type="date" placeholder="选择日期" size="mini" value-format="yyyy-MM-dd"></el-date-picker>
-								<el-button v-if="index==0" type="primary" size="mini" icon="el-icon-plus" @click="specificDateTime(_value.specificDate,true,index)"></el-button>
-								<el-button v-if="index>0" type="primary" size="mini" icon="el-icon-minus" @click="specificDateTime(_value.specificDate,false,index)"></el-button>
+								<el-date-picker v-model="_value.specificDate[index]" type="date" placeholder="选择日期" size="small" value-format="yyyy-MM-dd"></el-date-picker>
+								<el-button v-if="index==0" type="primary" size="small" icon="el-icon-plus" @click="specificDateTime(_value.specificDate,true,index)"></el-button>
+								<el-button v-if="index>0" type="primary" size="small" icon="el-icon-minus" @click="specificDateTime(_value.specificDate,false,index)"></el-button>
 							</div>
 						</div>
 					</div>
@@ -64,9 +64,9 @@
 							<div class="form_title right">{{allData.businessType=='transfer'?'工作时间':'播放时间'}}：</div>
 							<div class="form_con">
 								<div v-for="(item,index) in _value.workTime" :key="index" style="margin-bottom:10px">
-									<el-time-picker value-format="HH:mm:ss" is-range v-model="_value.workTime[index]" range-separator="至" start-placeholder="开始时间" end-placeholder="结束时间" placeholder="选择时间范围" size="mini" style="margin-bottom:10px;"></el-time-picker>
-									<el-button v-if="index==0" type="primary" size="mini" icon="el-icon-plus" @click="addactTime(_value,true)"></el-button>
-									<el-button v-if="index>0" type="primary" size="mini" icon="el-icon-minus" @click="addactTime(_value,false)"></el-button>
+									<el-time-picker value-format="HH:mm:ss" is-range v-model="_value.workTime[index]" range-separator="至" start-placeholder="开始时间" end-placeholder="结束时间" placeholder="选择时间范围" size="small" style="margin-bottom:10px;"></el-time-picker>
+									<el-button v-if="index==0" type="primary" size="small" icon="el-icon-plus" @click="addactTime(_value,true)"></el-button>
+									<el-button v-if="index>0" type="primary" size="small" icon="el-icon-minus" @click="addactTime(_value,false)"></el-button>
 								</div>
 							</div>
 						</div>
@@ -78,19 +78,19 @@
 								<el-table :data="_value.codeWork" border :header-row-class-name="'lightblue'">
 									<el-table-column prop="code" label="目的码" min-width="150">
 										<template slot-scope="scope">
-											<el-select v-model="_value.codeWork[scope.$index]" placeholder="请选择" size="mini">
+											<el-select v-model="_value.codeWork[scope.$index]" placeholder="请选择" size="small">
 												<el-option v-for="item in codeOptions" :key="item.value" :value="item.label"></el-option>
 											</el-select>
 										</template>
 									</el-table-column>
 									<el-table-column label="操作" min-width="80">
 										<template slot-scope="scope">
-											<el-button size="mini" type="text" @click="codeWorkDelete(scope.$index, _value)">删除</el-button>
+											<el-button size="small" type="text" @click="codeWorkDelete(scope.$index, _value)">删除</el-button>
 										</template>
 									</el-table-column>
 								</el-table>
 								<div class="lightblue center" style="width:100%">
-									<el-button size="mini" type="text" @click="codeWorkadd(_value)">添加目的码</el-button>
+									<el-button size="small" type="text" @click="codeWorkadd(_value)">添加目的码</el-button>
 								</div>
 							</div>
 						</div>
@@ -102,19 +102,19 @@
 								<el-table :data="_value.codeUnWork" border :header-row-class-name="'lightblue'">
 									<el-table-column prop="code" label="目的码" min-width="150">
 										<template slot-scope="scope">
-											<el-select v-model="_value.codeUnWork[scope.$index]" placeholder="请选择" size="mini">
+											<el-select v-model="_value.codeUnWork[scope.$index]" placeholder="请选择" size="small">
 												<el-option v-for="item in codeOptions" :key="item.value" :value="item.label"></el-option>
 											</el-select>
 										</template>
 									</el-table-column>
 									<el-table-column label="操作" min-width="80">
 										<template slot-scope="scope">
-											<el-button size="mini" type="text" @click="codeUnWorkDelete(scope.$index, _value)">删除</el-button>
+											<el-button size="small" type="text" @click="codeUnWorkDelete(scope.$index, _value)">删除</el-button>
 										</template>
 									</el-table-column>
 								</el-table>
 								<div class="lightblue center" style="width:100%">
-									<el-button size="mini" type="text" @click="codeUnWorkadd(_value)">添加目的码</el-button>
+									<el-button size="small" type="text" @click="codeUnWorkadd(_value)">添加目的码</el-button>
 								</div>
 							</div>
 						</div>
@@ -132,7 +132,7 @@
 				<div class="form_item" v-if="isFirst">
 					<div class="form_title right">动作名称：</div>
 					<div class="form_con">
-						<el-input v-model="allData.actionName" size="mini"></el-input>
+						<el-input v-model="allData.actionName" size="small"></el-input>
 					</div>
 				</div>
 			</div>
@@ -143,7 +143,7 @@
 							<span class="custom-tree-node" slot-scope="{ node, data }">
 								<span>{{ data.keyNumber?('按键'+data.keyNumber+'：'):''}}{{data.temName?data.temName+'-':''}}{{ data.actionName?data.actionName:'未定义名称' }}</span>
 									<span>
-										<!-- <el-button type="text" size="mini">设置</el-button> -->
+										<!-- <el-button type="text" size="small">设置</el-button> -->
 									</span>
 								</span>
 						</el-tree>
@@ -156,8 +156,8 @@
 									<div style="padding: 14px;">
 										<p class="center blue">{{item.value}}</p>
 										<div class="bottom center">
-											<el-button type="text" size="mini" class="button" @click="editKey(item.value)">设置</el-button>
-											<el-button type="text" size="mini" style="float:right" class="button" @click="removeKey(item.value)">清空</el-button>
+											<el-button type="text" size="small" class="button" @click="editKey(item.value)">设置</el-button>
+											<el-button type="text" size="small" style="float:right" class="button" @click="removeKey(item.value)">清空</el-button>
 										</div>
 									</div>
 								</el-card>
@@ -170,8 +170,8 @@
 		<el-dialog title="按键规则设置" :visible.sync="dialogVisible" width="50%" :modal="false">
 			<numSetAction :voiceOptions="voiceOptions" :number400Data="number400Data" :allData="allData.children[numSetActionIndex]" :isFirst="false"></numSetAction>
 			<span slot="footer" class="dialog-footer">
-				<el-button @click="dialogVisible = false" size="mini">取 消</el-button>
-				<el-button type="primary" @click="submit(allData.children[numSetActionIndex])" size="mini">确 定</el-button>
+				<el-button @click="dialogVisible = false" size="small">取 消</el-button>
+				<el-button type="primary" @click="submit(allData.children[numSetActionIndex])" size="small">确 定</el-button>
 			</span>
 		</el-dialog>
 	</div>

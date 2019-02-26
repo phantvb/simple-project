@@ -10,7 +10,7 @@
 					</li>
 					<li class="l2">
 						<p class="fmini">引示号: {{data.numberMonthBill.guideNumber}}</p>
-						<p class="fmini">账单月份: {{data.numberMonthBill.year+'-'+data.numberMonthBill.month}}</p>
+						<p class="fmini">账单月份: {{data.numberMonthBill.monthTime.substr(0,10)}}</p>
 					</li>
 				</ul>
 			</div>
@@ -33,9 +33,9 @@
 			<div class="block">
 				<p class="fmini">充值记录:</p>
 				<el-table :data="data.timePacketList" border style="width: 100%" :header-row-class-name="'lightblue'">
-					<el-table-column prop="name" label="时长包" min-width="150"></el-table-column>
-					<el-table-column prop="num" label="数量" min-width="80"></el-table-column>
-					<el-table-column prop="money" label="金额" min-width="120"></el-table-column>
+					<el-table-column prop="timePacketName" label="时长包" min-width="150"></el-table-column>
+					<el-table-column prop="amount" label="数量" min-width="80"></el-table-column>
+					<el-table-column prop="totalFee" label="金额" min-width="120"></el-table-column>
 				</el-table>
 				<ul>
 					<li class="l2">
@@ -61,8 +61,18 @@
 			<div class="block">
 				<el-table :data="data.ValueAddedList" border style="width: 100%" :header-row-class-name="'lightblue'">
 					<el-table-column prop="valueAddedName" label="名称" min-width="150"></el-table-column>
-					<el-table-column prop="num" label="数量" min-width="80"></el-table-column>
-					<el-table-column prop="totalFee" label="金额" min-width="120"></el-table-column>
+
+					<el-table-column prop="amounts" label="数量" min-width="80">
+					</el-table-column>
+
+					<el-table-column prop="unit" label="资费/单位" min-width="80">
+					</el-table-column>
+
+					<el-table-column prop="remarks" label="备注" min-width="80">
+					</el-table-column>
+
+					<el-table-column prop="present" label='是否赠送' min-width="80">
+					</el-table-column>
 				</el-table>
 			</div>
 			<div class="total">
@@ -72,8 +82,8 @@
 				</p>
 			</div>
 			<footer class="right">
-				<el-button type="primary" size="mini" @click="dialogVisible=false">确定</el-button>
-				<el-button type="primary" size="mini" plain @click="dialogVisible=false">取消</el-button>
+				<el-button type="primary" size="small" @click="close">确定</el-button>
+				<el-button type="primary" size="small" plain @click="close">取消</el-button>
 			</footer>
 		</el-dialog>
 	</div>

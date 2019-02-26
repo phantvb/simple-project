@@ -20,7 +20,7 @@
 						<div class="form_item">
 							<div class="form_title right">振铃策略：</div>
 							<div class="form_con">
-								<el-select v-model="baseSet.ringStrategy" placeholder="请选择" size="mini">
+								<el-select v-model="baseSet.ringStrategy" placeholder="请选择" size="small">
 									<el-option v-for="item in ringStrategyOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
 								</el-select>
 							</div>
@@ -28,19 +28,19 @@
 						<div class="form_item">
 							<div class="form_title right">冷却时长：</div>
 							<div class="form_con">
-								<el-input v-model="baseSet.coolSeconds" placeholder="请输入内容" size="mini"></el-input>秒
+								<el-input v-model="baseSet.coolSeconds" placeholder="请输入内容" size="small"></el-input> 秒
 							</div>
 						</div>
 						<div class="form_item">
 							<div class="form_title right">坐席超时时间：</div>
 							<div class="form_con">
-								<el-input v-model="baseSet.sitTimeOut" placeholder="请输入内容" size="mini"></el-input>秒
+								<el-input v-model="baseSet.sitTimeOut" placeholder="请输入内容" size="small"></el-input> 秒
 							</div>
 						</div>
 						<div class="form_item">
 							<div class="form_title right">未接置忙：</div>
 							<div class="form_con">
-								<el-select v-model="baseSet.busySetting" placeholder="请选择" size="mini">
+								<el-select v-model="baseSet.busySetting" placeholder="请选择" size="small">
 									<el-option v-for="item in busySettingOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
 								</el-select>
 							</div>
@@ -48,17 +48,17 @@
 						<div class="form_item">
 							<div class="form_title right">等待超时时间：</div>
 							<div class="form_con">
-								<el-input v-model="baseSet.waitTimeOut" placeholder="请输入内容" size="mini"></el-input>秒
+								<el-input v-model="baseSet.waitTimeOut" placeholder="请输入内容" size="small"></el-input> 秒
 							</div>
 						</div>
 					</div>
 				</el-tab-pane>
 				<el-tab-pane label="业务动作" name="2">
 					<section class="left lineTop" id="addaction">
-						<el-button type="primary" size="mini" @click="addNumSetAction">
+						<el-button type="primary" size="small" @click="addNumSetAction">
 							<i class="el-icon-plus"></i> 新增业务动作
 						</el-button>
-						<el-button type="info" plain size="mini" @click="removeNumSetAction">删除</el-button>
+						<el-button type="info" plain size="small" @click="removeNumSetAction">删除</el-button>
 					</section>
 					<el-collapse v-model="activeName" accordion>
 						<div id="moveList" ref="moveList">
@@ -66,8 +66,8 @@
 								<template slot="title">
 									<el-checkbox v-model="businessAction" :label="index">{{item.temName}}</el-checkbox>
 									<!-- <div style="text-align: right;width: 100%;">
-                                        <el-button size="mini" type="text" @click.stop="moveup(item.order,$event,index)">上移</el-button>
-                                        <el-button size="mini" type="text" @click.stop="movedown(item.order)">下移</el-button>
+                                        <el-button size="small" type="text" @click.stop="moveup(item.order,$event,index)">上移</el-button>
+                                        <el-button size="small" type="text" @click.stop="movedown(item.order)">下移</el-button>
                                         &#12288;
                   </div>-->
 								</template>
@@ -78,8 +78,8 @@
 				</el-tab-pane>
 			</el-tabs>
 			<footer class="right">
-				<el-button type="primary" size="mini" plain @click="dialogVisible=false">取消</el-button>
-				<el-button type="primary" size="mini" @click="submit(numSetActionData)">确定</el-button>
+				<el-button type="primary" size="small" plain @click="close">取消</el-button>
+				<el-button type="primary" size="small" @click="submit(numSetActionData)">确定</el-button>
 			</footer>
 		</el-dialog>
 	</div>

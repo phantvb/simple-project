@@ -3,30 +3,30 @@
 		<el-tabs v-model="active">
 			<el-tab-pane label="自助直销" name="self"></el-tab-pane>
 			<el-tab-pane label="渠道" name="channel"></el-tab-pane>
-			<div class="search">
+			<div class="search" v-if="permission.indexOf(92)!=-1">
 				<ul>
 					<li>
 						<span class="demonstration">400号码：</span>
-						<el-input v-model="form.number400" placeholder="请输入内容" size="mini" style="min-width:200px;">
+						<el-input v-model="form.number400" placeholder="请输入内容" size="small" style="min-width:200px;">
 						</el-input>
 					</li>
 					<li>
 						<span class="demonstration">企业名称：</span>
-						<el-input v-model="form.companyName" placeholder="请输入内容" size="mini">
+						<el-input v-model="form.companyName" placeholder="请输入内容" size="small">
 						</el-input>
 					</li>
 				</ul>
 				<div class="block left">
 					<span class="demonstration">充值时间：</span>
-					<el-date-picker style="margin-right:15px;" v-model="form.time" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" size="mini" format="yyyy 年 MM 月 dd 日" value-format="yyyy-MM-dd 00:00:00" @change="fetchData()">
+					<el-date-picker style="margin-right:15px;" v-model="form.time" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" size="small" format="yyyy 年 MM 月 dd 日" value-format="yyyy-MM-dd 00:00:00" @change="fetchData()">
 					</el-date-picker>
-					<el-button type="primary" size="mini" style="width:80px;" @click="fetchData()">搜索</el-button>
-					<el-button type="primary" plain size="mini" style="width:80px;" @click="reset">重置</el-button>
+					<el-button type="primary" size="small" style="width:80px;" @click="fetchData()">搜索</el-button>
+					<el-button type="primary" plain size="small" style="width:80px;" @click="reset">重置</el-button>
 				</div>
 			</div>
 			<section class="right block lineTop">
-				<el-button type="primary" style="float:left" size="mini" @click="showcharge(true)"><i class="el-icon-plus"></i> 新增充值</el-button>
-				<el-button type="primary" plain size="mini">导出</el-button>
+				<el-button type="primary" style="float:left" size="small" v-if="permission.indexOf(94)!=-1" @click="showcharge(true)"><i class="el-icon-plus"></i> 新增充值</el-button>
+				<el-button type="primary" plain size="small" @click="outPut" v-if="permission.indexOf(93)!=-1">导出</el-button>
 			</section>
 			<el-table :data="tableData" style="width: 100%;margin-bottom:15px;">
 				<el-table-column type="selection" width="55">
@@ -77,7 +77,8 @@
 					size: 10,
 					total: 1
 				},
-				loading: false
+				loading: false,
+				permission: []
 			}
 		},
 		watch: {
@@ -87,6 +88,9 @@
 		},
 		mounted() {
 			this.fetchData();
+			this.$store.getters.getPermission(location.hash.replace(/#/, '')).map(item => {
+				this.permission.push(item.id);
+			});
 		},
 		methods: {
 			showcharge(bol) {
@@ -125,6 +129,9 @@
 						this.page.total = res.data.totalCount;
 					}
 				});
+			},
+			outPut() {
+				window.open('/vos/excel/number400TimePacket');
 			}
 		}
 	}

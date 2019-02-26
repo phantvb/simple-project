@@ -73,48 +73,48 @@
 					</el-table-column>
 					<el-table-column prop="haveInvoice" label="已开票金额" min-width="100">
 						<template slot-scope="scope">
-							<el-input v-if="type==0" v-model="scope.row.haveInvoice" size="mini"></el-input>
+							<el-input v-if="type==0" v-model="scope.row.haveInvoice" size="small"></el-input>
 							<span v-if="type==1">{{scope.row.haveInvoice}}</span>
 						</template>
 					</el-table-column>
 					<el-table-column prop="invoiceNo" label="发票编号" min-width="100">
 						<template slot-scope="scope">
-							<el-input v-if="type==0" v-model="scope.row.invoiceNo" size="mini"></el-input>
+							<el-input v-if="type==0" v-model="scope.row.invoiceNo" size="small"></el-input>
 							<span v-if="type==1">{{scope.row.invoiceNo}}</span>
 						</template>
 					</el-table-column>
 					<el-table-column prop="invoiceDate" label="开票日期" min-width="120">
 						<template slot-scope="scope">
-							<el-date-picker v-if="type==0" style="margin-right:15px;" v-model="scope.row.invoiceDate" type="datetime" placeholder="请选择日期" size="mini" value-format="yyyy-MM-dd HH:mm:00">
+							<el-date-picker v-if="type==0" style="margin-right:15px;" v-model="scope.row.invoiceDate" type="datetime" placeholder="请选择日期" size="small" value-format="yyyy-MM-dd HH:mm:00">
 							</el-date-picker>
 							<span v-if="type==1">{{scope.row.invoiceDate}}</span>
 						</template>
 					</el-table-column>
 					<el-table-column label="快递编号" min-width="150">
 						<template slot-scope="scope">
-							<el-select v-if="type==0" v-model="scope.row.expressName" placeholder="请选择快递类型" size="mini">
+							<el-select v-if="type==0" v-model="scope.row.expressName" placeholder="请选择快递类型" size="small">
 								<el-option v-for="item in options" :key="item.dicKey" :label="item.dicValue" :value="item.dicKey">
 								</el-option>
 							</el-select>
-							<el-input v-if="type==0" v-model="scope.row.expressNo" placeholder="请输入快递编号" size="mini">
+							<el-input v-if="type==0" v-model="scope.row.expressNo" placeholder="请输入快递编号" size="small">
 							</el-input>
 							<span v-if="type==1">{{scope.row.expressName+' '+scope.row.expressNo}}</span>
 						</template>
 					</el-table-column>
 					<el-table-column prop="senderName" label="寄件人" min-width="100">
 						<template slot-scope="scope">
-							<el-input v-if="type==0" v-model="scope.row.senderName" size="mini"></el-input>
+							<el-input v-if="type==0" v-model="scope.row.senderName" size="small"></el-input>
 							<span v-if="type==1">{{scope.row.senderName}}</span>
 						</template>
 					</el-table-column>
 				</el-table>
 				<!-- <div class="lightblue center" v-if="data.invoiceStatus!='TotalInvoiced'">
-					<el-button type="text" size="mini" @click="addRecord">新增开票信息</el-button>
+					<el-button type="text" size="small" @click="addRecord">新增开票信息</el-button>
 				</div> -->
 			</div>
 			<footer class="right">
-				<el-button type="primary" size="mini" plain>取消</el-button>
-				<el-button type="primary" size="mini" @click="submit">确定</el-button>
+				<el-button type="primary" size="small" plain>取消</el-button>
+				<el-button type="primary" size="small" @click="submit">确定</el-button>
 			</footer>
 		</el-dialog>
 	</div>

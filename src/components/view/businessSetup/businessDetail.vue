@@ -1,8 +1,8 @@
 <template>
 	<div id="businessDetail" class="managerFormTitle" v-loading="loading">
 		<div id="base">
-			<header class="left flg" @click="back">
-				<span class="return flg">企业管理</span> / 详情
+			<header class="left flg">
+				<span class="return flg" @click="back">企业管理</span> / 详情
 			</header>
 			<section>
 				<div class="title left">
@@ -71,6 +71,7 @@
 					</el-steps>
 				</div>
 				<button class="pass"><i class="el-icon-circle-check" style="color:#67C23A;font-size:16px;transform: translateY(1px);" v-if="companyFlowData.status=='Audit_Success'"></i> 审核通过</button>
+				<p class="grey">{{'下一步由'+nextRecord.assginessRoleStr+'('+nextRecord.assginee+') 操作'}}</p>
 			</div>
 			<el-input class="block" v-if="(companyFlowData.status=='Company_Auditing'||companyFlowData.status=='Canceling_Auditing'||companyFlowData.status=='Modify_Auditing')&&(baseData.roleName==companyFlowData.assigneeRole||baseData.roleName=='ROLE_admin')" type="textarea" :rows="6" placeholder="请输入审核意见" v-model="desc">
 			</el-input>
@@ -100,10 +101,17 @@
 				baseData: {},
 				record: {},
 				loading: false,
-				companyFlowData: {}
+				companyFlowData: {},
+				roledata: [],
+				nextRecord: {
+					assginessRoleStr: '',
+					assginee: ''
+				}
 			}
 		},
-		mounted() {
+		async mounted() {
+			let _this = this;
+			await this.getRole();
 			const companyCharacterOptions = [{
 				value: 'state-owned',
 				label: '国有'
@@ -172,7 +180,7 @@
 			}, {
 				value: 'Freezed',
 				label: '注销冷冻'
-			}, ];
+			}];
 			this.baseData.username = sessionStorage.getItem("username");
 			this.baseData.roleName = sessionStorage.getItem("roleName");
 			this.loading = true;
@@ -183,27 +191,31 @@
 						for (let item of companyCharacterOptions) {
 							if (item.value == res.data.company.companyCharacter) {
 								res.data.company.companyCharacterStr = item.label;
-								//return;
 							}
 						}
 						for (let item of legalCardOptions) {
 							if (item.value == res.data.company.legalCard) {
 								res.data.company.legalCardStr = item.label;
-								//return;
 							}
 						}
 						this.detail = res.data.company;
-						res.data.flowRecord.map(item => {
-							item.title = `${item.assginessRole=='ROLE_admin'?'管理员':'业务员'}(${item.operator})`;
-							var m = '';
-							for (let _item of statusOptions) {
-								if (_item.value == item.currentStatus) {
-									m = _item.label;
-									//return;
+						res.data.flowRecord.map((item, index) => {
+							if (index == (res.data.flowRecord.length - 1)) {
+								for (let val of _this.roledata) {
+									if (val.name == item.assginessRole) {
+										_this.nextRecord.assginessRoleStr = val.nameZh;
+									};
+								};
+								_this.nextRecord.assginee = item.assginee;
+							};
+							for (let val of _this.roledata) {
+								if (val.name == item.operatorRole) {
+									item.operatorRoleStr = val.nameZh;
 								}
-							}
-							item.description = `${m} ${item.operateTime}`;
-						});
+							};
+							item.title = `${item.operatorRoleStr?item.operatorRoleStr:'业务员'}(${item.operator})`;
+							item.description = `${item.opeation} ${item.operateTime}`;
+						})
 						this.record = res.data.flowRecord;
 						this.companyFlowData = res.data.companyFlow;
 					}
@@ -225,23 +237,16 @@
 							}
 						}
 						this.detail = res.data.company1;
-						res.data.company1.map(item => {
-							item.title = `${item.assginessRole=='ROLE_admin'?'管理员':'业务员'}(${item.operator})`;
-							var m = '';
-							for (let _item of statusOptions) {
-								if (_item.value == item.currentStatus) {
-									m = _item.label;
-									//return;
-								};
-							};
-							item.description = `${m} ${item.operateTime}`;
-						})
-						this.record = res.data.company1;
 					}
 				});
 			}
 		},
 		methods: {
+			getRole() {
+				return this.$ajax.get("/vos/role/getAllRole").then(res => {
+					this.roledata = res.data.data;
+				});
+			},
 			back() {
 				this.$router.push({ path: "/Layout/businessInform" });
 			},
