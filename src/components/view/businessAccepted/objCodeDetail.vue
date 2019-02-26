@@ -84,20 +84,30 @@
             <header class="left">
                 审核流程 > 目的码审核
             </header>
+            <!--<div class="block underline">-->
+                <!--<div class="step">-->
+                    <!--<el-steps direction="vertical" :active="1">-->
+                        <!--<el-step title="业务员(姚明)" description="递交 12月08日 16:59"></el-step>-->
+                        <!--<el-step title="管理员" description="审批 12月08日 16:59"></el-step>-->
+                    <!--</el-steps>-->
+                <!--</div>-->
+                <!--<button class="pass"><i class="el-icon-circle-check" style="color:#67C23A;font-size:16px;transform: translateY(1px);"></i> 审核通过</button>-->
+            <!--</div>-->
             <div class="block underline">
                 <div class="step">
                     <el-steps direction="vertical" :active="1">
-                        <el-step title="业务员(姚明)" description="递交 12月08日 16:59"></el-step>
-                        <el-step title="管理员" description="审批 12月08日 16:59"></el-step>
+                        <el-step :title="item.orole+'('+item.operator+')'" :description="item.opeation+'-'+item.arole+'('+item.assginee+')-'+item.operateTime" v-for="item in flowRecordList" :key="item.operateTime"></el-step>
+                        <el-step v-if="item.message" :title="item.orole+'('+item.operator+')'" :description="item.opeation+'-'+item.arole+'('+item.assginee+')-'+item.operateTime+'-'+item.message" v-for="item in flowRecordList" :key="item.operateTime"></el-step>
                     </el-steps>
                 </div>
-                <button class="pass"><i class="el-icon-circle-check" style="color:#67C23A;font-size:16px;transform: translateY(1px);"></i> 审核通过</button>
+                <button class="pass" v-if="passShow"><i class="el-icon-circle-check" style="color:#67C23A;font-size:16px;transform: translateY(1px);"></i> 审核通过</button>
             </div>
             <div class="block">
-                <button class="pass passback">撤回</button>
+                    <button class="pass passback" @click="getBack">返回</button>
                 <div>
-                    <button class="fleft passgo">送审</button>
-                    <button class="fright passback">删除</button>
+                    <!--<button class="fleft passgo" style="width:100%" v-if="this.$route.query.status=='Wait_To_Audit'" @click="submit()">送审</button>-->
+                    <button class="fleft passgo" v-if="this.$route.query.status=='DestNum_Auditing'" @click="destNumAuditPass()">通过审核</button>
+                    <button class="fright passback" v-if="this.$route.query.status=='DestNum_Auditing'">驳回</button>
                 </div>
             </div>
         </div>
@@ -115,6 +125,8 @@
                     roleName:'',
                     username:'',
                 },
+                flowRecordList:[],
+                passShow:false,
             };
         },
         components: {},
@@ -139,10 +151,66 @@
                         }
                         this.objCodeTable.push(objCodeTableObj);
 
+                        this.flowRecordList = res.data.flowRecord;
+                        this.flowRecordList.map((item) => {
+                            if(item.operatorRole=='ROLE_admin'){
+                                item.orole = '管理员'
+                            }else if(item.operatorRole=='ROLE_salesman'){
+                                item.oole = '业务员'
+                            }else if(item.operatorRole=='ROLE_auditor'){
+                                item.orole = '审核员'
+                            }
+
+                            if(item.assginessRole=='ROLE_admin'){
+                                item.arole = '管理员'
+                            }else if(item.assginessRole=='ROLE_salesman'){
+                                item.arole = '业务员'
+                            }else if(item.assginessRole=='ROLE_auditor'){
+                                item.arole = '审核员'
+                            }
+
+                            switch (item.currentStatus) {
+                                case 'Wait_To_Audit':
+                                    item.status = '等待送审';
+                                    break;
+                                case 'DestNum_Auditing':
+                                    item.status = '审核中';
+                                    break;
+                                case 'Audit_Success':
+                                    item.status = '审核通过';
+                                    break;
+                                case 'Terminate_Flow':
+                                    item.status = '受理终止';
+                                    break;
+                            }
+                        })
+
                     }else{
                         this.$message.warning(res.message);
                     }
                 })
+            },
+            //通过审核
+            destNumAuditPass(){
+                this.$ajax.post('/vos/destnum/auditPass',{
+                    "companyFlow":{
+                        "flowId":this.entireFlowId,
+                        "assigneeRole": this.$route.query.assigneeRole,
+                        "creator":this.$route.query.creators,
+                    },
+                    "message":this.desc   //输入框信息
+                }).then((res)=>{
+                    if(res.code == 200){
+                        this.passShow = true;
+                        console.log(res);
+                    }else{
+                        this.$message.error(res.message);
+                    }
+                })
+            },
+            // 返回
+            getBack(){
+                this.$router.push({ path: "/BusinessAccepted/400businessManage" });
             },
         },
         computed: {}

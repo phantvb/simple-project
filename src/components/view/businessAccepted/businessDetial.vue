@@ -23,7 +23,8 @@
             <div class="block underline">
                 <div class="step">
                     <el-steps direction="vertical" :active="1">
-						<el-step :title="item.assginee" :description="'递交'+item.operateTime" v-for="item in flowRecordList" :key="item.operateTime"></el-step>
+						<el-step :title="item.orole+'('+item.operator+')'" :description="item.opeation+'-'+item.arole+'('+item.assginee+')-'+item.operateTime" v-for="item in flowRecordList" :key="item.operateTime"></el-step>
+						<el-step v-if="item.message" :title="item.orole+'('+item.operator+')'" :description="item.opeation+'-'+item.arole+'('+item.assginee+')-'+item.operateTime+'-'+item.message" v-for="item in flowRecordList" :key="item.operateTime"></el-step>
 					</el-steps>
                 </div>
                 <button class="pass" v-if="passShow"><i class="el-icon-circle-check" style="color:#67C23A;font-size:16px;transform: translateY(1px);"></i> 审核通过</button>
@@ -38,13 +39,11 @@
 
             </el-input>
             <div class="block">
-                <router-link :to="{path:'/businessAccepted/400businessManage'}">
-                    <button class="pass passback">返回</button>
-                </router-link>
+                    <button class="pass passback" @click="getBack">返回</button>
                 <div>
                     <!--<button class="fleft passgo" style="width:100%" v-if="this.$route.query.status=='Wait_To_Audit'" @click="submit()">送审</button>-->
                     <button class="fleft passgo" v-if="this.$route.query.status=='Business_Auditing'" @click="businessAuditPass()">通过审核</button>
-                    <button class="fright passback" v-if="this.$route.query.status=='Business_Auditing'">驳回</button>
+                    <button class="fright passback" v-if="this.$route.query.status=='Business_Auditing'" @click="businessAuditReject()">驳回</button>
                 </div>
             </div>
         </div>
@@ -162,11 +161,65 @@
                     }
                 })
             },
+            // 驳回
+            businessAuditReject(){
+                var obj = {};
+            },
+            // 返回
+            getBack(){
+                this.$router.push({ path: "/BusinessAccepted/400businessManage" });
+            },
             // 详情
             getCacheData(data){
                 console.log("data",data);
                 this.$ajax.get('/vos/business/getCacheData?flowId='+data).then((res)=>{
                     console.log(res);
+                    console.log(res.data.flowRecord);
+                    this.flowRecordList = res.data.flowRecord;
+                    this.flowRecordList.map((item)=>{
+                        if(item.operatorRole=='ROLE_admin'){
+                            item.orole = '管理员'
+                        }else if(item.operatorRole=='ROLE_salesman'){
+                            item.oole = '业务员'
+                        }else if(item.operatorRole=='ROLE_auditor'){
+                            item.orole = '审核员'
+                        }
+
+                        if(item.assginessRole=='ROLE_admin'){
+                            item.arole = '管理员'
+                        }else if(item.assginessRole=='ROLE_salesman'){
+                            item.arole = '业务员'
+                        }else if(item.assginessRole=='ROLE_auditor'){
+                            item.arole = '审核员'
+                        }
+
+                        switch(item.currentStatus){
+                            case 'Wait_To_Audit':
+                                item.status='等待送审';
+                                break;
+                            case 'Business_Auditing':
+                                item.status='审核中';
+                                break;
+                            case 'Audit_Success':
+                                item.status='审核通过';
+                                break;
+                            case 'Modify_Auditing':
+                                item.status='变更审核中';
+                                break;
+                            case 'Modify_Rejected':
+                                item.status='变更审核驳回';
+                                break;
+                            case 'Cancelled':
+                                item.status='已注销';
+                                break;
+                            case 'Canceling_Auditing':
+                                item.status='注销审核';
+                                break;
+                            case 'Terminate_Flow':
+                                item.status='受理终止';
+                                break;
+                        }
+                    });
                     this.companyInfo = res;
                     console.log(this.companyInfo);
                 })

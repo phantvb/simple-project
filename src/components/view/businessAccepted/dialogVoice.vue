@@ -481,6 +481,9 @@
             changeMsgDisabled(val) {
                 return this.$store.dispatch("changeMsgDisabledStatus", val);
             },
+			delete(){
+
+			},
             // getCacheData(val){
             //     console.log(val);
             //     this.$ajax.get('/vos/destnum/getCacheData?flowId='+this.voiceFlowId).then((res)=>{

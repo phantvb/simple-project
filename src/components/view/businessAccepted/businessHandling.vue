@@ -108,6 +108,7 @@
 
   import DialogBusiness from './dialogBusiness';
   import {mapState} from "vuex";
+  import {formatDate} from '../../../utils/screen';
   export default {
     name: 'businessHandling',
       components: {
@@ -261,15 +262,6 @@
                 this.getCacheData(val);
             }else if(val=='删除'){
                 this.$ajax.post('/vos/business/deleteFlow',{
-                    // "companyFlow": {
-                    //     "creator": "admin",
-                    //     "businessId": 188,
-                    //     "updateTime": "2019-01-24 14:50:36",
-                    //     "type": "Business",
-                    //     "companyId": 66,
-                    //     "id": 22,
-                    //     "flowId": this.entireFlowId
-                    // }
                     "companyFlow": objData
                 }).then((res)=>{
                     console.log(res);
@@ -284,7 +276,7 @@
                     this.ChangeCompanyStatus(res.data.company);
                     console.log(this.company);
                     this.ChangeBusinessStatus(res.data.business);
-                    // this.ChangeDestNumber(res.data.destNumber);
+                    this.ChangeDestNumber(res.data.destNumber);
                     this.ChangeNumber400ValueAdded(res.data.number400ValueAdded);
                     this.ChangeNumber400Concession(res.data.number400Concession);
                     if(val=='送审'){
@@ -319,8 +311,10 @@
             // console.log(this.form.time[1]);
             let dateStart = new Date(this.form.time[0]);
             let dateEnd = new Date(this.form.time[1]);
-            let dateStart_value=dateStart.getFullYear() + '-' + (dateStart.getMonth() + 1) + '-' + dateStart.getDate()+dateStart.getHours()+':'+dateStart.getMinutes()+':'+dateStart.getSeconds();
-            let dateEnd_value=dateEnd.getFullYear() + '-' + (dateEnd.getMonth() + 1) + '-' + dateEnd.getDate()+dateStart.getHours()+':'+dateStart.getMinutes()+':'+dateStart.getSeconds();
+            // let dateStart_value=dateStart.getFullYear() + '-' + (dateStart.getMonth() + 1) + '-' + dateStart.getDate()+dateStart.getHours()+':'+dateStart.getMinutes()+':'+dateStart.getSeconds();
+            // let dateEnd_value=dateEnd.getFullYear() + '-' + (dateEnd.getMonth() + 1) + '-' + dateEnd.getDate()+dateStart.getHours()+':'+dateStart.getMinutes()+':'+dateStart.getSeconds();
+            let dateStart_value = formatDate(dateStart,"yyyy-MM-dd hh:mm:ss");
+            let dateEnd_value = formatDate(dateEnd,"yyyy-MM-dd hh:mm:ss");
             // console.log(dateStart_value);
             // console.log(dateEnd_value);
             this.$ajax.post('/vos/business/getBusinessFlowList',{
@@ -329,6 +323,7 @@
                 "dateEnd":this.form.time[1]==undefined?'':dateEnd_value,
                 "companyName":this.form.firmName,
                 "status":this.accountStatus,
+                "source":'',
                 "number400":this.form.phoneNum,
                 "page":{
                     "pageNo":this.pageObj.page,

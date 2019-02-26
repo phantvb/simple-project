@@ -36,9 +36,22 @@
 						</div>
 					</el-form-item>
 
+					<el-form-item label="业务来源：">
+						<el-select v-model="form.source" placeholder="请选择" size="mini">
+							<el-option
+									v-for="item in sourceList"
+									:key="item.value"
+									:label="item.label"
+									:value="item.value">
+							</el-option>
+						</el-select>
+					</el-form-item>
+
+
+
 					<el-form-item class="searchBtn">
-						<el-button type="primary" size="mini" @click="search()">搜索</el-button>
-						<el-button @click="resetForm('form')" size="mini">重置</el-button>
+						<el-button type="primary" size="mini" @click="entireLists()">搜索</el-button>
+						<el-button @click="resetForm()" size="mini">重置</el-button>
 					</el-form-item>
 				</div>
 			</el-form>
@@ -63,13 +76,16 @@
 			</div>
 
 			<el-table :data="tableData" style="width: 100%">
-				<el-table-column prop="type" label="类型">
+				<el-table-column prop="type" label="类型" width="100">
 				</el-table-column>
 
 				<el-table-column prop="business.companyName" label="企业名称" width="300">
 				</el-table-column>
 
 				<el-table-column prop="business.number400" label="400电话">
+				</el-table-column>
+
+				<el-table-column prop="sourceCn" label="业务来源" width="100">
 				</el-table-column>
 
 				<el-table-column prop="createTime" label="日期">
@@ -96,6 +112,7 @@
     import DialogObjCode from './dialogObjCode';
     import DialogVoice from './dialogVoice';
     import { mapState } from "vuex";
+    import {formatDate} from '../../../utils/screen';
     export default {
         name: 'entire',
         data() {
@@ -109,7 +126,18 @@
                     firmName: '',
                     phoneNum: '',
                     time: '',
+                    source:'',
                 },
+                sourceList:[
+					{
+                        value:'self',
+                        label:'自营',
+					},
+                    {
+                        value:'ali',
+                        label:'阿里',
+                    }
+				],
                 entrance: 1, //新增，详情入口区分
                 tableData: [],
                 statusOptions: [{
@@ -201,8 +229,11 @@
                 console.log(this.form.time[1]);
                 let dateStart = new Date(this.form.time[0]);
                 let dateEnd = new Date(this.form.time[1]);
-                let dateStart_value = dateStart.getFullYear() + '-' + (dateStart.getMonth() + 1) + '-' + dateStart.getDate()+dateStart.getHours()+':'+dateStart.getMinutes()+':'+dateStart.getSeconds();
-                let dateEnd_value = dateEnd.getFullYear() + '-' + (dateEnd.getMonth() + 1) + '-' + dateEnd.getDate()+dateStart.getHours()+':'+dateStart.getMinutes()+':'+dateStart.getSeconds();
+                console.log(formatDate(dateStart,"yyyy-MM-dd hh:mm:ss"));
+                // let dateStart_value = dateStart.getFullYear() + '-' + (dateStart.getMonth() + 1) + '-' + dateStart.getDate()+dateStart.getHours()+':'+dateStart.getMinutes()+':'+dateStart.getSeconds();
+                let dateStart_value = formatDate(dateStart,"yyyy-MM-dd hh:mm:ss");
+                // let dateEnd_value = dateEnd.getFullYear() + '-' + (dateEnd.getMonth() + 1) + '-' + dateEnd.getDate()+dateStart.getHours()+':'+dateStart.getMinutes()+':'+dateStart.getSeconds();
+                let dateEnd_value = formatDate(dateEnd,"yyyy-MM-dd hh:mm:ss");
                 console.log(dateStart_value);
                 console.log(dateEnd_value);
                 this.$ajax.post('/vos/business/getBusinessFlowList', {
@@ -212,6 +243,7 @@
                     "companyName": this.form.firmName,
                     "status": this.accountStatus,
                     "number400": this.form.phoneNum,
+                    "source":this.form.source,
                     "page": {
                         "pageNo": this.pageObj.page,
                         "pageSize": this.pageObj.pageSize,
@@ -222,7 +254,7 @@
                     this.tableData = res.data.businessFlows;
                     this.pageObj.total = res.data.totalCount;
                     this.tableData.map((item) => {
-
+                        console.log("item",item);
                         //判断操作
                         if(item.status=='Wait_To_Audit'){
                             item.busStatus='等待送审';
@@ -296,6 +328,13 @@
                         }else if(item.type=='Destnum'){
                             item.type='目的码'
                         }
+
+                        //业务来源
+                        if(item.business.source && item.business.source == "self"){
+                            item.sourceCn = "自营"
+                        }else{
+                            item.sourceCn = "阿里"
+						}
                     })
                 })
             },
@@ -384,15 +423,6 @@
             //“全部”表格详情
             getCacheData(val){
                 console.log(val);
-                // var url;
-                // if(this.entireType=='业务'){
-                //     url = '/vos/business/getCacheData?flowId=';
-                // }else if(this.entireType=='目的码'){
-                //     url = '/vos/destnum/getCacheData?flowId=';
-                // }else if(this.entireType=='语音'){
-                //     url = '/vos/voice/getCacheData?flowId=';
-                // }
-                // console.log(url);
                 console.log("entireType",this.entireType);
                 if(val=='送审'){
                     if(this.entireType=='业务'){
@@ -566,10 +596,10 @@
                 if (data.status == 'Business_Auditing' && data.type == '业务') {
                     //业务受理驳回
                     url = '/vos/business/businessAuditReject';
-                } else if (data.status == 'Modify_Auditing' && data.type == '目的码') {
+                } else if (data.status == 'DestNum_Auditing' && data.type == '目的码') {
                     //目的码驳回
                     url = '/vos/destnum/auditReject';
-                } else if (data.status == 'Canceling_Auditing' && data.type == '语音') {
+                } else if (data.status == 'Voice_Auditing' && data.type == '语音') {
                     //语音驳回
                     url = '/vos/voice/auditReject';
                 }else if (data.status == 'Modify_Auditing') {
@@ -623,9 +653,12 @@
                     }
                 });
             },
-            search(){
+            resetForm(){
+                this.form.firmName='';
+                this.form.phoneNum='';
+				this.form.time='';
                 this.entireLists();
-            },
+			},
             cancelCompany(data) {
                 var obj = {};
                 var url;

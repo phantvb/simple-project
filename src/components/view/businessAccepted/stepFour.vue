@@ -301,70 +301,53 @@
             //业务送审
             addBusinessSend() {
                 // 必填校验
-                if(this.stepFourForm.unionAgreementPic=='' || this.stepFourForm.businessHandlePic=='' || this.stepFourForm.authorizationPic=='' || this.stepFourForm.safeAgreementPic=='' || this.stepFourForm.destNumProfPic=='' || this.stepFourForm.otherPic==''){
+                if(this.stepFourForm.unionAgreementPic=='' ||
+                    this.stepFourForm.businessHandlePic=='' ||
+                    this.stepFourForm.authorizationPic=='' ||
+                    this.stepFourForm.safeAgreementPic=='' ||
+                    this.stepFourForm.destNumProfPic=='' ||
+                    this.stepFourForm.otherPic==''){
                     this.$message.warning("请完善图片信息");
                 }else{
+                    console.log('没验证');
+                    this.dialogVisible = false;
+                    console.log("business:", this.business);
+                    this.businessObj = Object.assign(this.business, this.stepFourForm);
+                    this.ChangeBusinessStatus(this.businessObj);
+                    // 打印business入参对象
+                    console.log("businessObj:", this.businessObj);
+                    //打印compang入参对像
+                    console.log("company", this.company);
+                    console.log("destNumber", this.destNumber);
+                    console.log("number400ValueAdded", this.number400ValueAdded);
+                    console.log("number400Concession", this.number400Concession);
+                    console.log("businessIn", this.businessIn);
+                    var url;
+                    if(this.businessIn==1 || this.businessIn==2){
+                        url = '/vos/business/sendToBusinessAudit';
+                    }else if(this.businessIn==3){
+                        url = '/vos/business/sendToModifyAudit';
+                    }
+                    this.$ajax.post(url, {
+                        "company": this.company,
+                        "business": this.businessObj,
+                        "destNumber": this.destNumber,
+                        "number400ValueAdded": this.number400ValueAdded,
+                        "number400Concession": this.number400Concession,
+                        "companyFlow": url='/vos/business/sendToModifyAudit'?this.storageConpanyFlow: {"flowId": this.flowId}
+                    }).then((res) => {
+                        console.log(res);
+                        this.$message.success(res.data);
+                        this.$root.eventHub.$emit('addAcceptSave', null);
+                    });
+                }
 
-                }
-                this.dialogVisible = false;
-                console.log("business:", this.business);
-                this.businessObj = Object.assign(this.business, this.stepFourForm);
-                this.ChangeBusinessStatus(this.businessObj);
-                // 打印business入参对象
-                console.log("businessObj:", this.businessObj);
-                //打印compang入参对像
-                console.log("company", this.company);
-                console.log("destNumber", this.destNumber);
-                console.log("number400ValueAdded", this.number400ValueAdded);
-                console.log("number400Concession", this.number400Concession);
-                console.log("businessIn", this.businessIn);
-                var url;
-                if(this.businessIn==1 || this.businessIn==2){
-                    url = '/vos/business/sendToBusinessAudit';
-                }else if(this.businessIn==3){
-                    url = '/vos/business/sendToModifyAudit';
-                }
-                this.$ajax.post(url, {
-                    "company": this.company,
-                    "business": this.businessObj,
-                    "destNumber": this.destNumber,
-                    "number400ValueAdded": this.number400ValueAdded,
-                    "number400Concession": this.number400Concession,
-                    "companyFlow": url='/vos/business/sendToModifyAudit'?this.storageConpanyFlow: {"flowId": this.flowId}
-                }).then((res) => {
-                    console.log(res);
-                    this.$message.success(res.data);
-                    this.$root.eventHub.$emit('addAcceptSave', null);
-                });
             },
             // 下载pdf
             uploadPdf(){
-                // this.dialogVisible = false;
-                // console.log("business:", this.business);
-                this.businessObj = Object.assign(this.business, this.stepFourForm);
-                this.ChangeBusinessStatus(this.businessObj);
-                // 打印business入参对象
-                // console.log("businessObj:", this.businessObj);
-                //打印compang入参对像
-                // console.log("company", this.company);
-                // console.log("destNumber", this.destNumber);
-                // console.log("number400ValueAdded", this.number400ValueAdded);
-                // console.log("number400Concession", this.number400Concession);
-                // console.log("businessIn", this.businessIn);
-                this.$ajax.post('/vos/PdfOption/createAndDownloadPDF', {
-                    "company": this.company,
-                    "business": this.businessObj,
-                    "destNumber": this.destNumber,
-                    "number400ValueAdded": this.number400ValueAdded,
-                    "number400Concession": this.number400Concession,
-                    "companyFlow": {
-                        "flowId": this.flowId
-                    }
-                }).then((res) => {
-                    console.log(res);
-                    this.$message.success(res.data);
-                    // this.$root.eventHub.$emit('addAcceptSave', null);
-                });
+                const url = '/vos/PdfOption/createAndDownloadPDF/'+this.flowId;
+                // const url = 'http://192.168.0.167:5480/vos/PdfOption/createAndDownloadPDF/'+this.flowId;
+                window.open(url, '_blank');
             },
             // 存vuex更新企业信息模块入参
             ChangeBusinessStatus(val) {

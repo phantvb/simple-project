@@ -15,7 +15,9 @@
         </div>
         <!--号码详情-->
         <div class="numberDetail">
-            <div class="unit" v-for="(item,index) in numberList" :key="index" @click="getAllByPackages(item)">{{item.number400}}</div>
+            <div class="unit" :class="{numBg:item.selectUnit}" v-for="(item,index) in numberList" :key="index"
+                 @click="getAllByPackages(item);lightColor(item)">{{item.number400}}
+            </div>
         </div>
         <!--分页-->
         <el-pagination
@@ -32,7 +34,7 @@
 <script>
     export default {
         name: 'setMeal',
-        props:[
+        props: [
             "unitMeal",
             "unitIndex",
             "getAllByPackages"
@@ -40,56 +42,70 @@
         data() {
             return {
                 currentPage: 1,   //分页
-                mealListInfo:[],  //套餐数组
-                numberList:[],    //套餐对应的400号码
-                mealIndex:'',     //套餐下标
-                pageObj:{
-                    total:0,
-                    page:1,
-                    pageSize:10
-                }
+                mealListInfo: [],  //套餐数组
+                numberList: [],    //套餐对应的400号码
+                mealIndex: '',     //套餐下标
+                pageObj: {
+                    total: 0,
+                    page: 1,
+                    pageSize: 10
+                },
             };
         },
-        created(){
-            console.log("unitMeal",this.unitMeal);
-            console.log("unitIndex",this.unitIndex);
+        created() {
+            console.log("unitMeal", this.unitMeal);
+            console.log("unitIndex", this.unitIndex);
 
             this.getAllByPackage2();
             this.mealListInfo = this.unitMeal;
             this.mealIndex = this.unitIndex;
-            this.$root.eventHub.$on('getLoginInfo', (resp)=>{
+            this.$root.eventHub.$on('getLoginInfo', (resp) => {
                 // this.getTariff(resp);
-            } )
+            })
         },
         components: {},
         methods: {
             handleSizeChange(val) {
                 this.pageObj.pageSize = val;
+                this.getAllByPackage2();
                 console.log(`每页 ${val} 条`);
             },
             handleCurrentChange(val) {
                 this.pageObj.page = val;
+                this.getAllByPackage2();
                 console.log(`当前页: ${val}`);
             },
             // 以套餐分类400号码
-            getAllByPackage2(dataIndex){
-                console.log("dataIndex",dataIndex);
-                this.$ajax.post('/vos/number400/searchByPackage',{
-                    "num400Package":{
-                        "number400":"",
-                        "packgeId":dataIndex?dataIndex:'',
+            getAllByPackage2(dataIndex) {
+                console.log("dataIndex", dataIndex);
+                this.$ajax.post('/vos/number400/searchByPackage', {
+                    "num400Package": {
+                        "number400": "",
+                        "packgeId": dataIndex ? dataIndex : '',
                     },
-                    "page":{
-                        "pageNo":this.pageObj.page,
-                        "pageSize":this.pageObj.pageSize
+                    "page": {
+                        "pageNo": this.pageObj.page,
+                        "pageSize": this.pageObj.pageSize
                     }
 
-                }).then((res)=>{
+                }).then((res) => {
                     console.log(res.data);
                     // console.log(res.data.number400s);
                     this.numberList = res.data.number400s;
                     this.pageObj.total = res.data.totalCount;
                 })
+            },
+            lightColor(data) {
+                console.log("id", data.id);
+                console.log("this.numberList", this.numberList);
+                let newList=this.numberList.map((item) => {
+                    item.selectUnit = false;
+                    if (item.id == data.id) {
+                        item.selectUnit = true;
+                    }
+                    return item;
+                });
+                this.numberList=newList;
             }
         },
         computed: {}

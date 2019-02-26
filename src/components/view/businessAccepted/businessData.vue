@@ -89,7 +89,7 @@
                 <!--</div>-->
                 <p class="fmini">归属地区： {{this.businessDetailBusinessInfo.provinceBelong+this.businessDetailBusinessInfo.cityBelong+this.businessDetailBusinessInfo.cityBelong}}</p>
                 <p class="fmini">业务身份： {{this.businessDetailBusinessInfo.channel}} </p>
-                <p class="fmini"> 优惠：{{this.businessDetailBusinessInfo.discounts}}</p>
+                <p class="fmini"> 优惠：{{this.concessionList[0].concessionName}}</p>
                 <div>
                     <div style="float:left;">
                         <span class="fmini">增值服务：</span>
@@ -215,31 +215,34 @@
                 console.log("businessDetialInfo.company",this.businessDetialInfo.company);
                 this.businessDetailBusinessInfo = this.businessDetialInfo.business;
                 this.destNumberList = this.businessDetialInfo.destNumber;
+                this.concessionList = this.businessDetialInfo.number400Concession;
                 this.addValueList = this.businessDetialInfo.number400ValueAdded;
                 console.log("addValueList",this.addValueList);
                 //增值资费
-                this.addValueList.map((item)=>{
-                    console.log("addItem",item);
-                    item.amount = item.numOfMonth;
-                    item.numOfone = item.numOfone;
-                    if(item.units=="perMonth"){
-                        item.unit=item.valueAddedFee+"元/月";
-                        item.amounts = item.amount +"月";
-                    }else if(item.units=="perOne"){
-                        item.unit="元/个";
-                        item.amounts = item.numOfone +"个";
-                    }else if(item.units=="perMonthOne"){
-                        item.unit=item.numOfone+"元/月/个";
-                        item.amounts = item.amount+"月" + item.numOfone +"个";
-                    }
+                console.log("业务身份",sessionStorage.getItem('businessType'));
+                if(sessionStorage.getItem('businessType')=='self'){
+                    this.addValueList.map((item)=>{
+                        console.log("addItem",item);
+                        item.amount = item.numOfMonth;
+                        item.numOfone = item.numOfone;
+                        if(item.units=="perMonth"){
+                            item.unit=item.valueAddedFee+"元/月";
+                            item.amounts = item.amount +"月";
+                        }else if(item.units=="perOne"){
+                            item.unit="元/个";
+                            item.amounts = item.numOfone +"个";
+                        }else if(item.units=="perMonthOne"){
+                            item.unit=item.numOfone+"元/月/个";
+                            item.amounts = item.amount+"月" + item.numOfone +"个";
+                        }
 
-                    if(item.presents==1){
-                        item.present="赠送"
-                    }else{
-                        item.present="付费"
-                    }
-                });
-
+                        if(item.presents==1){
+                            item.present="赠送"
+                        }else{
+                            item.present="付费"
+                        }
+                    });
+                }
                 //400号码表格
                 let num400Obj = {};
                 num400Obj.number400 = this.businessDetailBusinessInfo.number400;
@@ -257,6 +260,7 @@
                 objCodeTable: [],
                 addValueList:[],
                 destNumberList:[],
+                concessionList:[],
                 businessDetailBusinessInfo:{},
             };
         },

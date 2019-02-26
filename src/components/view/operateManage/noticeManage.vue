@@ -168,7 +168,7 @@
 							publishMan: this.form.person
 						},
 						page: {
-							pageNo: "1",
+							pageNo: this.page.currentPage,
 							pageSize: this.page.size
 						},
 						beforeTime: this.form.date[0],
