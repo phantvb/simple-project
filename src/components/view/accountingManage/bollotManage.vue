@@ -3,7 +3,7 @@
 		<el-tabs v-model="form.channel">
 			<el-tab-pane label="自助直销" name="self"></el-tab-pane>
 			<el-tab-pane label="渠道" name="channel"></el-tab-pane>
-			<div class="search">
+			<div class="search" v-if="permission.indexOf(85)!=-1">
 				<ul>
 					<li>
 						<span class="demonstration">400号码：</span>
@@ -32,8 +32,8 @@
 				</div>
 			</div>
 			<section class="right block lineTop">
-				<el-button type="primary" plain size="small">导出列表</el-button>
-				<el-button type="primary" plain size="small">导出详单</el-button>
+				<el-button type="primary" plain size="small" @click="outPut(true)" v-if="permission.indexOf(86)!=-1">导出列表</el-button>
+				<el-button type="primary" plain size="small" @click="outPut(false)" v-if="permission.indexOf(87)!=-1">导出详单</el-button>
 			</section>
 			<el-table :data="tableData" style="width: 100%;margin-bottom:15px;">
 				<el-table-column type="selection" width="30">
@@ -69,8 +69,8 @@
 				</el-table-column>
 				<el-table-column prop="name" label="操作" min-width="200">
 					<template slot-scope="scope">
-						<el-button size="small" type="text" v-if="scope.row.invoiceStatus!='TotalInvoiced'" @click="addbollot(true,scope.row,0)">添加开票</el-button>
-						<el-button size="small" type="text" v-if="scope.row.invoiceStatus=='TotalInvoiced'" @click="addbollot(true,scope.row,0)">修改</el-button>
+						<el-button size="small" type="text" v-if="scope.row.invoiceStatus!='TotalInvoiced'&&permission.indexOf(88)!=-1" @click="addbollot(true,scope.row,0)">添加开票</el-button>
+						<el-button size="small" type="text" v-if="scope.row.invoiceStatus=='TotalInvoiced'&&permission.indexOf(89)!=-1" @click="addbollot(true,scope.row,0)">修改</el-button>
 						<el-button size="small" type="text" @click="addbollot(true,scope.row,1)">详情</el-button>
 					</template>
 				</el-table-column>
@@ -137,10 +137,14 @@
 					total: 1
 				},
 				bollotType: 0,
+				permission: []
 			}
 		},
 		mounted() {
 			this.fetchData();
+			this.$store.getters.getPermission(location.hash.replace(/#/, '')).map(item => {
+				this.permission.push(item.id);
+			});
 		},
 		methods: {
 			reset() {
@@ -187,7 +191,13 @@
 						this.page.total = res.data.totalCount;
 					}
 				});
-
+			},
+			outPut(bol) {
+				if (bol) {
+					window.open('/vos/excel/accountsTotal');
+				} else {
+					window.open('/vos/excel/accountsTotalDetail');
+				};
 			}
 		}
 	}

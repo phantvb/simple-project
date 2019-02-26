@@ -1,6 +1,6 @@
 <template>
 	<div id="ObjCodeManage" class="managerFormTitle" v-loading="loading">
-		<div class="search">
+		<div class="search" v-if="permission.indexOf(75)!=-1">
 			<ul>
 				<li>
 					<span class="demonstration">企业名称：</span>
@@ -35,7 +35,7 @@
 					<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
 					</el-option>
 				</el-select>
-				<el-button type="primary" plain size="small">导出</el-button>
+				<el-button type="primary" plain size="small" @click="outPut" v-if="permission.indexOf(76)!=-1">导出</el-button>
 			</div>
 		</section>
 		<el-table :data="tableData" style="width: 100%;margin-bottom:15px;">
@@ -66,8 +66,8 @@
 			</el-table-column>
 			<el-table-column label="操作" min-width="200">
 				<template slot-scope="scope">
-					<el-button size="small" type="text" @click="showcodeEdit(true,scope.row)">修改</el-button>
-					<!-- <el-button size="small" type="text">删除</el-button> -->
+					<el-button size="small" type="text" v-if="permission.indexOf(77)!=-1" @click="showcodeEdit(true,scope.row)">修改</el-button>
+					<!-- <el-button size="small" type="text" v-if="permission.indexOf(78)!=-1">删除</el-button> -->
 				</template>
 			</el-table-column>
 		</el-table>
@@ -126,15 +126,20 @@
 					size: 10,
 					total: 1
 				},
-				loading: false
+				loading: false,
+				permission: []
 			}
 		},
 		mounted() {
 			this.fetchData();
+			this.$store.getters.getPermission(location.hash.replace(/#/, '')).map(item => {
+				this.permission.push(item.id);
+			});
 		},
 		methods: {
 			reset() {
 				this.$clear(this.form);
+				this.form.type = 'Destnum';
 				this.fetchData();
 			},
 			fetchData(pageNum) {
@@ -156,6 +161,9 @@
 						this.page.total = res.data.totalCount;
 					}
 				});
+			},
+			outPut() {
+				window.open('/vos/excel/destnum');
 			},
 			showcodeEdit(bol, data, isRefresh) {
 				this.vData = data || {

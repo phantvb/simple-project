@@ -142,7 +142,7 @@
 					registArea: '',
 					registProvinceId: '',
 					registCityId: '',
-					registAreaId: '',
+					registaAreaId: '',
 					registAddress: '',
 					officeCity: '',
 					officeProvince: '',
@@ -287,7 +287,7 @@
 				data = Object.assign(data, this.form);
 				data.registProvinceId = this.form.registProvinceId = this.checkValue(data.registProvince, this.ProvinceOptions, this.form.registProvinceId);
 				data.registCityId = this.form.registCityId = this.checkValue(data.registCity, this.registCityOptions, this.form.registCityId);
-				data.registAreaId = this.form.registAreaId = this.checkValue(data.registArea, this.registAreaOptions, this.form.registAreaId);
+				data.registaAreaId = this.form.registaAreaId = this.checkValue(data.registArea, this.registAreaOptions, this.form.registaAreaId);
 				data.officeProvinceId = this.form.officeProvinceId = this.checkValue(data.officeProvince, this.ProvinceOptions, this.form.officeProvinceId);
 				data.officeCityId = this.form.officeCityId = this.checkValue(data.officeCity, this.officeCityOptions, this.form.officeCityId);
 				data.officeAreaId = this.form.officeAreaId = this.checkValue(data.officeArea, this.officeAreaOptions, this.form.officeAreaId);

@@ -26,9 +26,10 @@
 					<div class="form_title right">增值资费：</div>
 					<div class="form_con">{{valueAdded.tariffName}}
 						<div class="search padding">
-							<p>功能资费： {{valueAdded.tariffFee}} 元/{{valueAdded.presents}}首</p>
-							<p>是否赠送： 收费</p>
-							<p>功能备注： {{valueAdded.remarks}}</p>
+							<p>功能资费： {{valueAdded.tariffFee}} 元</p>
+							<p v-if="item.presents==1">是否赠送：赠送</p>
+							<p v-if="item.presents==2">是否赠送：付费</p>
+							<p>功能备注：{{item.remarks}}</p>
 						</div>
 					</div>
 				</div>
@@ -36,7 +37,7 @@
 			<div class="greyline"></div>
 			<footer class="right">
 				<el-button type="primary" size="small" @click="submit">确定</el-button>
-				<el-button type="primary" size="small" plain @click="dialogVisible=false">取消</el-button>
+				<el-button type="primary" size="small" plain @click="close">取消</el-button>
 			</footer>
 		</el-dialog>
 	</div>
@@ -152,7 +153,7 @@
 				}
 			},
 			getValueAdded() {
-				this.$ajax.get('/vos/blacklist/getValueAdded/' + this.data.valueAddedId).then(res => {
+				this.$ajax.get('/vos/blacklist/getValueAdded/' + (sessionStorage.getItem('businessType') == 'self' ? 51 : 52)).then(res => {
 					if (res.code == 200) {
 						this.valueAdded = res.data || {};
 					}

@@ -1,7 +1,7 @@
 <template>
 	<div id="voiceFileManage" class="managerFormTitle" v-loading="loading">
 		<Aplayer name="Aplayer" model="auto" :music_url="$global.serverSrc+voiceSrc" v-if="player" v-show="false"></Aplayer>
-		<div class="search">
+		<div class="search" v-if="permission.indexOf(64)!=-1">
 			<ul>
 				<li>
 					<span class="demonstration">企业名称：</span>
@@ -25,14 +25,14 @@
 			</div>
 		</div>
 		<section class="left block lineTop">
-			<el-button type="primary" size="small" @click="showvoiceEdi(true)"><i class="el-icon-plus"></i> 新语音文件</el-button>
+			<el-button type="primary" size="small" @click="showvoiceEdi(true)" v-if="permission.indexOf(69)!=-1"><i class="el-icon-plus"></i> 新语音文件</el-button>
 			<div style="float:right">
 				<span class="fmini">状态：</span>
 				<el-select v-model="form.status" placeholder="请选择" size="small">
 					<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
 					</el-option>
 				</el-select>
-				<el-button type="primary" plain size="small">导出</el-button>
+				<el-button type="primary" plain size="small" @click="outPut" v-if="permission.indexOf(65)!=-1">导出</el-button>
 			</div>
 		</section>
 		<el-table :data="tableData" style="width: 100%;margin-bottom:15px;">
@@ -65,9 +65,9 @@
 			</el-table-column>
 			<el-table-column label="操作" min-width="200">
 				<template slot-scope="scope">
-					<!-- <el-button size="small" type="text" @click="listen(scope.row.recordAddress)">试听</el-button> -->
-					<el-button size="small" type="text" @click="showvoiceEdi(true,scope.row)">修改</el-button>
-					<!-- <el-button size="small" type="text">删除</el-button> -->
+					<!-- <el-button size="small" type="text" @click="listen(scope.row.recordAddress)" v-if="permission.indexOf(66)!=-1">试听</el-button> -->
+					<el-button size="small" type="text" @click="showvoiceEdi(true,scope.row)" v-if="permission.indexOf(67)!=-1">修改</el-button>
+					<!-- <el-button size="small" type="text" v-if="permission.indexOf(68)!=-1">删除</el-button> -->
 				</template>
 			</el-table-column>
 		</el-table>
@@ -130,15 +130,20 @@
 					total: 1
 				},
 				loading: false,
-				player: false
+				player: false,
+				permission: []
 			}
 		},
 		mounted() {
 			this.fetchData();
+			this.$store.getters.getPermission(location.hash.replace(/#/, '')).map(item => {
+				this.permission.push(item.id);
+			});
 		},
 		methods: {
 			reset() {
 				this.$clear(this.form);
+				this.form.type = 'Voice';
 				this.fetchData();
 			},
 			fetchData(pageNum) {
@@ -159,6 +164,9 @@
 						this.page.total = res.data.totalCount;
 					}
 				});
+			},
+			outPut() {
+				window.open('/vos/excel/voice');
 			},
 			listen(src) {
 				if (this.voiceSrc != src) {

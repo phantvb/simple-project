@@ -3,7 +3,7 @@
 		<el-tabs v-model="active">
 			<el-tab-pane label="自助直销" name="self"></el-tab-pane>
 			<el-tab-pane label="渠道" name="channel"></el-tab-pane>
-			<div class="search">
+			<div class="search" v-if="permission.indexOf(55)!=-1">
 				<ul>
 					<li>
 						<span class="demonstration">400号码：</span>
@@ -24,8 +24,8 @@
 				</div>
 			</div>
 			<section class="left block lineTop">
-				<el-button type="primary" size="small" @click="formatusageStatus(true)">启用</el-button>
-				<el-button type="primary" plain size="small" @click="formatusageStatus(false)">关停</el-button>
+				<el-button type="primary" size="small" @click="formatusageStatus(true)" v-if="permission.indexOf(56)!=-1">启用</el-button>
+				<el-button type="primary" plain size="small" @click="formatusageStatus(false)" v-if="permission.indexOf(56)!=-1">关停</el-button>
 				<div style="float:right">
 					<span class="fmini">状态：</span>
 					<el-select v-model="form.usageStatus" placeholder="请选择" size="small" @change="fetchData()">
@@ -47,10 +47,16 @@
 				</el-table-column>
 				<el-table-column prop="name" label="操作" min-width="200">
 					<template slot-scope="scope">
-						<el-button size="small" type="text" @click="formatusageStatusSimple(scope.row)">{{scope.row.usageStatus=="Started"?'停用':'启用'}}</el-button>
-						<el-button size="small" type="text">注销</el-button>
-						<el-button size="small" type="text" @click="editnumSetup(true,scope.row)">号码设置</el-button>
-						<el-button size="small" type="text">详情</el-button>
+						<div class="likeButton" v-if="permission.indexOf(58)!=-1">
+							<el-button size="small" type="text" @click="formatusageStatusSimple(scope.row)">{{scope.row.usageStatus=="Started"?'停用':'启用'}}</el-button>
+						</div>
+						<!-- <div class="likeButton" v-if="permission.indexOf(59)!=-1">
+							<el-button size="small" type="text">注销</el-button>
+						</div> -->
+						<div class="likeButton" v-if="permission.indexOf(59)!=-1">
+							<el-button size="small" type="text" @click="editnumSetup(true,scope.row)">号码设置</el-button>
+						</div>
+						<!-- <el-button size="small" type="text">详情</el-button> -->
 					</template>
 				</el-table-column>
 			</el-table>
@@ -111,7 +117,6 @@
 		},
 		mounted() {
 			this.fetchData();
-			console.log(this.$store.getters.getPermission(location.hash.replace(/#/, '')))
 			this.$store.getters.getPermission(location.hash.replace(/#/, '')).map(item => {
 				this.permission.push(item.id);
 			});

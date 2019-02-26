@@ -8,29 +8,29 @@
 							<p class="grey note">从个性头像库里选择一张图片作为头像</p>
 							<ul>
 								<li class="l3">
-									<img src="../../../../assets/portrait_1.png" alt="userHead1.png">
+									<img src="@/assets/portrait_1.png" alt="userHead1.png">
 								</li>
 								<li class="l3">
-									<img src="../../../../assets/portrait_2.png" alt="userHead2.png">
+									<img src="@/assets/portrait_2.png" alt="userHead2.png">
 								</li>
 								<li class="l3">
-									<img src="../../../../assets/portrait_3.png" alt="userHead3.png">
+									<img src="@/assets/portrait_3.png" alt="userHead3.png">
 								</li>
 							</ul>
 							<ul>
 								<li class="l3">
-									<img src="../../../../assets/portrait_4.png" alt="userHead4.png">
+									<img src="@/assets/portrait_4.png" alt="userHead4.png">
 								</li>
 								<li class="l3">
-									<img src="../../../../assets/portrait_5.png" alt="userHead5.png">
+									<img src="@/assets/portrait_5.png" alt="userHead5.png">
 								</li>
 								<li class="l3">
-									<img src="../../../../assets/portrait_6.png" alt="userHead6.png">
+									<img src="@/assets/portrait_6.png" alt="userHead6.png">
 								</li>
 							</ul>
 						</li>
 						<li style="width:40%" class="preview left">
-							<img src="../../../../assets/portrait_1.png" ref="preview">
+							<img src="@/assets/portrait_1.png" ref="preview">
 							<p>头像预览</p>
 						</li>
 					</ul>

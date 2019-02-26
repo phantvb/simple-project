@@ -4,7 +4,7 @@
 		<el-tabs v-model="active">
 			<el-tab-pane label="自助直销" name="self"></el-tab-pane>
 			<el-tab-pane label="渠道" name="channel"></el-tab-pane>
-			<div class="search">
+			<div class="search" v-if="permission.indexOf(61)!=-1">
 				<ul>
 					<li>
 						<span class="demonstration">企业名称：</span>
@@ -49,7 +49,7 @@
 				</div>
 			</div>
 			<section class="right block lineTop">
-				<el-button type="primary" plain size="small" @click="outPut">导出</el-button>
+				<el-button type="primary" plain size="small" @click="outPut" v-if="permission.indexOf(62)!=-1">导出</el-button>
 			</section>
 			<el-table :data="tableData" style="width: 100%;margin-bottom:15px;">
 				<el-table-column prop="companyName" label="企业名称" min-width="100">
@@ -66,7 +66,7 @@
 				</el-table-column>
 				<el-table-column prop="name" label="操作" min-width="200">
 					<template slot-scope="scope">
-						<el-button size="small" type="text" @click="listen(scope.row.recordAddress)">试听</el-button>
+						<el-button size="small" type="text" @click="listen(scope.row.recordAddress)" v-if="permission.indexOf(63)!=-1">试听</el-button>
 						<el-button size="small" type="text" @click="showTicketDetail(true,scope.row)">详情</el-button>
 					</template>
 				</el-table-column>
@@ -123,7 +123,8 @@
 					total: 1
 				},
 				loading: false,
-				player: false
+				player: false,
+				permission: []
 			}
 		},
 		watch: {
@@ -133,6 +134,9 @@
 		},
 		mounted() {
 			this.fetchData();
+			this.$store.getters.getPermission(location.hash.replace(/#/, '')).map(item => {
+				this.permission.push(item.id);
+			});
 		},
 		methods: {
 			reset() {

@@ -72,11 +72,11 @@
 				<el-button v-if="permission.indexOf(95)!=-1" type="primary" size="small" @click="addCompany(true)">新增企业</el-button>
 				<div>
 					<span>状态：</span>
-					<el-select v-if="active==0" v-model="form.status" size="small" placeholder="请选择" @change="fetchData()">
+					<el-select v-if="active==0" v-model="form2.status" size="small" placeholder="请选择" @change="fetchAllData()">
 						<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
 						</el-option>
 					</el-select>
-					<el-select v-if="active==1" v-model="form2.status" size="small" placeholder="请选择" @change="fetchAllData()">
+					<el-select v-if="active==1" v-model="form.status" size="small" placeholder="请选择" @change="fetchData()">
 						<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
 						</el-option>
 					</el-select>
@@ -164,15 +164,17 @@
 					legalPerson: '',
 					companyName: '',
 					companyCardNo: '',
-					time: [],
-					source: ''
+					time: null,
+					source: '',
+					status: ''
 				},
 				form2: {
 					legalPerson: '',
 					companyName: '',
 					companyCardNo: '',
-					time: [],
-					source: ''
+					time: null,
+					source: '',
+					status: ''
 				},
 				options: [{
 					value: '',
@@ -449,10 +451,10 @@
 			},
 			reset() {
 				if (this.active == 0) {
-					this.$clear(this.form2);
+					this.$clear(this.form);
 					this.fetchAllData();
 				} else {
-					this.$clear(this.form);
+					this.$clear(this.form2);
 					this.fetchData();
 				}
 			}

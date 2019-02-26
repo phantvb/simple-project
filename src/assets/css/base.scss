@@ -44,11 +44,11 @@ div.likeButton {
 
 @media screen and (max-width: 1440px) {
 	* {
-		font-size: 12px;
+		font-size: 14px;
 	}
 
 	.fmini {
-		font-size: 12px;
+		font-size: 14px;
 	}
 
 	.fsm {
@@ -69,23 +69,23 @@ div.likeButton {
 
 	.demonstration {
 		color: #333;
-		font-size: 12px;
+		font-size: 14px;
 	}
 
 	//elementui
 	.el-button--mini,
 	.el-button--small {
-		font-size: 12px;
+		font-size: 14px;
 	}
 }
 
 @media screen and (min-width: 1440px) {
 	* {
-		font-size: 14px;
+		font-size: 16px;
 	}
 
 	.fmini {
-		font-size: 14px;
+		font-size: 16px;
 	}
 
 	.fsm {
@@ -127,11 +127,11 @@ div.likeButton {
 	padding: 0px $padding;
 
 	@media screen and (max-width: 1440px) {
-		font-size: 14px;
+		font-size: 16px;
 	}
 
 	@media screen and (min-width: 1440px) {
-		font-size: 16px;
+		font-size: 18px;
 	}
 
 	&::before {

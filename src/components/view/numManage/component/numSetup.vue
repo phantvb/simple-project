@@ -28,13 +28,13 @@
 						<div class="form_item">
 							<div class="form_title right">冷却时长：</div>
 							<div class="form_con">
-								<el-input v-model="baseSet.coolSeconds" placeholder="请输入内容" size="small"></el-input>秒
+								<el-input v-model="baseSet.coolSeconds" placeholder="请输入内容" size="small"></el-input> 秒
 							</div>
 						</div>
 						<div class="form_item">
 							<div class="form_title right">坐席超时时间：</div>
 							<div class="form_con">
-								<el-input v-model="baseSet.sitTimeOut" placeholder="请输入内容" size="small"></el-input>秒
+								<el-input v-model="baseSet.sitTimeOut" placeholder="请输入内容" size="small"></el-input> 秒
 							</div>
 						</div>
 						<div class="form_item">
@@ -48,7 +48,7 @@
 						<div class="form_item">
 							<div class="form_title right">等待超时时间：</div>
 							<div class="form_con">
-								<el-input v-model="baseSet.waitTimeOut" placeholder="请输入内容" size="small"></el-input>秒
+								<el-input v-model="baseSet.waitTimeOut" placeholder="请输入内容" size="small"></el-input> 秒
 							</div>
 						</div>
 					</div>
@@ -78,7 +78,7 @@
 				</el-tab-pane>
 			</el-tabs>
 			<footer class="right">
-				<el-button type="primary" size="small" plain @click="dialogVisible=false">取消</el-button>
+				<el-button type="primary" size="small" plain @click="close">取消</el-button>
 				<el-button type="primary" size="small" @click="submit(numSetActionData)">确定</el-button>
 			</footer>
 		</el-dialog>

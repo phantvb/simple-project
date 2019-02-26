@@ -7,7 +7,7 @@
 			<div v-else-if="item.type=='h'&&!item.children"></div>
 			<el-submenu class="targetMenu" v-else-if="item.children&&item.children.length>0&&item.children[0].type!='b'" :index="resolvePath(item.url)">
 				<template slot="title">
-					<!-- <i class="el-icon-menu"></i> -->
+					<img :src="'/static/'+item.iconCls" alt="" style="padding-right:2px;">
 					<span slot="title">{{item.name}}</span>
 				</template>
 				<template v-if="item.children">
@@ -16,7 +16,7 @@
 			</el-submenu>
 			<app-link v-else-if="!item.children||item.children.length==0||item.children[0].type=='b'" :to="resolvePath(item.url)">
 				<el-menu-item :index="resolvePath(item.url)">
-					<!-- <i class="el-icon-location"></i> -->
+					<img :src="'/static/'+item.iconCls" alt="" v-show="item.iconCls" style="padding-right:2px;">
 					<span slot="title">{{item.name}}</span>
 				</el-menu-item>
 			</app-link>

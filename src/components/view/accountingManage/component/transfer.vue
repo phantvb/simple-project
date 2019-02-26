@@ -66,6 +66,7 @@
 							<span v-if="scope.row.accountsType=='Package'">基本套餐</span>
 							<span v-else-if="scope.row.accountsType=='ValueAdded'">增值业务</span>
 							<span v-else-if="scope.row.accountsType=='Concession'">优惠信息</span>
+							<span v-else-if="scope.row.accountsType=='TimePacket'">时长包</span>
 							<span v-else>{{scope.row.accountsType}}</span>
 						</template>
 					</el-table-column>

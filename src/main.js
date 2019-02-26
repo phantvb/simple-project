@@ -103,7 +103,7 @@ router.beforeEach((to, from, next) => {
 					store.commit('addRoute', res.data.menuList);
 					allPath = store.getters.getRoute;
 					for (let i = 0; i < allPath.length; i++) {
-						console.log(i)
+						console.log(i, allPath[i], allPath[i].trim() == currentPath)
 						if (allPath[i].trim() == currentPath) {
 							isPass = true;
 							next();

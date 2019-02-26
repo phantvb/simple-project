@@ -3,7 +3,7 @@
 		<el-tabs v-model="form.channel">
 			<el-tab-pane label="自助直销" name="self"></el-tab-pane>
 			<el-tab-pane label="渠道" name="channel"></el-tab-pane>
-			<div class="search">
+			<div class="search" v-if="permission.indexOf(80)!=-1">
 				<ul>
 					<li>
 						<span class="demonstration">400号码：</span>
@@ -37,8 +37,8 @@
 				</div>
 			</div>
 			<section class="right block lineTop">
-				<el-button type="primary" plain size="small">导出列表</el-button>
-				<el-button type="primary" plain size="small">导出详单</el-button>
+				<el-button type="primary" plain size="small" @click="outPut(true)" v-if="permission.indexOf(81)!=-1">导出列表</el-button>
+				<el-button type="primary" plain size="small" @click="outPut(false)" v-if="permission.indexOf(82)!=-1">导出详单</el-button>
 			</section>
 			<el-table :data="tableData" style="width: 100%;margin-bottom:15px;">
 				<el-table-column type="selection" width="55">
@@ -67,8 +67,8 @@
 				</el-table-column>
 				<el-table-column prop="name" label="操作" min-width="200">
 					<template slot-scope="scope">
-						<el-button size="small" type="text" @click="addfavourable(true,scope.row)">添加优惠</el-button>
-						<el-button size="small" type="text" @click="addtransfer(true,scope.row,0)">确认到账</el-button>
+						<el-button size="small" type="text" @click="addfavourable(true,scope.row)" v-if="permission.indexOf(83)!=-1">添加优惠</el-button>
+						<el-button size="small" type="text" @click="addtransfer(true,scope.row,0)" v-if="permission.indexOf(84)!=-1">确认到账</el-button>
 						<el-button size="small" type="text" @click="addtransfer(true,scope.row,1)">详情</el-button>
 					</template>
 				</el-table-column>
@@ -127,7 +127,8 @@
 					size: 10,
 					total: 1
 				},
-				loading: false
+				loading: false,
+				permission: []
 			}
 		},
 		watch: {
@@ -138,6 +139,9 @@
 		mounted() {
 			this.getPackage();
 			this.fetchData();
+			this.$store.getters.getPermission(location.hash.replace(/#/, '')).map(item => {
+				this.permission.push(item.id);
+			});
 		},
 		methods: {
 			addfavourable(bol, data) {
@@ -209,6 +213,13 @@
 						});
 					}
 				})
+			},
+			outPut(bol) {
+				if (bol) {
+					window.open('/vos/excel/accounts');
+				} else {
+					window.open('/vos/excel/accountsDetail');
+				};
 			}
 		}
 	}
