@@ -254,7 +254,6 @@
                     this.tableData = res.data.businessFlows;
                     this.pageObj.total = res.data.totalCount;
                     this.tableData.map((item) => {
-                        console.log("item",item);
                         //判断操作
                         if(item.status=='Wait_To_Audit'){
                             item.busStatus='等待送审';

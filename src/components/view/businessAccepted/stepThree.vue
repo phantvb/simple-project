@@ -338,7 +338,7 @@
                         </el-form-item>
                     </div>
 
-                    <div class="QCellCore" v-if="ali">
+                    <div class="QCellCore">
                         <el-form-item label="优惠套餐：" prop="discounts">
                             <!--<span>优惠：</span>-->
                             <el-select v-model="stepThreeForm.discounts" placeholder="请选择" size="mini"
@@ -530,7 +530,6 @@
                     connectType: "",
                     connectId: "",
                     flowId: "",
-                    // stepThreeFlowId: "",
                 }],
                 stepThreeFlowId: "",
                 companyIdInfo: {},
@@ -588,10 +587,10 @@
         mounted() {
             if (sessionStorage.getItem('businessIn') == 2 || sessionStorage.getItem('businessIn') == 3) {
                 //详情
-                console.log(this.business);
-                console.log(this.destNumber);
-                console.log(this.number400ValueAdded);
-                console.log(this.number400Concession);
+                // console.log(this.business);
+                // console.log(this.destNumber);
+                // console.log(this.number400ValueAdded);
+                // console.log(this.number400Concession);
                 this.stepThreeForm = this.business;
                 this.objCodeList = this.destNumber;
                 // console.log(this.valueAdd);
@@ -620,14 +619,14 @@
             } else {
                 this.getAllProvince();
             }
-            console.log(this.number400ValueAdded);
-            console.log(this.valueAdd);
+            // console.log(this.number400ValueAdded);
+            // console.log(this.valueAdd);
             this.getValueAdded(this.busIdentity);
         },
         created() {
-            console.log(sessionStorage.getItem('businessType'));
-            console.log("saveBtnHidden", this.saveBtnHidden);
-            console.log("nextDisabled", this.nextDisabled);
+            // console.log(sessionStorage.getItem('businessType'));
+            // console.log("saveBtnHidden", this.saveBtnHidden);
+            // console.log("nextDisabled", this.nextDisabled);
             this.busIdentity = sessionStorage.getItem('businessType');
             if(this.busIdentity == "self"){
                 this.businessStanding = '自营'
@@ -649,19 +648,19 @@
                 }
             });
 
-            console.log(sessionStorage.getItem('businessIn'));
+            // console.log(sessionStorage.getItem('businessIn'));
             this.businessIn = sessionStorage.getItem('businessIn');
 
             //新增受理
             if (sessionStorage.getItem('businessIn') == 1) {
                 this.$root.eventHub.$on('flowId', (resp) => {
-                    console.log("flowId", resp);
+                    // console.log("flowId", resp);
                     this.flowId = resp;
                 });
             } else if (sessionStorage.getItem('businessIn') == 3) {
                 this.saveBtnHidden = false;
                 this.nextDisabled = false;
-                console.log("saveBtnHidden", this.saveBtnHidden);
+                // console.log("saveBtnHidden", this.saveBtnHidden);
             }
             if (sessionStorage.getItem('businessIn') == 2 || sessionStorage.getItem('businessIn') == 3 || sessionStorage.getItem('businessIn') == 4) {
                 this.stepFourDetail();
@@ -681,11 +680,11 @@
             // 分页
             handleSizeChange(val) {
                 this.pageObj.pageSize = val;
-                console.log(`每页 ${val} 条`);
+                // console.log(`每页 ${val} 条`);
             },
             handleCurrentChange(val) {
                 this.pageObj.page = val;
-                console.log(`当前页: ${val}`);
+                // console.log(`当前页: ${val}`);
             },
             // 数量变化
             handleChange(value, index) {
@@ -757,7 +756,7 @@
                 return isJPG && isLt2M;
             },
             change123(event) {
-                console.log("event", event);
+                // console.log("event", event);
             },
 
             //新增目的码
@@ -767,7 +766,7 @@
             },
             // 删除目的码
             delObjCodes(index) {
-                console.log(index);
+                // console.log(index);
                 this.objCodeList.splice(index, 1);
             },
             // 选号
@@ -779,7 +778,7 @@
                 this.addNumdialogVisible = true;
                 this.getTariff(this.busIdentity);
                 setTimeout(() => {
-                    console.log("this.$refs.child1", this.$refs.child1);
+                    // console.log("this.$refs.child1", this.$refs.child1);
                     this.$refs.child1[0].getAllByPackage2(this.firstPackageId);
                 }, 1000);
             },
@@ -801,8 +800,8 @@
                         "concessionWay": 2,
                     }
                 }).then((res) => {
-                    console.log(val);
-                    console.log(res.data.concessionSchemeList);
+                    // console.log(val);
+                    // console.log(res.data.concessionSchemeList);
                     this.discountsList = res.data.concessionSchemeList;
                 })
             },
@@ -814,10 +813,10 @@
                         "id": '',
                     }
                 }).then((res) => {
-                    console.log(res.data.valueAddedList);
+                    // console.log(res.data.valueAddedList);
                     this.objCodeTable = res.data.valueAddedList;
                     this.objCodeTable.map((item) => {
-                        console.log(item);
+                        // console.log(item);
                         item.numOfMonth = 1;
                         item.numOfone = 1;
                         if (item.units == 'perMonth') {
@@ -846,14 +845,14 @@
                         }
 
                     });
-                    console.log('aaa', this.objCodeTable);
-                    console.log('bbb', this.number400ValueAdded);
+                    // console.log('aaa', this.objCodeTable);
+                    // console.log('bbb', this.number400ValueAdded);
                     let newValueAdd = [];
                     this.$nextTick(() => {
-                        console.log(this.selectedNum);
-                        console.log('ccc', this.number400ValueAdded);
+                        // console.log(this.selectedNum);
+                        // console.log('ccc', this.number400ValueAdded);
                         this.objCodeTable.map((item, index) => {
-                            console.log(1111, this.objCodeTable);
+                            // console.log(1111, this.objCodeTable);
                             if (this.number400ValueAdded && this.number400ValueAdded.length > 0) {
                                 this.number400ValueAdded.map((item1) => {
                                     if (item1.valueAddedId == item.id) {
@@ -879,7 +878,7 @@
                                             obj.numOfone = item.numOfone;
                                         }
                                         newValueAdd.push(obj);
-                                        console.log(newValueAdd);
+                                        // console.log(newValueAdd);
                                     }
                                 });
 
@@ -905,13 +904,13 @@
                                         obj.numOfone = item.numOfone;
                                     }
                                     newValueAdd.push(obj);
-                                    console.log(newValueAdd);
+                                    // console.log(newValueAdd);
                                 }
                             }
                         });
                     });
                     this.valueAdd = newValueAdd;
-                    console.log(this.valueAdd);
+                    // console.log(this.valueAdd);
                     this.$set(this.objCodeTable);
                     return new Promise(resolve => {
                         resolve();
@@ -927,9 +926,9 @@
                         "channel": val
                     }
                 }).then((res) => {
-                    console.log(res.data);
-                    console.log(res.data.tariffPackageList);
-                    console.log(res.data.tariffPackageList[0].id);
+                    // console.log(res.data);
+                    // console.log(res.data.tariffPackageList);
+                    // console.log(res.data.tariffPackageList[0].id);
                     this.firstPackageId = res.data.tariffPackageList[0].id;
                     this.mealList = res.data.tariffPackageList;
                 })
@@ -940,7 +939,7 @@
                     console.log(res.data);
                     this.provinceList = res.data;
                     if (sessionStorage.getItem('businessIn') == 2 || sessionStorage.getItem('businessIn') == 3) {
-                        console.log(this.stepThreeForm.provinceBelong);
+                        // console.log(this.stepThreeForm.provinceBelong);
                         this.getCitiesByProvinceId(this.stepThreeForm.provinceBelong);
                     }
                 })
@@ -948,7 +947,7 @@
             // 市
             getCitiesByProvinceId(provinceId) {
                 this.$ajax.get('/vos/address/getCitiesByProvinceId?provinceId=' + provinceId).then((res) => {
-                    console.log(res.data);
+                    // console.log(res.data);
                     this.cityList = res.data;
                 })
             },
@@ -1132,17 +1131,12 @@
                             this.stepThreeForm.id = res.data.businessId;   //业务id
                             console.log("vuex.company", this.company);
                             // 把第三步返回的companyId存到vuex的company
-                            // let companyIdSave ={};
-                            // companyIdSave.companyId = res.data.companyId;
-                            // console.log("companyIdSave.companyId",companyIdSave.companyId);
-                            // this.companyIdInfo = Object.assign(this.company, companyIdSave);
-                            // this.ChangeCompanyStatus(this.companyIdInfo);
                             this.company.id = res.data.companyId;
                             this.business.companyId = res.data.companyId;
                             console.log("vuex.company", this.company);
                             console.log("vuex.business", this.business);
-
                             console.log(this.stepThreeFlowId = res.data.flowId);
+                            sessionStorage.setItem('stepThreeFlowId',this.stepThreeFlowId);
                             //第三步点击下一步之前检查number400是否绑定了引示号
                             this.$ajax.post('/vos/business/matchGuideNumber', {
                                 "number400": this.stepThreeFlowId != null ? this.stepThreeForm.number400 : this.titleNum,
@@ -1181,10 +1175,6 @@
                     this.selectedNum[0].unitsCopy = res.data.number400s[0].units + '月';
                     this.selectedNum[0].durationPresentationCopy = res.data.number400s[0].durationPresentation + '元';
                     this.selectedNum[0].basicFunctionFeeCopy = res.data.number400s[0].basicFunctionFee + '元';
-                    // this.selectedNum.push(res.data);
-                    // console.log(res.data.number400s);
-                    // this.numberList = res.data.number400s;
-                    // this.pageObj.total = res.data.totalCount;
                 })
             },
             // 点击tab获取相应信息

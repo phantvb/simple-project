@@ -72,7 +72,7 @@
         created(){
             this.$root.eventHub.$on('dialogVisibleBusiness', (res)=>{
                 this.visibleBusiness=res.visibleBusiness;
-                console.log("asdasdas");
+                // console.log("asdasdas");
                 this.actives = 1;
                 this.active = 1;
                 if(res.businessIn){
@@ -107,7 +107,7 @@
                     });
             },
             step(val){
-                console.log(val);
+                // console.log(val);
                 this.active = val;
                 this.actives = val;
             },

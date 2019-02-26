@@ -163,21 +163,14 @@
         components: {},
         created() {
             console.log(sessionStorage.getItem('businessIn'));
-            this.storageConpanyFlow = JSON.parse(sessionStorage.getItem('objMsg'));
-            console.log("storageConpanyFlow",this.storageConpanyFlow);
             this.businessIn = sessionStorage.getItem('businessIn');
             //新增受理
-            if (sessionStorage.getItem('businessIn') == 1) {
-                this.$root.eventHub.$on('flowId', (resp) => {
-                    console.log("flowId", resp);
-                    this.flowId = resp.flowId;
-                });
-            }else if(sessionStorage.getItem('businessIn') == 3){
+            if(sessionStorage.getItem('businessIn') == 3){
+                this.storageConpanyFlow = JSON.parse(sessionStorage.getItem('objMsg'));
                 this.saveBtnHidden=false;
                 this.flowId = sessionStorage.getItem('entireFlowId');
                 console.log("saveBtnHidden",this.saveBtnHidden);
             }
-
             if(sessionStorage.getItem('entireFlowId')){
                 console.log("entireFlowId", sessionStorage.getItem('entireFlowId'));
                 this.flowId = sessionStorage.getItem('entireFlowId');
@@ -300,15 +293,20 @@
             },
             //业务送审
             addBusinessSend() {
+                if (sessionStorage.getItem('businessIn') == 1) {
+                    this.flowId = sessionStorage.getItem('stepThreeFlowId');
+                };
+                console.log("第四步flowId",this.flowId);
+                console.log("storageConpanyFlow",this.storageConpanyFlow);
                 // 必填校验
-                if(this.stepFourForm.unionAgreementPic=='' ||
-                    this.stepFourForm.businessHandlePic=='' ||
-                    this.stepFourForm.authorizationPic=='' ||
-                    this.stepFourForm.safeAgreementPic=='' ||
-                    this.stepFourForm.destNumProfPic=='' ||
-                    this.stepFourForm.otherPic==''){
-                    this.$message.warning("请完善图片信息");
-                }else{
+                // if(this.stepFourForm.unionAgreementPic=='' ||
+                //     this.stepFourForm.businessHandlePic=='' ||
+                //     this.stepFourForm.authorizationPic=='' ||
+                //     this.stepFourForm.safeAgreementPic=='' ||
+                //     this.stepFourForm.destNumProfPic=='' ||
+                //     this.stepFourForm.otherPic==''){
+                //     this.$message.warning("请完善图片信息");
+                // }else{
                     console.log('没验证');
                     this.dialogVisible = false;
                     console.log("business:", this.business);
@@ -334,13 +332,13 @@
                         "destNumber": this.destNumber,
                         "number400ValueAdded": this.number400ValueAdded,
                         "number400Concession": this.number400Concession,
-                        "companyFlow": url='/vos/business/sendToModifyAudit'?this.storageConpanyFlow: {"flowId": this.flowId}
+                        "companyFlow": url=='/vos/business/sendToModifyAudit'?this.storageConpanyFlow: {"flowId": this.flowId}
                     }).then((res) => {
                         console.log(res);
                         this.$message.success(res.data);
                         this.$root.eventHub.$emit('addAcceptSave', null);
                     });
-                }
+                // }
 
             },
             // 下载pdf

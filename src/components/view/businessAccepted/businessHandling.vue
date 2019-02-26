@@ -330,7 +330,7 @@
                     "pageSize":this.pageObj.pageSize,
                 }
             }).then((res)=>{
-                console.log(res.data.businessFlows);
+                // console.log(res.data.businessFlows);
                 this.tableData = res.data.businessFlows;
                 this.pageObj.total = res.data.totalCount;
                 this.tableData.map((item)=>{
