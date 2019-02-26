@@ -146,6 +146,8 @@
                                 v-model="acceptForm.idIndate"
                                 type="daterange"
                                 :disabled="msgDisabled"
+                                format="yyyy年MM月dd日"
+                                value-format="yyyy-MM-dd"
                                 range-separator="至"
                                 start-placeholder="开始日期"
                                 end-placeholder="结束日期">
@@ -156,6 +158,8 @@
                                 v-model="acceptForm.idIndate"
                                 :disabled="msgDisabled"
                                 type="daterange"
+                                format="yyyy年MM月dd日"
+                                value-format="yyyy-MM-dd"
                                 range-separator="至"
                                 start-placeholder="开始日期"
                                 end-placeholder="结束日期">
@@ -168,6 +172,8 @@
                                 v-model="acceptForm.idIndate"
                                 :disabled="msgDisabled"
                                 type="daterange"
+                                format="yyyy年MM月dd日"
+                                value-format="yyyy-MM-dd"
                                 range-separator="至"
                                 start-placeholder="开始日期"
                                 end-placeholder="结束日期">
@@ -337,10 +343,6 @@
                 this.company.idIndate[1] = this.company.cardEndDate;
                 // console.log("this.company",this.company);
                 this.acceptForm = this.company;
-                // this.acceptForm.idIndate[0] = this.company.cardStartDate;
-                // this.acceptForm.idIndate[1] = this.company.cardEndDate;
-                // // console.log("idIndate[0]",this.acceptForm.idIndate);
-                // // console.log("idIndate[1]",this.acceptForm.idIndate[1]);
             },
             // 下一步
             next(formName) {

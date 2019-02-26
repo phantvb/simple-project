@@ -134,7 +134,7 @@
                 </p>
             </div>
             <div class="block left serviceData">
-                <p class="fmini">标准协议编号：</p>
+                <!--<p class="fmini">标准协议编号：</p>-->
                 <div>
                     <div style="float:left;">
                         <span class="fmini">统一的标准协议：</span>
