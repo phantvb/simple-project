@@ -38,9 +38,10 @@
                 <div class="block left">
                     <p class="fmini">法人姓名： {{this.businessDetialCompanyInfo.legalPerson}}</p>
                     <p class="fmini"> 法人电话： {{this.businessDetialCompanyInfo.legalPhone}}</p>
-                    <p class="fmini">法人证件： {{this.businessDetialCompanyInfo.legalCard+" "+this.businessDetialCompanyInfo.cardNum}} </p>
-                    <p class="fmini" v-if="this.businessDetialCompanyInfo.idCardAddress">身份证住址： {{this.businessDetialCompanyInfo.idCardAddress}}</p>
-                    <p class="fmini">证件有效期：{{this.businessDetialCompanyInfo.cardStartDate+"-"+this.businessDetialCompanyInfo.cardEndDate}}</p>
+                    <p class="fmini">法人证件： {{this.legalCardCn}} </p>
+                    <p class="fmini">证件号码： {{this.businessDetialCompanyInfo.cardNum}} </p>
+                    <p class="fmini" v-if="businessDetialCompanyInfo.idCardAddress">身份证住址： {{this.businessDetialCompanyInfo.idCardAddress}}</p>
+                    <p class="fmini" v-if="businessDetialCompanyInfo.legalCard!='HK_pass' || businessDetialCompanyInfo.legalCard!='Taiwan_pass'">证件有效期：{{this.businessDetialCompanyInfo.cardStartDate+"~"+this.businessDetialCompanyInfo.cardEndDate}}</p>
                     <div>
                         <!-- <div style="float:left;">
                             <span class="fmini">企业资质证明文件：</span>
@@ -80,12 +81,32 @@
                 this.businessDetialInfo = val.data;
                 console.log("businessDetialInfo.company",this.businessDetialInfo.company);
                 this.businessDetialCompanyInfo = this.businessDetialInfo.company;
+
+                switch (this.businessDetialCompanyInfo.legalCard){
+                    case 'ID_card':
+                        this.legalCardCn = '身份证';
+                        break;
+                    case 'OfficerCard':
+                        this.legalCardCn = '军官证';
+                        break;
+                    case 'Passport':
+                        this.legalCardCn = '护照';
+                        break;
+                    case 'HK_pass':
+                        this.legalCardCn = '港澳居民来往内地通行证';
+                        break;
+                    case 'Taiwan_pass':
+                        this.legalCardCn = '台湾居民来往大陆通行证';
+                        break;
+                }
+
             }
         },
         data() {
             return {
                 businessDetialInfo:{},
                 businessDetialCompanyInfo:{},
+                legalCardCn:'',
             };
         },
         components: {},

@@ -88,7 +88,7 @@
                     <p class="fmini" v-for="(item,index) in destNumberList">{{"目的码"+(index+1)+"："+ item.destNumber}}</p>
                 <!--</div>-->
                 <p class="fmini">归属地区： {{this.businessDetailBusinessInfo.provinceBelong+this.businessDetailBusinessInfo.cityBelong+this.businessDetailBusinessInfo.cityBelong}}</p>
-                <p class="fmini">业务身份： {{this.businessDetailBusinessInfo.channel}} </p>
+                <p class="fmini">业务身份： {{this.channel}} </p>
                 <div v-if="this.businessDetailBusinessInfo.source!='ali'">
                     <p class="fmini" v-if="businessDetialInfo.number400Concession"> 优惠：{{this.concessionList[0].concessionName}}</p>
                     <div>
@@ -222,9 +222,13 @@
                     this.concessionList = this.businessDetialInfo.number400Concession;
                     this.addValueList = this.businessDetialInfo.number400ValueAdded;
                 }
-                console.log("addValueList",this.addValueList);
-                //增值资费
-                console.log("业务身份",val.data.business.source);
+                //业务身份
+                if(this.businessDetailBusinessInfo.channel=='self'){
+                    this.channel = '自营'
+                }else if(this.businessDetailBusinessInfo.channel=='ali'){
+                    this.channel = '阿里'
+                }
+
                 if(val.data.business.source!='ali'){
                     this.addValueList.map((item)=>{
                         console.log("addItem",item);
@@ -240,7 +244,6 @@
                             item.unit=item.numOfone+"元/月/个";
                             item.amounts = item.amount+"月" + item.numOfone +"个";
                         }
-
                         if(item.presents==1){
                             item.present="赠送"
                         }else{
@@ -267,6 +270,7 @@
                 destNumberList:[],
                 concessionList:[],
                 businessDetailBusinessInfo:{},
+                channel:'',   //业务身份
             };
         },
         components: {},
