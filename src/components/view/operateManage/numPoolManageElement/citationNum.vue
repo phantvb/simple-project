@@ -1,6 +1,6 @@
 <template>
 	<div id="citationNum" v-loading="loading">
-		<div class="search">
+		<div class="search" v-if="permission.indexOf(50)!=-1">
 			<el-form ref="citationNumForm" :model="citationNumForm" style="padding:9px 9px;">
 				<el-form-item style="float: left;margin-left: 15px;">
 					<span class="demonstration">引示号码：</span>
@@ -28,16 +28,16 @@
 
 		<div class="buttonDiv">
 			<div style="float: left;">
-				<el-button type="primary" size="mini">
+				<el-button type="primary" size="mini" v-if="permission.indexOf(54)!=-1">
 					<i class="el-icon-plus" @click="showAddCitationNum">&nbsp;新增引示号码</i>
 				</el-button>
-				<el-button type="primary" plain size="mini" @click="batchDelete">批量删除</el-button>
+				<el-button type="primary" plain size="mini" @click="batchDelete" v-if="permission.indexOf(53)!=-1">批量删除</el-button>
 			</div>
 			
             <div style="float: right;">
 				<el-button type="text" size="mini" style="float:left;" @click="downloadTemplate">批量导入Excel 模板下载</el-button>
-                <el-button type="primary" plain size="mini" @click="exportInfo">导出</el-button>
-				<el-upload class="upload-demo" style="float:left;margin-left:10px;" :show-file-list=false :with-credentials="true" action="/vos/excel/importGuideNumber" :on-success="uploaded">
+                <el-button type="primary" plain size="mini" @click="exportInfo" v-if="permission.indexOf(51)!=-1">导出</el-button>
+				<el-upload class="upload-demo" style="float:left;margin-left:10px;" :show-file-list=false :with-credentials="true" action="/vos/excel/importGuideNumber" :on-success="uploaded" v-if="permission.indexOf(114)!=-1">
 					<el-button type="primary" plain size="mini">批量导入</el-button>
 				</el-upload>
 			</div>
@@ -53,8 +53,8 @@
 				<el-table-column prop="status" label="状态" min-width="100"></el-table-column>
 				<el-table-column label="操作" min-width="100">
 					<template slot-scope="scope">
-						<el-button size="mini" type="text" @click="handleEdit(scope.$index, scope.row)" v-if="tableData[scope.$index].status=='未绑定'">编辑</el-button>
-						<el-button size="mini" type="text" @click="handleDelete(scope.$index, scope.row)" v-if="tableData[scope.$index].status=='未绑定'">删除</el-button>
+						<el-button size="mini" type="text" @click="handleEdit(scope.$index, scope.row)" v-if="tableData[scope.$index].status=='未绑定'&&permission.indexOf(52)!=-1">编辑</el-button>
+						<el-button size="mini" type="text" @click="handleDelete(scope.$index, scope.row)" v-if="tableData[scope.$index].status=='未绑定'&&permission.indexOf(53)!=-1">删除</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
@@ -181,7 +181,8 @@
                 importNumberForm: {
 					errorNum: "1",
 					tableData: []
-				},
+                },
+                permission:[]
 			};
 		},
 		methods: {
@@ -530,7 +531,10 @@
 		},
 
 		created() {
-			this.loadData();
+            this.loadData();
+			this.$store.getters.getPermission(location.hash.replace(/#/, '')).map(item => {
+                this.permission.push(item.id);
+            });
 		}
 	};
 </script>

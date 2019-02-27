@@ -1,6 +1,6 @@
 <template>
     <div id="auditNum" v-loading="loading">
-        <div class="search">
+        <div class="search" v-if="permission.indexOf(50)!=-1">
             <el-form ref="auditNumForm" :model="auditNumForm" style="padding:9px 9px;">
                 <el-form-item style="float: left;margin-left: 10px;">
                     <span class="demonstration">400号码：</span>
@@ -30,7 +30,7 @@
 
         <div class="buttonDiv">
             <!--<a href="http://192.168.0.117:5480/vos/excel/number400" target="_blank" id="export"></a>-->
-            <el-button type="primary" plain size="mini" @click="exportInfo" style="float: right;">导出</el-button>
+            <el-button type="primary" plain size="mini" @click="exportInfo" style="float: right;" v-if="permission.indexOf(51)!=-1">导出</el-button>
         </div>
 
         <div>
@@ -101,7 +101,8 @@
                     total: 1
                 },
                 status: '',
-                loading:false
+                loading:false,
+                permission:[]
             }
         },
 
@@ -239,6 +240,9 @@
         },
         created() {
             this.loadData();
+			this.$store.getters.getPermission(location.hash.replace(/#/, '')).map(item => {
+                this.permission.push(item.id);
+            });
         }
     }
 </script>
