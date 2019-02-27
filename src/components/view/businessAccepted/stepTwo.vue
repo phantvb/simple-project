@@ -19,7 +19,7 @@
                                            :on-success="handleAvatarSuccess"
                                            :on-error="handleAvatarSuccess"
                                            :before-upload="beforeAvatarUpload">
-                                    <img v-if="stepTwoForm.companyProofPic" :src="stepTwoForm.companyProofPic"
+                                    <img v-if="stepTwoForm.companyProofPic" :src="$global.serverSrc+stepTwoForm.companyProofPic"
                                          class="avatar">
                                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                 </el-upload>
@@ -56,8 +56,7 @@
                                                    :on-success="handleFrontSuccess"
                                                    :on-error="handleFrontSuccess"
                                                    :before-upload="beforeAvatarUpload">
-                                            <img v-if="stepTwoForm.legalCardFrontPic"
-                                                 :src="stepTwoForm.legalCardFrontPic" class="avatar">
+                                            <img v-if="stepTwoForm.legalCardFrontPic" :src="$global.serverSrc+stepTwoForm.legalCardFrontPic" class="avatar">
                                             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                         </el-upload>
                                     </li>
@@ -69,7 +68,7 @@
                                                    :on-success="handleContrarySuccess"
                                                    :on-error="handleContrarySuccess"
                                                    :before-upload="beforeAvatarUpload">
-                                            <img v-if="stepTwoForm.legalCardBackPic" :src="stepTwoForm.legalCardBackPic"
+                                            <img v-if="stepTwoForm.legalCardBackPic" :src="$global.serverSrc+stepTwoForm.legalCardBackPic"
                                                  class="avatar">
                                             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                         </el-upload>
@@ -84,7 +83,7 @@
                                                    :on-success="handleSelfSuccess"
                                                    :on-error="handleSelfSuccess"
                                                    :before-upload="beforeAvatarUpload">
-                                            <img v-if="stepTwoForm.legalCardHandPic" :src="stepTwoForm.legalCardHandPic"
+                                            <img v-if="stepTwoForm.legalCardHandPic" :src="$global.serverSrc+stepTwoForm.legalCardHandPic"
                                                  class="avatar">
                                             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                         </el-upload>
@@ -182,30 +181,30 @@
             handleAvatarSuccess(res, file) {
                 console.log(res);
                 if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {
-                    this.stepTwoForm.companyProofPic = this.$global.serverSrc + res;
+                    this.stepTwoForm.companyProofPic = res;
                 }
                 // this.stepTwoForm.companyProofPic = URL.createObjectURL(file.raw);
             },
             handleFrontSuccess(res, file) {
                 if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {
-                    this.stepTwoForm.legalCardFrontPic = this.$global.serverSrc + res;
+                    this.stepTwoForm.legalCardFrontPic = res;
                 }
                 // this.stepTwoForm.legalCardFrontPic = URL.createObjectURL(file.raw);
             },
             handleContrarySuccess(res, file) {
                 if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {
-                    this.stepTwoForm.legalCardBackPic = this.$global.serverSrc + res;
+                    this.stepTwoForm.legalCardBackPic = res;
                 }
                 // this.stepTwoForm.legalCardBackPic = URL.createObjectURL(file.raw);
             },
             handleSelfSuccess(res, file) {
                 if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {
-                    this.stepTwoForm.legalCardHandPic = this.$global.serverSrc + res;
+                    this.stepTwoForm.legalCardHandPic = res;
                 }
                 // this.stepTwoForm.legalCardHandPic = URL.createObjectURL(file.raw);
             },
             beforeAvatarUpload(file) {
-                const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
+                const isJPG = file.type === 'image/jpeg' || file.type === 'image/jpg' || file.type === 'image/png';
                 const isLt2M = file.size / 1024 / 1024 < 2;
 
                 if (!isJPG) {

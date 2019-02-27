@@ -31,7 +31,7 @@
                                            :on-success="handleAvatarSuccess"
                                            :on-error="handleAvatarSuccess"
                                            :before-upload="beforeAvatarUpload">
-                                    <img v-if="stepFourForm.unionAgreementPic" :src="stepFourForm.unionAgreementPic"
+                                    <img v-if="stepFourForm.unionAgreementPic" :src="$global.serverSrc+stepFourForm.unionAgreementPic"
                                          class="avatar">
                                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                 </el-upload>
@@ -48,7 +48,7 @@
                                 <el-upload class="avatar-uploader examplew" :action="$global.uploadUrl"
                                            :show-file-list="false" :on-success="handlebussinSuccess"
                                            :on-error="handlebussinSuccess" :before-upload="beforeAvatarUpload">
-                                    <img v-if="stepFourForm.businessHandlePic" :src="stepFourForm.businessHandlePic"
+                                    <img v-if="stepFourForm.businessHandlePic" :src="$global.serverSrc+stepFourForm.businessHandlePic"
                                          class="avatar">
                                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                 </el-upload>
@@ -65,7 +65,7 @@
                                 <el-upload class="avatar-uploader examplew" :action="$global.uploadUrl"
                                            :show-file-list="false" :on-success="handleAuthorSuccess"
                                            :on-error="handleAuthorSuccess" :before-upload="beforeAvatarUpload">
-                                    <img v-if="stepFourForm.authorizationPic" :src="stepFourForm.authorizationPic"
+                                    <img v-if="stepFourForm.authorizationPic" :src="$global.serverSrc+stepFourForm.authorizationPic"
                                          class="avatar">
                                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                 </el-upload>
@@ -82,7 +82,7 @@
                                 <el-upload class="avatar-uploader examplew" :action="$global.uploadUrl"
                                            :show-file-list="false" :on-success="handleSafeSuccess"
                                            :on-error="handleSafeSuccess" :before-upload="beforeAvatarUpload">
-                                    <img v-if="stepFourForm.safeAgreementPic" :src="stepFourForm.safeAgreementPic"
+                                    <img v-if="stepFourForm.safeAgreementPic" :src="$global.serverSrc+stepFourForm.safeAgreementPic"
                                          class="avatar">
                                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                 </el-upload>
@@ -101,7 +101,7 @@
                                 <el-upload class="avatar-uploader examplew" :action="$global.uploadUrl"
                                            :show-file-list="false" :on-success="handleDestNumSuccess"
                                            :on-error="handleDestNumSuccess" :before-upload="beforeAvatarUpload">
-                                    <img v-if="stepFourForm.destNumProfPic" :src="stepFourForm.destNumProfPic"
+                                    <img v-if="stepFourForm.destNumProfPic" :src="$global.serverSrc+stepFourForm.destNumProfPic"
                                          class="avatar">
                                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                 </el-upload>
@@ -119,7 +119,7 @@
                                 <el-upload class="avatar-uploader examplew" :action="$global.uploadUrl"
                                            :show-file-list="false" :on-success="handleOtherSuccess"
                                            :on-error="handleOtherSuccess" :before-upload="beforeAvatarUpload">
-                                    <img v-if="stepFourForm.otherPic" :src="stepFourForm.otherPic" class="avatar">
+                                    <img v-if="stepFourForm.otherPic" :src="$global.serverSrc+stepFourForm.otherPic" class="avatar">
                                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                 </el-upload>
                                 <div class="explain">说明：如有其它相关文件可以在此上传</div>
@@ -207,48 +207,48 @@
                 console.log(res);
                 console.log(this.$global.serverSrc + res);
                 if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {
-                    this.stepFourForm.unionAgreementPic = this.$global.serverSrc + res;
+                    this.stepFourForm.unionAgreementPic = res;
                 }
                 // this.stepFourForm.unionAgreementPic = URL.createObjectURL(file.raw);
                 console.log("file.raw", file.raw);
             },
             handlebussinSuccess(res, file) {
                 if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {
-                    this.stepFourForm.businessHandlePic = this.$global.serverSrc + res;
+                    this.stepFourForm.businessHandlePic = res;
                 }
                 // this.stepFourForm.businessHandlePic = URL.createObjectURL(file.raw);
             },
             handleAuthorSuccess(res, file) {
                 if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {
-                    this.stepFourForm.authorizationPic = this.$global.serverSrc + res;
+                    this.stepFourForm.authorizationPic = res;
                 }
                 // this.stepFourForm.authorizationPic = URL.createObjectURL(file.raw);
             },
 
             handleSafeSuccess(res, file) {
                 if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {
-                    this.stepFourForm.safeAgreementPic = this.$global.serverSrc + res;
+                    this.stepFourForm.safeAgreementPic = res;
                 }
                 // this.stepFourForm.safeAgreementPic = URL.createObjectURL(file.raw);
             },
             handleDestNumSuccess(res, file) {
                 if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {
-                    this.stepFourForm.destNumProfPic = this.$global.serverSrc + res;
+                    this.stepFourForm.destNumProfPic = res;
                 }
                 // this.stepFourForm.destNumProfPic = URL.createObjectURL(file.raw);
             },
             handleOtherSuccess(res, file) {
                 if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {
-                    this.stepFourForm.otherPic = this.$global.serverSrc + res;
+                    this.stepFourForm.otherPic = res;
                 }
                 // this.stepFourForm.otherPic = URL.createObjectURL(file.raw);
             },
             beforeAvatarUpload(file) {
-                const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
+                const isJPG = file.type === 'image/jpeg' || file.type === 'image/jpg' || file.type === 'image/png';
                 const isLt2M = file.size / 1024 / 1024 < 2;
 
                 if (!isJPG) {
-                    this.$message.error('上传头像图片只能是 JPG、PNG格式!');
+                    this.$message.error('上传头像图片只能是 JPG/PNG格式!');
                 }
                 if (!isLt2M) {
                     this.$message.error('上传头像图片大小不能超过 2MB!');

@@ -14,7 +14,7 @@
                         <span>企业性质：{{this.businessDetialCompanyInfo.companyCharacter}}</span>
                         <span>企业等级：{{this.businessDetialCompanyInfo.companyRank}}</span>
                         <span>行业类型：{{this.businessDetialCompanyInfo.industryType}}</span></p>
-                    <p class="fmini">注册地址：{{this.businessDetialCompanyInfo.registProvince+this.businessDetialCompanyInfo.registCity+this.businessDetialCompanyInfo.registaArea}}</p>
+                    <p class="fmini">注册地址：{{this.businessDetialCompanyInfo.registProvince+this.businessDetialCompanyInfo.registCity+this.businessDetialCompanyInfo.registArea}}</p>
                     <p class="fmini">办公地址：{{this.businessDetialCompanyInfo.officeProvince+this.businessDetialCompanyInfo.officeCity+this.businessDetialCompanyInfo.officeArea}}</p>
                     <p class="fmini">企业电话：{{this.businessDetialCompanyInfo.phone}}</p>
                     <div>
@@ -23,7 +23,7 @@
                         </div>
                         <ul>
                             <li class="l2">
-                                <img class="examplew" :src="this.businessDetialCompanyInfo.companyProofPic" alt="">
+                                <img class="examplew" :src="$global.serverSrc+this.businessDetialCompanyInfo.companyProofPic" alt="">
                             </li>
                         </ul>
                     </div>
@@ -48,17 +48,17 @@
                         </div> -->
                         <ul class="basedata">
                             <li>
-                                <img class="exampleh" :src="this.businessDetialCompanyInfo.legalCardFrontPic" alt="">
+                                <img class="exampleh" :src="$global.serverSrc+this.businessDetialCompanyInfo.legalCardFrontPic" alt="">
                                 <p class="fmini center">法人身份证（正面）</p>
                             </li>
                             <li>
-                                <img class="exampleh" :src="this.businessDetialCompanyInfo.legalCardBackPic" alt="">
+                                <img class="exampleh" :src="$global.serverSrc+this.businessDetialCompanyInfo.legalCardBackPic" alt="">
                                 <p class="fmini center">法人身份证（反面）</p>
                             </li>
                         </ul>
                         <ul class="basedata">
                             <li>
-                                <img class="exampleh" :src="this.businessDetialCompanyInfo.legalCardHandPic" alt="">
+                                <img class="exampleh" :src="$global.serverSrc+this.businessDetialCompanyInfo.legalCardHandPic" alt="">
                                 <p class="fmini center">法人手持身份证（正面）</p>
                             </li>
                         </ul>

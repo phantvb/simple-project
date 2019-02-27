@@ -172,8 +172,8 @@
                 <el-form-item label="经办人证件：" class="identity" prop="agentDocumentType">
                     <el-select v-model="stepThreeForm.agentDocumentType" @change="change123" placeholder="请选择"
                                size="mini">
-                        <el-option :label="item.label" :value="item.value" v-for="(item,index) in identityTypeList"
-                                   :key="index"></el-option>
+                        <el-option :label="item.dicValue" :value="item.dicKey" v-for="(item,index) in identityTypeList"
+                                   :key="item.dicValue"></el-option>
                     </el-select>
                     <el-input class="agentDocumentNum" v-model="stepThreeForm.agentDocumentNum" size="mini"
                               placeholder="根据证件类型，填写相应的证件号码"></el-input>
@@ -190,18 +190,16 @@
                                 <li class="l2">
                                     <el-upload class="avatar-uploader exampleh" :action="$global.uploadUrl"
                                                :show-file-list="false" :on-success="handleAvatarSuccess"
-                                               :on-error="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
-                                        <img v-if="stepThreeForm.agentCardFront" :src="stepThreeForm.agentCardFront"
-                                             class="avatar">
+                                               :on-error="handleAvatarSuccess" :before-upload="beforeAvatarUpload" accept=".png,.jpeg,.jpg">
+                                        <img v-if="stepThreeForm.agentCardFront" :src="$global.serverSrc+stepThreeForm.agentCardFront" class="avatar">
                                         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                     </el-upload>
                                 </li>
                                 <li class="l2">
                                     <el-upload class="avatar-uploader exampleh" :action="$global.uploadUrl"
                                                :show-file-list="false" :on-success="handleBackSuccess"
-                                               :on-error="handleBackSuccess" :before-upload="beforeAvatarUpload">
-                                        <img v-if="stepThreeForm.agentCardBack" :src="stepThreeForm.agentCardBack"
-                                             class="avatar">
+                                               :on-error="handleBackSuccess" :before-upload="beforeAvatarUpload" accept=".png,.jpeg,.jpg">
+                                        <img v-if="stepThreeForm.agentCardBack" :src="$global.serverSrc+stepThreeForm.agentCardBack" class="avatar">
                                         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                     </el-upload>
                                 </li>
@@ -210,9 +208,8 @@
                                 <li class="l2">
                                     <el-upload class="avatar-uploader exampleh" :action="$global.uploadUrl"
                                                :show-file-list="false" :on-success="handleHandSuccess"
-                                               :on-error="handleHandSuccess" :before-upload="beforeAvatarUpload">
-                                        <img v-if="stepThreeForm.agentCardWIthHand"
-                                             :src="stepThreeForm.agentCardWIthHand" class="avatar">
+                                               :on-error="handleHandSuccess" :before-upload="beforeAvatarUpload" accept=".png,.jpeg,.jpg">
+                                        <img v-if="stepThreeForm.agentCardWIthHand" :src="$global.serverSrc+stepThreeForm.agentCardWIthHand" class="avatar">
                                         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                     </el-upload>
                                 </li>
@@ -537,18 +534,7 @@
                 selectedNum: [],    //已选号码列表
                 searchNumList: [],  //400号码模糊搜索列表
                 objCodeTable: [],  //增值表格
-                identityTypeList: [   //证件类型
-                    {
-                        value: '1',
-                        label: '营业执照'
-                    }, {
-                        value: '2',
-                        label: '组织机构代码证'
-                    }, {
-                        value: '3',
-                        label: '三证合一'
-                    }
-                ],
+                identityTypeList: [],   //证件类型
                 provinceId: '', //省id
                 cityId: '',  //城市id
                 provinceList: [],
@@ -666,7 +652,7 @@
             if (sessionStorage.getItem('businessIn') == 2 || sessionStorage.getItem('businessIn') == 3 || sessionStorage.getItem('businessIn') == 4) {
                 this.stepFourDetail();
             }
-
+            this.agentDocumentTypeList();
 
         },
         methods: {
@@ -730,25 +716,25 @@
             // 图片上传
             handleAvatarSuccess(res, file) {
                 if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {
-                    this.stepThreeForm.agentCardFront = this.$global.serverSrc + res;
+                    this.stepThreeForm.agentCardFront = res;
                 }
             },
             handleBackSuccess(res, file) {
                 if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {
-                    this.stepThreeForm.agentCardBack = this.$global.serverSrc + res;
+                    this.stepThreeForm.agentCardBack = res;
                 }
             },
             handleHandSuccess(res, file) {
                 if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {
-                    this.stepThreeForm.agentCardWIthHand = this.$global.serverSrc + res;
+                    this.stepThreeForm.agentCardWIthHand = res;
                 }
             },
             beforeAvatarUpload(file) {
-                const isJPG = file.type === 'image/jpeg';
+                const isJPG = file.type === 'image/jpeg' || file.type === 'image/jpg' || file.type === 'image/png';
                 const isLt2M = file.size / 1024 / 1024 < 2;
 
                 if (!isJPG) {
-                    this.$message.error('上传头像图片只能是 JPG 格式!');
+                    this.$message.error('上传头像图片只能是 JPG/PNG 格式!');
                 }
                 if (!isLt2M) {
                     this.$message.error('上传头像图片大小不能超过 2MB!');
@@ -774,6 +760,12 @@
             delObjCodes(index) {
                 // console.log(index);
                 this.objCodeList.splice(index, 1);
+                this.objCodeTable.map((item,index)=>{
+                    if(item.tariffName=='新增目的码'){
+                        item.numOfone--;
+                        this.$set(this.objCodeTable,index,item);
+                    }
+                })
             },
             // 选号
             addNumSave() {
@@ -1002,12 +994,24 @@
             // 优惠切换
             discountChange(val) {
                 console.log(val);
+                this.stepThreeForm.discounts =val.concessionName;
                 let disObj = val;
                 delete disObj.id;
                 this.disList = [];
                 disObj.amount = 1;
                 this.disList.push(disObj);
                 console.log(this.disList);
+            },
+
+            // 经办人证件类型
+            agentDocumentTypeList(){
+                this.$ajax.post('/vos/dic/getDicsByType',{
+                    "dicType":"documentType",
+                    "status":1
+                }).then((res)=>{
+                    console.log("经办人证件类型",res.data.dicList);
+                    this.identityTypeList = res.data.dicList;
+                })
             },
 
             // 选择400号码，添加到已选号码
@@ -1029,12 +1033,21 @@
             proChange(val) {
                 console.log(val);
                 this.provinceId = val;
+                this.provinceList.map((item)=>{
+                    if(item.provinceId == val){
+                        this.stepThreeForm.provinceBelong = item.province;
+                    }
+                });
                 this.getCitiesByProvinceId(this.provinceId);
             },
             cityChange(val) {
                 console.log(val);
                 this.cityId = val;
-                // this.getAreasByCityId();
+                this.cityList.map((item)=>{
+                    if(item.cityId == val){
+                        this.stepThreeForm.cityBelong = item.city;
+                    }
+                })
             },
             next(val, formName) {
                 if (val == 2) {

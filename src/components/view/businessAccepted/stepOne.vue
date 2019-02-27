@@ -42,16 +42,16 @@
 				</div>
 
 				<div class="regUrl">
-					<el-form-item label="注册地址：" class="identity" prop="registProvince">
-						<el-select v-model="acceptForm.registProvince" placeholder="请选择" size="mini" @change="proChange" :disabled="msgDisabled">
+					<el-form-item label="注册地址：" class="identity" prop="registProvinceId">
+						<el-select v-model="acceptForm.registProvinceId" placeholder="请选择" size="mini" :disabled="msgDisabled" @change="proChange">
 							<el-option v-for="item in registProvinceList" :key="item.provinceId" :label="item.province" :value="item.provinceId">
 							</el-option>
 						</el-select>
-						<el-select v-model="acceptForm.registCity" placeholder="请选择" size="mini" :disabled="msgDisabled" @change="cityChange">
+						<el-select v-model="acceptForm.registCityId" placeholder="请选择" size="mini" :disabled="msgDisabled" @change="cityChange">
 							<el-option v-for="item in registCityList" :key="item.cityId" :label="item.city" :value="item.cityId">
 							</el-option>
 						</el-select>
-						<el-select v-model="acceptForm.registArea" placeholder="请选择" :disabled="msgDisabled" size="mini" @change="areasChange">
+						<el-select v-model="acceptForm.registaAreaId" placeholder="请选择" :disabled="msgDisabled" size="mini" @change="areasChange">
 							<el-option v-for="item in registAreaList" :key="item.areaId" :label="item.area" :value="item.areaId">
 							</el-option>
 						</el-select>
@@ -63,14 +63,14 @@
 				</div>
 
 				<div class="businessAddress">
-					<el-form-item label="办公地址：" class="identity" prop="officeProvince">
-						<el-select v-model="acceptForm.officeProvince" placeholder="请选择" size="mini" @change="busProChange" :disabled="msgDisabled">
+					<el-form-item label="办公地址：" class="identity" prop="officeProvinceId">
+						<el-select v-model="acceptForm.officeProvinceId" placeholder="请选择" size="mini" @change="busProChange" :disabled="msgDisabled">
 							<el-option :label="item.province" :value="item.provinceId" v-for="item in busProvinceList" :key="item.provinceId"></el-option>
 						</el-select>
-						<el-select v-model="acceptForm.officeCity" placeholder="请选择" size="mini" prop="officeCity" @change="busCityChange" :disabled="msgDisabled">
+						<el-select v-model="acceptForm.officeCityId" placeholder="请选择" size="mini" prop="officeCity" @change="busCityChange" :disabled="msgDisabled">
 							<el-option :label="item.city" :value="item.cityId" v-for="item in busCityList" :key="item.cityId"></el-option>
 						</el-select>
-						<el-select v-model="acceptForm.officeArea" placeholder="请选择" size="mini" prop="officeArea" @change="busAreasChange" :disabled="msgDisabled">
+						<el-select v-model="acceptForm.officeAreaId" placeholder="请选择" size="mini" prop="officeArea" @change="busAreasChange" :disabled="msgDisabled">
 							<el-option :label="item.area" :value="item.areaId" v-for="item in busAreaList" :key="item.areaId"></el-option>
 						</el-select>
 						<div class="onlyInput" prop="officeAddress">
@@ -179,7 +179,7 @@
 
 					registProvinceId: '',
 					registCityId: '',
-					registAreaId: '',
+                    registaAreaId: '',
 					registAddress: '',
 					officeProvinceId: '',
 					officeCityId: '',
@@ -222,13 +222,13 @@
                     industryType: [
                         {type: 'string', required: true, message: '请选择行业类型', trigger: 'change'}
                     ],
-                    registProvince: [
+                    registProvinceId: [
                         {required: true, message: '请填写注册地址', trigger: 'change'}
                     ],
                     registAddress: [
                         {required: true, message: '请填入企业营业执照上的详细地址', trigger: 'blur'}
                     ],
-                    officeProvince: [
+                    officeProvinceId: [
                         {required: true, message: '请选择办公地址', trigger: 'blur'}
                     ],
                     officeAddress: [
@@ -267,13 +267,15 @@
                 busCityList: [],           //办公地址 --市
                 busAreaList: [],           //办公地址 --区
 
-                legalCardTypeList: [],     //法人证件类型
                 provinceId: '',    //省id
-                busProvinceId: '', //省id
                 cityId: '',        //城市id
-                busCityId: '',     //城市id
                 areasId: '',       //区id
+
+                busProvinceId: '', //省id
+                busCityId: '',     //城市id
                 busAreasId: '',    //区id
+
+                legalCardTypeList: [],     //法人证件类型
                 companyInfo: '',
                 firmNameShow: false, //企业名称列表
                 firmNameList: [],  //公司名称数组
@@ -318,13 +320,13 @@
             stepTwoDetail() {
                 console.log("this.company",this.company);
                 // 注冊地址
-                this.provinceId = this.company.registProvince;
-                this.cityId = this.company.registCity;
-                this.areaId = this.company.registArea;
+                this.provinceId = this.company.registProvinceId;
+                this.cityId = this.company.registCityId;
+                this.areasId = this.company.registaAreaId;
                 // 办公地址
-                this.busProvinceId = this.company.officeProvince;
-                this.busCityId = this.company.officeCity;
-                this.busAreasId = this.company.officeArea;
+                this.busProvinceId = this.company.officeProvinceId;
+                this.busCityId = this.company.officeCityId;
+                this.busAreasId = this.company.officeAreaId;
 
                 this.company.idIndate=[];
                 this.company.idIndate[0] = this.company.cardStartDate;
@@ -348,7 +350,7 @@
                         this.$emit('childNext', 2);
                         // 改变vuex的值
                         this.ChangeCompanyStatus(this.acceptForm);
-                        // console.log(this.company);
+                        console.log(this.company);
                         // this.business.companyName = this.acceptForm.companyName;
                         // console.log(this.business);
                         if (this.firmNameList.some((item) => {
@@ -510,8 +512,8 @@
             },
             getCitiesByProvinceIdTwo() {
                 this.$ajax.get('/vos/address/getCitiesByProvinceId?provinceId=' + this.busProvinceId).then((res) => {
-                    console.log(res.data);
-                    if ("busCityList",res.code == 200) {
+                    console.log("busCityList",res.data);
+                    if (res.code == 200) {
                         this.busCityList = res.data;
                         this.getAreasByCityIdTwo();
                     }
@@ -533,44 +535,48 @@
 
             // 注册地址的省市区切换事件
             proChange(val) {
-                // console.log(val);
+                console.log(val);
                 this.provinceId = val;
                 this.registProvinceList.map((item)=>{
                     if(item.provinceId == val){
-                        this.registProvince = val.province;
+                        this.acceptForm.registProvince = item.province;
+                        console.log("registProvince",item.province);
+                        console.log("registProvince",this.acceptForm.registProvince);
 					}
 				});
                 this.getCitiesByProvinceId();
             },
+
             cityChange(val) {
                 console.log(val);
                 this.cityId = val;
                 this.registCityList.map((item)=>{
                     if((item.cityId == val)){
-                        this.registCityName = val.city;
+                        this.acceptForm.registCity = item.city;
 					}
 				});
                 this.getAreasByCityId();
             },
             areasChange(val) {
                 // console.log(val);
-                this.areaId = val;
+                this.areasId = val;
                 this.registAreaList.map((item)=>{
                     if(item.areaId == val){
-                        this.registAreaName = val.area;
+                        this.acceptForm.registArea = item.area;
                     }
 				})
             },
 
-			// 办公地址的省市区切换事件
+            // 办公地址的省市区切换事件
             busProChange(val) {
-                // console.log(val);
+                console.log(val);
                 this.busProvinceId = val;
-                this.busProvinceList((item)=>{
+                console.log("busProvinceList",this.busProvinceList);
+                this.busProvinceList.map((item)=>{
                     if(item.provinceId == val){
-                        this.busProvinceName = val.province;
-					}
-				});
+                        this.acceptForm.officeProvince = item.province;
+                    }
+                });
                 this.getCitiesByProvinceIdTwo();
             },
             busCityChange(val) {
@@ -578,17 +584,17 @@
                 this.busCityId = val;
                 this.busCityList.map((item)=>{
 					if(item.cityId == val){
-                        this.busCityName = val.city;
+                        this.acceptForm.officeCity = item.city;
 					}
 				});
                 this.getAreasByCityIdTwo();
             },
             busAreasChange(val) {
                 // console.log(val);
-                this.areasId = val;
+                this.busAreasId = val;
                 this.busAreaList.map((item)=>{
                     if(item.areaId ==val){
-                        this.busAreaName = val.area;
+                        this.acceptForm.officeArea = item.area;
 					}
 				})
             },
