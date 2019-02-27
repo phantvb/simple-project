@@ -12,16 +12,16 @@
 						<el-input v-model="form.phoneNum" size="mini"></el-input>
 					</el-form-item>
 
-					<!--<el-form-item label="时间：">-->
-					<!--<el-date-picker-->
-					<!--size="mini"-->
-					<!--v-model="form.time"-->
-					<!--type="daterange"-->
-					<!--range-separator="至"-->
-					<!--start-placeholder="开始日期"-->
-					<!--end-placeholder="结束日期">-->
-					<!--</el-date-picker>-->
-					<!--</el-form-item>-->
+					<el-form-item label="业务来源：">
+						<el-select v-model="form.source" placeholder="请选择" size="mini">
+							<el-option
+									v-for="item in sourceList"
+									:key="item.value"
+									:label="item.label"
+									:value="item.value">
+							</el-option>
+						</el-select>
+					</el-form-item>
 
 					<el-form-item label="时间：">
 						<div class="block">
@@ -35,19 +35,6 @@
 							</el-date-picker>
 						</div>
 					</el-form-item>
-
-					<el-form-item label="业务来源：">
-						<el-select v-model="form.source" placeholder="请选择" size="mini">
-							<el-option
-									v-for="item in sourceList"
-									:key="item.value"
-									:label="item.label"
-									:value="item.value">
-							</el-option>
-						</el-select>
-					</el-form-item>
-
-
 
 					<el-form-item class="searchBtn">
 						<el-button type="primary" size="mini" @click="entireLists()" v-if="authority.indexOf(102)!=-1">搜索</el-button>
@@ -74,7 +61,7 @@
 				</div>
 			</div>
 
-			<el-table :data="tableData" style="width: 100%">
+			<el-table :data="tableData" style="width: 100%" :cell-class-name="cellClass">
 				<el-table-column prop="type" label="类型" width="100">
 				</el-table-column>
 
@@ -93,6 +80,9 @@
 				<el-table-column
 						prop="busStatus"
 						label="状态">
+					<template slot-scope="scope">
+						<span :style="{color:scope.row.color}" size="mini" type="text">{{scope.row.busStatus}}</span>
+					</template>
 				</el-table-column>
 
 				<el-table-column label="操作">
@@ -211,6 +201,11 @@
                     console.log(this.pageObj.total);
                 })
             },
+            cellClass({row, column, rowIndex, columnIndex}){
+                if(rowIndex==1&&columnIndex==6){
+                    return 'fontColor';
+				}
+			},
             // 全部表格
             entireLists() {
                 console.log(this.form.time[0]);
@@ -244,7 +239,8 @@
                     this.tableData.map((item) => {
                         //判断操作
                         if(item.status=='Wait_To_Audit'){
-                            item.busStatus='等待送审';
+                            item.busStatus = '等待送审';
+                            item.color = '#67C23A';
                             item.btnList=[];
                             if((this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username) && item.business.source == "ali"){
                                 item.btnList.push({label:'详情'},{label:'删除'});
@@ -255,6 +251,7 @@
                             }
                         }else if(item.status=='Audit_Success'){
                             item.busStatus='通过审核';
+                            item.color = '#67C23A';
                             item.btnList=[];
                             if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
                                 if(item.type=='Business' && item.business.source == "ali"){
@@ -265,11 +262,9 @@
                                     item.btnList.push({label:'详情'});
                                 }
                             }
-                            // else{
-                            //     item.btnList.push({label:'详情'});
-                            // }
                         }else if(item.status=='Business_Auditing' || item.status=='DestNum_Auditing'|| item.status=='Voice_Auditing'){
                             item.busStatus='审核中';
+                            item.color = '#F56C6C';
                             item.btnList=[];
                             if(this.baseData.roleName=='ROLE_admin' || item.assigneeRole==this.baseData.roleName){
                                 item.btnList.push({label:'通过审核'},{label:'驳回'},{label:'详情'});
@@ -278,6 +273,7 @@
                             }
                         }else if(item.status=='Modify_Auditing'){
                             item.busStatus='变更审核中';
+                            item.color = '#F56C6C';
                             item.btnList=[];
                             if(this.baseData.roleName=='ROLE_admin' || item.assigneeRole==this.baseData.roleName){
                                 item.btnList.push({label:'变更审核通过'},{label:'驳回'},{label:'终止'},{label:'详情'});
@@ -286,6 +282,7 @@
                             }
                         }else if(item.status=='Modify_Rejected'){
                             item.busStatus='变更审核驳回';
+                            item.color = '#F56C6C';
                             item.btnList=[];
                             if((this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username) && item.business.source == "ali"){
                                 item.btnList.push({label:'注销'},{label:'详情'});
@@ -296,6 +293,7 @@
                             }
                         }else if(item.status=='Canceling_Auditing'){
                             item.busStatus='注销审核';
+                            item.color = '#F56C6C';
                             item.btnList=[];
                             if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
                                 item.btnList.push({label:'通过审核'},{label:'驳回'},{label:'终止'},{label:'详情'});
@@ -304,10 +302,12 @@
                             }
                         }else if(item.status=='Cancelled'){
                             item.busStatus='已注销';
+                            item.color = '#67C23A';
                             item.btnList=[];
                             item.btnList.push({label:'详情'});
                         }else if(item.status=='Terminate_Flow'){
                             item.busStatus='受理终止';
+                            item.color = '#F56C6C';
                             item.btnList=[];
                             item.btnList.push({label:'详情'});
                         }

@@ -176,14 +176,23 @@
 					companyCharacter: '',
 					companyRank: '',
 					industryType: '',
-					registProvince: '',
-					registCity: '',
-					registArea: '',
+
+					registProvinceId: '',
+					registCityId: '',
+					registAreaId: '',
 					registAddress: '',
-					officeProvince: '',
-					officeCity: '',
-					officeArea: '',
-					officeAddress: '',
+					officeProvinceId: '',
+					officeCityId: '',
+					officeAreaId: '',
+
+                    registProvince:'',         //注册地址 --省名称
+                    registCity:'',             //注册地址 --市名称
+                    registArea:'',             //注册地址 --区名称
+                    officeProvince:'',         //办公地址 --省名称
+                    officeCity:'',             //办公地址 --市名称
+                    officeArea    :'',         //办公地址 --区名称
+                    officeAddress: '',
+
 					phone: '',
 					legalPerson: '',
 					legalPhone: '',
@@ -251,12 +260,13 @@
                 companyCardNoList: [],     //证件类型
                 companyRankList: [],       //企业等级
                 industryTypeList: [],      //行业类型
-                registProvinceList: [],    //省列表
-                registCityList: [],        //市列表
-                registAreaList: [],        //区列表
+                registProvinceList: [],    //注册地址 --省
+                registCityList: [],        //注册地址 --市
+                registAreaList: [],        //注册地址 --区
                 busProvinceList: [],       //办公地址 --省
                 busCityList: [],           //办公地址 --市
                 busAreaList: [],           //办公地址 --区
+
                 legalCardTypeList: [],     //法人证件类型
                 provinceId: '',    //省id
                 busProvinceId: '', //省id
@@ -282,6 +292,7 @@
             this.companyCardTypeLists();
             this.legalCardTypeLists();
             this.getAllProvince();
+            this.getAllProvinceTwo();
             this.getCitiesByProvinceId();
             this.getAreasByCityId();
             if (sessionStorage.getItem('businessIn') == 2 || sessionStorage.getItem('businessIn') == 3 ||sessionStorage.getItem('businessIn') == 4) {
@@ -305,7 +316,16 @@
         methods: {
             // 详情
             stepTwoDetail() {
-                // console.log("this.company",this.company);
+                console.log("this.company",this.company);
+                // 注冊地址
+                this.provinceId = this.company.registProvince;
+                this.cityId = this.company.registCity;
+                this.areaId = this.company.registArea;
+                // 办公地址
+                this.busProvinceId = this.company.officeProvince;
+                this.busCityId = this.company.officeCity;
+                this.busAreasId = this.company.officeArea;
+
                 this.company.idIndate=[];
                 this.company.idIndate[0] = this.company.cardStartDate;
                 this.company.idIndate[1] = this.company.cardEndDate;
@@ -314,16 +334,6 @@
             },
             // 下一步
             next(formName) {
-                // // console.log("acceptForm.idIndate[0]",this.acceptForm.idIndate[0]);
-                // // console.log("acceptForm.idIndate[1]",this.acceptForm.idIndate[1]);
-                // var d1 = this.acceptForm.idIndate[0];
-                // var d2 = this.acceptForm.idIndate[1];
-                // var timeStart = (d1.getFullYear() + '-' + (d1.getMonth() + 1) + '-' + d1.getDate()).toString();
-                // var timeEnd = (d2.getFullYear() + '-' + (d2.getMonth() + 1) + '-' + d2.getDate()).toString();
-                // this.acceptForm.idIndate[0] = timeStart;
-                // this.acceptForm.idIndate[1] = timeEnd;
-                // // console.log("this.acceptForm.idIndate[0]",this.acceptForm.idIndate[0]);
-                // // console.log("this.acceptForm.idIndate[1]",this.acceptForm.idIndate[1]);
                 // this.$refs[formName].validate((valid) => {
                 //     if (valid) {
                         // 保存companyId到vuex
@@ -356,7 +366,7 @@
 
             },
             change123(event) {
-                // console.log("event", event);
+                console.log("event", event);
                 // console.log("acceptForm.legalCard", this.acceptForm.legalCard);
             },
 
@@ -471,67 +481,117 @@
             // 省
             getAllProvince() {
                 this.$ajax.get('/vos/address/getAllProvince').then((res) => {
-                    // console.log(res.data);
+                    console.log("registProvinceList",res.data);
                     if (res.code == 200) {
                         this.registProvinceList = res.data;
-                        this.busProvinceList = res.data;
-                        this.provinceId=this.registProvinceList[0].cityId;
                         this.getCitiesByProvinceId();
+                    }
+                })
+            },
+
+            getAllProvinceTwo() {
+                this.$ajax.get('/vos/address/getAllProvince').then((res) => {
+                    console.log("busProvinceList",res.data);
+                    if (res.code == 200) {
+                        this.busProvinceList = res.data;
+                        this.getCitiesByProvinceIdTwo();
                     }
                 })
             },
             // 市
             getCitiesByProvinceId() {
                 this.$ajax.get('/vos/address/getCitiesByProvinceId?provinceId=' + this.provinceId).then((res) => {
-                    // console.log(res.data);
+                    console.log("registCityList",res.data);
                     if (res.code == 200) {
                         this.registCityList = res.data;
-                        this.busCityList = res.data;
                         this.getAreasByCityId();
+                    }
+                })
+            },
+            getCitiesByProvinceIdTwo() {
+                this.$ajax.get('/vos/address/getCitiesByProvinceId?provinceId=' + this.busProvinceId).then((res) => {
+                    console.log(res.data);
+                    if ("busCityList",res.code == 200) {
+                        this.busCityList = res.data;
+                        this.getAreasByCityIdTwo();
                     }
                 })
             },
             // 区
             getAreasByCityId() {
                 this.$ajax.get('/vos/address/getAreasByCityId?cityId=' + this.cityId).then((res) => {
-                    // console.log(res.data);
+                    console.log("registAreaList",res.data);
                     this.registAreaList = res.data;
+                })
+            },
+            getAreasByCityIdTwo() {
+                this.$ajax.get('/vos/address/getAreasByCityId?cityId=' + this.busCityId).then((res) => {
+                    console.log("busAreaList",res.data);
                     this.busAreaList = res.data;
                 })
             },
 
-            // 省份切换
+            // 注册地址的省市区切换事件
             proChange(val) {
                 // console.log(val);
                 this.provinceId = val;
+                this.registProvinceList.map((item)=>{
+                    if(item.provinceId == val){
+                        this.registProvince = val.province;
+					}
+				});
                 this.getCitiesByProvinceId();
             },
+            cityChange(val) {
+                console.log(val);
+                this.cityId = val;
+                this.registCityList.map((item)=>{
+                    if((item.cityId == val)){
+                        this.registCityName = val.city;
+					}
+				});
+                this.getAreasByCityId();
+            },
+            areasChange(val) {
+                // console.log(val);
+                this.areaId = val;
+                this.registAreaList.map((item)=>{
+                    if(item.areaId == val){
+                        this.registAreaName = val.area;
+                    }
+				})
+            },
+
+			// 办公地址的省市区切换事件
             busProChange(val) {
                 // console.log(val);
-                this.provinceId = val;
-                this.getCitiesByProvinceId();
-            },
-            //市切换
-            cityChange(val) {
-                // console.log(val);
-                this.cityId = val;
-                this.getAreasByCityId();
+                this.busProvinceId = val;
+                this.busProvinceList((item)=>{
+                    if(item.provinceId == val){
+                        this.busProvinceName = val.province;
+					}
+				});
+                this.getCitiesByProvinceIdTwo();
             },
             busCityChange(val) {
                 // console.log(val);
-                this.cityId = val;
-                this.getAreasByCityId();
-            },
-            //区切换
-            areasChange(val) {
-                // console.log(val);
-                this.areasId = val;
+                this.busCityId = val;
+                this.busCityList.map((item)=>{
+					if(item.cityId == val){
+                        this.busCityName = val.city;
+					}
+				});
+                this.getAreasByCityIdTwo();
             },
             busAreasChange(val) {
                 // console.log(val);
                 this.areasId = val;
+                this.busAreaList.map((item)=>{
+                    if(item.areaId ==val){
+                        this.busAreaName = val.area;
+					}
+				})
             },
-
 
 			// 存vuex更新企业信息模块入参
 			ChangeCompanyStatus(val) {
