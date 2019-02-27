@@ -105,7 +105,7 @@
 				delete data.charge;
 				delete data.concession;
 				data.number400 = data.number400.number400;
-				if (this.form.number400 == '' || !this.form.charge.timePacketName || !this.form.concession.concessionName) {
+				if (this.form.number400 == '' || !this.form.charge.timePacketName) {
 					this.$message({
 						message: '请先完善信息',
 						type: 'warning'

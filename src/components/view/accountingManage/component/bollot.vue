@@ -163,6 +163,9 @@
 				})
 			},
 			submit() {
+				this.recordData.map(item => {
+					item.haveInvoice == item.haveInvoice || 0;
+				});
 				this.$ajax.post('/vos/accountsTotal/confirmInvoice', { realReceives: this.recordData, accountType: 'Total', id: this.data.id }).then(res => {
 					if (res.code == 200) {
 						this.$message.success('操作成功');
@@ -178,7 +181,7 @@
 					companyName: '',
 					expressName: '',
 					expressNo: '',
-					haveInvoice: '',
+					haveInvoice: 0,
 					id: '',
 					invoiceDate: '',
 					invoiceNo: '',

@@ -60,7 +60,7 @@
 			<el-table v-show="billType==1" :data="tableData" style="width: 100%;margin-bottom:15px;">
 				<el-table-column type="selection" width="55"></el-table-column>
 				<el-table-column prop="month" label="月份" min-width="80">
-					<template slot-scope="scope">{{scope.row.year+'-'+scope.row.month}}</template>
+					<template slot-scope="scope">{{scope.row.monthTime.substring(0,7)}}</template>
 				</el-table-column>
 				<el-table-column prop="usedTime" label="当月使用时长(秒)" min-width="100"></el-table-column>
 				<el-table-column prop="usedMinutes" label="当月使用分钟数" min-width="100"></el-table-column>
@@ -143,15 +143,14 @@
 						if (res.code == 200) {
 							res.data.ValueAddedList.map((item) => {
 								item.amount = item.numOfMonth;
-								item.numOfOne = item.numOfOne;
 								if (item.units == "perMonth") {
 									item.unit = item.valueAddedFee + "元/月";
 									item.amounts = item.amount + "月";
 								} else if (item.units == "perOne") {
-									item.unit = "元/个";
+									item.unit = item.valueAddedFee + "元/个";
 									item.amounts = item.numOfOne + "个";
 								} else if (item.units == "perMonthOne") {
-									item.unit = item.numOfOne + "元/月/个";
+									item.unit = item.valueAddedFee + item.numOfOne + "元/月/个";
 									item.amounts = item.amount + "月" + item.numOfOne + "个";
 								}
 

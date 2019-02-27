@@ -391,7 +391,7 @@
 					confirmButtonText: '确定',
 					cancelButtonText: '取消'
 				}).then(({ value }) => {
-					return value || '';
+					return value ? value : false;
 				}).catch(() => {
 					this.$message({
 						type: 'info',
