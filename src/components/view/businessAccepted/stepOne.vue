@@ -43,15 +43,15 @@
 
 				<div class="regUrl">
 					<el-form-item label="注册地址：" class="identity" prop="registProvince">
-						<el-select v-model="acceptForm.registProvince" placeholder="请选择" size="mini" @change="proChange" :disabled="msgDisabled">
+						<el-select v-model="acceptForm.registProvinceId" placeholder="请选择" size="mini" @change="proChange" :disabled="msgDisabled">
 							<el-option v-for="item in registProvinceList" :key="item.provinceId" :label="item.province" :value="item.provinceId">
 							</el-option>
 						</el-select>
-						<el-select v-model="acceptForm.registCity" placeholder="请选择" size="mini" :disabled="msgDisabled" @change="cityChange">
+						<el-select v-model="acceptForm.registCityId" placeholder="请选择" size="mini" :disabled="msgDisabled" @change="cityChange">
 							<el-option v-for="item in registCityList" :key="item.cityId" :label="item.city" :value="item.cityId">
 							</el-option>
 						</el-select>
-						<el-select v-model="acceptForm.registArea" placeholder="请选择" :disabled="msgDisabled" size="mini" @change="areasChange">
+						<el-select v-model="acceptForm.registAreaId" placeholder="请选择" :disabled="msgDisabled" size="mini" @change="areasChange">
 							<el-option v-for="item in registAreaList" :key="item.areaId" :label="item.area" :value="item.areaId">
 							</el-option>
 						</el-select>
@@ -64,13 +64,13 @@
 
 				<div class="businessAddress">
 					<el-form-item label="办公地址：" class="identity" prop="officeProvince">
-						<el-select v-model="acceptForm.officeProvince" placeholder="请选择" size="mini" @change="busProChange" :disabled="msgDisabled">
+						<el-select v-model="acceptForm.officeProvinceId" placeholder="请选择" size="mini" @change="busProChange" :disabled="msgDisabled">
 							<el-option :label="item.province" :value="item.provinceId" v-for="item in busProvinceList" :key="item.provinceId"></el-option>
 						</el-select>
-						<el-select v-model="acceptForm.officeCity" placeholder="请选择" size="mini" prop="officeCity" @change="busCityChange" :disabled="msgDisabled">
+						<el-select v-model="acceptForm.officeCityId" placeholder="请选择" size="mini" prop="officeCity" @change="busCityChange" :disabled="msgDisabled">
 							<el-option :label="item.city" :value="item.cityId" v-for="item in busCityList" :key="item.cityId"></el-option>
 						</el-select>
-						<el-select v-model="acceptForm.officeArea" placeholder="请选择" size="mini" prop="officeArea" @change="busAreasChange" :disabled="msgDisabled">
+						<el-select v-model="acceptForm.officeAreaId" placeholder="请选择" size="mini" prop="officeArea" @change="busAreasChange" :disabled="msgDisabled">
 							<el-option :label="item.area" :value="item.areaId" v-for="item in busAreaList" :key="item.areaId"></el-option>
 						</el-select>
 						<div class="onlyInput" prop="officeAddress">
