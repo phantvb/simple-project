@@ -1,7 +1,7 @@
 <template>
 	<div v-loading="loading">
 		<div>
-			<el-button type="primary" style="float: left;" @click="showAddTimePacket">
+			<el-button type="primary" style="float: left;" @click="showAddTimePacket" v-if="permission.indexOf(43)!=-1">
 				<i class="el-icon-plus">&nbsp;新增时长包方案</i>
 			</el-button>
 		</div>
@@ -20,8 +20,8 @@
 											<el-form-item label="拨打时长：" class="add-item">{{dTableData1[index].dialingTime}}分钟</el-form-item>
 											<div style="border-top: 1px solid #f5f5f5;">
 												<div style="float: right;">
-													<el-button type="text" class="button" @click="updateTimePacket(0,index)">编辑</el-button>
-													<el-button type="text" class="button" @click="deleteInfo(dTableData1[index].id,'delTimePacket')">删除</el-button>
+													<el-button type="text" class="button" @click="updateTimePacket(0,index)" v-if="permission.indexOf(41)!=-1">编辑</el-button>
+													<el-button type="text" class="button" @click="deleteInfo(dTableData1[index].id,'delTimePacket')" v-if="permission.indexOf(42)!=-1">删除</el-button>
 												</div>
 											</div>
 										</el-form>
@@ -122,7 +122,8 @@
 				disabledChannel: false,
 				loading: false
 			};
-		},
+        },
+        props:["permission"],
 		methods: {
 			showAddTimePacket() {
 				this.addTimePacketFormDialogVisible = true;

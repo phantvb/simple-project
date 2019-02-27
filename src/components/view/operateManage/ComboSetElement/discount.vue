@@ -2,7 +2,7 @@
 	<div v-loading="loading">
 		<div>
 			<el-button type="primary" style="float: left;" @click="showAddDiscount">
-				<i class="el-icon-plus">&nbsp;新增优惠方案</i>
+				<i class="el-icon-plus" v-if="permission.indexOf(43)!=-1">&nbsp;新增优惠方案</i>
 			</el-button>
 		</div>
 		<div style="clear: both;"></div>
@@ -25,8 +25,8 @@
 											<div style="height:40px;" v-if="cTableData1[index].rechargeLimit"></div>
 											<div style="border-top: 1px solid #f5f5f5;">
 												<div style="float: right;">
-													<el-button type="text" class="button" @click="updateDiscount(0,index)">编辑</el-button>
-													<el-button type="text" class="button" @click="deleteInfo(cTableData1[index].id,'delConcessionScheme')">删除</el-button>
+													<el-button type="text" class="button" @click="updateDiscount(0,index)" v-if="permission.indexOf(41)!=-1">编辑</el-button>
+													<el-button type="text" class="button" @click="deleteInfo(cTableData1[index].id,'delConcessionScheme')" v-if="permission.indexOf(42)!=-1">删除</el-button>
 												</div>
 											</div>
 										</el-form>
@@ -180,7 +180,8 @@
 				disabledChannel: false,
 				loading: false
 			};
-		},
+        },
+        props:["permission"],
 		methods: {
 			showAddDiscount() {
 				this.addDiscountFormDialogVisible = true;

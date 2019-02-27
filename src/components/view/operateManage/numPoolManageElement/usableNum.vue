@@ -1,6 +1,6 @@
 <template>
 	<div id="usableNum">
-		<div class="search">
+		<div class="search" v-if="permission.indexOf(50)!=-1">
 			<el-form ref="usableNumForm" :model="usableNumForm" style="padding:9px 9px;">
 				<el-form-item style="float: left;margin-left: 15px;">
 					<span class="demonstration">400号码：</span>
@@ -22,15 +22,15 @@
 
 		<div class="buttonDiv">
 			<div style="float: left;">
-				<el-button type="primary" size="mini" @click="showAddNum">
+				<el-button type="primary" size="mini" @click="showAddNum" v-if="permission.indexOf(54)!=-1">
 					<i class="el-icon-plus">&nbsp;新增400号码</i>
 				</el-button>
-				<el-button type="primary" plain size="mini" @click="batchDelete">批量删除</el-button>
+				<el-button type="primary" plain size="mini" @click="batchDelete" v-if="permission.indexOf(53)!=-1">批量删除</el-button>
 			</div>
 			<div style="float: right;">
 				<el-button type="text" size="mini" style="float:left;" @click="downloadTemplate">批量导入Excel 模板下载</el-button>
-				<el-button type="primary" plain size="mini" @click="exportInfo">导出</el-button>
-				<el-upload class="upload-demo" style="float:left;margin-left:10px;" :show-file-list=false :with-credentials="true" action="/vos/excel/importNumber400" :on-success="uploaded">
+				<el-button type="primary" plain size="mini" @click="exportInfo" v-if="permission.indexOf(51)!=-1">导出</el-button>
+				<el-upload class="upload-demo" style="float:left;margin-left:10px;" :show-file-list=false :with-credentials="true" action="/vos/excel/importNumber400" :on-success="uploaded" v-if="permission.indexOf(114)!=-1">
 					<el-button type="primary" plain size="mini">批量导入</el-button>
 				</el-upload>
 			</div>
@@ -44,8 +44,8 @@
 				<el-table-column prop="tariffName" label="关联套餐" min-width="200"></el-table-column>
 				<el-table-column label="操作" min-width="80">
 					<template slot-scope="scope">
-						<el-button size="mini" type="text" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-						<el-button size="mini" type="text" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+						<el-button size="mini" type="text" @click="handleEdit(scope.$index, scope.row)" v-if="permission.indexOf(52)!=-1">编辑</el-button>
+						<el-button size="mini" type="text" @click="handleDelete(scope.$index, scope.row)" v-if="permission.indexOf(53)!=-1">删除</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
@@ -174,7 +174,8 @@
 				updateData: "none", // 编辑和新增公用一个弹窗控制按钮显示
 				submitData: "inline-block",
 
-				id: "" // 存放编辑时的id
+                id: "", // 存放编辑时的id
+                permission:[]
 			};
 		},
 		// props:['status'],
@@ -713,7 +714,10 @@
 			}
 		},
 		created() {
-			this.loadData();
+            this.loadData();
+			this.$store.getters.getPermission(location.hash.replace(/#/, '')).map(item => {
+                this.permission.push(item.id);
+            });
 		}
 	};
 </script>

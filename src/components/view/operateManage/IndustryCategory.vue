@@ -8,7 +8,7 @@
 		</header>
 		<div style="margin-top: 15px;overflow: hidden;">
 			<div style="float: left;">
-				<el-button type="primary" size="mini" @click="showAddDialog">
+				<el-button type="primary" size="mini" @click="showAddDialog" v-if="permission.indexOf(40)!=-1">
 					<i class="el-icon-plus">&nbsp;新增行业类别</i>
 				</el-button>
 			</div>
@@ -22,8 +22,8 @@
 			<el-checkbox class="checkbox" v-model="tableData[index].status" disabled></el-checkbox>
 			<span class="itemTitle">{{tableData[index].dicValue}}</span>
 			<div class="deleteBtn">
-				<el-button type="text" @click="updateItem(index)">编辑</el-button>
-				<el-button type="text" @click="deleteItem(index)">删除</el-button>
+				<el-button type="text" @click="updateItem(index)" v-if="permission.indexOf(38)!=-1">编辑</el-button>
+				<el-button type="text" @click="deleteItem(index)" v-if="permission.indexOf(39)!=-1">删除</el-button>
 			</div>
 		</div>
 
@@ -75,7 +75,8 @@
 
 				updateData: "none", // 编辑和新增公用一个弹窗控制按钮显示
 				submitData: "inline-block",
-				loading: false
+                loading: false,
+                permission: []
 			};
 		},
 		methods: {
@@ -99,13 +100,7 @@
 						message: "存在空字段!"
 					});
 				} else {
-					let status;
-					if (this.addIndustryCategory.radio == 1) {
-						status = "show";
-					}
-					if (this.addIndustryCategory.radio == 2) {
-						status = "hidden";
-					}
+					
 					this.$ajax
 						.post(
 							"/vos/dic/addDic?dicKey=" +
@@ -113,7 +108,7 @@
 							"&dicValue=" +
 							this.addIndustryCategory.name +
 							"&dicType=industry_category&status=" +
-							status
+							this.addIndustryCategory.radio
 						)
 						.then(res => {
 							if (res.code == 200) {
@@ -162,19 +157,13 @@
 						message: "存在空字段!"
 					});
 				} else {
-					let status;
-					if (this.addIndustryCategory.radio == 1) {
-						status = "show";
-					}
-					if (this.addIndustryCategory.radio == 2) {
-						status = "hidden";
-					}
+					
 					this.$ajax
 						.post(
 							"/vos/dic/editDic?dicValue=" +
 							this.addIndustryCategory.name +
 							"&dicType=industry_category&status=" +
-							status +
+							this.addIndustryCategory.radio +
 							"&id=" +
 							this.id
 						)
@@ -235,10 +224,10 @@
 							this.totalCount = res.data.totalCount;
 							this.tableData = res.data.dicList;
 							for (let i = 0; i < this.totalCount; i++) {
-								if (this.tableData[i].status == "show") {
+								if (this.tableData[i].status == "1") {
 									this.tableData[i].status = true;
 								}
-								if (this.tableData[i].status == "hidden") {
+								if (this.tableData[i].status == "2") {
 									this.tableData[i].status = false;
 								}
 							}
@@ -248,7 +237,10 @@
 			}
 		},
 		created() {
-			this.loadData();
+            this.loadData();
+			this.$store.getters.getPermission(location.hash.replace(/#/, '')).map(item => {
+                this.permission.push(item.id);
+            });
 		}
 	};
 </script>

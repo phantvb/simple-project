@@ -1,7 +1,7 @@
 <template>
 	<div v-loading="loading">
 		<div>
-			<el-button type="primary" style="float: left;" @click="showAddCombo">
+			<el-button type="primary" style="float: left;" @click="showAddCombo" v-if="permission.indexOf(43)!=-1">
 				<i class="el-icon-plus">&nbsp;新增增值服务套餐</i>
 			</el-button>
 		</div>
@@ -25,8 +25,8 @@
 											</el-form-item>
 											<div style="border-top: 1px solid #f5f5f5;">
 												<div style="float: right;">
-													<el-button type="text" class="button" @click="updateTariff(0,index)">编辑</el-button>
-													<el-button type="text" class="button" :style="'display:'+bTableData1[index].type+';'" @click="deleteInfo(bTableData1[index].id,'delValueAdded')">删除</el-button>
+													<el-button type="text" class="button" @click="updateTariff(0,index)" v-if="permission.indexOf(41)!=-1">编辑</el-button>
+													<el-button type="text" class="button" :style="'display:'+bTableData1[index].type+';'" @click="deleteInfo(bTableData1[index].id,'delValueAdded')" v-if="permission.indexOf(42)!=-1">删除</el-button>
 												</div>
 											</div>
 										</el-form>
@@ -163,7 +163,8 @@
 				disabledChannel: false,
 				loading: false
 			};
-		},
+        },
+        props:["permission"],
 		methods: {
 			showAddCombo() {
 				this.addComboFromDialogVisible = true;
