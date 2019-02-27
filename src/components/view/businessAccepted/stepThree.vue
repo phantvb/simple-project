@@ -381,22 +381,23 @@
                                         width="250">
                                     <template slot-scope="scope">
                                         <el-input-number
+                                                v-if="scope.row.units=='perMonthOne' || scope.row.units=='perMonth'"
                                                 size="mini"
                                                 v-model="scope.row.numOfMonth"
                                                 @change="handleChange(scope.row,scope.$index)"
                                                 :min="1"
                                                 label="描述文字">
                                         </el-input-number>
-                                        <span>{{scope.row.cost}}</span>
+                                        <span v-if="scope.row.units=='perMonthOne' || scope.row.units=='perMonth'">{{scope.row.cost}}</span>
                                         <el-input-number
-                                                v-if="scope.row.units=='perMonthOne'"
+                                                v-if="scope.row.units=='perMonthOne'|| scope.row.units=='perOne'"
                                                 size="mini"
                                                 v-model="scope.row.numOfone"
                                                 @change="handleChange(scope.row,scope.$index)"
                                                 :min="1"
                                                 label="描述文字">
                                         </el-input-number>
-                                        <span v-if="scope.row.units=='perMonthOne'">{{scope.row.cost2}}</span>
+                                        <span v-if="scope.row.units=='perMonthOne'||scope.row.units=='perOne'">{{scope.row.cost2}}</span>
                                     </template>
                                 </el-table-column>
 
@@ -687,14 +688,14 @@
                 // console.log(`当前页: ${val}`);
             },
             // 数量变化
-            handleChange(value, index) {
+            handleChange(value, index1) {
                 console.log(value);
                 console.log(this.objCodeTable);
                 console.log(this.valueAdd);
-                this.$set(this.objCodeTable, index, value);
+                this.$set(this.objCodeTable, index1, value);
                 this.valueAdd.map((item, index) => {
                     if (item.valueAddedId == value.id) {
-                        this.valueAdd[index] = value;
+                        this.valueAdd[index] = this.objCodeTable[index1];
                     }
                 });
                 // this.stepThreeForm.amount = value;
@@ -713,7 +714,9 @@
                     obj.remarks = item.remarks;
                     obj.valueAddedFee = item.tariffFee;
                     obj.units = item.units;
-                    obj.numOfMonth = item.numOfMonth;
+                    if(item.units != 'perOne'){
+                        obj.numOfMonth = item.numOfMonth;
+                    }
                     obj.unitsName = item.unitsName;
                     obj.presentsName = item.presentsName;
                     // obj.numOfone = item.numOfone;
@@ -729,19 +732,16 @@
                 if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {
                     this.stepThreeForm.agentCardFront = this.$global.serverSrc + res;
                 }
-                // this.stepThreeForm.agentCardFront = URL.createObjectURL(file.raw);
             },
             handleBackSuccess(res, file) {
                 if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {
                     this.stepThreeForm.agentCardBack = this.$global.serverSrc + res;
                 }
-                // this.stepThreeForm.agentCardBack = URL.createObjectURL(file.raw);
             },
             handleHandSuccess(res, file) {
                 if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {
                     this.stepThreeForm.agentCardWIthHand = this.$global.serverSrc + res;
                 }
-                // this.stepThreeForm.agentCardWIthHand = URL.createObjectURL(file.raw);
             },
             beforeAvatarUpload(file) {
                 const isJPG = file.type === 'image/jpeg';
@@ -763,6 +763,12 @@
             addObjCodes() {
                 let unit = {};
                 this.objCodeList.push(unit);
+                this.objCodeTable.map((item,index)=>{
+                    if(item.tariffName=='新增目的码'){
+                        item.numOfone++;
+                        this.$set(this.objCodeTable,index,item);
+                    }
+                })
             },
             // 删除目的码
             delObjCodes(index) {
@@ -817,13 +823,16 @@
                     this.objCodeTable = res.data.valueAddedList;
                     this.objCodeTable.map((item) => {
                         console.log(item);
-                        item.numOfMonth = 1;
+                        if(item.units !='perOne'){
+                            item.numOfMonth = 1;
+                        }
                         item.numOfone = 1;
                         if (item.units == 'perMonth') {
                             item.cost = "月";
                             item.unitsName = (item.tariffFee / item.numOfMonth) + '元/月'
                         } else if (item.units == 'perOne') {
                             item.cost = "个";
+                            item.cost2 = "个";
                             item.unitsName = (item.tariffFee / item.numOfone) + '元/个'
                         } else if (item.units == 'perMonthOne') {
                             item.cost = "月";
@@ -849,13 +858,17 @@
                     this.$nextTick(() => {
                         // console.log(this.selectedNum);
                         // console.log('ccc', this.number400ValueAdded);
-                        this.objCodeTable.map((item, index) => {
+                        this.objCodeTable.map((item, index) => {   //表格数据
                             // console.log(1111, this.objCodeTable);
                             if (this.number400ValueAdded && this.number400ValueAdded.length > 0) {
-                                this.number400ValueAdded.map((item1) => {
+                                this.number400ValueAdded.map((item1) => {  //选中数据数组
                                     if (item1.valueAddedId == item.id) {
                                         //把选中的复选框信息赋值给原数组勾选的选项
                                         item1.tariffFee = item.valueAddedFee;
+                                        if(item.units != 'perOne'){
+                                            item.numOfMonth = item1.numOfMonth;
+                                        }
+                                        item.numOfone = item1.numOfone;
                                         // this.$set(this.objCodeTable, index, item1);
                                         //回显勾选的
                                         console.log("回显勾选的");
@@ -870,8 +883,9 @@
                                         obj.remarks = item.remarks;
                                         obj.valueAddedFee = item.tariffFee;
                                         obj.units = item.units;
-                                        obj.numOfMonth = item.numOfMonth;
-                                        // obj.numOfone = item.numOfone;
+                                        if(item.units != 'perOne'){
+                                            obj.numOfMonth = item.numOfMonth;
+                                        }
                                         if (item.units == 'perMonthOne' || item.units == 'perOne') {
                                             obj.numOfone = item.numOfone;
                                         }
@@ -1127,13 +1141,13 @@
                             this.$root.eventHub.$emit('flowId', res.data);
                             this.stepThreeFlowId = res.data.flowId;        //flowId
                             this.stepThreeForm.id = res.data.businessId;   //业务id
-                            console.log("vuex.company", this.company);
+                            // console.log("vuex.company", this.company);
                             // 把第三步返回的companyId存到vuex的company
                             this.company.id = res.data.companyId;
                             this.business.companyId = res.data.companyId;
-                            console.log("vuex.company", this.company);
-                            console.log("vuex.business", this.business);
-                            console.log(this.stepThreeFlowId = res.data.flowId);
+                            // console.log("vuex.company", this.company);
+                            // console.log("vuex.business", this.business);
+                            // console.log(this.stepThreeFlowId = res.data.flowId);
                             sessionStorage.setItem('stepThreeFlowId',this.stepThreeFlowId);
                             //第三步点击下一步之前检查number400是否绑定了引示号
                             this.$ajax.post('/vos/business/matchGuideNumber', {
@@ -1141,7 +1155,6 @@
                             }).then((res) => {
                                 if (res.code == 200) {
                                     console.log(res);
-                                    // res.
                                     this.nextDisabled = false;
                                 } else {
                                     this.$message({type: 'warning', message: res.message});
@@ -1220,51 +1233,51 @@
     }
 </script>
 <style>
-	.avatar-uploader .el-upload {
-		border: 1px dashed #d9d9d9;
-		border-radius: 6px;
-		cursor: pointer;
-		position: relative;
-		overflow: hidden;
-		background-color: #ecf5ff;
-	}
+    .avatar-uploader .el-upload {
+        border: 1px dashed #d9d9d9;
+        border-radius: 6px;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        background-color: #ecf5ff;
+    }
 
-	.avatar-uploader .el-upload:hover {
-		border-color: #409EFF;
-	}
+    .avatar-uploader .el-upload:hover {
+        border-color: #409EFF;
+    }
 
-	.examplew .avatar-uploader-icon {
-		width: 120px;
-		height: 148px;
-		line-height: 148px;
-	}
+    .examplew .avatar-uploader-icon {
+        width: 120px;
+        height: 148px;
+        line-height: 148px;
+    }
 
-	.examplew .avatar {
-		width: 120px;
-		height: 148px;
-	}
+    .examplew .avatar {
+        width: 120px;
+        height: 148px;
+    }
 
-	.exampleh .avatar-uploader-icon {
-		width: 148px;
-		height: 120px;
-		line-height: 120px;
-	}
+    .exampleh .avatar-uploader-icon {
+        width: 148px;
+        height: 120px;
+        line-height: 120px;
+    }
 
-	.exampleh .avatar {
-		width: 148px;
-		height: 120px;
-	}
+    .exampleh .avatar {
+        width: 148px;
+        height: 120px;
+    }
 
-	.avatar-uploader-icon {
-		font-size: 28px;
-		color: #8c939d;
-		text-align: center;
-	}
+    .avatar-uploader-icon {
+        font-size: 28px;
+        color: #8c939d;
+        text-align: center;
+    }
 
-	.avatar {
-		display: block;
-	}
+    .avatar {
+        display: block;
+    }
 </style>
 <style lang="scss" scoped>
-	@import './stepTwo.scss';
+    @import './stepTwo.scss';
 </style>

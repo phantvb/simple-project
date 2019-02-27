@@ -196,6 +196,7 @@
 .handlingForm .el-form-item {
 	width:33%;
 	float: left;
+	/*border:1px solid #000;*/
 }
 .entireForm .el-form-item .el-select{
 	width:100%;
