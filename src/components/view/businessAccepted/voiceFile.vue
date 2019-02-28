@@ -43,7 +43,7 @@
 			<!--表格按钮和下拉框-->
 			<div class="BtnSelect">
 				<div class="accountBtn">
-					<el-button type="primary" size="mini" @click="voiceAdd()">+新增语音文件</el-button>
+					<el-button type="primary" size="mini" @click="voiceAdd()" v-if="authority.indexOf(109)!=-1">+新增语音文件</el-button>
 				</div>
 				<div class="accountSelect">
 					<span style="font-size:12px">状态:</span>
@@ -60,7 +60,7 @@
 				<el-table-column
 						prop="business.companyName"
 						label="企业名称"
-						width="300">
+						width="250">
 				</el-table-column>
 
 				<el-table-column
@@ -87,6 +87,7 @@
 				</el-table-column>
 
 				<el-table-column
+						width="250"
 						label="操作">
 					<template slot-scope="scope">
 						<el-button size="mini" type="text" v-for="(item,index) in scope.row.btnList" :key="index" @click="voiceDetial(item.label,scope.row)">{{item.label}}</el-button>
@@ -137,9 +138,14 @@
 				voiceCreator:'',       //语音列表对象creator
                 voiceStatus:'',        //语音列表对象状态
                 voiceAssigneeRole:'',  //语音列表对象assigneeRole
+                authority:[],   //权限数组
 			};
 		},
 		created(){
+            console.log("权限",this.$store.getters.getPermission(location.hash.replace(/#/, '')));
+            this.$store.getters.getPermission(location.hash.replace(/#/, '')).map((item)=>{
+                this.authority.push(item.id);
+            });
             this.baseData.roleName = sessionStorage.getItem("roleName");
             this.baseData.username = sessionStorage.getItem("username");
             console.log("roleName",this.baseData.roleName);
@@ -159,10 +165,12 @@
 		methods: {
             handleSizeChange(val) {
                 this.pageObj.pageSize = val;
+                this.voiceFileLists();
                 console.log(`每页 ${val} 条`);
             },
             handleCurrentChange(val) {
                 this.pageObj.page = val;
+                this.voiceFileLists();
                 console.log(`当前页: ${val}`);
             },
             //弹窗关闭按钮
@@ -233,7 +241,13 @@
                             item.color = '#67C23A';
                             item.btnList=[];
                             if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
-                                item.btnList.push({label:'送审'},{label:'详情'},{label:'删除'});
+                                if(this.authority.indexOf(104)!=-1){
+                                   item.btnList.push({label:'送审'})
+                                }
+                                item.btnList.push({label:'详情'});
+                                if(this.authority.indexOf(128)!=-1){
+                                    item.btnList.push({label:'删除'})
+                                }
                             }else{
                                 item.btnList.push({label:'详情'});
                             }
@@ -242,9 +256,6 @@
                             item.color = '#67C23A';
                             item.btnList=[];
                             if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
-                                // item.btnList.push({label:'变更'},{label:'注销'},{label:'详情'});
-                                item.btnList.push({label:'详情'});
-                            }else{
                                 item.btnList.push({label:'详情'});
                             }
                         }else if(item.status=='Voice_Auditing'){
@@ -252,44 +263,16 @@
                             item.color = '#F56C6C';
                             item.btnList=[];
                             if(this.baseData.roleName=='ROLE_admin' || item.assigneeRole==this.baseData.roleName){
-                                item.btnList.push({label:'通过审核'},{label:'驳回'},{label:'详情'});
+                                if(this.authority.indexOf(105)!=-1){
+                                    item.btnList.push({label:'通过审核'})
+                                }
+                                if(this.authority.indexOf(106)!=-1){
+                                    item.btnList.push({label:'驳回'})
+                                }
+                                item.btnList.push({label:'详情'});
                             }else{
                                 item.btnList.push({label:'详情'});
                             }
-                        }else if(item.status=='Modify_Auditing'){
-                            item.busStatus='变更审核中';
-                            item.color = '#F56C6C';
-                            item.btnList=[];
-                            if(this.baseData.roleName=='ROLE_admin' || item.assigneeRole==this.baseData.roleName){
-                                // item.btnList.push({label:'变更审核通过'},{label:'驳回'},{label:'终止'},{label:'详情'});
-                                item.btnList.push({label:'驳回'},{label:'终止'},{label:'详情'});
-                            }else{
-                                item.btnList.push({label:'详情'});
-                            }
-                        }else if(item.status=='Modify_Rejected'){
-                            item.busStatus='变更审核驳回';
-                            item.color = '#F56C6C';
-                            item.btnList=[];
-                            if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
-                                // item.btnList.push({label:'变更'},{label:'注销'},{label:'详情'});
-                                item.btnList.push({label:'注销'},{label:'详情'});
-                            }else{
-                                item.btnList.push({label:'详情'});
-                            }
-                        }else if(item.status=='Canceling_Auditing'){
-                            item.busStatus='注销审核';
-                            item.color = '#F56C6C';
-                            item.btnList=[];
-                            if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
-                                item.btnList.push({label:'通过审核'},{label:'终止'},{label:'详情'});
-                            }else{
-                                item.btnList.push({label:'详情'});
-                            }
-                        }else if(item.status=='Cancelled'){
-                            item.busStatus='已注销';
-                            item.color = '#67C23A';
-                            item.btnList=[];
-                            item.btnList.push({label:'详情'});
                         }else if(item.status=='Terminate_Flow'){
                             item.busStatus='受理终止';
                             item.btnList=[];

@@ -35,7 +35,7 @@
 			<!--表格按钮和下拉框-->
 			<div class="BtnSelect">
 				<div class="accountBtn">
-					<el-button type="primary" size="mini" @click="addObjCodeBtn()">+新增目的码</el-button>
+					<el-button type="primary" size="mini" @click="addObjCodeBtn()" v-if="authority.indexOf(110)!=-1">+新增目的码</el-button>
 				</div>
 				<div class="accountSelect">
 					<span style="font-size:12px">状态:</span>
@@ -48,7 +48,7 @@
 			</div>
 
 			<el-table :data="tableData" style="width: 100%">
-				<el-table-column prop="business.companyName" label="企业名称" width="200">
+				<el-table-column prop="business.companyName" label="企业名称" width="250">
 				</el-table-column>
 
 				<el-table-column prop="business.number400" label="400电话">
@@ -68,6 +68,7 @@
 
         <el-table-column
                 prop="operation"
+				width="250"
                 label="操作">
           <template slot-scope="scope">
             <el-button size="mini" type="text" v-for="(item,index) in scope.row.btnList" :key="index" @click="details(item.label,scope.row)">{{item.label}}</el-button>
@@ -173,12 +174,17 @@
                 objCreator:'', //目的码表格creator
                 objCompanyId:'', //目的码表格companyId
                 objAssigneeRole:'', //目的码表格assigneeRole
+                authority:[],   //权限数组
             };
         },
         components: {
             DialogObjCode
         },
         created(){
+            console.log("权限",this.$store.getters.getPermission(location.hash.replace(/#/, '')));
+            this.$store.getters.getPermission(location.hash.replace(/#/, '')).map((item)=>{
+                this.authority.push(item.id);
+            });
             this.baseData.roleName = sessionStorage.getItem("roleName");
             this.baseData.username = sessionStorage.getItem("username");
             console.log("roleName",this.baseData.roleName);
@@ -196,10 +202,12 @@
             // 分页
             handleSizeChange(val) {
                 this.pageObj.pageSize = val;
+                this.objCodeLists();
                 console.log(`每页 ${val} 条`);
             },
             handleCurrentChange(val) {
                 this.pageObj.page = val;
+                this.objCodeLists();
                 console.log(`当前页: ${val}`);
             },
             //弹窗关闭按钮
@@ -427,7 +435,13 @@
                             item.status='等待送审';
                             item.btnList=[];
                             if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
-                                item.btnList.push({label:'送审'},{label:'详情'},{label:'删除'});
+                                if(this.authority.indexOf(104)!=-1){
+                                    item.btnList.push({label:'送审'})
+                                }
+                                if(this.authority.indexOf(128)!=-1){
+                                    item.btnList.push({label:'删除'})
+                                }
+                                item.btnList.push({label:'详情'});
                             }else{
                                 item.btnList.push({label:'详情'});
                             }
@@ -436,9 +450,6 @@
                             item.color = '#67C23A';
                             item.btnList=[];
                             if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
-                                // item.btnList.push({label:'变更'},{label:'注销'},{label:'详情'});
-                                item.btnList.push({label:'详情'});
-                            }else{
                                 item.btnList.push({label:'详情'});
                             }
                         }else if(item.status=='DestNum_Auditing'){
@@ -446,27 +457,13 @@
                             item.color = '#F56C6C';
                             item.btnList=[];
                             if(this.baseData.roleName=='ROLE_admin' || item.assigneeRole==this.baseData.roleName){
-                                item.btnList.push({label:'审核通过'},{label:'驳回'},{label:'详情'});
-                            }else{
+                                if(this.authority.indexOf(105)!=-1){
+                                    item.btnList.push({label:'审核通过'})
+                                }
+                                if(this.authority.indexOf(106)!=-1){
+                                    item.btnList.push({label:'驳回'})
+                                }
                                 item.btnList.push({label:'详情'});
-                            }
-                        }else if(item.status=='Modify_Auditing'){
-                            item.status='变更审核中';
-                            item.color = '#F56C6C';
-                            item.btnList=[];
-                            if(this.baseData.roleName=='ROLE_admin' || item.assigneeRole==this.baseData.roleName){
-                                // item.btnList.push({label:'变更审核通过'},{label:'驳回'},{label:'终止'},{label:'详情'});
-                                item.btnList.push({label:'驳回'},{label:'终止'},{label:'详情'});
-                            }else{
-                                item.btnList.push({label:'详情'});
-                            }
-                        }else if(item.status=='Modify_Rejected'){
-                            item.status='变更审核驳回';
-                            item.color = '#F56C6C';
-                            item.btnList=[];
-                            if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
-                                // item.btnList.push({label:'变更'},{label:'注销'},{label:'详情'});
-                                item.btnList.push({label:'注销'},{label:'详情'});
                             }else{
                                 item.btnList.push({label:'详情'});
                             }
@@ -475,7 +472,13 @@
                             item.color = '#F56C6C';
                             item.btnList=[];
                             if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
-                                item.btnList.push({label:'审核通过'},{label:'终止'},{label:'详情'});
+                                if(this.authority.indexOf(105)!=-1){
+                                    item.btnList.push({label:'审核通过'})
+                                }
+                                if(this.authority.indexOf(129)!=-1){
+                                    item.btnList.push({label:'终止'})
+                                }
+                                item.btnList.push({label:'详情'});
                             }else{
                                 item.btnList.push({label:'详情'});
                             }

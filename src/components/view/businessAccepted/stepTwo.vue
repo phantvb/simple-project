@@ -19,7 +19,8 @@
                                            :on-success="handleAvatarSuccess"
                                            :on-error="handleAvatarSuccess"
                                            :before-upload="beforeAvatarUpload">
-                                    <img v-if="stepTwoForm.companyProofPic" :src="$global.serverSrc+stepTwoForm.companyProofPic"
+                                    <img v-if="stepTwoForm.companyProofPic"
+                                         :src="$global.serverSrc+stepTwoForm.companyProofPic"
                                          class="avatar">
                                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                 </el-upload>
@@ -56,7 +57,8 @@
                                                    :on-success="handleFrontSuccess"
                                                    :on-error="handleFrontSuccess"
                                                    :before-upload="beforeAvatarUpload">
-                                            <img v-if="stepTwoForm.legalCardFrontPic" :src="$global.serverSrc+stepTwoForm.legalCardFrontPic" class="avatar">
+                                            <img v-if="stepTwoForm.legalCardFrontPic"
+                                                 :src="$global.serverSrc+stepTwoForm.legalCardFrontPic" class="avatar">
                                             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                         </el-upload>
                                     </li>
@@ -68,7 +70,8 @@
                                                    :on-success="handleContrarySuccess"
                                                    :on-error="handleContrarySuccess"
                                                    :before-upload="beforeAvatarUpload">
-                                            <img v-if="stepTwoForm.legalCardBackPic" :src="$global.serverSrc+stepTwoForm.legalCardBackPic"
+                                            <img v-if="stepTwoForm.legalCardBackPic"
+                                                 :src="$global.serverSrc+stepTwoForm.legalCardBackPic"
                                                  class="avatar">
                                             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                         </el-upload>
@@ -83,7 +86,8 @@
                                                    :on-success="handleSelfSuccess"
                                                    :on-error="handleSelfSuccess"
                                                    :before-upload="beforeAvatarUpload">
-                                            <img v-if="stepTwoForm.legalCardHandPic" :src="$global.serverSrc+stepTwoForm.legalCardHandPic"
+                                            <img v-if="stepTwoForm.legalCardHandPic"
+                                                 :src="$global.serverSrc+stepTwoForm.legalCardHandPic"
                                                  class="avatar">
                                             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                         </el-upload>
@@ -140,41 +144,37 @@
                 },
                 campanyObj: {},        //企业信息对象
                 flowId: '',
-                saveBtnHidden:true,
-                companySaveInfo:[],
+                saveBtnHidden: true,
+                companySaveInfo: [],
             };
         },
         components: {},
         created() {
             // this.companySaveInfo = JSON.parse(sessionStorage.getItem("firmNameListItem"));
             // console.log("this.companySaveInfo",this.companySaveInfo);
-            console.log(sessionStorage.getItem('businessIn'));
+            // console.log("businessIn",sessionStorage.getItem('businessIn'));
             this.$root.eventHub.$on('flowId', (resp) => {
-                console.log("flowId", resp);
+                // console.log("flowId", resp);
                 this.flowId = resp;
             });
 
-            // if (sessionStorage.getItem('businessIn') == 2) {
-            //     console.log(this.company);
-            //     this.stepTwoForm = this.company;
-            // }else
-                if(sessionStorage.getItem('businessIn') == 3){
-                  this.saveBtnHidden=false;
-                  console.log("saveBtnHidden",this.saveBtnHidden);
-                  }
-                if (sessionStorage.getItem('businessIn') == 2 || sessionStorage.getItem('businessIn') == 3 ||sessionStorage.getItem('businessIn') == 4) {
-                  console.log("11111111111111");
-                  this.stepThreeDetail();
-                 }
-            this.$root.eventHub.$on('firmNameListItem',(resp)=>{
-                console.log("firmNameListItem",resp);
+            if (sessionStorage.getItem('businessIn') == 3) {
+                this.saveBtnHidden = false;
+                // console.log("saveBtnHidden",this.saveBtnHidden);
+            }
+            if (sessionStorage.getItem('businessIn') == 2 || sessionStorage.getItem('businessIn') == 3 || sessionStorage.getItem('businessIn') == 4) {
+                // console.log("11111111111111");
+                this.stepThreeDetail();
+            }
+            this.$root.eventHub.$on('firmNameListItem', (resp) => {
+                // console.log("firmNameListItem",resp);
                 this.stepTwoForm = resp;
             });
         },
         methods: {
             // 详情
             stepThreeDetail() {
-                console.log("this.company",this.company);
+                console.log("this.company", this.company);
                 this.stepTwoForm = this.company;
             },
             // 图片上传
@@ -216,20 +216,20 @@
                 return isJPG && isLt2M;
             },
             next(val) {
-                if(val==1){
+                if (val == 1) {
                     this.$emit('childNext', val);
-                }else{
+                } else {
                     //必填校验
                     // if(this.stepTwoForm.companyProofPic=='' || this.stepTwoForm.legalCardFrontPic=='' || this.stepTwoForm.legalCardBackPic=='' || this.stepTwoForm.legalCardHandPic==''){
                     //     this.$message.warning('请完善图片信息');
                     // }else{
-                        this.$emit('childNext', val);
-                        // 改变vuex的值
-                        if (val == 3) {
-                            this.campanyObj = Object.assign(this.company, this.stepTwoForm);
-                            console.log(this.campanyObj);
-                            this.ChangeCompanyStatus(this.campanyObj);
-                        }
+                    this.$emit('childNext', val);
+                    // 改变vuex的值
+                    if (val == 3) {
+                        this.campanyObj = Object.assign(this.company, this.stepTwoForm);
+                        console.log(this.campanyObj);
+                        this.ChangeCompanyStatus(this.campanyObj);
+                    }
                     // }
                 }
             },
@@ -249,7 +249,7 @@
                     }
                 }).then((res) => {
                     console.log(res);
-                    if(res.code==200){
+                    if (res.code == 200) {
                         this.dialogVisible = false;
                         this.$root.eventHub.$emit('addAcceptSave');
                     }
