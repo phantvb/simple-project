@@ -11,7 +11,7 @@
 							</p>
 						</div>
 						<div class="part center portrait">
-							<img src="../../../assets/portrait_1.png">
+							<img src="/static/userHead1.png">
 							<el-button type="text" class="button" @click="gotoUserCenter">修改头像</el-button>
 						</div>
 						<div class="part message">

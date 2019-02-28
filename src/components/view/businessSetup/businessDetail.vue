@@ -11,7 +11,7 @@
 				<div class="block left">
 					<p class="fmini">企业名称： {{detail.companyName}} </p>
 					<p class="fmini">证件编号： {{detail.companyCardNo}} </p>
-					<p class="fmini">企业性质： {{detail.companyCharacterStr}} 企业等级： {{detail.companyRank}} 行业类型： {{detail.industryType}}</p>
+					<p class="fmini">企业性质： {{detail.companyCharacterStr}} &#12288;企业等级： {{detail.companyRankStr}} &#12288;行业类型： {{detail.industryType}}</p>
 					<p class="fmini">注册地址： {{detail.registProvince}}{{detail.registCity}}{{detail.registArea}}{{detail.registAddress}} </p>
 					<p class="fmini">办公地址： {{detail.officeProvince}}{{detail.officeCity}}{{detail.officeArea}}{{detail.officeAddress}} </p>
 					<p class="fmini">企业电话： {{detail.phone}} </p>
@@ -32,7 +32,7 @@
 					法人基本信息
 				</div>
 				<div class="block left">
-					<p class="fmini">法人姓名： {{detail.legalPerson}} 法人电话： {{detail.legalPhone}}</p>
+					<p class="fmini">法人姓名： {{detail.legalPerson}} &#12288;法人电话： {{detail.legalPhone}}</p>
 					<p class="fmini">法人证件： {{detail.legalCardStr}} {{detail.cardNum}}</p>
 					<p class="fmini" v-if="detail.legalCard=='id_card'">身份证住址： {{detail.idCardAddress}}</p>
 					<p class="fmini" v-if="detail.legalCard=='id_card'">身份证有效期： {{detail.cardStartDate}}-{{detail.cardEndDate}}</p>
@@ -70,18 +70,16 @@
 						<el-step v-for="(item,index) in record" :key="item.operateTime" :title="item.title" :description="item.description+'\n'+item.message" :status='index==(record.length-1)?"finish":""'></el-step>
 					</el-steps>
 				</div>
-				<button class="pass"><i class="el-icon-circle-check" style="color:#67C23A;font-size:16px;transform: translateY(1px);" v-if="companyFlowData.status=='Audit_Success'"></i> 审核通过</button>
+				<!-- <button class="pass"><i class="el-icon-circle-check" style="color:#67C23A;font-size:16px;transform: translateY(1px);" v-if="companyFlowData.status=='Audit_Success'"></i> 审核通过</button> -->
 				<p class="grey">{{'下一步由'+nextRecord.assginessRoleStr+'('+nextRecord.assginee+') 操作'}}</p>
 			</div>
 			<el-input class="block" v-if="(companyFlowData.status=='Company_Auditing'||companyFlowData.status=='Canceling_Auditing'||companyFlowData.status=='Modify_Auditing')&&(baseData.roleName==companyFlowData.assigneeRole||baseData.roleName=='ROLE_admin')" type="textarea" :rows="6" placeholder="请输入审核意见" v-model="desc">
 			</el-input>
 			<div class="block">
 				<div>
-					<button class="fleft passgo" v-if="companyFlowData.status=='Wait_To_Audit'&&(companyFlowData.creator==baseData.username||baseData.roleName=='ROLE_admin')" @click="submit">送审</button>
 					<button class="fleft passgo" v-if="(companyFlowData.status=='Company_Auditing'||companyFlowData.status=='Canceling_Auditing'||companyFlowData.status=='Modify_Auditing')&&(baseData.roleName==companyFlowData.assigneeRole||baseData.roleName=='ROLE_admin')" @click="passCompany">通过审核</button>
 					<button class="fright passback" v-if="(companyFlowData.status=='Company_Auditing'||companyFlowData.status=='Canceling_Auditing'||companyFlowData.status=='Modify_Auditing')&&(baseData.roleName==companyFlowData.assigneeRole||baseData.roleName=='ROLE_admin')" @click="backCompany">驳回</button>
 					<button class="fright passback" style="width:100%" v-if="companyFlowData.status=='Audit_Success'" @click="back">返回</button>
-
 				</div>
 			</div>
 		</div>
@@ -110,149 +108,181 @@
 			}
 		},
 		async mounted() {
-			let _this = this;
 			await this.getRole();
-			const companyCharacterOptions = [{
-				value: 'state-owned',
-				label: '国有'
-			}, {
-				value: 'cooperation',
-				label: '合作'
-			}, {
-				value: 'joint_venture',
-				label: '合资'
-			}, {
-				value: 'sole_proprietorship',
-				label: '独资'
-			}, {
-				value: 'collective',
-				label: '集体'
-			}, {
-				value: 'private',
-				label: '私营'
-			}, {
-				value: 'individual_business',
-				label: '个体工商户'
-			}];
-			const legalCardOptions = [{
-				value: 'id_card',
-				label: '身份证'
-			}, {
-				value: 'officer_card',
-				label: '军官证'
-			}, {
-				value: 'passport',
-				label: '护照'
-			}];
-			const statusOptions = [{
-				value: 'Wait_To_Audit',
-				label: '等待送审'
-			}, {
-				value: 'Company_Auditing',
-				label: '企业审核中'
-			}, {
-				value: 'Business_Auditing',
-				label: '业务受理审核'
-			}, {
-				value: 'Voice_Auditing',
-				label: '语音审核'
-			}, {
-				value: 'DestNum_Auditing',
-				label: '目的码审核'
-			}, {
-				value: 'Audit_Success',
-				label: '审核通过'
-			}, {
-				value: 'Canceling_Auditing',
-				label: '注销审核中'
-			}, {
-				value: 'Modify_Auditing',
-				label: '变更审核中'
-			}, {
-				value: 'Terminate_Flow',
-				label: '受理终止'
-			}, {
-				value: 'Cancelled',
-				label: '已注销'
-			}, {
-				value: 'Modify_Rejected',
-				label: '变更审核驳回'
-			}, {
-				value: 'Freezed',
-				label: '注销冷冻'
-			}];
-			this.baseData.username = sessionStorage.getItem("username");
-			this.baseData.roleName = sessionStorage.getItem("roleName");
-			this.loading = true;
-			if (this.$route.query.flowId) {
-				this.$ajax.get('/vos/company/getCacheData?flowId=' + this.$route.query.flowId).then(res => {
-					if (res.code == 200) {
-						this.loading = false;
-						for (let item of companyCharacterOptions) {
-							if (item.value == res.data.company.companyCharacter) {
-								res.data.company.companyCharacterStr = item.label;
-							}
-						}
-						for (let item of legalCardOptions) {
-							if (item.value == res.data.company.legalCard) {
-								res.data.company.legalCardStr = item.label;
-							}
-						}
-						this.detail = res.data.company;
-						res.data.flowRecord.map((item, index) => {
-							if (index == (res.data.flowRecord.length - 1)) {
-								for (let val of _this.roledata) {
-									if (val.name == item.assginessRole) {
-										_this.nextRecord.assginessRoleStr = val.nameZh;
-									};
-								};
-								_this.nextRecord.assginee = item.assginee;
-							};
-							for (let val of _this.roledata) {
-								if (val.name == item.operatorRole) {
-									item.operatorRoleStr = val.nameZh;
-								}
-							};
-							item.title = `${item.operatorRoleStr?item.operatorRoleStr:'业务员'}(${item.operator})`;
-							item.description = `${item.opeation} ${item.operateTime}`;
-						})
-						this.record = res.data.flowRecord;
-						this.companyFlowData = res.data.companyFlow;
-					}
-				});
-			} else {
-				this.$ajax.post('/vos/company/getDetail', { company: { id: this.$route.query.Id } }).then(res => {
-					if (res.code == 200) {
-						this.loading = false;
-						for (let item of companyCharacterOptions) {
-							if (item.value == res.data.company1.companyCharacter) {
-								res.data.company1.companyCharacterStr = item.label;
-								//return;
-							}
-						}
-						for (let item of legalCardOptions) {
-							if (item.value == res.data.company1.legalCard) {
-								res.data.company1.legalCardStr = item.label;
-								//return;
-							}
-						}
-						this.detail = res.data.company1;
-					}
-				});
-			}
+			this.fetchData();
 		},
 		methods: {
+			fetchData() {
+				let _this = this;
+				const companyCharacterOptions = [{
+					value: 'state-owned',
+					label: '国有'
+				}, {
+					value: 'cooperation',
+					label: '合作'
+				}, {
+					value: 'joint_venture',
+					label: '合资'
+				}, {
+					value: 'sole_proprietorship',
+					label: '独资'
+				}, {
+					value: 'collective',
+					label: '集体'
+				}, {
+					value: 'private',
+					label: '私营'
+				}, {
+					value: 'individual_business',
+					label: '个体工商户'
+				}];
+				const legalCardOptions = [{
+					value: 'id_card',
+					label: '身份证'
+				}, {
+					value: 'officer_card',
+					label: '军官证'
+				}, {
+					value: 'passport',
+					label: '护照'
+				}];
+				const statusOptions = [{
+					value: 'Wait_To_Audit',
+					label: '等待送审'
+				}, {
+					value: 'Company_Auditing',
+					label: '企业审核中'
+				}, {
+					value: 'Business_Auditing',
+					label: '业务受理审核'
+				}, {
+					value: 'Voice_Auditing',
+					label: '语音审核'
+				}, {
+					value: 'DestNum_Auditing',
+					label: '目的码审核'
+				}, {
+					value: 'Audit_Success',
+					label: '审核通过'
+				}, {
+					value: 'Canceling_Auditing',
+					label: '注销审核中'
+				}, {
+					value: 'Modify_Auditing',
+					label: '变更审核中'
+				}, {
+					value: 'Terminate_Flow',
+					label: '受理终止'
+				}, {
+					value: 'Cancelled',
+					label: '已注销'
+				}, {
+					value: 'Modify_Rejected',
+					label: '变更审核驳回'
+				}, {
+					value: 'Freezed',
+					label: '注销冷冻'
+				}];
+				const companyRankOptions = [{
+					value: 'DK_A',
+					label: '大客A'
+				}, {
+					value: 'DK_B',
+					label: '大客B'
+				}, {
+					value: 'DK_C',
+					label: '大客C'
+				}, {
+					value: 'DK_D',
+					label: '大客D'
+				}, {
+					value: 'DK_E',
+					label: '大客E'
+				}, {
+					value: 'SK_A',
+					label: '商客A'
+				}, {
+					value: 'SK_B',
+					label: '商客B'
+				}]
+				this.baseData.username = sessionStorage.getItem("username");
+				this.baseData.roleName = sessionStorage.getItem("roleName");
+				this.loading = true;
+				if (this.$route.query.flowId) {
+					this.$ajax.get('/vos/company/getCacheData?flowId=' + this.$route.query.flowId).then(res => {
+						if (res.code == 200) {
+							this.loading = false;
+							for (let item of companyCharacterOptions) {
+								if (item.value == res.data.company.companyCharacter) {
+									res.data.company.companyCharacterStr = item.label;
+								}
+							}
+							for (let item of legalCardOptions) {
+								if (item.value == res.data.company.legalCard) {
+									res.data.company.legalCardStr = item.label;
+								}
+							}
+							for (let item of companyRankOptions) {
+								if (item.value == res.data.company.companyRank) {
+									res.data.company.companyRankStr = item.label;
+								}
+							}
+							this.detail = res.data.company;
+							res.data.flowRecord.map((item, index) => {
+								if (index == (res.data.flowRecord.length - 1)) {
+									for (let val of _this.roledata) {
+										if (val.name == item.assginessRole) {
+											_this.nextRecord.assginessRoleStr = val.nameZh;
+										};
+									};
+									_this.nextRecord.assginee = item.assginee;
+								};
+								for (let val of _this.roledata) {
+									if (val.name == item.operatorRole) {
+										item.operatorRoleStr = val.nameZh;
+									}
+								};
+								item.title = `${item.operatorRoleStr?item.operatorRoleStr:'业务员'}(${item.operator})`;
+								item.description = `${item.opeation} ${item.operateTime}`;
+							})
+							this.record = res.data.flowRecord;
+							this.companyFlowData = res.data.companyFlow;
+						}
+					});
+				} else {
+					this.$ajax.post('/vos/company/getDetail', { company: { id: this.$route.query.Id } }).then(res => {
+						if (res.code == 200) {
+							this.loading = false;
+							for (let item of companyCharacterOptions) {
+								if (item.value == res.data.company1.companyCharacter) {
+									res.data.company1.companyCharacterStr = item.label;
+									//return;
+								}
+							}
+							for (let item of legalCardOptions) {
+								if (item.value == res.data.company1.legalCard) {
+									res.data.company1.legalCardStr = item.label;
+									//return;
+								}
+							}
+							this.detail = res.data.company1;
+						}
+					});
+				}
+			},
 			getRole() {
 				return this.$ajax.get("/vos/role/getAllRole").then(res => {
 					this.roledata = res.data.data;
 				});
 			},
 			back() {
-				this.$router.push({ path: "/Layout/businessInform" });
+				//this.$router.push({ path: "/Layout/businessInform" });
+				this.$router.go(-1);
 			},
 			passCompany() {
 				var obj = {};
 				var url;
+				this.loading = true;
 				if (this.companyFlowData.status == 'Company_Auditing') {
 					url = '/vos/company/companyAuditPass';
 				} else if (this.companyFlowData.status == 'Modify_Auditing') {
@@ -268,12 +298,14 @@
 				obj.message = this.desc;
 				this.$ajax.post(url, obj).then(res => {
 					if (res.code == 200) {
-						this.$router.push({ path: '/BusinessInform/businessDetail', query: { flowId: this.companyFlowData.flowId, status: res.data, creator: this.companyFlowData.creator, assigneeRole: this.companyFlowData.assigneeRole } });
+						this.loading = false;
+						this.fetchData();
 						this.$message.success('操作成功');
 					}
 				});
 			},
 			backCompany() {
+				this.loading = true;
 				var obj = {};
 				var url;
 				if (this.companyFlowData.status == 'Company_Auditing') {
@@ -291,12 +323,14 @@
 				obj.message = this.desc;
 				this.$ajax.post(url, obj).then(res => {
 					if (res.code == 200) {
-						this.$router.push({ path: '/BusinessInform/businessDetail', query: { flowId: this.companyFlowData.flowId, status: res.data, creator: this.companyFlowData.creator, assigneeRole: this.companyFlowData.assigneeRole } });
+						this.loading = false;
+						this.fetchData();
 						this.$message.success('操作成功');
 					}
 				});
 			},
 			submit() {
+				this.loading = true;
 				var url = '/vos/company/sendToCompanyAudit';
 				var data = {};
 				data.company = this.detail;
@@ -305,6 +339,7 @@
 				};
 				this.$ajax.post(url, data).then(res => {
 					if (res.code == 200) {
+						this.loading = false;
 						this.$message.success('操作成功');
 					}
 				});

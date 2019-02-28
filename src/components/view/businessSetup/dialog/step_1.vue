@@ -131,6 +131,7 @@
 		data() {
 			return {
 				form: {
+					id: '',
 					companyName: '',
 					companyCardType: '',
 					companyCardNo: '',

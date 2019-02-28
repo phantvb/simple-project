@@ -72,18 +72,9 @@
 					</el-table-column>
 					<el-table-column prop="name" label="名称" min-width="120">
 					</el-table-column>
-					<el-table-column label="数量" min-width="60">
-						<template slot-scope="scope">
-							{{scope.row.numOfMonth}} <span v-show="scope.row.numOfMonth!=null&&scope.row.numOfOne!=null">/</span> {{scope.row.numOfOne}}
-						</template>
+					<el-table-column prop="amount" label="数量" min-width="60">
 					</el-table-column>
-					<el-table-column prop="accountsType" label="单位" min-width="60">
-						<template slot-scope="scope">
-							<span v-show="scope.row.accountsType!='Concession'">
-								{{scope.row.numOfMonth?'月':''}} <span v-show="scope.row.numOfMonth!=null&&scope.row.numOfOne!=null">/</span> {{scope.row.numOfOne?'个':''}}</span>
-							<span v-show="scope.row.accountsType=='Concession'">
-								{{scope.row.units=="year"?'年':'月'}}</span>
-						</template>
+					<el-table-column prop="unit" label="单位" min-width="60">
 					</el-table-column>
 					<el-table-column prop="accountTime" label="起止时间" min-width="120">
 						<template slot-scope="scope">
@@ -150,7 +141,7 @@
 				dialogVisible: false,
 				recordData: [],
 				shouldReceiveData: [],
-				openTime: '',
+				openTime: null,
 				pickerOptions: {
 					disabledDate: (time) => {
 						var d = new Date();
@@ -184,6 +175,28 @@
 			getAccountsTotal() {
 				this.$ajax.post('/vos/accountsTotal/getDetail', { accountsTotal: { id: this.data.id } }).then(res => {
 					if (res.code == 200) {
+						res.data.shouldReceive.map((item) => {
+							if (item.units == "perMonth") {
+								item.unit = "月";
+								item.amount = item.numOfMonth;
+							} else if (item.units == "perOne") {
+								item.unit = "个";
+								item.amount = item.numOfOne;
+							} else if (item.units == "perMonthOne") {
+								item.unit = "月/个";
+								item.amount = item.numOfMonth + " / " + item.numOfOne;
+							} else if (item.units == "year") {
+								item.unit = "年";
+								item.amount = item.numOfOne;
+							} else if (item.units == "month") {
+								item.unit = "月";
+								item.amount = item.numOfMonth;
+							} else if (item.accountsType == "Package") {
+								item.unit = item.units;
+								item.amount = item.numOfOne;
+							}
+						});
+						this.openTime = res.data.accountsTotal.openTime;
 						this.recordData = res.data.realReceive;
 						this.shouldReceiveData = res.data.shouldReceive;
 					}
