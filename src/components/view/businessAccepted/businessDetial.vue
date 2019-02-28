@@ -163,7 +163,21 @@
             },
             // 驳回
             businessAuditReject(){
-                var obj = {};
+                this.$ajax.post('/vos/business/businessAuditReject',{
+                    "companyFlow" :{
+                        "flowId": this.entireFlowId,
+                        "creator": this.$route.query.creators,
+                        "assigneeRole": this.$route.query.assigneeRole
+                    },
+                    "message":this.desc   //输入框信息
+                }).then((res)=>{
+                    if(res.code == 200){
+                        this.passShow = true;
+                        console.log(res);
+                    }else{
+                        this.$message.error(res.message);
+                    }
+                })
             },
             // 返回
             getBack(){

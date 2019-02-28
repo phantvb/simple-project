@@ -1,6 +1,6 @@
 <template>
 	<div id="freezingNum" v-loading="loading">
-		<div class="search">
+		<div class="search" v-if="permission.indexOf(50)!=-1">
 			<el-form ref="freezingNumForm" :model="freezingNumForm" style="padding:9px 9px;">
 				<el-form-item style="float: left;margin-left: 15px;">
 					<span class="demonstration">400号码：</span>
@@ -32,10 +32,10 @@
 
 		<div class="buttonDiv">
 			<div style="float: left;">
-				<el-button type="primary" size="mini" @click="batchThaw">解冻</el-button>
+				<el-button type="primary" size="mini" @click="batchThaw" v-if="permission.indexOf(115)!=-1">解冻</el-button>
 			</div>
 			<div style="float: right;">
-				<el-button type="primary" plain size="mini" @click="exportInfo">导出</el-button>
+				<el-button type="primary" plain size="mini" @click="exportInfo" v-if="permission.indexOf(51)!=-1">导出</el-button>
 			</div>
 		</div>
 
@@ -50,7 +50,7 @@
 				<el-table-column prop="status" label="状态" min-width="100"></el-table-column>
 				<el-table-column label="操作" min-width="100">
 					<template slot-scope="scope">
-						<el-button size="mini" type="text" @click="handleEdit(scope.$index, scope.row)">解冻</el-button>
+						<el-button size="mini" type="text" @click="handleEdit(scope.$index, scope.row)" v-if="permission.indexOf(115)!=-1">解冻</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
@@ -79,7 +79,8 @@
 					total: 1
 				},
 				selectedItems: [],
-				loading: false
+                loading: false,
+                permission:[]
 			};
 		},
 		methods: {
@@ -280,7 +281,10 @@
 			}
 		},
 		created() {
-			this.loadData();
+            this.loadData();
+			this.$store.getters.getPermission(location.hash.replace(/#/, '')).map(item => {
+                this.permission.push(item.id);
+            });
 		}
 	};
 </script>

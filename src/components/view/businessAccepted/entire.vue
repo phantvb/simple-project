@@ -12,16 +12,16 @@
 						<el-input v-model="form.phoneNum" size="mini"></el-input>
 					</el-form-item>
 
-					<!--<el-form-item label="时间：">-->
-					<!--<el-date-picker-->
-					<!--size="mini"-->
-					<!--v-model="form.time"-->
-					<!--type="daterange"-->
-					<!--range-separator="至"-->
-					<!--start-placeholder="开始日期"-->
-					<!--end-placeholder="结束日期">-->
-					<!--</el-date-picker>-->
-					<!--</el-form-item>-->
+					<el-form-item label="业务来源：">
+						<el-select v-model="form.source" placeholder="请选择" size="mini">
+							<el-option
+									v-for="item in sourceList"
+									:key="item.value"
+									:label="item.label"
+									:value="item.value">
+							</el-option>
+						</el-select>
+					</el-form-item>
 
 					<el-form-item label="时间：">
 						<div class="block">
@@ -36,21 +36,8 @@
 						</div>
 					</el-form-item>
 
-					<el-form-item label="业务来源：">
-						<el-select v-model="form.source" placeholder="请选择" size="mini">
-							<el-option
-									v-for="item in sourceList"
-									:key="item.value"
-									:label="item.label"
-									:value="item.value">
-							</el-option>
-						</el-select>
-					</el-form-item>
-
-
-
 					<el-form-item class="searchBtn">
-						<el-button type="primary" size="mini" @click="entireLists()">搜索</el-button>
+						<el-button type="primary" size="mini" @click="entireLists()" v-if="authority.indexOf(102)!=-1">搜索</el-button>
 						<el-button @click="resetForm()" size="mini">重置</el-button>
 					</el-form-item>
 				</div>
@@ -61,21 +48,20 @@
 			<!--表格按钮和下拉框-->
 			<div class="BtnSelect">
 				<div class="accountBtn">
-					<el-button type="primary" size="mini" @click="businessAdd()">+新增受理</el-button>
-					<el-button type="primary" size="mini" @click="voiceAdd()">+新增语音文件</el-button>
-					<el-button type="primary" size="mini" @click="addObjCodeBtn()">+新增目的码</el-button>
+					<el-button type="primary" size="mini" @click="businessAdd()" v-if="authority.indexOf(108)!=-1">+新增受理</el-button>
+					<el-button type="primary" size="mini" @click="voiceAdd()" v-if="authority.indexOf(109)!=-1">+新增语音文件</el-button>
+					<el-button type="primary" size="mini" @click="addObjCodeBtn()" v-if="authority.indexOf(110)!=-1">+新增目的码</el-button>
 				</div>
 				<div class="accountSelect">
 					<span style="font-size:12px">状态:</span>
 					<el-select v-model="accountStatus" placeholder="请选择" size="mini" @change="statusChange">
-						<el-option v-for="item in statusOptions" :key="item.value" :label="item.label" :value="item.value">
-						</el-option>
+						<el-option v-for="item in statusOptions" :key="item.dicKey" :label="item.dicValue" :value="item.dicKey"></el-option>
 					</el-select>
-					<el-button type="primary" plain size="mini">导出</el-button>
+					<el-button type="primary" plain size="mini" v-if="authority.indexOf(103)!=-1">导出</el-button>
 				</div>
 			</div>
 
-			<el-table :data="tableData" style="width: 100%">
+			<el-table :data="tableData" style="width: 100%" :cell-class-name="cellClass">
 				<el-table-column prop="type" label="类型" width="100">
 				</el-table-column>
 
@@ -94,6 +80,9 @@
 				<el-table-column
 						prop="busStatus"
 						label="状态">
+					<template slot-scope="scope">
+						<span :style="{color:scope.row.color}" size="mini" type="text">{{scope.row.busStatus}}</span>
+					</template>
 				</el-table-column>
 
 				<el-table-column label="操作">
@@ -140,39 +129,7 @@
 				],
                 entrance: 1, //新增，详情入口区分
                 tableData: [],
-                statusOptions: [{
-                    value: 'Wait_To_Audit',
-                    label: '等待送审'
-                }, {
-                    value: 'Business_Auditing',
-                    label: '审核中'
-                }, {
-                    value: 'DestNum_Auditing',
-                    label: '目的码审核中'
-                },{
-                    value: 'Audit_Success',
-                    label: '审核通过'
-                },{
-                    value: 'Modify_Auditing',
-                    label: '变更审核中'
-                },
-                    {
-                        value: 'Modify_Rejected',
-                        label: '变更审核驳回'
-                    },
-                    {
-                        value: 'Canceling_Auditing',
-                        label: '注销审核'
-                    },
-                    {
-                        value: 'Cancelled',
-                        label: '已注销'
-                    },
-                    {
-                        value: 'Terminate_Flow',
-                        label: '受理终止'
-                    },
-                ],
+                statusOptions: [],
                 pageObj: {
                     total: 0,
                     page: 1,
@@ -189,6 +146,7 @@
                 entireAssigneeRole: '', //表格的角色
                 entireCreator: '', //表格creator
                 entireType: '', //表格业务类型
+                authority:[],   //权限数组
             };
         },
         components: {
@@ -196,6 +154,12 @@
             DialogVoice,
         },
         created() {
+            console.log("权限",this.$store.getters.getPermission(location.hash.replace(/#/, '')));
+			this.$store.getters.getPermission(location.hash.replace(/#/, '')).map((item)=>{
+                this.authority.push(item.id);
+			});
+			// console.log("this.authority",this.authority);
+			this.statusList();
             this.baseData.roleName = sessionStorage.getItem("roleName");
             this.baseData.username = sessionStorage.getItem("username");
             console.log("roleName", this.baseData.roleName);
@@ -223,6 +187,25 @@
                 this.entireLists();
                 // console.log(`当前页: ${val}`);
             },
+			// 状态列表
+            statusList(){
+                this.$ajax.post('/vos/dic/getDicsByType',{
+                    "dicType":"flowType",
+                    "status":this.accountStatus,
+                }).then((res)=>{
+                    console.log(res.data);
+                    console.log(res.data.dicList);
+                    console.log(res.data.totalCount);
+                    this.statusOptions = res.data.dicList;
+                    this.pageObj.total = res.data.totalCount;
+                    console.log(this.pageObj.total);
+                })
+            },
+            cellClass({row, column, rowIndex, columnIndex}){
+                if(rowIndex==1&&columnIndex==6){
+                    return 'fontColor';
+				}
+			},
             // 全部表格
             entireLists() {
                 console.log(this.form.time[0]);
@@ -254,32 +237,37 @@
                     this.tableData = res.data.businessFlows;
                     this.pageObj.total = res.data.totalCount;
                     this.tableData.map((item) => {
-                        console.log("item",item);
                         //判断操作
                         if(item.status=='Wait_To_Audit'){
-                            item.busStatus='等待送审';
+                            item.busStatus = '等待送审';
+                            item.color = '#67C23A';
                             item.btnList=[];
-                            if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
+                            if((this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username) && item.business.source == "ali"){
+                                item.btnList.push({label:'详情'},{label:'删除'});
+                            }else if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
+                                // if(this.authority.indexOf(104)!=-1){
+                                 //    item.btnList.push({label:'送审'})
+								// }
                                 item.btnList.push({label:'送审'},{label:'详情'},{label:'删除'});
-                            }else{
+							}else{
                                 item.btnList.push({label:'详情'});
                             }
                         }else if(item.status=='Audit_Success'){
                             item.busStatus='通过审核';
+                            item.color = '#67C23A';
                             item.btnList=[];
                             if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
-                                if(item.type=='Business'){
+                                if(item.type=='Business' && item.business.source == "ali"){
+                                    item.btnList.push({label:'注销'},{label:'详情'});
+                                }else if(item.type=='Business'){
                                     item.btnList.push({label:'变更'},{label:'注销'},{label:'详情'});
-                                }else{
+								}else{
                                     item.btnList.push({label:'详情'});
                                 }
-                            }else if(item.type==this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
-
-                            } else{
-                                item.btnList.push({label:'详情'});
                             }
                         }else if(item.status=='Business_Auditing' || item.status=='DestNum_Auditing'|| item.status=='Voice_Auditing'){
                             item.busStatus='审核中';
+                            item.color = '#F56C6C';
                             item.btnList=[];
                             if(this.baseData.roleName=='ROLE_admin' || item.assigneeRole==this.baseData.roleName){
                                 item.btnList.push({label:'通过审核'},{label:'驳回'},{label:'详情'});
@@ -288,6 +276,7 @@
                             }
                         }else if(item.status=='Modify_Auditing'){
                             item.busStatus='变更审核中';
+                            item.color = '#F56C6C';
                             item.btnList=[];
                             if(this.baseData.roleName=='ROLE_admin' || item.assigneeRole==this.baseData.roleName){
                                 item.btnList.push({label:'变更审核通过'},{label:'驳回'},{label:'终止'},{label:'详情'});
@@ -296,14 +285,18 @@
                             }
                         }else if(item.status=='Modify_Rejected'){
                             item.busStatus='变更审核驳回';
+                            item.color = '#F56C6C';
                             item.btnList=[];
-                            if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
+                            if((this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username) && item.business.source == "ali"){
+                                item.btnList.push({label:'注销'},{label:'详情'});
+                            }else if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
                                 item.btnList.push({label:'变更'},{label:'注销'},{label:'详情'});
-                            }else{
+							}else{
                                 item.btnList.push({label:'详情'});
                             }
                         }else if(item.status=='Canceling_Auditing'){
                             item.busStatus='注销审核';
+                            item.color = '#F56C6C';
                             item.btnList=[];
                             if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
                                 item.btnList.push({label:'通过审核'},{label:'驳回'},{label:'终止'},{label:'详情'});
@@ -312,10 +305,12 @@
                             }
                         }else if(item.status=='Cancelled'){
                             item.busStatus='已注销';
+                            item.color = '#67C23A';
                             item.btnList=[];
                             item.btnList.push({label:'详情'});
                         }else if(item.status=='Terminate_Flow'){
                             item.busStatus='受理终止';
+                            item.color = '#F56C6C';
                             item.btnList=[];
                             item.btnList.push({label:'详情'});
                         }
@@ -411,12 +406,30 @@
                         }
                     })
                 }else if(val=='删除'){
-                    this.$ajax.post('/vos/business/deleteFlow',{
-                        "companyFlow": objData
-                    }).then((res)=>{
-                        console.log(res);
-                        this.entireLists();
-                    })
+
+                    this.$confirm('此操作将永久删除该业务, 是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        this.$message({
+                            type: 'success',
+                            message: '删除成功!'
+                        });
+
+                        this.$ajax.post('/vos/business/deleteFlow',{
+                            "companyFlow": objData
+                        }).then((res)=>{
+                            console.log(res);
+                            this.entireLists();
+                        })
+                    }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: '已取消删除'
+                        });
+                    });
+
                 }
 
             },

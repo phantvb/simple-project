@@ -7,7 +7,7 @@
 			</el-breadcrumb>
 		</header>
 		<!--搜索表单-->
-		<div class="numForm">
+		<div class="numForm" v-if="permission.indexOf(7)!=-1">
 			<el-form ref="form" :model="form" label-width="100px">
 				<div class="searchInput">
 					<el-form-item label="账号搜索：" prop="accountNumber">
@@ -35,11 +35,11 @@
 			<!--表格按钮和下拉框-->
 			<div class="BtnSelect">
 				<div class="accountBtn">
-					<el-button type="primary" size="mini" @click="showAddUser">+ 新增用户</el-button>
-					<el-button size="mini" @click="batchUpdatePass">批量重置密码</el-button>
-					<el-button size="mini" @click="batchStartAndStop(1)">启用</el-button>
-					<el-button size="mini" @click="batchStartAndStop(0)">停用</el-button>
-					<el-button size="mini" @click="batchDelete">删除</el-button>
+					<el-button type="primary" size="mini" @click="showAddUser" v-if="permission.indexOf(8)!=-1">+ 新增用户</el-button>
+					<el-button size="mini" @click="batchUpdatePass" v-if="permission.indexOf(9)!=-1">批量重置密码</el-button>
+					<el-button size="mini" @click="batchStartAndStop(1)" v-if="permission.indexOf(116)!=-1">启用</el-button>
+					<el-button size="mini" @click="batchStartAndStop(0)" v-if="permission.indexOf(117)!=-1">停用</el-button>
+					<el-button size="mini" @click="batchDelete" v-if="permission.indexOf(118)!=-1">删除</el-button>
 				</div>
 				<div class="accountSelect">
 					<el-select v-model="accountStatus" placeholder="请选择" size="mini" @change="changeTableData">
@@ -68,7 +68,7 @@
 						<!--<router-link :to="{path:'/addEvent/'+3+'/'+scope.row.contactEvtId}">-->
 						<el-button size="mini" type="text" @click="showDetails(scope.row)">详情</el-button>
 						<!--</router-link>-->
-						<el-button size="mini" type="text" @click="deleteItem(scope.row)">删除</el-button>
+						<el-button size="mini" type="text" @click="deleteItem(scope.row)" v-if="permission.indexOf(118)!=-1">删除</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
@@ -263,7 +263,8 @@
 				ids: [], // 存放批量操作的id
 				currentPage: 4, //分页
 				radio: "1", //单选按钮
-				loading: false
+                loading: false,
+                permission:[]
 			};
 		},
 		methods: {
@@ -796,7 +797,10 @@
 			}
 		},
 		created() {
-			this.loadTableData("searchUser2", 1);
+            this.loadTableData("searchUser2", 1);
+			this.$store.getters.getPermission(location.hash.replace(/#/, '')).map(item => {
+                this.permission.push(item.id);
+            });
 		}
 	};
 </script>

@@ -8,9 +8,9 @@
                     </p>
                 </div>
                 <el-form ref="busMaterForm" :model="busMaterForm" label-width="200px" class="busMaterForm">
-                    <el-form-item label="标准协议编号：">
-                        <span>ZJ93681212</span>
-                    </el-form-item>
+                    <!--<el-form-item label="标准协议编号：">-->
+                        <!--<span>ZJ93681212</span>-->
+                    <!--</el-form-item>-->
                     <el-form-item label="全套业务单据PDF模板下载：" class="model">
                         <el-button type="primary" size="mini" @click="uploadPdf()">立刻下载PDF模板</el-button>
                         <span>说明：下载自动生成的标准协议、业务受理单、授权书、信息安全责任书PDF，并打彩色印盖章后上传</span>
@@ -31,7 +31,7 @@
                                            :on-success="handleAvatarSuccess"
                                            :on-error="handleAvatarSuccess"
                                            :before-upload="beforeAvatarUpload">
-                                    <img v-if="stepFourForm.unionAgreementPic" :src="stepFourForm.unionAgreementPic"
+                                    <img v-if="stepFourForm.unionAgreementPic" :src="$global.serverSrc+stepFourForm.unionAgreementPic"
                                          class="avatar">
                                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                 </el-upload>
@@ -48,7 +48,7 @@
                                 <el-upload class="avatar-uploader examplew" :action="$global.uploadUrl"
                                            :show-file-list="false" :on-success="handlebussinSuccess"
                                            :on-error="handlebussinSuccess" :before-upload="beforeAvatarUpload">
-                                    <img v-if="stepFourForm.businessHandlePic" :src="stepFourForm.businessHandlePic"
+                                    <img v-if="stepFourForm.businessHandlePic" :src="$global.serverSrc+stepFourForm.businessHandlePic"
                                          class="avatar">
                                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                 </el-upload>
@@ -65,7 +65,7 @@
                                 <el-upload class="avatar-uploader examplew" :action="$global.uploadUrl"
                                            :show-file-list="false" :on-success="handleAuthorSuccess"
                                            :on-error="handleAuthorSuccess" :before-upload="beforeAvatarUpload">
-                                    <img v-if="stepFourForm.authorizationPic" :src="stepFourForm.authorizationPic"
+                                    <img v-if="stepFourForm.authorizationPic" :src="$global.serverSrc+stepFourForm.authorizationPic"
                                          class="avatar">
                                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                 </el-upload>
@@ -82,7 +82,7 @@
                                 <el-upload class="avatar-uploader examplew" :action="$global.uploadUrl"
                                            :show-file-list="false" :on-success="handleSafeSuccess"
                                            :on-error="handleSafeSuccess" :before-upload="beforeAvatarUpload">
-                                    <img v-if="stepFourForm.safeAgreementPic" :src="stepFourForm.safeAgreementPic"
+                                    <img v-if="stepFourForm.safeAgreementPic" :src="$global.serverSrc+stepFourForm.safeAgreementPic"
                                          class="avatar">
                                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                 </el-upload>
@@ -101,7 +101,7 @@
                                 <el-upload class="avatar-uploader examplew" :action="$global.uploadUrl"
                                            :show-file-list="false" :on-success="handleDestNumSuccess"
                                            :on-error="handleDestNumSuccess" :before-upload="beforeAvatarUpload">
-                                    <img v-if="stepFourForm.destNumProfPic" :src="stepFourForm.destNumProfPic"
+                                    <img v-if="stepFourForm.destNumProfPic" :src="$global.serverSrc+stepFourForm.destNumProfPic"
                                          class="avatar">
                                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                 </el-upload>
@@ -119,7 +119,7 @@
                                 <el-upload class="avatar-uploader examplew" :action="$global.uploadUrl"
                                            :show-file-list="false" :on-success="handleOtherSuccess"
                                            :on-error="handleOtherSuccess" :before-upload="beforeAvatarUpload">
-                                    <img v-if="stepFourForm.otherPic" :src="stepFourForm.otherPic" class="avatar">
+                                    <img v-if="stepFourForm.otherPic" :src="$global.serverSrc+stepFourForm.otherPic" class="avatar">
                                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                 </el-upload>
                                 <div class="explain">说明：如有其它相关文件可以在此上传</div>
@@ -163,21 +163,14 @@
         components: {},
         created() {
             console.log(sessionStorage.getItem('businessIn'));
-            this.storageConpanyFlow = JSON.parse(sessionStorage.getItem('objMsg'));
-            console.log("storageConpanyFlow",this.storageConpanyFlow);
             this.businessIn = sessionStorage.getItem('businessIn');
             //新增受理
-            if (sessionStorage.getItem('businessIn') == 1) {
-                this.$root.eventHub.$on('flowId', (resp) => {
-                    console.log("flowId", resp);
-                    this.flowId = resp.flowId;
-                });
-            }else if(sessionStorage.getItem('businessIn') == 3){
+            if(sessionStorage.getItem('businessIn') == 3){
+                this.storageConpanyFlow = JSON.parse(sessionStorage.getItem('objMsg'));
                 this.saveBtnHidden=false;
                 this.flowId = sessionStorage.getItem('entireFlowId');
                 console.log("saveBtnHidden",this.saveBtnHidden);
             }
-
             if(sessionStorage.getItem('entireFlowId')){
                 console.log("entireFlowId", sessionStorage.getItem('entireFlowId'));
                 this.flowId = sessionStorage.getItem('entireFlowId');
@@ -214,48 +207,48 @@
                 console.log(res);
                 console.log(this.$global.serverSrc + res);
                 if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {
-                    this.stepFourForm.unionAgreementPic = this.$global.serverSrc + res;
+                    this.stepFourForm.unionAgreementPic = res;
                 }
                 // this.stepFourForm.unionAgreementPic = URL.createObjectURL(file.raw);
                 console.log("file.raw", file.raw);
             },
             handlebussinSuccess(res, file) {
                 if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {
-                    this.stepFourForm.businessHandlePic = this.$global.serverSrc + res;
+                    this.stepFourForm.businessHandlePic = res;
                 }
                 // this.stepFourForm.businessHandlePic = URL.createObjectURL(file.raw);
             },
             handleAuthorSuccess(res, file) {
                 if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {
-                    this.stepFourForm.authorizationPic = this.$global.serverSrc + res;
+                    this.stepFourForm.authorizationPic = res;
                 }
                 // this.stepFourForm.authorizationPic = URL.createObjectURL(file.raw);
             },
 
             handleSafeSuccess(res, file) {
                 if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {
-                    this.stepFourForm.safeAgreementPic = this.$global.serverSrc + res;
+                    this.stepFourForm.safeAgreementPic = res;
                 }
                 // this.stepFourForm.safeAgreementPic = URL.createObjectURL(file.raw);
             },
             handleDestNumSuccess(res, file) {
                 if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {
-                    this.stepFourForm.destNumProfPic = this.$global.serverSrc + res;
+                    this.stepFourForm.destNumProfPic = res;
                 }
                 // this.stepFourForm.destNumProfPic = URL.createObjectURL(file.raw);
             },
             handleOtherSuccess(res, file) {
                 if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {
-                    this.stepFourForm.otherPic = this.$global.serverSrc + res;
+                    this.stepFourForm.otherPic = res;
                 }
                 // this.stepFourForm.otherPic = URL.createObjectURL(file.raw);
             },
             beforeAvatarUpload(file) {
-                const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
+                const isJPG = file.type === 'image/jpeg' || file.type === 'image/jpg' || file.type === 'image/png';
                 const isLt2M = file.size / 1024 / 1024 < 2;
 
                 if (!isJPG) {
-                    this.$message.error('上传头像图片只能是 JPG、PNG格式!');
+                    this.$message.error('上传头像图片只能是 JPG/PNG格式!');
                 }
                 if (!isLt2M) {
                     this.$message.error('上传头像图片大小不能超过 2MB!');
@@ -265,8 +258,11 @@
             next(val) {
                 this.$emit('childNext', val);
             },
-            // 新增业务保存/变更保存
+            // 暂存
             addBusinessSave() {
+                if (sessionStorage.getItem('businessIn') == 1) {
+                    this.flowId = sessionStorage.getItem('stepThreeFlowId');
+                };
                 console.log("business:", this.business);
                 this.businessObj = Object.assign(this.business, this.stepFourForm);
                 this.ChangeBusinessStatus(this.businessObj);
@@ -300,15 +296,20 @@
             },
             //业务送审
             addBusinessSend() {
+                if (sessionStorage.getItem('businessIn') == 1) {
+                    this.flowId = sessionStorage.getItem('stepThreeFlowId');
+                };
+                console.log("第四步flowId",this.flowId);
+                console.log("storageConpanyFlow",this.storageConpanyFlow);
                 // 必填校验
-                if(this.stepFourForm.unionAgreementPic=='' ||
-                    this.stepFourForm.businessHandlePic=='' ||
-                    this.stepFourForm.authorizationPic=='' ||
-                    this.stepFourForm.safeAgreementPic=='' ||
-                    this.stepFourForm.destNumProfPic=='' ||
-                    this.stepFourForm.otherPic==''){
-                    this.$message.warning("请完善图片信息");
-                }else{
+                // if(this.stepFourForm.unionAgreementPic=='' ||
+                //     this.stepFourForm.businessHandlePic=='' ||
+                //     this.stepFourForm.authorizationPic=='' ||
+                //     this.stepFourForm.safeAgreementPic=='' ||
+                //     this.stepFourForm.destNumProfPic=='' ||
+                //     this.stepFourForm.otherPic==''){
+                //     this.$message.warning("请完善图片信息");
+                // }else{
                     console.log('没验证');
                     this.dialogVisible = false;
                     console.log("business:", this.business);
@@ -334,13 +335,13 @@
                         "destNumber": this.destNumber,
                         "number400ValueAdded": this.number400ValueAdded,
                         "number400Concession": this.number400Concession,
-                        "companyFlow": url='/vos/business/sendToModifyAudit'?this.storageConpanyFlow: {"flowId": this.flowId}
+                        "companyFlow": url=='/vos/business/sendToModifyAudit'?this.storageConpanyFlow: {"flowId": this.flowId}
                     }).then((res) => {
                         console.log(res);
                         this.$message.success(res.data);
                         this.$root.eventHub.$emit('addAcceptSave', null);
                     });
-                }
+                // }
 
             },
             // 下载pdf

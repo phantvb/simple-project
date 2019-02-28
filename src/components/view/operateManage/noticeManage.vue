@@ -7,7 +7,7 @@
 			</el-breadcrumb>
 		</header>
 		<el-tabs>
-			<div class="search">
+			<div class="search" v-if="permission.indexOf(44)!=-1">
 				<ul>
 					<li>
 						<span class="demonstration">标题内容：</span>
@@ -27,20 +27,20 @@
 				</div>
 			</div>
 			<section class="title left">
-				<el-button type="primary" size="mini" @click="showAddNotice">新增公告</el-button>
-				<el-button type="primary" plain size="mini" @click="batchDelete">批量删除</el-button>
+				<el-button type="primary" size="mini" @click="showAddNotice" v-if="permission.indexOf(49)!=-1">新增公告</el-button>
+				<el-button type="primary" plain size="mini" @click="batchDelete" v-if="permission.indexOf(48)!=-1">批量删除</el-button>
 			</section>
 			<div>
 				<el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
 					<el-table-column type="selection" width="55"></el-table-column>
 					<el-table-column prop="title" label="公告标题" width="600"></el-table-column>
-					<el-table-column prop="publishMan" label="发布人" width="400"></el-table-column>
+					<el-table-column prop="publishMan" label="发布人" width="200"></el-table-column>
 					<el-table-column prop="publishTime" label="发布时间" width="300"></el-table-column>
 					<el-table-column label="操作">
 						<template slot-scope="scope">
-							<el-button size="mini" type="text" @click="handleEdit(scope.$index, scope.row)">编辑详情</el-button>
+							<el-button size="mini" type="text" @click="handleEdit(scope.$index, scope.row)" v-if="permission.indexOf(47)!=-1">编辑详情</el-button>
 							<el-button size="mini" type="text" @click="handleStick(scope.$index, scope.row)">置顶</el-button>
-							<el-button size="mini" type="text" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+							<el-button size="mini" type="text" @click="handleDelete(scope.$index, scope.row)" v-if="permission.indexOf(48)!=-1">删除</el-button>
 						</template>
 					</el-table-column>
 					<el-table-column type="expand">
@@ -111,7 +111,8 @@
 
 				updateData: "none", // 编辑和新增公用一个弹窗控制按钮显示
 				submitData: "inline-block",
-				loading: false
+                loading: false,
+                permission:[]
 			};
 		},
 
@@ -399,7 +400,10 @@
 			}
 		},
 		created() {
-			this.loadData();
+            this.loadData();
+			this.$store.getters.getPermission(location.hash.replace(/#/, '')).map(item => {
+                this.permission.push(item.id);
+            });
 		}
 	};
 </script>

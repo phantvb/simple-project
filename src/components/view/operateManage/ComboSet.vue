@@ -9,16 +9,16 @@
 		<div style="position: relative;margin-top: 20px">
 			<el-tabs v-model="active" type="border-card">
 				<el-tab-pane label="资费套餐" name="1">
-					<tariffPackage></tariffPackage>
+					<tariffPackage :permission="permission"></tariffPackage>
 				</el-tab-pane>
 				<el-tab-pane label="增值业务" name="2">
-					<valueAdded></valueAdded>
+					<valueAdded :permission="permission"></valueAdded>
 				</el-tab-pane>
 				<el-tab-pane label="优惠方案" name="3">
-					<discount></discount>
+					<discount :permission="permission"></discount>
 				</el-tab-pane>
 				<el-tab-pane label="时长包" name="4">
-					<timePacket></timePacket>
+					<timePacket :permission="permission"></timePacket>
 				</el-tab-pane>
 			</el-tabs>
 		</div>
@@ -26,25 +26,32 @@
 </template>
 
 <script>
-    import tariffPackage from './ComboSetElement/tariffPackage';
-    import valueAdded from './ComboSetElement/valueAdded';
-    import discount from './ComboSetElement/discount';
-    import timePacket from './ComboSetElement/timePacket';
+	import tariffPackage from './ComboSetElement/tariffPackage';
+	import valueAdded from './ComboSetElement/valueAdded';
+	import discount from './ComboSetElement/discount';
+	import timePacket from './ComboSetElement/timePacket';
 
-    export default {
-        name: 'ComboSet',
-        components: {
-            tariffPackage,
-            valueAdded,
-            discount,
-            timePacket
-        },
-        data() {
-            return {
+	export default {
+		name: 'ComboSet',
+		components: {
+			tariffPackage,
+			valueAdded,
+			discount,
+			timePacket
+		},
+		data() {
+			return {
                 active: '1',
-            }
-        }
-    }
+                
+				permission: []
+			}
+		},
+		created() {
+			this.$store.getters.getPermission(location.hash.replace(/#/, '')).map(item => {
+                this.permission.push(item.id);
+            });
+		}
+	}
 </script>
 
 <style lang="scss" scoped>
