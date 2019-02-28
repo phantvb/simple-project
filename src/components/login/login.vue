@@ -72,7 +72,9 @@
 				codeImg: true
 			};
 		},
-		mounted() {},
+		mounted() {
+
+		},
 		methods: {
 			submitForm() {
 				var _this = this;

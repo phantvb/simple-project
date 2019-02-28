@@ -150,7 +150,7 @@
 									item.unit = item.valueAddedFee + "元/个";
 									item.amounts = item.numOfOne + "个";
 								} else if (item.units == "perMonthOne") {
-									item.unit = item.valueAddedFee + item.numOfOne + "元/月/个";
+									item.unit = item.valueAddedFee + "元/月/个";
 									item.amounts = item.amount + "月" + item.numOfOne + "个";
 								}
 
