@@ -80,19 +80,19 @@
 				var _this = this;
 				this.loading = true;
 				_this.$ajax
-					// .post(
-					// 	"/vos/user/login?username=" +
-					// 	this.loginForm.name +
-					// 	"&password=" +
-					// 	this.loginForm.pass +
-					// 	"&imageCode=" +
-					// 	this.loginForm.code
-					// )
-					.post('/vos/user/apiLogin', {
-						username: this.loginForm.name,
-						password: this.loginForm.pass,
-						imageCode: this.loginForm.code
-					})
+					.post(
+						"/vos/user/login?username=" +
+						this.loginForm.name +
+						"&password=" +
+						this.loginForm.pass +
+						"&imageCode=" +
+						this.loginForm.code
+					)
+					// .post('/vos/user/apiLogin', {
+					// 	username: this.loginForm.name,
+					// 	password: this.loginForm.pass,
+					// 	imageCode: this.loginForm.code
+					// })
 					.then(resp => {
 						if (resp.code == 200) {
 							_this.loading = false;
