@@ -144,7 +144,7 @@
                         this.flowRecordList = res.data.flowRecord;
                         this.flowRecordList.map((item) => {
                             if(item.operatorRole=='ROLE_admin'){
-                                item.orole = '管理员'
+                                item.orole = '超级管理员'
                             }else if(item.operatorRole=='ROLE_salesman'){
                                 item.oole = '业务员'
                             }else if(item.operatorRole=='ROLE_auditor'){
@@ -152,7 +152,7 @@
                             }
 
                             if(item.assginessRole=='ROLE_admin'){
-                                item.arole = '管理员'
+                                item.arole = '超级管理员'
                             }else if(item.assginessRole=='ROLE_salesman'){
                                 item.arole = '业务员'
                             }else if(item.assginessRole=='ROLE_auditor'){

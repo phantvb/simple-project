@@ -169,7 +169,6 @@
             DialogVoice,
         },
         created() {
-            // console.log("权限",this.$store.getters.getPermission(location.hash.replace(/#/, '')));
             this.$store.getters.getPermission(location.hash.replace(/#/, '')).map((item) => {
                 this.authority.push(item.id);
             });
@@ -738,6 +737,7 @@
                 this.form.firmName = '';
                 this.form.phoneNum = '';
                 this.form.time = '';
+                this.form.source = '';
                 this.entireLists();
             },
             cancelCompany(data) {

@@ -114,13 +114,11 @@
 </template>
 <script>
 
-  import DialogBusiness from './dialogBusiness';
   import {mapState} from "vuex";
   import {formatDate} from '../../../utils/screen';
   export default {
     name: 'businessHandling',
       components: {
-          DialogBusiness
       },
     data() {
       return {
@@ -186,7 +184,6 @@
       };
     },
     created(){
-        console.log("权限",this.$store.getters.getPermission(location.hash.replace(/#/, '')));
         this.$store.getters.getPermission(location.hash.replace(/#/, '')).map((item)=>{
             this.authority.push(item.id);
         });
@@ -327,7 +324,14 @@
         businessAdd(){
             this.$root.eventHub.$emit('dialogVisibleBusiness',{visibleBusiness:true,businessIn:1});
         },
-
+        // 重置
+        resetForm() {
+            this.form.firmName = '';
+            this.form.phoneNum = '';
+            this.form.time = '';
+            this.form.source = '';
+            this.businessLists();
+        },
         // 业务受理表格
         businessLists(){
             // console.log(this.form.time[0]);
@@ -346,7 +350,7 @@
                 "dateEnd":this.form.time[1]==undefined?'':dateEnd_value,
                 "companyName":this.form.firmName,
                 "status":this.accountStatus,
-                "source":'',
+                "source":this.form.source,
                 "number400":this.form.phoneNum,
                 "page":{
                     "pageNo":this.pageObj.page,

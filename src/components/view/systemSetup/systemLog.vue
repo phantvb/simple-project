@@ -128,7 +128,7 @@
 			</div>
 			<div style="overflow: hidden;margin-bottom:20px;">
 				<el-table :data="tableData" style="width: 100%">
-					<el-table-column prop="actionRoleName" label="操作角色">
+					<el-table-column prop="actionRoleNameZh" label="操作角色">
 					</el-table-column>
 
 					<el-table-column label="操作账号">
@@ -231,9 +231,7 @@
 				});
 				this.$ajax.get("/vos/role/getAllRoleWithoutAdmin").then(res => {
 					if (res.code == 200) {
-
 						this.roleData = res.data.data;
-						// this.operateRoleList=res.data.data;
 						for (let i = 0; i < res.data.data.length; i++) {
 							this.operateRoleList.push({
 								name: res.data.data[i].name,
@@ -305,9 +303,28 @@
 						"pageSize": this.pageSize
 					}
 				}).then((res) => {
-					// ;
-					// ;
+					console.log(res);
 					this.tableData = res.data.actionLogs;
+					this.tableData.map((item)=>{
+						switch(item.actionRoleName){
+							case 'ROLE_admin':
+                                item.actionRoleNameZh = '超级管理员';
+                                break;
+                            case 'ROLE_salesman':
+                                item.actionRoleNameZh = '业务员';
+                                break;
+                            case 'ROLE_auditor':
+                                item.actionRoleNameZh = '审核员';
+                                break;
+                            case 'ROLE_operator':
+                                item.actionRoleNameZh = '运营员';
+                                break;
+                            case 'ROLE_treasurer':
+                                item.actionRoleNameZh = '财务员';
+                                break;
+						}
+					});
+
 					this.totalPage = res.data.totalCount;
 				})
 			},
