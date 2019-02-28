@@ -86,7 +86,7 @@
 									label="操作">
 								<template slot-scope="scope">
 									<div>
-										<el-button size="mini" type="text">删除</el-button>
+										<el-button size="mini" type="text" @click="delVoice(scope.$index)">删除</el-button>
 										<el-button size="mini" type="text"></el-button>
 										<el-button size="mini" type="text" @click="add(scope)" v-if="tableData.length-1 == scope.$index">添加</el-button>
 									</div>
@@ -312,6 +312,9 @@
                     voicefiles:[],
                 })
             },
+            delVoice(index){
+                this.tableData.splice(index,1);
+			},
             // 文件上传限制
             beforeAvatarUpload(file){
                 // console.log(file.type);

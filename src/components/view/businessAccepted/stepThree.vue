@@ -190,16 +190,20 @@
                                 <li class="l2">
                                     <el-upload class="avatar-uploader exampleh" :action="$global.uploadUrl"
                                                :show-file-list="false" :on-success="handleAvatarSuccess"
-                                               :on-error="handleAvatarSuccess" :before-upload="beforeAvatarUpload" accept=".png,.jpeg,.jpg">
-                                        <img v-if="stepThreeForm.agentCardFront" :src="$global.serverSrc+stepThreeForm.agentCardFront" class="avatar">
+                                               :on-error="handleAvatarSuccess" :before-upload="beforeAvatarUpload"
+                                               accept=".png,.jpeg,.jpg">
+                                        <img v-if="stepThreeForm.agentCardFront"
+                                             :src="$global.serverSrc+stepThreeForm.agentCardFront" class="avatar">
                                         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                     </el-upload>
                                 </li>
                                 <li class="l2">
                                     <el-upload class="avatar-uploader exampleh" :action="$global.uploadUrl"
                                                :show-file-list="false" :on-success="handleBackSuccess"
-                                               :on-error="handleBackSuccess" :before-upload="beforeAvatarUpload" accept=".png,.jpeg,.jpg">
-                                        <img v-if="stepThreeForm.agentCardBack" :src="$global.serverSrc+stepThreeForm.agentCardBack" class="avatar">
+                                               :on-error="handleBackSuccess" :before-upload="beforeAvatarUpload"
+                                               accept=".png,.jpeg,.jpg">
+                                        <img v-if="stepThreeForm.agentCardBack"
+                                             :src="$global.serverSrc+stepThreeForm.agentCardBack" class="avatar">
                                         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                     </el-upload>
                                 </li>
@@ -208,8 +212,10 @@
                                 <li class="l2">
                                     <el-upload class="avatar-uploader exampleh" :action="$global.uploadUrl"
                                                :show-file-list="false" :on-success="handleHandSuccess"
-                                               :on-error="handleHandSuccess" :before-upload="beforeAvatarUpload" accept=".png,.jpeg,.jpg">
-                                        <img v-if="stepThreeForm.agentCardWIthHand" :src="$global.serverSrc+stepThreeForm.agentCardWIthHand" class="avatar">
+                                               :on-error="handleHandSuccess" :before-upload="beforeAvatarUpload"
+                                               accept=".png,.jpeg,.jpg">
+                                        <img v-if="stepThreeForm.agentCardWIthHand"
+                                             :src="$global.serverSrc+stepThreeForm.agentCardWIthHand" class="avatar">
                                         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                     </el-upload>
                                 </li>
@@ -542,7 +548,7 @@
                 addObjCode: '',  //添加目的码
                 delObjCode: '',  //删减目的码
                 busIdentity: '', //业务身份
-                businessStanding:'',//业务身份中文
+                businessStanding: '',//业务身份中文
                 mealList: [],    //套餐数组
                 firstPackageId: '', //第一个套餐id
                 searchNumPage: {
@@ -615,9 +621,9 @@
             // console.log("saveBtnHidden", this.saveBtnHidden);
             // console.log("nextDisabled", this.nextDisabled);
             this.busIdentity = sessionStorage.getItem('businessType');
-            if(this.busIdentity == "self"){
+            if (this.busIdentity == "self") {
                 this.businessStanding = '自营'
-            }else{
+            } else {
                 this.businessStanding = '阿里'
             }
             this.stepThreeForm.channel = this.busIdentity;
@@ -700,7 +706,7 @@
                     obj.remarks = item.remarks;
                     obj.valueAddedFee = item.tariffFee;
                     obj.units = item.units;
-                    if(item.units != 'perOne'){
+                    if (item.units != 'perOne') {
                         obj.numOfMonth = item.numOfMonth;
                     }
                     obj.unitsName = item.unitsName;
@@ -749,10 +755,10 @@
             addObjCodes() {
                 let unit = {};
                 this.objCodeList.push(unit);
-                this.objCodeTable.map((item,index)=>{
-                    if(item.tariffName=='新增目的码'){
+                this.objCodeTable.map((item, index) => {
+                    if (item.tariffName == '新增目的码') {
                         item.numOfone++;
-                        this.$set(this.objCodeTable,index,item);
+                        this.$set(this.objCodeTable, index, item);
                     }
                 })
             },
@@ -760,10 +766,10 @@
             delObjCodes(index) {
                 // console.log(index);
                 this.objCodeList.splice(index, 1);
-                this.objCodeTable.map((item,index)=>{
-                    if(item.tariffName=='新增目的码'){
+                this.objCodeTable.map((item, index) => {
+                    if (item.tariffName == '新增目的码') {
                         item.numOfone--;
-                        this.$set(this.objCodeTable,index,item);
+                        this.$set(this.objCodeTable, index, item);
                     }
                 })
             },
@@ -799,7 +805,7 @@
                     }
                 }).then((res) => {
                     // console.log(val);
-                    console.log("concessionSchemeList",res.data.concessionSchemeList);
+                    console.log("concessionSchemeList", res.data.concessionSchemeList);
                     this.discountsList = res.data.concessionSchemeList;
                 })
             },
@@ -815,7 +821,7 @@
                     this.objCodeTable = res.data.valueAddedList;
                     this.objCodeTable.map((item) => {
                         console.log(item);
-                        if(item.units !='perOne'){
+                        if (item.units != 'perOne') {
                             item.numOfMonth = 1;
                         }
                         item.numOfone = 1;
@@ -857,7 +863,7 @@
                                     if (item1.valueAddedId == item.id) {
                                         //把选中的复选框信息赋值给原数组勾选的选项
                                         item1.tariffFee = item.valueAddedFee;
-                                        if(item.units != 'perOne'){
+                                        if (item.units != 'perOne') {
                                             item.numOfMonth = item1.numOfMonth;
                                         }
                                         item.numOfone = item1.numOfone;
@@ -875,7 +881,7 @@
                                         obj.remarks = item.remarks;
                                         obj.valueAddedFee = item.tariffFee;
                                         obj.units = item.units;
-                                        if(item.units != 'perOne'){
+                                        if (item.units != 'perOne') {
                                             obj.numOfMonth = item.numOfMonth;
                                         }
                                         if (item.units == 'perMonthOne' || item.units == 'perOne') {
@@ -884,9 +890,15 @@
                                         newValueAdd.push(obj);
                                         // console.log(newValueAdd);
                                     }
+                                    if(item.tariffName=='新增目的码'){
+                                        if(item1.tariffName != '新增目的码') {
+                                            //如果新增目的码选项没打勾，回显个数依然和目的码个数一样
+                                            console.log("新增目的码没有打勾");
+                                            item.numOfone=this.objCodeList.length;
+                                        }
+                                    }
+
                                 });
-
-
                             } else {
                                 if (item.presents == 1) {
                                     //赠送勾选
@@ -903,7 +915,6 @@
                                     obj.valueAddedFee = item.tariffFee;
                                     obj.units = item.units;
                                     obj.numOfMonth = item.numOfMonth;
-                                    // obj.numOfone = item.numOfone;
                                     if (item.units == 'perMonthOne' || item.units == 'perOne') {
                                         obj.numOfone = item.numOfone;
                                     }
@@ -994,30 +1005,28 @@
             // 优惠切换
             discountChange(val) {
                 console.log(val);
-                let ll={};
+                let ll = {};
                 let dex;
-                this.discountsList.map((item,index)=>{
-                    if(item.id == val){
-                        ll=item;
-                        dex=index;
+                this.discountsList.map((item, index) => {
+                    if (item.id == val) {
+                        ll = item;
+                        dex = index;
                     }
                 });
-                // this.stepThreeForm.discounts =ll.id;
                 let disObj = ll;
-                // delete disObj.id;
                 this.disList = [];
                 disObj.amount = 1;
                 this.disList.push(disObj);
-                this.$set(this.discountsList,dex,ll)
+                this.$set(this.discountsList, dex, ll)
             },
 
             // 经办人证件类型
-            agentDocumentTypeList(){
-                this.$ajax.post('/vos/dic/getDicsByType',{
-                    "dicType":"documentType",
-                    "status":1
-                }).then((res)=>{
-                    console.log("经办人证件类型",res.data.dicList);
+            agentDocumentTypeList() {
+                this.$ajax.post('/vos/dic/getDicsByType', {
+                    "dicType": "documentType",
+                    "status": 1
+                }).then((res) => {
+                    // console.log("经办人证件类型",res.data.dicList);
                     this.identityTypeList = res.data.dicList;
                 })
             },
@@ -1041,8 +1050,8 @@
             proChange(val) {
                 console.log(val);
                 this.provinceId = val;
-                this.provinceList.map((item)=>{
-                    if(item.provinceId == val){
+                this.provinceList.map((item) => {
+                    if (item.provinceId == val) {
                         this.stepThreeForm.provinceBelong = item.province;
                     }
                 });
@@ -1051,8 +1060,8 @@
             cityChange(val) {
                 console.log(val);
                 this.cityId = val;
-                this.cityList.map((item)=>{
-                    if(item.cityId == val){
+                this.cityList.map((item) => {
+                    if (item.cityId == val) {
                         this.stepThreeForm.cityBelong = item.city;
                     }
                 })
@@ -1133,7 +1142,7 @@
                     this.ChangeNumber400ValueAddedStatus(this.valueAdd);
                     this.ChangeNumber400ConcessionStatus(this.disList);
                     console.log("company", this.company);
-                    if(this.company.idIndate && this.company.idIndate.length!=0){
+                    if (this.company.idIndate && this.company.idIndate.length != 0) {
                         this.company.cardStartDate = this.company.idIndate[0];
                         this.company.cardEndDate = this.company.idIndate[1];
                     }
@@ -1169,7 +1178,7 @@
                             // console.log("vuex.company", this.company);
                             // console.log("vuex.business", this.business);
                             // console.log(this.stepThreeFlowId = res.data.flowId);
-                            sessionStorage.setItem('stepThreeFlowId',this.stepThreeFlowId);
+                            sessionStorage.setItem('stepThreeFlowId', this.stepThreeFlowId);
                             //第三步点击下一步之前检查number400是否绑定了引示号
                             this.$ajax.post('/vos/business/matchGuideNumber', {
                                 "number400": this.stepThreeFlowId != null ? this.stepThreeForm.number400 : this.titleNum,
