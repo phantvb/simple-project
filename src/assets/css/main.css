@@ -56,6 +56,10 @@
 	border-radius: 1px;
 }
 
+#userCenter .el-card {
+	border: unset;
+}
+
 #businessInform .el-input-group__append,
 .el-input-group__prepend {
 	padding: 0 10px !important;
@@ -194,15 +198,18 @@
 
 .entireForm .el-form-item,
 .handlingForm .el-form-item {
-	width:40%;
+	width: 40%;
 	float: left;
 	/*border:1px solid #000;*/
 }
+
 .entireForm .el-form-item .el-select,
-.handlingForm .el-form-item .el-select{
-	width:100%;
+.handlingForm .el-form-item .el-select {
+	width: 100%;
 }
-.entireForm .searchBtn,.handlingForm .searchBtn {
+
+.entireForm .searchBtn,
+.handlingForm .searchBtn {
 	width: 20%;
 	float: left;
 }
@@ -271,8 +278,9 @@
 	width: 50% !important;
 	overflow: hidden;
 }
-.addValueTable .el-input-number{
-	width:100px;
+
+.addValueTable .el-input-number {
+	width: 100px;
 }
 
 .objCodeDialog .el-table .cell,
@@ -290,6 +298,7 @@
 .objCodeDialog .materials .el-form-item__content {
 	line-height: 23px;
 }
+
 .threeSelect .el-form-item,
 .legalInfo .el-form-item {
 	width: 25%;
@@ -332,13 +341,16 @@
 	width: 67%;
 	margin-left: 10px;
 }
-.QCellCore .el-form-item .el-form-item__label{
+
+.QCellCore .el-form-item .el-form-item__label {
 	text-align: left;
-	width:82px !important;
+	width: 82px !important;
 }
-.QCellCore .el-form-item .el-form-item__content{
-	margin-left:0 !important;
+
+.QCellCore .el-form-item .el-form-item__content {
+	margin-left: 0 !important;
 }
+
 .voiceForm .voiceType .el-select,
 .voiceForm .el-button {
 	float: left;
