@@ -421,7 +421,7 @@
                     "companyName":this.form.firmName,
                     "status":this.accountStatus,
                     "source":'',
-                    "number400":this.acceptForm.fourNum,
+                    "number400":this.form.phoneNum,
                     "page":{
                         "pageNo":this.pageObj.page,
                         "pageSize":this.pageObj.pageSize,

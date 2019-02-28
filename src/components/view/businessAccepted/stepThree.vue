@@ -889,13 +889,16 @@
                                         }
                                         newValueAdd.push(obj);
                                         // console.log(newValueAdd);
-                                    } else {
-                                        //如果新增目的码选项没打勾，回显个数依然和目的码个数一样
-
                                     }
+                                    if(item.tariffName=='新增目的码'){
+                                        if(item1.tariffName != '新增目的码') {
+                                            //如果新增目的码选项没打勾，回显个数依然和目的码个数一样
+                                            console.log("新增目的码没有打勾");
+                                            item.numOfone=this.objCodeList.length;
+                                        }
+                                    }
+
                                 });
-
-
                             } else {
                                 if (item.presents == 1) {
                                     //赠送勾选
