@@ -12,9 +12,6 @@
                     </p>
                 </div>
                 <div class="block left">
-                    <!--<p class="fmini">VSMS客户编码：</p>-->
-                    <!--<p class="fmini">集团CRM客户编码： </p>-->
-                    <!--<p class="fmini">省CRM客户编码：</p>-->
                     <p class="fmini">企业名称：{{voiceDetails.companyName}} </p>
                     <p class="fmini">证件编号：{{voiceDetails.companyCardNo}} </p>
                     <p class="fmini"><span>企业性质：{{voiceDetails.companyCharacter}}</span></p>
@@ -63,23 +60,11 @@
                                             label="语音名称">
                                     </el-table-column>
 
-                                    <!--<el-table-column-->
-                                    <!--prop="number400"-->
-                                    <!--label="是否制作计费">-->
-                                    <!--</el-table-column>-->
-
                                     <el-table-column
                                             prop="voiceFile"
                                             label='语音文件'
                                             width="320px">
                                         <template slot-scope="scope">
-                                            <!--<el-button @click="an(scope.row)">an</el-button>-->
-                                            <!--<audio controls>-->
-                                            <!--<source-->
-                                            <!--src="http://sc1.111ttt.cn:8282/2018/1/03m/13/396131232171.m4a?tflag=1519095601&pin=6cd414115fdb9a950d827487b16b5f97#.mp3"-->
-                                            <!--type="audio/ogg">-->
-                                            <!--</audio>-->
-                                            <!--<Aplayer name="Aplayer" :music_url="'http://sc1.111ttt.cn:8282/2018/1/03m/13/396131232171.m4a?tflag=1519095601&pin=6cd414115fdb9a950d827487b16b5f97#.mp3'"></Aplayer>-->
                                             <Aplayer name="Aplayer"
                                                      :music_url="scope.row.voiceFile" v-if="toPlay"></Aplayer>
                                         </template>
@@ -97,15 +82,6 @@
             <header class="left">
                 审核流程 > 目的码审核
             </header>
-            <!--<div class="block underline">-->
-            <!--<div class="step">-->
-            <!--<el-steps direction="vertical" :active="1">-->
-            <!--<el-step title="业务员(姚明)" description="递交 12月08日 16:59"></el-step>-->
-            <!--<el-step title="管理员" description="审批 12月08日 16:59"></el-step>-->
-            <!--</el-steps>-->
-            <!--</div>-->
-            <!--<button class="pass"><i class="el-icon-circle-check" style="color:#67C23A;font-size:16px;transform: translateY(1px);"></i> 审核通过</button>-->
-            <!--</div>-->
             <div class="block underline">
                 <div class="step">
                     <el-steps direction="vertical" :active="1">

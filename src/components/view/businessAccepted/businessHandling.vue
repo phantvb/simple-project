@@ -46,7 +46,7 @@
       <!--表格按钮和下拉框-->
       <div class="BtnSelect">
         <div class="accountBtn">
-          <el-button type="primary" size="mini" @click="businessAdd()">+新增受理</el-button>
+          <el-button type="primary" size="mini" @click="businessAdd()" v-if="authority.indexOf(108)!=-1">+新增受理</el-button>
         </div>
         <div class="accountSelect">
           <span style="font-size:12px">状态:</span>
@@ -64,7 +64,7 @@
         <el-table-column
                 prop="business.companyName"
                 label="企业名称"
-                width="300">
+                width="250">
         </el-table-column>
 
         <el-table-column
@@ -92,6 +92,7 @@
         </el-table-column>
 
         <el-table-column
+                width="250"
                 label="操作">
           <template slot-scope="scope">
             <el-button size="mini" type="text" v-for="(item,index) in scope.row.btnList" :key="index" @click="details(item.label,scope.row)">{{item.label}}</el-button>
@@ -181,10 +182,14 @@
           busStatus:'',   //表格对象状态
           busCreator:'',  //表格对象creator
           busAssigneeRole:'',
-
+          authority:[],   //权限数组
       };
     },
     created(){
+        console.log("权限",this.$store.getters.getPermission(location.hash.replace(/#/, '')));
+        this.$store.getters.getPermission(location.hash.replace(/#/, '')).map((item)=>{
+            this.authority.push(item.id);
+        });
         this.baseData.roleName = sessionStorage.getItem("roleName");
         this.baseData.username = sessionStorage.getItem("username");
         console.log("roleName",this.baseData.roleName);
@@ -202,10 +207,12 @@
     methods:{
         handleSizeChange(val) {
             this.pageObj.pageSize = val;
+            this.businessLists();
             console.log(`每页 ${val} 条`);
         },
         handleCurrentChange(val) {
             this.pageObj.page = val;
+            this.businessLists();
             console.log(`当前页: ${val}`);
         },
       //弹窗关闭按钮
@@ -357,7 +364,13 @@
                         item.color = '#67C23A';
                         item.btnList=[];
                         if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
-                            item.btnList.push({label:'送审'},{label:'详情'},{label:'删除'});
+                            if(this.authority.indexOf(104)!=-1){
+                               item.btnList.push({label:'送审'})
+                            }
+                            item.btnList.push({label:'详情'});
+                            if(this.authority.indexOf(128)!=-1){
+                                item.btnList.push({label:'删除'})
+                            }
                         }else{
                             item.btnList.push({label:'详情'});
                         }
@@ -367,7 +380,16 @@
                         item.color = '#67C23A';
                         item.btnList=[];
                         if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
-                            item.btnList.push({label:'变更'},{label:'注销'},{label:'详情'});
+                            if(this.authority.indexOf(130)!=-1){
+                                item.btnList.push({label:'变更'})
+                            }
+                            if(this.authority.indexOf(107)!=-1){
+                                item.btnList.push({label:'注销'})
+                            }
+                            item.btnList.push({label:'详情'});
+                            if(this.authority.indexOf(128)!=-1){
+                                item.btnList.push({label:'删除'})
+                            }
                         }else{
                             item.btnList.push({label:'详情'});
                         }
@@ -376,7 +398,13 @@
                         item.color = '#F56C6C';
                         item.btnList=[];
                         if(this.baseData.roleName=='ROLE_admin' || item.assigneeRole==this.baseData.roleName){
-                            item.btnList.push({label:'通过审核'},{label:'驳回'},{label:'详情'});
+                            if(this.authority.indexOf(105)!=-1){
+                                item.btnList.push({label:'通过审核'})
+                            }
+                            if(this.authority.indexOf(106)!=-1){
+                                item.btnList.push({label:'驳回'})
+                            }
+                            item.btnList.push({label:'详情'});
                         }else{
                             item.btnList.push({label:'详情'});
                         }
@@ -385,7 +413,16 @@
                         item.color = '#F56C6C';
                         item.btnList=[];
                         if(this.baseData.roleName=='ROLE_admin' || item.assigneeRole==this.baseData.roleName){
-                            item.btnList.push({label:'变更通过审核'},{label:'驳回'},{label:'终止'},{label:'详情'});
+                            if(this.authority.indexOf(105)!=-1){
+                                item.btnList.push({label:'变更通过审核'})
+                            }
+                            if(this.authority.indexOf(106)!=-1){
+                                item.btnList.push({label:'驳回'})
+                            }
+                            if(this.authority.indexOf(129)!=-1){
+                                item.btnList.push({label:'终止'})
+                            }
+                            item.btnList.push({label:'详情'});
                         }else{
                             item.btnList.push({label:'详情'});
                         }
@@ -394,7 +431,13 @@
                         item.color = '#F56C6C';
                         item.btnList=[];
                         if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
-                            item.btnList.push({label:'变更'},{label:'注销'},{label:'详情'});
+                            if(this.authority.indexOf(130)!=-1){
+                                item.btnList.push({label:'变更'})
+                            }
+                            if(this.authority.indexOf(107)!=-1){
+                                item.btnList.push({label:'注销'})
+                            }
+                            item.btnList.push({label:'详情'});
                         }else{
                             item.btnList.push({label:'详情'});
                         }
@@ -403,7 +446,13 @@
                         item.color = '#F56C6C';
                         item.btnList=[];
                         if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
-                            item.btnList.push({label:'通过审核'},{label:'终止'},{label:'详情'});
+                            if(this.authority.indexOf(105)!=-1){
+                                item.btnList.push({label:'通过审核'})
+                            }
+                            if(this.authority.indexOf(129)!=-1){
+                                item.btnList.push({label:'终止'})
+                            }
+                            item.btnList.push({label:'详情'});
                         }else{
                             item.btnList.push({label:'详情'});
                         }

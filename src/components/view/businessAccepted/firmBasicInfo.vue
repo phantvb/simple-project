@@ -14,8 +14,8 @@
                         <span>企业性质：{{this.businessDetialCompanyInfo.companyCharacter}}</span>
                         <span>企业等级：{{this.businessDetialCompanyInfo.companyRank}}</span>
                         <span>行业类型：{{this.businessDetialCompanyInfo.industryType}}</span></p>
-                    <p class="fmini">注册地址：{{this.businessDetialCompanyInfo.registProvince+this.businessDetialCompanyInfo.registCity+this.businessDetialCompanyInfo.registArea}}</p>
-                    <p class="fmini">办公地址：{{this.businessDetialCompanyInfo.officeProvince+this.businessDetialCompanyInfo.officeCity+this.businessDetialCompanyInfo.officeArea}}</p>
+                    <p class="fmini">注册地址：{{this.businessDetialCompanyInfo.registProvince+this.businessDetialCompanyInfo.registCity+this.businessDetialCompanyInfo.registArea+this.businessDetialCompanyInfo.registAddress}}</p>
+                    <p class="fmini">办公地址：{{this.businessDetialCompanyInfo.officeProvince+this.businessDetialCompanyInfo.officeCity+this.businessDetialCompanyInfo.officeArea+this.businessDetialCompanyInfo.officeAddress}}</p>
                     <p class="fmini">企业电话：{{this.businessDetialCompanyInfo.phone}}</p>
                     <div>
                         <div style="float:left;">
@@ -41,7 +41,9 @@
                     <p class="fmini">法人证件： {{this.legalCardCn}} </p>
                     <p class="fmini">证件号码： {{this.businessDetialCompanyInfo.cardNum}} </p>
                     <p class="fmini" v-if="businessDetialCompanyInfo.idCardAddress">身份证住址： {{this.businessDetialCompanyInfo.idCardAddress}}</p>
-                    <p class="fmini" v-if="businessDetialCompanyInfo.legalCard!='HK_pass' || businessDetialCompanyInfo.legalCard!='Taiwan_pass'">证件有效期：{{this.businessDetialCompanyInfo.cardStartDate+"~"+this.businessDetialCompanyInfo.cardEndDate}}</p>
+                    <p class="fmini" v-if="businessDetialCompanyInfo.legalCard!='HK_pass' || businessDetialCompanyInfo.legalCard!='Taiwan_pass'">
+                        证件有效期：{{this.businessDetialCompanyInfo.cardStartDate+"~"+this.businessDetialCompanyInfo.cardEndDate}}
+                    </p>
                     <div>
                         <!-- <div style="float:left;">
                             <span class="fmini">企业资质证明文件：</span>
