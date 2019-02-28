@@ -245,6 +245,9 @@
                             if((this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username) && item.business.source == "ali"){
                                 item.btnList.push({label:'详情'},{label:'删除'});
                             }else if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
+                                // if(this.authority.indexOf(104)!=-1){
+                                 //    item.btnList.push({label:'送审'})
+								// }
                                 item.btnList.push({label:'送审'},{label:'详情'},{label:'删除'});
 							}else{
                                 item.btnList.push({label:'详情'});
