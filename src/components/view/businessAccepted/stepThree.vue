@@ -344,7 +344,7 @@
                                         v-for="(item,index) in discountsList"
                                         :key="index"
                                         :label="item.concessionName"
-                                        :value="item">
+                                        :value="item.id">
                                 </el-option>
                             </el-select>
                         </el-form-item>
@@ -799,7 +799,7 @@
                     }
                 }).then((res) => {
                     // console.log(val);
-                    // console.log(res.data.concessionSchemeList);
+                    console.log("concessionSchemeList",res.data.concessionSchemeList);
                     this.discountsList = res.data.concessionSchemeList;
                 })
             },
@@ -994,13 +994,21 @@
             // 优惠切换
             discountChange(val) {
                 console.log(val);
-                this.stepThreeForm.discounts =val.concessionName;
-                let disObj = val;
-                delete disObj.id;
+                let ll={};
+                let dex;
+                this.discountsList.map((item,index)=>{
+                    if(item.id == val){
+                        ll=item;
+                        dex=index;
+                    }
+                });
+                // this.stepThreeForm.discounts =ll.id;
+                let disObj = ll;
+                // delete disObj.id;
                 this.disList = [];
                 disObj.amount = 1;
                 this.disList.push(disObj);
-                console.log(this.disList);
+                this.$set(this.discountsList,dex,ll)
             },
 
             // 经办人证件类型

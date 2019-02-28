@@ -12,16 +12,18 @@
             <el-input v-model="form.phoneNum" size="mini"></el-input>
           </el-form-item>
 
-          <el-form-item label="时间：">
-            <!--<el-date-picker-->
-                    <!--size="mini"-->
-                    <!--v-model="form.time"-->
-                    <!--type="daterange"-->
-                    <!--range-separator="至"-->
-                    <!--start-placeholder="开始日期"-->
-                    <!--end-placeholder="结束日期">-->
-            <!--</el-date-picker>-->
+          <el-form-item label="业务来源：">
+            <el-select v-model="form.source" placeholder="请选择" size="mini">
+              <el-option
+                      v-for="item in sourceList"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
 
+          <el-form-item label="时间：">
             <el-date-picker
                     v-model="form.time"
                     size="mini"
@@ -71,6 +73,12 @@
         </el-table-column>
 
         <el-table-column
+                prop="sourceCn"
+                label="业务来源"
+                width="100">
+        </el-table-column>
+
+        <el-table-column
                 prop="createTime"
                 label="日期">
         </el-table-column>
@@ -78,6 +86,9 @@
         <el-table-column
                 prop="status"
                 label="状态">
+          <template slot-scope="scope">
+            <span :style="{color:scope.row.color}" size="mini" type="text">{{scope.row.status}}</span>
+          </template>
         </el-table-column>
 
         <el-table-column
@@ -120,7 +131,18 @@
           firmName:'',
           phoneNum:'',
           time:'',
+          source:'',
         },
+          sourceList:[
+              {
+                  value:'self',
+                  label:'自营',
+              },
+              {
+                  value:'ali',
+                  label:'阿里',
+              }
+          ],
         acceptForm:{
           firmName:'',
           identityType:'',
@@ -332,6 +354,7 @@
                     //判断操作
                     if(item.status=='Wait_To_Audit'){
                         item.status='等待送审';
+                        item.color = '#67C23A';
                         item.btnList=[];
                         if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
                             item.btnList.push({label:'送审'},{label:'详情'},{label:'删除'});
@@ -341,6 +364,7 @@
                         // console.log("btnList",item.btnList);
                     }else if(item.status=='Audit_Success'){
                         item.status='通过审核';
+                        item.color = '#67C23A';
                         item.btnList=[];
                         if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
                             item.btnList.push({label:'变更'},{label:'注销'},{label:'详情'});
@@ -349,6 +373,7 @@
                         }
                     }else if(item.status=='Business_Auditing'){
                         item.status='审核中';
+                        item.color = '#F56C6C';
                         item.btnList=[];
                         if(this.baseData.roleName=='ROLE_admin' || item.assigneeRole==this.baseData.roleName){
                             item.btnList.push({label:'通过审核'},{label:'驳回'},{label:'详情'});
@@ -357,6 +382,7 @@
                         }
                     }else if(item.status=='Modify_Auditing'){
                         item.status='变更审核中';
+                        item.color = '#F56C6C';
                         item.btnList=[];
                         if(this.baseData.roleName=='ROLE_admin' || item.assigneeRole==this.baseData.roleName){
                             item.btnList.push({label:'变更通过审核'},{label:'驳回'},{label:'终止'},{label:'详情'});
@@ -365,6 +391,7 @@
                         }
                     }else if(item.status=='Modify_Rejected'){
                         item.status='变更审核驳回';
+                        item.color = '#F56C6C';
                         item.btnList=[];
                         if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
                             item.btnList.push({label:'变更'},{label:'注销'},{label:'详情'});
@@ -373,6 +400,7 @@
                         }
                     }else if(item.status=='Canceling_Auditing'){
                         item.status='注销审核';
+                        item.color = '#F56C6C';
                         item.btnList=[];
                         if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
                             item.btnList.push({label:'通过审核'},{label:'终止'},{label:'详情'});
@@ -381,12 +409,21 @@
                         }
                     }else if(item.status=='Cancelled'){
                         item.status='已注销';
+                        item.color = '#67C23A';
                         item.btnList=[];
                         item.btnList.push({label:'详情'});
                     }else if(item.status=='Terminate_Flow'){
                         item.status='受理终止';
+                        item.color = '#F56C6C';
                         item.btnList=[];
                         item.btnList.push({label:'详情'});
+                    }
+
+                    //业务来源
+                    if(item.business.source && item.business.source == "self"){
+                        item.sourceCn = "自营"
+                    }else{
+                        item.sourceCn = "阿里"
                     }
 
                 })

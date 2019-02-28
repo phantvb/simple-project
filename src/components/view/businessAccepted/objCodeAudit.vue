@@ -61,6 +61,9 @@
 				</el-table-column>
 
 				<el-table-column prop="status" label="状态">
+					<template slot-scope="scope">
+						<span :style="{color:scope.row.color}" size="mini" type="text">{{scope.row.status}}</span>
+					</template>
 				</el-table-column>
 
         <el-table-column
@@ -420,7 +423,7 @@
                     this.tableData = res.data.businessFlows;
                     this.tableData.map((item)=>{
                         if(item.status=='Wait_To_Audit'){
-                            // item.status='等待送审'
+                            item.color = '#67C23A';
                             item.status='等待送审';
                             item.btnList=[];
                             if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
@@ -429,8 +432,8 @@
                                 item.btnList.push({label:'详情'});
                             }
                         }else if(item.status=='Audit_Success'){
-                            // item.status='审核通过'
                             item.status='审核通过';
+                            item.color = '#67C23A';
                             item.btnList=[];
                             if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
                                 // item.btnList.push({label:'变更'},{label:'注销'},{label:'详情'});
@@ -439,8 +442,8 @@
                                 item.btnList.push({label:'详情'});
                             }
                         }else if(item.status=='DestNum_Auditing'){
-                            // item.status='审核中'
                             item.status='审核中';
+                            item.color = '#F56C6C';
                             item.btnList=[];
                             if(this.baseData.roleName=='ROLE_admin' || item.assigneeRole==this.baseData.roleName){
                                 item.btnList.push({label:'审核通过'},{label:'驳回'},{label:'详情'});
@@ -449,6 +452,7 @@
                             }
                         }else if(item.status=='Modify_Auditing'){
                             item.status='变更审核中';
+                            item.color = '#F56C6C';
                             item.btnList=[];
                             if(this.baseData.roleName=='ROLE_admin' || item.assigneeRole==this.baseData.roleName){
                                 // item.btnList.push({label:'变更审核通过'},{label:'驳回'},{label:'终止'},{label:'详情'});
@@ -458,6 +462,7 @@
                             }
                         }else if(item.status=='Modify_Rejected'){
                             item.status='变更审核驳回';
+                            item.color = '#F56C6C';
                             item.btnList=[];
                             if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
                                 // item.btnList.push({label:'变更'},{label:'注销'},{label:'详情'});
@@ -467,6 +472,7 @@
                             }
                         }else if(item.status=='Canceling_Auditing'){
                             item.status='注销审核';
+                            item.color = '#F56C6C';
                             item.btnList=[];
                             if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
                                 item.btnList.push({label:'审核通过'},{label:'终止'},{label:'详情'});
@@ -475,6 +481,7 @@
                             }
                         }else if(item.status=='Cancelled'){
                             item.status='已注销';
+                            item.color = '#67C23A';
                             item.btnList=[];
                             item.btnList.push({label:'详情'});
                         }else if(item.status=='Terminate_Flow'){

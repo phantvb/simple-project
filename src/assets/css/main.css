@@ -194,19 +194,15 @@
 
 .entireForm .el-form-item,
 .handlingForm .el-form-item {
-	width:33%;
+	width:40%;
 	float: left;
 	/*border:1px solid #000;*/
 }
-.entireForm .el-form-item .el-select{
+.entireForm .el-form-item .el-select,
+.handlingForm .el-form-item .el-select{
 	width:100%;
 }
-.handlingForm .el-form-item {
-	width:40%;
-	float: left;
-}
-
-.handlingForm .searchBtn {
+.entireForm .searchBtn,.handlingForm .searchBtn {
 	width: 20%;
 	float: left;
 }
@@ -268,7 +264,7 @@
 }
 
 .objCodeSearch .el-form-item {
-	margin-bottom: 0 !important;
+	margin-bottom: 22px !important;
 }
 
 .objCodeDialog .el-dialog {

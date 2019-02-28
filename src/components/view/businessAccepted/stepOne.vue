@@ -97,10 +97,10 @@
                     <el-form-item label="法人证件：" class="legalCard" prop="legalCard">
                         <el-select v-model="acceptForm.legalCard" @change="change123" placeholder="请选择" size="mini" :disabled="msgDisabled">
                             <el-option
-                                    v-for="item in legalCardTypeList"
+                                    v-for="(item,index) in legalCardTypeList"
                                     :label="item.dicValue"
                                     :value="item.dicKey"
-                                    :key="item.dicValue"></el-option>
+                                    :key="index"></el-option>
                         </el-select>
                         <el-input v-model="acceptForm.cardNum" size="mini" placeholder="根据证件类型，填写相应的证件号码"
                                   prop="cardNum" :disabled="msgDisabled"></el-input>
@@ -113,7 +113,6 @@
                         <el-date-picker
                                 v-model="acceptForm.idIndate"
                                 type="daterange"
-                                :disabled="msgDisabled"
                                 format="yyyy年MM月dd日"
                                 value-format="yyyy-MM-dd"
                                 range-separator="至"
@@ -201,7 +200,7 @@
 					idCardAddress: '',
 					cardStartDate: '', //证件开始时间
 					cardEndDate: '', //证件结束时间
-					idIndate: [], //证件有效期
+					idIndate: ['1992年2月18日','1992年2月18日'], //证件有效期
 
                     // cardStartDate:this.acceptForm.idIndate[0],  //证件有限开始时间
                     // cardEndDate:this.acceptForm.idIndate[1],    //证件有限結束时间
@@ -328,9 +327,9 @@
                 this.busCityId = this.company.officeCityId;
                 this.busAreasId = this.company.officeAreaId;
 
-                this.company.idIndate=[];
-                this.company.idIndate[0] = this.company.cardStartDate;
-                this.company.idIndate[1] = this.company.cardEndDate;
+                this.company.idIndate = [];
+                this.company.idIndate.push(this.company.cardStartDate?this.company.cardStartDate:'');
+                this.company.idIndate.push(this.company.cardEndDate?this.company.cardEndDate:'');
                 // console.log("this.company",this.company);
                 this.acceptForm = this.company;
             },
