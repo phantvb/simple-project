@@ -12,7 +12,7 @@
 				</p>
 			</div>
 			<div class="part center portrait">
-				<img :src="form.headPicture?$global.serverSrc+form.headPicture:''">
+				<img :src="form.headPicture.indexOf('userHead')==-1?$global.serverSrc+form.headPicture:'/static/'+form.headPicture">
 				<el-button type="text" class="button" @click="editPortrait(true)">修改头像</el-button>
 			</div>
 			<div class="part message">
@@ -57,7 +57,9 @@
 				mesEdit: false,
 				portraitEdit: false,
 				passEdit: false,
-				form: {}
+				form: {
+					headPicture: ''
+				}
 			}
 		},
 		components: {
@@ -68,22 +70,26 @@
 		methods: {
 			editMes(bol) {
 				this.mesEdit = bol;
+				this.fetchData();
 			},
 			editPortrait(bol) {
 				this.portraitEdit = bol;
+				this.fetchData();
 			},
 			editPass(bol) {
 				this.passEdit = bol;
+				this.fetchData();
+			},
+			fetchData() {
+				this.$ajax.get('/vos/user/getDetail').then(res => {
+					if (res.code == 200) {
+						this.form = res.data;
+					}
+				});
 			}
 		},
 		created() {
-			this.$ajax.get('/vos/user/getDetail').then(res => {
-				if (res.code == 200) {
-                    this.form = res.data;
-                    // console.log('res.data: ', res.data);
-                    
-				}
-			});
+			this.fetchData();
 		}
 	}
 </script>
