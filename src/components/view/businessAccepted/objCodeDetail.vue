@@ -2,7 +2,9 @@
     <div id="objCodeDetail">
         <div id="base">
             <header class="left">
-                业务受理> 400业务> 目的码审核详情
+                <span @click="router" style="cursor: pointer">
+                     业务受理 > 目的码审核详情
+                </span>
                 <div style="float:right;color:#FF6600">【待审核】</div>
             </header>
             <section>
@@ -136,6 +138,10 @@
             this.getDetail();
         },
         methods: {
+            // 跳到上一级
+            router(){
+                this.$router.go(-1);
+            },
             getDetail(){
                 this.$ajax.get('/vos/destnum/getCacheData?flowId='+this.$route.query.flowId).then((res)=>{
                     console.log(res.data);
