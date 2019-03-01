@@ -152,8 +152,11 @@
 			})
 		},
 		methods: {
-			close() {
+			close(bol) {
 				this.$emit('close');
+				if (bol) {
+					this.$emit('fresh');
+				}
 			},
 			getAccountsTotal() {
 				this.$ajax.post('/vos/accountsTotal/getDetail', { accountsTotal: { id: this.data.id } }).then(res => {
@@ -169,6 +172,7 @@
 				this.$ajax.post('/vos/accountsTotal/confirmInvoice', { realReceives: this.recordData, accountType: 'Total', id: this.data.id }).then(res => {
 					if (res.code == 200) {
 						this.$message.success('操作成功');
+						this.close(true);
 					}
 				})
 			},

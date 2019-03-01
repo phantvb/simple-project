@@ -4,6 +4,7 @@
 			<div class="header fmd">
 				{{'您好, '+userName}}
 				<button class="fmd" @click="logout">[ 退出 ]</button>
+				<img :src="form.headPicture.indexOf('userHead')==-1?$global.serverSrc+form.headPicture:'/static/'+form.headPicture" @click="userR">
 			</div>
 		</el-header>
 		<el-container class="page-component__scroll">
@@ -57,6 +58,17 @@
 	body {
 		background-color: #f3f4f5;
 	}
+
+	img {
+		transform: translateY(6px);
+		-moz-transform: translateY(6px);
+		-ms-transform: translateY(6px);
+		-o-transform: translateY(6px);
+		width: 24px;
+		height: 24px;
+		border-radius: 100%;
+		cursor: pointer;
+	}
 </style>
 <script>
 	import SidebarItem from './component/Sidebar/SidebarItem.vue'
@@ -67,7 +79,10 @@
 			return {
 				isCollapse: false,
 				userName: '',
-				router: {}
+				router: {},
+				form: {
+					headPicture: 'userHead1.png'
+				}
 			};
 		},
 		components: {
@@ -80,6 +95,7 @@
 					this.router = res.data.menuList;
 				}
 			});
+			this.fetchData();
 		},
 		methods: {
 			handleOpen(key, keyPath) {
@@ -88,29 +104,22 @@
 			handleClose(key, keyPath) {
 				//console.log(key, keyPath);
 			},
-			deepClone(obj, nobj) {
-				var nobj = nobj || {};
-				var toStr = Object.prototype.toString;
-				for (let key in obj) {
-					if (typeof obj[key] == 'object' && obj[key] !== null) {
-						if (toStr.call(obj[key]) == '[object Array]') {
-							nobj[key] = [];
-						} else {
-							nobj[key] = {};
-						}
-						this.deepClone(obj[key], nobj[key]);
-					} else {
-						nobj[key] = obj[key];
-					}
-				}
-				return nobj;
-			},
 			logout() {
 				this.$ajax.get('/vos/user/logout').then(res => {
 					if (res == 'OK') {
 						this.$router.push({ path: '/login' });
 					}
 				});
+			},
+			fetchData() {
+				this.$ajax.get('/vos/user/getDetail').then(res => {
+					if (res.code == 200) {
+						this.form = res.data;
+					}
+				});
+			},
+			userR() {
+				this.$router.push('/Layout/userCenter');
 			}
 		}
 	}

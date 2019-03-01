@@ -4,18 +4,21 @@ $padding:15px;
 $imgW:80px;
 
 #userCenter {
-	background-color: #fff;
+	background-color: #f2f2f2;
 	text-align: left;
-	padding: $padding 0px;
 }
 
 header {
-	padding: 0px $padding $padding;
+	padding: $padding;
 	border-bottom: 1px solid #eee;
+	background-color: #fff;
 }
 
 section {
 	overflow: hidden;
+	margin: 0 0 $padding 0;
+	background-color: #fff;
+	border-radius: 5px;
 
 	.title {
 		position: relative;
