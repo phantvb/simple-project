@@ -73,26 +73,35 @@
 			};
 		},
 		mounted() {
+			this.$ajax.get('/vos/user/getMe').then(resp => {
+				if (resp.code == 200) {
+					for (let key in resp.data) {
+						sessionStorage.setItem(key, resp.data[key]);
+					};
 
+					this.$router.push("/Layout/userCenter");
+				}
+
+			});
 		},
 		methods: {
 			submitForm() {
 				var _this = this;
 				this.loading = true;
 				_this.$ajax
-					.post(
-						"/vos/user/login?username=" +
-						this.loginForm.name +
-						"&password=" +
-						this.loginForm.pass +
-						"&imageCode=" +
-						this.loginForm.code
-					)
-					// .post('/vos/user/apiLogin', {
-					// 	username: this.loginForm.name,
-					// 	password: this.loginForm.pass,
-					// 	imageCode: this.loginForm.code
-					// })
+					// .post(
+					// 	"/vos/user/login?username=" +
+					// 	this.loginForm.name +
+					// 	"&password=" +
+					// 	this.loginForm.pass +
+					// 	"&imageCode=" +
+					// 	this.loginForm.code
+					// )
+					.post('/vos/user/apiLogin', {
+						username: this.loginForm.name,
+						password: this.loginForm.pass,
+						imageCode: this.loginForm.code
+					})
 					.then(resp => {
 						if (resp.code == 200) {
 							_this.loading = false;

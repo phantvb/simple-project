@@ -10,7 +10,7 @@
 		<el-container class="page-component__scroll">
 			<!--左侧导航栏-->
 			<el-aside width="210px">
-				<el-menu default-active="1-4-1" class="el-menu-vertical" @open="handleOpen" @close="handleClose" :collapse="isCollapse" background-color="#111A2B" text-color="#fff" active-text-color="#ffd04b">
+				<el-menu default-active="1-4-1" class="el-menu-vertical" @open="handleOpen" @close="handleClose" :collapse="isCollapse" background-color="#111A2B" text-color="#fff" active-text-color="#409EFF" unique-opened>
 					<SidebarItem :data='router' :base-path="router.url"></SidebarItem>
 				</el-menu>
 			</el-aside>

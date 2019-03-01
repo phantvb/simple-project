@@ -47,13 +47,13 @@
 				</el-table-column>
 				<el-table-column prop="name" label="操作" min-width="200">
 					<template slot-scope="scope">
-						<div class="likeButton" v-if="permission.indexOf(58)!=-1">
+						<div class="likeButton" v-if="permission.indexOf(56)!=-1">
 							<el-button size="small" type="text" @click="formatusageStatusSimple(scope.row)">{{scope.row.usageStatus=="Started"?'停用':'启用'}}</el-button>
 						</div>
 						<!-- <div class="likeButton" v-if="permission.indexOf(59)!=-1">
 							<el-button size="small" type="text">注销</el-button>
 						</div> -->
-						<div class="likeButton" v-if="permission.indexOf(59)!=-1">
+						<div class="likeButton" v-if="permission.indexOf(60)!=-1">
 							<el-button size="small" type="text" @click="editnumSetup(true,scope.row)">号码设置</el-button>
 						</div>
 						<!-- <el-button size="small" type="text">详情</el-button> -->
@@ -117,6 +117,7 @@
 		},
 		mounted() {
 			this.fetchData();
+			console.log(this.$store.getters.getPermission(location.hash.replace(/#/, '')))
 			this.$store.getters.getPermission(location.hash.replace(/#/, '')).map(item => {
 				this.permission.push(item.id);
 			});
