@@ -15,7 +15,7 @@
 								<el-card :body-style="{ padding: '0px'}" shadow="hover">
 									<div class="add-title">{{aTableData1[index].tariffName}}</div>
 									<div class="add-body">
-										<el-form label-width="100px">
+										<el-form label-width="110px">
 											<el-form-item label="类型：" class="add-item">{{aTableData1[index].type}}</el-form-item>
 											<el-form-item label="套餐规则：" class="add-item">{{aTableData1[index].packageRules}}</el-form-item>
 											<el-form-item label="基本功能费：" class="add-item">{{aTableData1[index].basicFunctionFee}}元</el-form-item>
@@ -47,7 +47,7 @@
 								<el-card :body-style="{ padding: '0px'}" shadow="hover">
 									<div class="add-title">{{aTableData2[index].tariffName}}</div>
 									<div class="add-body">
-										<el-form label-width="100px">
+										<el-form label-width="110px">
 											<el-form-item label="类型：" class="add-item">{{aTableData2[index].type}}</el-form-item>
 											<el-form-item label="套餐规则：" class="add-item">{{aTableData2[index].packageRules}}</el-form-item>
 											<el-form-item label="基本功能费：" class="add-item">{{aTableData2[index].basicFunctionFee}}元</el-form-item>
@@ -83,8 +83,8 @@
 							<el-input v-model="addFeesForm.tariffName" size="mini" class="el-input"></el-input>
 						</el-form-item>
 						<el-form-item label="类型：">
-							<el-radio v-model="addFeesForm.radio" label="1" class="el-radio">按年计费</el-radio>
-							<el-radio v-model="addFeesForm.radio" label="2">按月计费</el-radio>
+							<el-radio v-model="addFeesForm.radio" label="1" class="el-radio">按月计费</el-radio>
+							<el-radio v-model="addFeesForm.radio" label="2">按年计费</el-radio>
 						</el-form-item>
 
 						<el-form-item label="套餐规则：" prop="packageRules">
@@ -98,8 +98,8 @@
 
 						<el-form-item label="单位：" prop="units">
 							<el-input v-model="addFeesForm.units" size="mini" class="el-input"></el-input>
-							<span class="span" v-if="addFeesForm.radio==1">年</span>
-							<span class="span" v-if="addFeesForm.radio==2">月</span>
+							<span class="span" v-if="addFeesForm.radio==1">月</span>
+							<span class="span" v-if="addFeesForm.radio==2">年</span>
 						</el-form-item>
 
 						<el-form-item label="赠送时长：" prop="durationPresentation">
@@ -276,9 +276,9 @@
 
 				let radio = "";
 				if (this.tableData[num][index].type == "按年计费") {
-					radio = "1";
-				} else {
 					radio = "2";
+				} else {
+					radio = "1";
 				}
 
 				let channel = "";
@@ -409,10 +409,10 @@
 						this.aTotalCount1 = res.data.tariffPackageList.length;
 						this.aTableData1 = res.data.tariffPackageList;
 						for (var i = 0; i < this.aTotalCount1; i++) {
-							if (this.aTableData1[i].type == 1) {
+							if (this.aTableData1[i].type == 2) {
 								this.aTableData1[i].type = "按年计费";
 							}
-							if (this.aTableData1[i].type == 2) {
+							if (this.aTableData1[i].type == 1) {
 								this.aTableData1[i].type = "按月计费";
 							}
 						}
@@ -428,10 +428,10 @@
 						this.aTotalCount2 = res.data.tariffPackageList.length;
 						this.aTableData2 = res.data.tariffPackageList;
 						for (var i = 0; i < this.aTotalCount2; i++) {
-							if (this.aTableData2[i].type == 1) {
+							if (this.aTableData2[i].type == 2) {
 								this.aTableData2[i].type = "按年计费";
 							}
-							if (this.aTableData2[i].type == 2) {
+							if (this.aTableData2[i].type == 1) {
 								this.aTableData2[i].type = "按月计费";
 							}
 						}
