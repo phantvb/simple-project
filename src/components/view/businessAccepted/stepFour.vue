@@ -269,7 +269,6 @@
                 if (sessionStorage.getItem('businessIn') == 1) {
                     this.flowId = sessionStorage.getItem('stepThreeFlowId');
                 }
-                ;
                 console.log("business:", this.business);
                 this.businessObj = Object.assign(this.business, this.stepFourForm);
                 this.ChangeBusinessStatus(this.businessObj);
@@ -296,6 +295,7 @@
                         console.log(res);
                         this.dialogVisible = false;
                         this.$root.eventHub.$emit('addAcceptSave');
+                        this.$message.success("保存成功");
                     } else {
                         this.$message.warning(res.message);
                     }
@@ -306,18 +306,17 @@
                 if (sessionStorage.getItem('businessIn') == 1) {
                     this.flowId = sessionStorage.getItem('stepThreeFlowId');
                 }
-                ;
                 console.log("第四步flowId", this.flowId);
                 console.log("storageConpanyFlow", this.storageConpanyFlow);
                 // 必填校验
-                // if(this.stepFourForm.unionAgreementPic=='' ||
-                //     this.stepFourForm.businessHandlePic=='' ||
-                //     this.stepFourForm.authorizationPic=='' ||
-                //     this.stepFourForm.safeAgreementPic=='' ||
-                //     this.stepFourForm.destNumProfPic=='' ||
-                //     this.stepFourForm.otherPic==''){
-                //     this.$message.warning("请完善图片信息");
-                // }else{
+                if(this.stepFourForm.unionAgreementPic=='' ||
+                    this.stepFourForm.businessHandlePic=='' ||
+                    this.stepFourForm.authorizationPic=='' ||
+                    this.stepFourForm.safeAgreementPic=='' ||
+                    this.stepFourForm.destNumProfPic=='' ||
+                    this.stepFourForm.otherPic==''){
+                    this.$message.warning("请完善图片信息");
+                }else{
                 console.log('没验证');
                 this.dialogVisible = false;
                 console.log("business:", this.business);
@@ -349,7 +348,7 @@
                     this.$message.success(res.data);
                     this.$root.eventHub.$emit('addAcceptSave', null);
                 });
-                // }
+                }
 
             },
             // 下载pdf

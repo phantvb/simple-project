@@ -382,8 +382,8 @@
                 }).then((res)=>{
                     console.log(res);
                     if(res.code==200){
+                        this.$message.success("保存成功");
                         this.visible = false;
-                        // this.objCodeLists();
                         this.$root.eventHub.$emit('addAcceptSave', null);
                     }else{
                         this.$message({type:'warning',message:res.message});

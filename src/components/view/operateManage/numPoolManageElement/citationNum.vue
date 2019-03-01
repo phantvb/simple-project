@@ -342,7 +342,7 @@
 				}
 
 				this.addCitationNumberForm.guideNumber = row.guideNumber;
-				this.addCitationNumberForm.unitPrice = row.price.split("/")[0];
+				this.addCitationNumberForm.unitPrice = row.price.split("元")[0];
 				this.addCitationNumberForm.value = row.priceType;
 				this.addCitationNumberForm.checkList = channel;
 				this.addCitationNumberForm.id = row.id;
@@ -475,9 +475,9 @@
 						this.tableData[i].status = "未绑定";
 					}
 					if (this.tableData[i].priceType == "per6seconds") {
-						this.tableData[i].price = this.tableData[i].price + "/6秒";
+						this.tableData[i].price = this.tableData[i].price + "元/6秒";
 					} else {
-						this.tableData[i].price = this.tableData[i].price + "/分钟";
+						this.tableData[i].price = this.tableData[i].price + "元/分钟";
 					}
 				}
 			},

@@ -134,7 +134,7 @@
                                 <el-table-column
                                         label="操作">
                                     <template slot-scope="scope">
-                                        <el-button size="mini" type="text" @click="searchNumdialogVisible=false">选择
+                                        <el-button size="mini" type="text" @click="getAllByPackage(scope.row);searchNumdialogVisible=false">选择
                                         </el-button>
                                     </template>
                                 </el-table-column>
@@ -692,6 +692,7 @@
                 });
                 // this.stepThreeForm.amount = value;
             },
+            //增值服务点击数值输入框添加删除回调事件
             lalalal(val) {
                 console.log(val);
                 console.log(this.selectedNum);
@@ -1089,7 +1090,9 @@
                                     return
                                 }
                             }
-                            this.$emit('childNext', val);
+                            if(this.nextDisabled == false){
+                                this.$emit('childNext', val);
+                            }
                             console.log(this.disList);
                             this.ChangeBusinessStatus(this.stepThreeForm);
                             this.ChangeDestNumberStatus(this.objCodeList);
@@ -1123,7 +1126,6 @@
                     console.log("入口：", sessionStorage.getItem('businessIn'));
                     this.stepThreeForm.companyName = this.company.companyName;
                     this.stepThreeForm.companyId = this.business.companyId;
-                    // this.stepThreeForm.companyId = this.company.companyId;
                     console.log("selectedNum", this.selectedNum);
                     this.stepThreeForm.number400 = this.selectedNum[0].number400;
                     this.stepThreeForm.tariffName = this.selectedNum[0].tariffName;
@@ -1186,6 +1188,7 @@
                                 if (res.code == 200) {
                                     console.log(res);
                                     this.nextDisabled = false;
+                                    this.$message.success("保存成功");
                                 } else {
                                     this.$message({type: 'warning', message: res.message});
                                 }

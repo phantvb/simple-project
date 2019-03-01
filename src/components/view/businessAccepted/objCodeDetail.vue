@@ -2,7 +2,9 @@
     <div id="objCodeDetail">
         <div id="base">
             <header class="left">
-                业务受理> 400业务> 目的码审核详情
+                <span @click="router" style="cursor: pointer">
+                     业务受理 > 目的码审核详情
+                </span>
                 <div style="float:right;color:#FF6600">【待审核】</div>
             </header>
             <section>
@@ -87,17 +89,25 @@
             <div class="block underline">
                 <div class="step">
                     <el-steps direction="vertical" :active="1">
-                        <el-step :title="item.orole+'('+item.operator+')'" :description="item.opeation+'-'+item.arole+'('+item.assginee+')-'+item.operateTime" v-for="item in flowRecordList" :key="item.operateTime"></el-step>
-                        <el-step v-if="item.message" :title="item.orole+'('+item.operator+')'" :description="item.opeation+'-'+item.arole+'('+item.assginee+')-'+item.operateTime+'-'+item.message" v-for="item in flowRecordList" :key="item.operateTime"></el-step>
+                        <el-step :title="item.orole+'('+item.operator+')'" :description="item.opeation+'-'+item.operateTime" v-for="item in flowRecordList" :key="item.operateTime"></el-step>
+                        <el-step v-if="item.message" :title="item.orole+'('+item.operator+')'" :description="item.opeation+'-'+item.operateTime+'-'+item.message" v-for="item in flowRecordList" :key="item.operateTime"></el-step>
                     </el-steps>
+                    <p class="grey">{{'下一步由'+this.arole+'('+this.assginee+') 操作'}}</p>
                 </div>
                 <button class="pass" v-if="passShow"><i class="el-icon-circle-check" style="color:#67C23A;font-size:16px;transform: translateY(1px);"></i> 审核通过</button>
             </div>
+            <el-input v-model="desc"
+                      v-if="($route.query.status=='Business_Auditing'||$route.query.status=='Modify_Auditing'||$route.query.status=='Canceling_Auditing')&&(baseData.roleName=='ROLE_admin' || baseData.roleName == $route.query.assigneeRole)"
+                      type="textarea"
+                      :rows="6"
+                      placeholder="请输入审核意见"
+            >
+            </el-input>
             <div class="block">
                     <button class="pass passback" @click="getBack">返回</button>
                 <div>
-                    <button class="fleft passgo" v-if="this.$route.query.status=='DestNum_Auditing'" @click="destNumAuditPass()">通过审核</button>
-                    <button class="fright passback" v-if="this.$route.query.status=='DestNum_Auditing'">驳回</button>
+                    <button class="fleft passgo" v-if="(this.$route.query.status=='DestNum_Auditing')&&(baseData.roleName=='ROLE_admin' || baseData.roleName == $route.query.assigneeRole)" @click="destNumAuditPass()">通过审核</button>
+                    <button class="fright passback" v-if="(this.$route.query.status=='DestNum_Auditing')&&(baseData.roleName=='ROLE_admin' || baseData.roleName == $route.query.assigneeRole)">驳回</button>
                 </div>
             </div>
         </div>
@@ -117,15 +127,21 @@
                 },
                 flowRecordList:[],
                 passShow:false,
+                arole:'',    //下一步操作人角色
+                assginee:'', //下一步操作人姓名
             };
         },
         components: {},
         created(){
             console.log(this.$route.query.flowId);
-            // console.log(this.$route.query.companyId);
+            console.log("this.$route.query",this.$route.query);
             this.getDetail();
         },
         methods: {
+            // 跳到上一级
+            router(){
+                this.$router.go(-1);
+            },
             getDetail(){
                 this.$ajax.get('/vos/destnum/getCacheData?flowId='+this.$route.query.flowId).then((res)=>{
                     console.log(res.data);
@@ -146,18 +162,28 @@
                             if(item.operatorRole=='ROLE_admin'){
                                 item.orole = '超级管理员'
                             }else if(item.operatorRole=='ROLE_salesman'){
-                                item.oole = '业务员'
+                                item.orole = '业务员'
                             }else if(item.operatorRole=='ROLE_auditor'){
                                 item.orole = '审核员'
                             }
 
                             if(item.assginessRole=='ROLE_admin'){
                                 item.arole = '超级管理员'
+                                this.arole = item.arole;
+                                console.log(this.arole);
+                                this.assginee = item.assginee;
                             }else if(item.assginessRole=='ROLE_salesman'){
                                 item.arole = '业务员'
+                                this.arole = item.arole;
+                                console.log(this.arole);
+                                this.assginee = item.assginee;
                             }else if(item.assginessRole=='ROLE_auditor'){
                                 item.arole = '审核员'
+                                this.arole = item.arole;
+                                console.log(this.arole);
+                                this.assginee = item.assginee;
                             }
+
 
                             switch (item.currentStatus) {
                                 case 'Wait_To_Audit':

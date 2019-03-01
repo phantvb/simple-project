@@ -265,7 +265,40 @@
             }else if(val=='变更'){
                 sessionStorage.setItem("businessIn",3);
                 this.getCacheData(val);
-            }else if(val=='删除'){
+            } else if (val == '注销') {
+                this.$confirm('确认注销业务吗?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.$message({
+                        type: 'success',
+                        message: '注销成功!'
+                    });
+
+                    this.$ajax.post('/vos/business/sendToCancelAudit', {
+                        "companyFlow": {
+                            "flowId": objData.flowId,
+                            "companyId": objData.companyId,
+                            "assignee": objData.assignee,
+                        }
+                    }).then((res) => {
+                        console.log(res);
+                        if (res.code == 200) {
+                            this.$message.success(res.data);
+                            this.businessLists();
+                            this.$root.eventHub.$emit('addAcceptSave');
+                        }
+                    });
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消注销'
+                    });
+                });
+
+
+            } else if(val=='删除'){
                 this.$confirm('此操作将永久删除该业务, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
@@ -365,15 +398,15 @@
                     //判断操作
                     if(item.status=='Wait_To_Audit'){
                         item.status='等待送审';
-                        item.color = '#67C23A';
+                        item.color = '#F56C6C';
                         item.btnList=[];
-                        if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
-                            if(this.authority.indexOf(104)!=-1){
-                               item.btnList.push({label:'送审'})
+                        if (this.baseData.roleName == 'ROLE_admin' || item.creator==this.baseData.username) {
+                            if (this.authority.indexOf(104) != -1) {
+                                item.btnList.push({label: '送审'})
                             }
-                            item.btnList.push({label:'详情'});
-                            if(this.authority.indexOf(128)!=-1){
-                                item.btnList.push({label:'删除'})
+                            item.btnList.push({label: '详情'});
+                            if (this.authority.indexOf(128) != -1) {
+                                item.btnList.push({label: '刪除'})
                             }
                         }else{
                             item.btnList.push({label:'详情'});
@@ -383,25 +416,22 @@
                         item.status='通过审核';
                         item.color = '#67C23A';
                         item.btnList=[];
-                        if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
-                            if(this.authority.indexOf(130)!=-1){
-                                item.btnList.push({label:'变更'})
-                            }
-                            if(this.authority.indexOf(107)!=-1){
-                                item.btnList.push({label:'注销'})
-                            }
-                            item.btnList.push({label:'详情'});
-                            if(this.authority.indexOf(128)!=-1){
-                                item.btnList.push({label:'删除'})
-                            }
+                        if (this.baseData.roleName == 'ROLE_admin' || this.baseData.roleName==item.assigneeRole) {
+                                if (this.authority.indexOf(130) != -1) {
+                                    item.btnList.push({label: '变更'})
+                                }
+                                if (this.authority.indexOf(107) != -1) {
+                                    item.btnList.push({label: '注销'})
+                                }
+                                item.btnList.push({label: '详情'});
                         }else{
-                            item.btnList.push({label:'详情'});
+                            item.btnList.push({label: '详情'});
                         }
                     }else if(item.status=='Business_Auditing'){
                         item.status='审核中';
                         item.color = '#F56C6C';
                         item.btnList=[];
-                        if(this.baseData.roleName=='ROLE_admin' || item.assigneeRole==this.baseData.roleName){
+                        if(this.baseData.roleName=='ROLE_admin' || this.baseData.roleName==item.assigneeRole){
                             if(this.authority.indexOf(105)!=-1){
                                 item.btnList.push({label:'通过审核'})
                             }
@@ -416,7 +446,7 @@
                         item.status='变更审核中';
                         item.color = '#F56C6C';
                         item.btnList=[];
-                        if(this.baseData.roleName=='ROLE_admin' || item.assigneeRole==this.baseData.roleName){
+                        if(this.baseData.roleName=='ROLE_admin' || this.baseData.roleName==item.assigneeRole){
                             if(this.authority.indexOf(105)!=-1){
                                 item.btnList.push({label:'变更通过审核'})
                             }
@@ -434,14 +464,14 @@
                         item.status='变更审核驳回';
                         item.color = '#F56C6C';
                         item.btnList=[];
-                        if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
-                            if(this.authority.indexOf(130)!=-1){
-                                item.btnList.push({label:'变更'})
+                        if (this.baseData.roleName == 'ROLE_admin' || this.baseData.roleName == item.assigneeRole) {
+                            if (this.authority.indexOf(130) != -1) {
+                                item.btnList.push({label: '变更'})
                             }
-                            if(this.authority.indexOf(107)!=-1){
-                                item.btnList.push({label:'注销'})
+                            if (this.authority.indexOf(107) != -1) {
+                                item.btnList.push({label: '注销'})
                             }
-                            item.btnList.push({label:'详情'});
+                            item.btnList.push({label: '详情'});
                         }else{
                             item.btnList.push({label:'详情'});
                         }
@@ -449,7 +479,7 @@
                         item.status='注销审核';
                         item.color = '#F56C6C';
                         item.btnList=[];
-                        if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
+                        if(this.baseData.roleName=='ROLE_admin' || this.baseData.roleName == item.assigneeRole){
                             if(this.authority.indexOf(105)!=-1){
                                 item.btnList.push({label:'通过审核'})
                             }
@@ -462,7 +492,7 @@
                         }
                     }else if(item.status=='Cancelled'){
                         item.status='已注销';
-                        item.color = '#67C23A';
+                        item.color = '#F56C6C';
                         item.btnList=[];
                         item.btnList.push({label:'详情'});
                     }else if(item.status=='Terminate_Flow'){

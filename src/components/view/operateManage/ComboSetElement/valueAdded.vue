@@ -16,7 +16,7 @@
 									<div class="add-title">{{bTableData1[index].tariffName}}</div>
 									<div class="add-body">
 										<el-form label-width="100px">
-											<el-form-item label="功能资费：" class="add-item">{{bTableData1[index].tariffFee}}元{{bTableData1[index].units}}</el-form-item>
+											<el-form-item label="功能资费：" class="add-item">{{bTableData1[index].tariffFee}}元/{{bTableData1[index].unitsCN}}</el-form-item>
 											<el-form-item label="是否赠送：" class="add-item">{{bTableData1[index].presents}}</el-form-item>
 											<el-form-item label="功能备注：" class="add-item">
 												<el-popover placement="bottom" width="200" trigger="click" :content="bTableData1[index].remarks">
@@ -44,7 +44,7 @@
 									<div class="add-title">{{bTableData2[index].tariffName}}</div>
 									<div class="add-body">
 										<el-form label-width="100px">
-											<el-form-item label="功能资费：" class="add-item">{{bTableData2[index].tariffFee}}元{{bTableData2[index].units}}</el-form-item>
+											<el-form-item label="功能资费：" class="add-item">{{bTableData2[index].tariffFee}}元/{{bTableData2[index].unitsCN}}</el-form-item>
 											<el-form-item label="是否赠送：" class="add-item">{{bTableData2[index].presents}}</el-form-item>
 											<el-form-item label="功能备注：" class="add-item">
 												<el-popover placement="bottom" width="200" trigger="click" :content="bTableData2[index].remarks">
@@ -250,7 +250,9 @@
 			},
 
 			updateTariff(num, index) {
-				this.tableData = [this.bTableData1, this.bTableData2];
+                this.tableData = [this.bTableData1, this.bTableData2];
+                
+                console.log(this.tableData[num][index])
 
 				this.addComboFromDialogVisible = true;
 
@@ -409,15 +411,6 @@
 								if (this.bTableData1[i].type == 1) {
 									this.bTableData1[i].type = "none";
 								}
-								if (this.bTableData1[i].units == "perMonth") {
-									this.bTableData1[i].units = "/月";
-								}
-								if (this.bTableData1[i].units == "perOne") {
-									this.bTableData1[i].units = "/个";
-								}
-								if (this.bTableData1[i].units == "perMonthOne") {
-									this.bTableData1[i].units = "/月/个";
-								}
 							}
 						}
 					});
@@ -441,15 +434,6 @@
 								}
 								if (this.bTableData2[i].type == 1) {
 									this.bTableData2[i].type = "none";
-								}
-								if (this.bTableData2[i].units == "perMonth") {
-									this.bTableData2[i].units = "/月";
-								}
-								if (this.bTableData2[i].units == "perOne") {
-									this.bTableData2[i].units = "/个";
-								}
-								if (this.bTableData2[i].units == "perMonthOne") {
-									this.bTableData2[i].units = "/月/个";
 								}
 							}
 						}
