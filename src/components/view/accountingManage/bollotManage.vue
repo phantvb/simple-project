@@ -78,7 +78,7 @@
 			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page.num" :page-sizes="$global.pageSize" :page-size="page.size" layout="total, sizes, prev, pager, next, jumper" :total="page.total">
 			</el-pagination>
 		</el-tabs>
-		<bollot :show="bollot" @close="addbollot(false)" :data="bollotData" :type="bollotType"></bollot>
+		<bollot :show="bollot" @close="addbollot(false)" :data="bollotData" :type="bollotType" @fresh="fetchData(page.num)"></bollot>
 	</div>
 </template>
 <style lang="scss" scoped>
