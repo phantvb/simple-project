@@ -50,7 +50,7 @@ axios.interceptors.response.use(res => {
 	let arr = [302, 200];
 	switch (res.data.code) {
 	case 302:
-		location.href = '#/login';
+		router.push('/login');
 		break
 	}
 	if (!arr.includes(res.data.code) && res.data.code !== undefined) {
@@ -63,7 +63,7 @@ axios.interceptors.response.use(res => {
 }, err => {
 	//处理302
 	if (typeof err.response === 'undefined') {
-		location.href = '#/login';
+		router.push('/login');
 	}
 	return err;
 })
@@ -73,8 +73,8 @@ Vue.prototype.$global = {
 	uploadUrl: '/vos/common/uploadImg',
 	// uploadUrl2: process.env.NODE_ENV == 'development' ? 'http://192.168.0.104:5480/vos/' : 'http://' + location.host + '/vos/',
 	// serverSrc: process.env.NODE_ENV == 'development' ? 'http://192.168.0.104:5480/vos/' : 'http://' + location.host + '/vos/',
-    uploadUrl2: process.env.NODE_ENV == 'development' ? 'http://47.94.168.117:5480/vos/' : 'http://' + location.host + '/vos/',
-    serverSrc: process.env.NODE_ENV == 'development' ? 'http://47.94.168.117:5480/vos/' : 'http://' + location.host + '/vos/',
+	uploadUrl2: process.env.NODE_ENV == 'development' ? 'http://47.94.168.117:5480/vos/' : 'http://' + location.host + '/vos/',
+	serverSrc: process.env.NODE_ENV == 'development' ? 'http://47.94.168.117:5480/vos/' : 'http://' + location.host + '/vos/',
 };
 router.beforeEach((to, from, next) => {
 	var allPath = store.getters.getRoute;
