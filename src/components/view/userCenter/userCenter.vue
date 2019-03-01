@@ -45,7 +45,7 @@
 			</div>
 			<el-row :gutter="12" class="block">
 				<el-col :span="6">
-					<el-card shadow="hover" class="center">
+					<el-card shadow="nerver" class="center">
 						<div class="card">
 							<img src="/static/userPic_1.png" alt="">
 							<el-button type="primary" size="small" @click="addCompany(true)"><i class="el-icon-plus"></i>新增企业</el-button>
@@ -53,26 +53,26 @@
 					</el-card>
 				</el-col>
 				<el-col :span="6">
-					<el-card shadow="hover">
+					<el-card shadow="nerver">
 						<div class="card cardY">
 							<p class="center">企业信息新增审核</p>
-							<p class="fxl center bold" :class="checkForm.cpAuditingNum==0?'grey':'blue'">{{checkForm.cpAuditingNum}}</p>
+							<p class="fxxl center bold" :class="checkForm.cpAuditingNum==0?'grey':'blue'">{{checkForm.cpAuditingNum}}</p>
 						</div>
 					</el-card>
 				</el-col>
 				<el-col :span="6">
-					<el-card shadow="hover">
+					<el-card shadow="nerver">
 						<div class="card cardY">
 							<p class="center">企业信息变更审核</p>
-							<p class="fxl center bold" :class="checkForm.cpModifyAuditingNum==0?'grey':'blue'">{{checkForm.cpModifyAuditingNum}}</p>
+							<p class="fxxl center bold" :class="checkForm.cpModifyAuditingNum==0?'grey':'blue'">{{checkForm.cpModifyAuditingNum}}</p>
 						</div>
 					</el-card>
 				</el-col>
 				<el-col :span="6">
-					<el-card shadow="hover">
+					<el-card shadow="nerver">
 						<div class="card cardY">
 							<p class="center">企业信息注销审核</p>
-							<p class="fxl center bold" :class="checkForm.cpCancelingAuditingNum==0?'grey':'blue'">{{checkForm.cpCancelingAuditingNum}}</p>
+							<p class="fxxl center bold" :class="checkForm.cpCancelingAuditingNum==0?'grey':'blue'">{{checkForm.cpCancelingAuditingNum}}</p>
 						</div>
 					</el-card>
 				</el-col>
@@ -86,7 +86,7 @@
 				<el-col :span="6">
 					<el-card shadow="never" class="center">
 						<div class="card">
-							<img src="/static/userPic_1.png" alt="">
+							<img src="/static/userPic_2.png" alt="">
 							<el-button type="primary" size="small" @click="addBusiness(true)"><i class="el-icon-plus"></i>新增预受理</el-button>
 						</div>
 					</el-card>
@@ -97,7 +97,7 @@
 							<el-card shadow="never">
 								<div class="card cardY2">
 									<p class="center">正式受理审核</p>
-									<p class="fxl center bold" :class="checkForm.bsAuditingNum==0?'grey':'blue'">{{checkForm.bsAuditingNum}}</p>
+									<p class="fxxl center bold" :class="checkForm.bsAuditingNum==0?'grey':'blue'">{{checkForm.bsAuditingNum}}</p>
 								</div>
 							</el-card>
 						</el-col>
@@ -105,7 +105,7 @@
 							<el-card shadow="never">
 								<div class="card cardY2">
 									<p class="center">注销审核</p>
-									<p class="fxl center bold" :class="checkForm.bsCancelingAuditingNum==0?'grey':'blue'">{{checkForm.bsCancelingAuditingNum}}</p>
+									<p class="fxxl center bold" :class="checkForm.bsCancelingAuditingNum==0?'grey':'blue'">{{checkForm.bsCancelingAuditingNum}}</p>
 								</div>
 							</el-card>
 						</el-col>
@@ -113,7 +113,7 @@
 							<el-card shadow="never">
 								<div class="card cardY2">
 									<p class="center">变更审核</p>
-									<p class="fxl center bold" :class="checkForm.bsModifyAuditingNum==0?'grey':'blue'">{{checkForm.bsModifyAuditingNum}}</p>
+									<p class="fxxl center bold" :class="checkForm.bsModifyAuditingNum==0?'grey':'blue'">{{checkForm.bsModifyAuditingNum}}</p>
 								</div>
 							</el-card>
 						</el-col>
@@ -121,7 +121,7 @@
 							<el-card shadow="never">
 								<div class="card cardY2">
 									<p class="center">语音文件审核</p>
-									<p class="fxl center bold" :class="checkForm.vsAuditingNum==0?'grey':'blue'">{{checkForm.vsAuditingNum}}</p>
+									<p class="fxxl center bold" :class="checkForm.vsAuditingNum==0?'grey':'blue'">{{checkForm.vsAuditingNum}}</p>
 								</div>
 							</el-card>
 						</el-col>
@@ -129,7 +129,7 @@
 							<el-card shadow="never">
 								<div class="card cardY2">
 									<p class="center">业务目的码审核</p>
-									<p class="fxl center bold" :class="checkForm.dsAuditingNum==0?'grey':'blue'">{{checkForm.dsAuditingNum}}</p>
+									<p class="fxxl center bold" :class="checkForm.dsAuditingNum==0?'grey':'blue'">{{checkForm.dsAuditingNum}}</p>
 								</div>
 							</el-card>
 						</el-col>
