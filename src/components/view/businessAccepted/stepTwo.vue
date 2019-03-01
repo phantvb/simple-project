@@ -220,9 +220,9 @@
                     this.$emit('childNext', val);
                 } else {
                     //必填校验
-                    if(this.stepTwoForm.companyProofPic=='' || this.stepTwoForm.legalCardFrontPic=='' || this.stepTwoForm.legalCardBackPic=='' || this.stepTwoForm.legalCardHandPic==''){
-                        this.$message.warning('请完善图片信息');
-                    }else{
+                    // if(this.stepTwoForm.companyProofPic=='' || this.stepTwoForm.legalCardFrontPic=='' || this.stepTwoForm.legalCardBackPic=='' || this.stepTwoForm.legalCardHandPic==''){
+                    //     this.$message.warning('请完善图片信息');
+                    // }else{
                     this.$emit('childNext', val);
                     // 改变vuex的值
                     if (val == 3) {
@@ -230,7 +230,7 @@
                         console.log(this.campanyObj);
                         this.ChangeCompanyStatus(this.campanyObj);
                     }
-                    }
+                    // }
                 }
             },
             // 暂存按钮

@@ -66,7 +66,7 @@
                         <el-option v-for="item in statusOptions" :key="item.dicKey" :label="item.dicValue"
                                    :value="item.dicKey"></el-option>
                     </el-select>
-                    <el-button type="primary" plain size="mini" v-if="authority.indexOf(103)!=-1">导出</el-button>
+                    <el-button type="primary" plain size="mini" v-if="authority.indexOf(103)!=-1" @click="exportList">导出</el-button>
                 </div>
             </div>
 
@@ -191,6 +191,12 @@
         //objCodeIn    1:目的码新增 2:送审   3:变更
         //voiceIn      1:语音新增   2:送审   3:变更
         methods: {
+            // 导出
+            exportList(){
+                const url = '/vos/excel/businessAll';
+                window.open(url, '_blank');
+            },
+            //分页
             handleSizeChange(val) {
                 this.pageObj.pageSize = val;
                 this.entireLists();
