@@ -296,6 +296,7 @@
                         console.log(res);
                         this.dialogVisible = false;
                         this.$root.eventHub.$emit('addAcceptSave');
+                        this.$message.success("保存成功");
                     } else {
                         this.$message.warning(res.message);
                     }
