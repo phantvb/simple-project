@@ -102,16 +102,16 @@
 						<span v-if="scope.row.status=='New_Flow'">新增受理</span>
 						<span v-else-if="scope.row.status=='Wait_To_Audit'" class="red">等待送审</span>
 						<span v-else-if="scope.row.status=='Company_Auditing'" class="red">企业审核中</span>
-						<span v-else-if="scope.row.status=='Business_Auditing'">业务受理审核</span>
-						<span v-else-if="scope.row.status=='Voice_Auditing'">语音审核</span>
-						<span v-else-if="scope.row.status=='DestNum_Auditing'">目的码审核</span>
+						<span v-else-if="scope.row.status=='Business_Auditing'" class="red">业务受理审核</span>
+						<span v-else-if="scope.row.status=='Voice_Auditing'" class="red">语音审核</span>
+						<span v-else-if="scope.row.status=='DestNum_Auditing'" class="red">目的码审核</span>
 						<span v-else-if="scope.row.status=='Audit_Success'" class="success">审核通过</span>
 						<span v-else-if="scope.row.status=='Canceling_Auditing'" class="red">注销审核中</span>
 						<span v-else-if="scope.row.status=='Modify_Auditing'" class="red">变更审核中</span>
 						<span v-else-if="scope.row.status=='Terminate_Flow'" class="red">受理终止</span>
 						<span v-else-if="scope.row.status=='Cancelled'" class="red">已注销</span>
 						<span v-else-if="scope.row.status=='Modify_Rejected'" class="red">变更审核驳回</span>
-						<span v-else-if="scope.row.status=='Freezed'">注销冷冻</span>
+						<span v-else-if="scope.row.status=='Freezed'" class="red">注销冷冻</span>
 					</template>
 				</el-table-column>
 				<el-table-column prop="name" label="操作" min-width="200">

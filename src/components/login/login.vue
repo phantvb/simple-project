@@ -73,7 +73,16 @@
 			};
 		},
 		mounted() {
+			this.$ajax.get('/vos/user/getMe').then(resp => {
+				if (resp.code == 200) {
+					for (let key in resp.data) {
+						sessionStorage.setItem(key, resp.data[key]);
+					};
 
+					this.$router.push("/Layout/userCenter");
+				}
+
+			});
 		},
 		methods: {
 			submitForm() {

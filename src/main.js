@@ -47,27 +47,23 @@ Vue.prototype.$format = function (obj) {
 axios.defaults.withCredentials = true;
 axios.defaults.headers.common['Content-Type'] = 'application/json;charset=UTF-8';
 axios.interceptors.response.use(res => {
+	let arr = [302, 200];
 	switch (res.data.code) {
 	case 302:
 		location.href = '#/login';
-		location.reload();
-		break
-	case 530:
-		//location.href='#/login?error_type=1'
 		break
 	}
-	if (res.data.code != 200 && res.data.code !== undefined) {
+	if (!arr.includes(res.data.code) && res.data.code !== undefined) {
 		Vue.prototype.$message({
 			message: res.data.message,
 			type: 'warning'
 		});
-	}
+	};
 	return res.data;
 }, err => {
 	//处理302
 	if (typeof err.response === 'undefined') {
 		location.href = '#/login';
-		location.reload();
 	}
 	return err;
 })
