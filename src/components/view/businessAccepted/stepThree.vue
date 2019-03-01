@@ -1186,6 +1186,7 @@
                                 if (res.code == 200) {
                                     console.log(res);
                                     this.nextDisabled = false;
+                                    this.$message.success("保存成功");
                                 } else {
                                     this.$message({type: 'warning', message: res.message});
                                 }

@@ -86,27 +86,33 @@
                 <div class="step">
                     <el-steps direction="vertical" :active="1">
                         <el-step :title="item.orole+'('+item.operator+')'"
-                                 :description="item.opeation+'-'+item.arole+'('+item.assginee+')-'+item.operateTime"
+                                 :description="item.opeation+'-'+item.operateTime"
                                  v-for="item in flowRecordList" :key="item.operateTime"></el-step>
                         <el-step v-if="item.message" :title="item.orole+'('+item.operator+')'"
-                                 :description="item.opeation+'-'+item.arole+'('+item.assginee+')-'+item.operateTime+'-'+item.message"
+                                 :description="item.opeation+'-'+item.operateTime+'-'+item.message"
                                  v-for="item in flowRecordList" :key="item.operateTime"></el-step>
+                        <p class="grey">{{'下一步由'+this.arole+'('+this.assginee+') 操作'}}</p>
                     </el-steps>
                 </div>
-                <button class="pass" v-if="passShow"><i class="el-icon-circle-check"
-                                                        style="color:#67C23A;font-size:16px;transform: translateY(1px);"></i>
+                <button class="pass" v-if="passShow"><i class="el-icon-circle-check"style="color:#67C23A;font-size:16px;transform: translateY(1px);"></i>
                     审核通过
                 </button>
             </div>
+            <el-input v-model="desc"
+                      v-if="($route.query.status=='Business_Auditing'||$route.query.status=='Modify_Auditing'||$route.query.status=='Canceling_Auditing')&&(baseData.roleName=='ROLE_admin' || baseData.roleName == $route.query.assigneeRole)"
+                      type="textarea"
+                      :rows="6"
+                      placeholder="请输入审核意见"
+            >
+            </el-input>
 
             <div class="block">
                 <button class="pass passback" @click="getBack">返回</button>
                 <div>
-                    <!--<button class="fleft passgo" style="width:100%" v-if="this.$route.query.status=='Wait_To_Audit'" @click="submit()">送审</button>-->
-                    <button class="fleft passgo" v-if="this.$route.query.status=='Voice_Auditing'"
+                    <button class="fleft passgo" v-if="this.$route.query.status=='Voice_Auditing'&&(baseData.roleName=='ROLE_admin' || baseData.roleName == $route.query.assigneeRole)"
                             @click="voiceAuditPass()">通过审核
                     </button>
-                    <button class="fright passback" v-if="this.$route.query.status=='Voice_Auditing'">驳回</button>
+                    <button class="fright passback" v-if="this.$route.query.status=='Voice_Auditing'&&(baseData.roleName=='ROLE_admin' || baseData.roleName == $route.query.assigneeRole)">驳回</button>
                 </div>
             </div>
         </div>
@@ -143,12 +149,19 @@
                     phone: '',
 
                 },
+                baseData:{
+                    roleName:'',
+                    username:'',
+                },
                 passShow: false,
                 flowRecordList: [],
                 toPlay: false,
+                arole:'',    //下一步操作人角色
+                assginee:'', //下一步操作人姓名
             };
         },
         created() {
+            console.log("this.$route.query",this.$route.query);
             console.log(this.$route.query.flowId);
             this.voiceFlowId = this.$route.query.flowId;
             this.voiceDetail();
@@ -196,6 +209,8 @@
                         } else if (item.assginessRole == 'ROLE_auditor') {
                             item.arole = '审核员'
                         }
+                        this.arole = item.arole;
+                        this.assginee = item.assginee;
 
                         switch (item.currentStatus) {
                             case 'Wait_To_Audit':

@@ -251,6 +251,7 @@
                     console.log(res);
                     if (res.code == 200) {
                         this.dialogVisible = false;
+                        this.$message.success("保存成功");
                         this.$root.eventHub.$emit('addAcceptSave');
                     }
                 });

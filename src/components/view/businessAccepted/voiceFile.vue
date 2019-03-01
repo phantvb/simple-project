@@ -238,9 +238,9 @@
                         //判断操作
                         if(item.status=='Wait_To_Audit'){
                             item.busStatus='等待送审';
-                            item.color = '#67C23A';
+                            item.color = '#F56C6C';
                             item.btnList=[];
-                            if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
+                            if(this.baseData.roleName=='ROLE_admin' || this.baseData.roleName == item.assigneeRole){
                                 if(this.authority.indexOf(104)!=-1){
                                    item.btnList.push({label:'送审'})
                                 }
@@ -255,14 +255,14 @@
                             item.busStatus='通过审核';
                             item.color = '#67C23A';
                             item.btnList=[];
-                            if(this.baseData.roleName=='ROLE_admin' || item.assignee==this.baseData.username){
+                            if(this.baseData.roleName=='ROLE_admin' || this.baseData.roleName == item.assigneeRole){
                                 item.btnList.push({label:'详情'});
                             }
                         }else if(item.status=='Voice_Auditing'){
                             item.busStatus='审核中';
                             item.color = '#F56C6C';
                             item.btnList=[];
-                            if(this.baseData.roleName=='ROLE_admin' || item.assigneeRole==this.baseData.roleName){
+                            if(this.baseData.roleName=='ROLE_admin' || this.baseData.roleName == item.assigneeRole){
                                 if(this.authority.indexOf(105)!=-1){
                                     item.btnList.push({label:'通过审核'})
                                 }
@@ -281,21 +281,6 @@
                     })
                 })
             },
-            // voiceEdit(val){
-            //     console.log(val);
-            //     this.$root.eventHub.$emit('dialog1VisibleVoice',{visibleVoice:true,voiceIn:2,flowId:val.flowId});
-            //
-            // },
-            //详情接口
-            // getCacheData(val){
-            //     console.log(val);
-            //     this.$ajax.get('/vos/destnum/getCacheData?flowId='+this.voiceFlowId).then((res)=>{
-            //         console.log(res.data);
-            //         if(res.code==200){
-            //
-            //         }
-            //     })
-            // },
             //详情
             voiceDetial(val,data){
                 console.log(val);
