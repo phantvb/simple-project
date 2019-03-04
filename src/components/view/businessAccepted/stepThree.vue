@@ -526,7 +526,7 @@
                     id: "",
                     destNumber: "",
                     number400: "",
-                    destnumproofpic: "",
+                    destnumProofPic: "",
                     destnumUsage: "",
                     companyid: "",
                     valueAddedId: "",
@@ -570,6 +570,7 @@
                 saveBtnHidden: true,
                 nextDisabled: true,
                 packgeId: '',
+                businessObj:{},
             };
 
         },
@@ -592,9 +593,12 @@
                 console.log("this.valueAdd", this.valueAdd);
                 this.disList = this.number400Concession;
                 // 优惠回显
-                this.number400Concession.map((item) => {
-                    this.stepThreeForm.discounts = item.concessionName;
-                });
+                if(this.number400Concession!=null){
+                    this.number400Concession.map((item) => {
+                        this.stepThreeForm.discounts = item.concessionName;
+                    });
+                }
+
                 //400号码表格回显
                 let selectedNumCopy = {};
                 selectedNumCopy.units = this.business.units;
@@ -754,6 +758,7 @@
 
             //新增目的码
             addObjCodes() {
+                console.log(this.objCodeList);
                 let unit = {};
                 this.objCodeList.push(unit);
                 this.objCodeTable.map((item, index) => {
@@ -1094,7 +1099,8 @@
                                 this.$emit('childNext', val);
                             }
                             console.log(this.disList);
-                            this.ChangeBusinessStatus(this.stepThreeForm);
+                            this.businessObj = Object.assign(this.business, this.stepThreeForm);
+                            this.ChangeBusinessStatus(this.businessObj);
                             this.ChangeDestNumberStatus(this.objCodeList);
                             this.ChangeNumber400ValueAddedStatus(this.valueAdd);
                             this.ChangeNumber400ConcessionStatus(this.disList);
@@ -1139,7 +1145,8 @@
                     this.stepThreeForm.unitPrice = this.selectedNum[0].unitPrice;
                     console.log(this.stepThreeForm);
                     console.log(this.disList);
-                    this.ChangeBusinessStatus(this.stepThreeForm);
+                    this.businessObj = Object.assign(this.business, this.stepThreeForm);
+                    this.ChangeBusinessStatus(this.businessObj);
                     this.ChangeDestNumberStatus(this.objCodeList);
                     this.ChangeNumber400ValueAddedStatus(this.valueAdd);
                     this.ChangeNumber400ConcessionStatus(this.disList);

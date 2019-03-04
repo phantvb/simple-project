@@ -51,7 +51,7 @@
                                     :show-file-list="false"
                                     :on-success="handleAvatarSuccess"
                                     :before-upload="beforeAvatarUpload">
-                                <img v-if="acceptForm.imageUrl" :src="acceptForm.imageUrl" class="avatar" style="width: 120px;height: auto;">
+                                <img v-if="acceptForm.imageUrl" :src="$global.serverSrc+acceptForm.imageUrl" class="avatar" style="width: 120px;height: auto;">
                                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                             </el-upload>
                             <div class="uploadTips"><p>说明：目的码证明材料可以是缴费材料，也可以是自助平台相关截图</p></div>
@@ -223,7 +223,7 @@
                 console.log(res);
                 console.log(this.$global.serverSrc + res);
                 if (res.indexOf('png') != -1 || res.indexOf('jpg') != -1 || res.indexOf('jpeg') != -1) {
-                    this.acceptForm.imageUrl = this.$global.serverSrc + res;
+                    this.acceptForm.imageUrl = res;
                 }
                 // this.acceptForm.imageUrl = URL.createObjectURL(file.raw);
                 console.log("file.raw", file.raw);
@@ -365,7 +365,7 @@
                     let param={};
                     param.id=item.id;
                     param.destNumber=item.destNumber;
-                    param.destnumproofpic=this.acceptForm.imageUrl;
+                    param.destnumProofPic=this.acceptForm.imageUrl;
                     param.destnumUsage=this.acceptForm.usage;
                     param.number400=this.acceptForm.fourNum;
                     param.companyid=this.companyId;
@@ -420,7 +420,7 @@
                             let param={};
                             param.id=item.id;
                             param.destNumber=item.destNumber;
-                            param.destnumproofpic=this.acceptForm.imageUrl;
+                            param.destnumProofPic=this.acceptForm.imageUrl;
                             param.destnumUsage=this.acceptForm.usage;
                             param.number400=this.acceptForm.fourNum;
                             param.companyid=this.companyId;
@@ -465,7 +465,7 @@
                         // this.acceptForm.imageUrl = res.data.company.companyProofPic;
                         this.acceptForm.fourNum = res.data.number400;
                         res.data.destNumber.map((item)=>{
-                            this.acceptForm.imageUrl = item.destnumproofpic;
+                            this.acceptForm.imageUrl = item.destnumProofPic;
                             this.acceptForm.fourNum = item.number400;
                             this.acceptForm.usage = item.destnumUsage;
                         })

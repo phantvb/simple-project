@@ -476,35 +476,30 @@
                             message: '已取消注销'
                         });
                     });
-
-
-                } else if (val == '删除') {
-
+                } else if(val == '刪除') {
+                    console.log("进来了");
                     this.$confirm('此操作将永久删除该业务, 是否继续?', '提示', {
                         confirmButtonText: '确定',
                         cancelButtonText: '取消',
                         type: 'warning'
                     }).then(() => {
-                        this.$message({
-                            type: 'success',
-                            message: '删除成功!'
-                        });
-
                         this.$ajax.post('/vos/business/deleteFlow', {
                             "companyFlow": objData
                         }).then((res) => {
                             console.log(res);
                             this.entireLists();
-                        })
+                        });
+                        this.$message({
+                            type: 'success',
+                            message: '删除成功!'
+                        });
                     }).catch(() => {
                         this.$message({
                             type: 'info',
                             message: '已取消删除'
                         });
                     });
-
                 }
-
             },
             //“全部”表格详情
             getCacheData(val) {
