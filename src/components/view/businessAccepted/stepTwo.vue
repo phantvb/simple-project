@@ -143,15 +143,19 @@
                     legalCardHandPic: '',     //本人手持证件照
                 },
                 campanyObj: {},        //企业信息对象
+                businessObj:{},        //业务信息对象
                 flowId: '',
                 saveBtnHidden: true,
                 companySaveInfo: [],
+                needCompanySave:false,
+                busIdentity:'',
+                destNumberArr:null,
             };
         },
         components: {},
         created() {
-            // this.companySaveInfo = JSON.parse(sessionStorage.getItem("firmNameListItem"));
-            // console.log("this.companySaveInfo",this.companySaveInfo);
+            this.companySaveInfo = JSON.parse(sessionStorage.getItem("firmNameListItem"));
+            console.log("this.companySaveInfo",this.companySaveInfo);
             // console.log("businessIn",sessionStorage.getItem('businessIn'));
             this.$root.eventHub.$on('flowId', (resp) => {
                 // console.log("flowId", resp);
@@ -167,15 +171,44 @@
                 this.stepThreeDetail();
             }
             this.$root.eventHub.$on('firmNameListItem', (resp) => {
-                // console.log("firmNameListItem",resp);
+                console.log("firmNameListItem",resp);
                 this.stepTwoForm = resp;
             });
+            this.$root.eventHub.$on('needCompanySave', (resp) => {
+                console.log("needCompanySave", resp);
+                console.log("business", this.business);
+                this.needCompanySave = resp;
+                // this.ChangeBusinessStatus(businessParams);
+            });
+            console.log("this.destNumber",this.destNumber);
+            this.destNumberArr=this.destNumber;
+            if(this.destNumberArr==null){
+                this.destNumberArr = [];
+                let destNumberObj = {     //目的码数组
+                    id: "",
+                    destNumber: "",
+                    number400: "",
+                    destnumProofPic: "",
+                    destnumUsage: "",
+                    companyid: "",
+                    valueAddedId: "",
+                    status: "",
+                    connectType: "",
+                    connectId: "",
+                    flowId: "",
+                };
+                this.destNumberArr.push(destNumberObj);
+            }
+            console.log('destNumberArr',this.destNumberArr);
+            this.ChangeDestNumber(this.destNumberArr);
+            console.log('destNumber',this.destNumber);
         },
         methods: {
             // 详情
             stepThreeDetail() {
                 console.log("this.company", this.company);
                 this.stepTwoForm = this.company;
+                console.log(this.stepTwoForm);
             },
             // 图片上传
             handleAvatarSuccess(res, file) {
@@ -235,9 +268,19 @@
             },
             // 暂存按钮
             addBusinessSave() {
+                console.log("sessionStorage.getItem('entireFlowId')",sessionStorage.getItem('entireFlowId'));
+                this.busIdentity = sessionStorage.getItem('businessType');
                 this.campanyObj = Object.assign(this.company, this.stepTwoForm);
+                let businessParams = {};
+                businessParams.needCompanySave = this.needCompanySave;
+                businessParams.source ="self";
+                businessParams.channel = this.busIdentity;
+                businessParams.companyName = this.company.companyName;
+                this.businessObj = Object.assign(this.business, businessParams);
                 console.log(this.campanyObj);
+                console.log("needCompanySave",this.needCompanySave);
                 this.ChangeCompanyStatus(this.campanyObj);
+                this.ChangeBusinessStatus(this.businessObj);
                 this.$ajax.post('/vos/business/startAndSave', {
                     "company": this.campanyObj,
                     "business": this.business,
@@ -245,7 +288,7 @@
                     "number400ValueAdded": this.number400ValueAdded,
                     "number400Concession": this.number400Concession,
                     "companyFlow": {
-                        "flowId": this.flowId
+                        "flowId": sessionStorage.getItem('businessIn') == 2 || sessionStorage.getItem('businessIn') == 3 ? sessionStorage.getItem('entireFlowId') : ''
                     }
                 }).then((res) => {
                     console.log(res);
@@ -259,6 +302,12 @@
             // 存vuex更新企业信息模块入参
             ChangeCompanyStatus(val) {
                 return this.$store.dispatch("ChangeCompanyStatus", val);
+            },
+            ChangeBusinessStatus(val) {
+                return this.$store.dispatch("ChangeBusinessStatus", val);
+            },
+            ChangeDestNumber(val) {
+                return this.$store.dispatch("ChangeDestNumberStatus", val);
             },
         },
         computed: {

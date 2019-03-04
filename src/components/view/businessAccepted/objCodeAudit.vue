@@ -550,7 +550,7 @@
                             let param={};
                             param.id=item.id;
                             param.destNumber=item.destNumber;
-                            param.destnumproofpic=this.acceptForm.imageUrl;
+                            param.destnumProofPic=this.acceptForm.imageUrl;
                             param.destnumUsage=this.acceptForm.usage;
                             param.number400=this.acceptForm.fourNum;
                             param.companyid=this.acceptForm.firmId;
@@ -607,7 +607,7 @@
                             let param={};
                             param.id=item.id;
                             param.destNumber=item.destNumber;
-                            param.destnumproofpic=this.acceptForm.imageUrl;
+                            param.destnumProofPic=this.acceptForm.imageUrl;
                             param.destnumUsage=this.acceptForm.usage;
                             param.number400=this.acceptForm.fourNum;
                             param.companyid=this.acceptForm.firmId;
