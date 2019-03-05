@@ -1,6 +1,6 @@
 <template>
 	<div id="ObjCodeManage" class="managerFormTitle" v-loading="loading">
-		<div class="search" v-if="permission.indexOf(75)!=-1">
+		<div class="search" v-if="permission.indexOf(75)!=-1" @keyup.enter="fetchData()">
 			<ul>
 				<li>
 					<span class="demonstration">企业名称：</span>

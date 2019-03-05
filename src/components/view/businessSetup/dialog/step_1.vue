@@ -18,14 +18,14 @@
 					<li class="l3">
 						<el-form-item label="企业性质" prop="companyCharacter">
 							<el-select v-model="form.companyCharacter" placeholder="请选择" size="small">
-								<el-option v-for="item in companyCharacterOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
+								<el-option v-for="item in companyCharacterOptions" :key="item.value" :label="item.label" :value="item.label"></el-option>
 							</el-select>
 						</el-form-item>
 					</li>
 					<li class="l3">
 						<el-form-item label="企业等级" prop="companyRank">
 							<el-select v-model="form.companyRank" placeholder="请选择" size="small">
-								<el-option v-for="item in companyRankOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
+								<el-option v-for="item in companyRankOptions" :key="item.value" :label="item.label" :value="item.label"></el-option>
 							</el-select>
 						</el-form-item>
 					</li>

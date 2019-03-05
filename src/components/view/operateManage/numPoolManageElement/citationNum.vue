@@ -20,7 +20,7 @@
 					</el-checkbox-group>
 				</el-form-item>
 				<el-form-item style="margin-left: 15px;">
-					<el-button type="primary" size="mini" class="searchButton" @click="loadData">搜索</el-button>
+					<el-button type="primary" size="mini" class="searchButton" @click="loadData(citationNumForm.number)">搜索</el-button>
 					<el-button type="primary" plain size="mini" class="resetButton" @click="reset">重置</el-button>
 				</el-form-item>
 			</el-form>
@@ -195,7 +195,7 @@
 			// 修改当前显示页面
 			handleCurrentChange(val) {
 				this.page.currentPage = val;
-				this.loadData();
+				this.loadData(this.page.currentPage);
 			},
 
 			reset() {
@@ -482,7 +482,9 @@
 				}
 			},
 
-			loadData() {
+			loadData(num,pageNum=1) {
+                this.loading=true;
+                this.page.currentPage=pageNum;
                 let str = "";
 				if (this.citationNumForm.checkList.length == 2) {
 					str = "self,channel";
@@ -510,7 +512,6 @@
 				if (this.citationNumForm.value1 == "3") {
 					status = "";
 				}
-                this.loading=true;
 				this.$ajax.post("/vos/guideNumber/search", {
 					page: {
 						pageNo: this.page.currentPage,
@@ -519,7 +520,7 @@
 					guideNumber: {
 						status: status,
 						channel: str,
-						guideNumber: this.citationNumForm.number
+						guideNumber: num
 					}
 				}).then(res => {
 					if (res.code == 200) {

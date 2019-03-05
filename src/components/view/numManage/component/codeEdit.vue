@@ -26,8 +26,9 @@
 				<div class="form_item input">
 					<div class="form_title right">目的码证明材料：</div>
 					<div class="form_con">
+						{{$global.serverSrc}}
 						<el-upload class="avatar-uploader examplew" :action="$global.uploadUrl" :show-file-list="false" accept=".png,.jpeg,.jpg" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload" :with-credentials="true">
-							<img v-if="imageUrl" :src="$global.serverSrc+imageUrl" class="avatar">
+							<img v-if="imageUrl" :src="imageUrl" class="avatar">
 							<i v-else class="el-icon-plus avatar-uploader-icon"></i>
 						</el-upload>
 						<p class="grey">说明：目的码证明材料可以是缴费材料，也可以是自助平台相关截图</p>
@@ -179,7 +180,7 @@
 					companyInfo.destNumber.push({
 						id: item.id,
 						destNumber: item.destNumber,
-						destnumproofpic: this.form.imageUrl,
+						destnumProofPic: this.form.imageUrl,
 						destnumUsage: this.form.usage,
 						number400: this.vData.business.number400,
 						companyid: this.company.id
@@ -197,7 +198,7 @@
 				let _this = this;
 				this.$ajax.get('/vos/destnum/getCacheData?flowId=' + flowId).then(res => {
 					if (res.code == 200) {
-						this.imageUrl = res.data.destNumber[0].destnumProofPic;
+						this.imageUrl = this.$global.serverSrc + res.data.destNumber[0].destnumProofPic;
 						let pic = res.data.destNumber[0].destnumProofPic.split('/');
 						this.form.imageUrl = pic[pic.length - 1];
 						this.form.usage = res.data.destNumber[0].destnumUsage;

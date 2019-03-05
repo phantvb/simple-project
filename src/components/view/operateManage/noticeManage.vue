@@ -22,7 +22,7 @@
 					<span class="demonstration">时间：</span>
 
 					<el-date-picker style="margin-right:15px;" v-model="form.date" type="datetimerange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" size="mini" value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker>
-					<el-button type="primary" size="mini" style="width:80px;" @click="searchNotice">搜索</el-button>
+					<el-button type="primary" size="mini" style="width:80px;" @click="searchNotice()">搜索</el-button>
 					<el-button type="primary" plain size="mini" style="width:80px;" @click="resetForm">重置</el-button>
 				</div>
 			</div>
@@ -131,8 +131,8 @@
 			// 修改页面显示数据大小
 			handleSizeChange(val) {
                 this.page.size = val;
-                if (this.form.title != 0 ||
-					this.form.person != 0 ||
+                if (this.form.title != '' ||
+					this.form.person != '' ||
 					this.form.date.length != 0 ) {
 					this.searchNotice();
 				} else {
@@ -142,8 +142,14 @@
 
 			// 修改当前显示页面
 			handleCurrentChange(val) {
-				this.page.currentPage = val;
-				this.loadData();
+                this.page.currentPage = val;
+                if (this.form.title != '' ||
+					this.form.person != '' ||
+					this.form.date.length != 0 ) {
+					this.searchNotice(this.page.currentPage);
+				} else {
+					this.loadData();
+				}
 			},
 
 			// 重置
@@ -157,7 +163,8 @@
 			},
 
 			// 搜索信息
-			searchNotice() {
+			searchNotice(pageNum) {
+                this.page.currentPage=pageNum||1;
 				if (this.form.date.length == 0) {
 					this.form.date[0] = "";
 					this.form.date[1] = "";

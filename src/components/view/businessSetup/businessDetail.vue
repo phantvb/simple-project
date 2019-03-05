@@ -11,7 +11,7 @@
 				<div class="block left">
 					<p class="fmini">企业名称： {{detail.companyName}} </p>
 					<p class="fmini">证件编号： {{detail.companyCardNo}} </p>
-					<p class="fmini">企业性质： {{detail.companyCharacterStr}} &#12288;企业等级： {{detail.companyRankStr}} &#12288;行业类型： {{detail.industryType}}</p>
+					<p class="fmini">企业性质： {{detail.companyCharacter}} &#12288;企业等级： {{detail.companyRank}} &#12288;行业类型： {{detail.industryType}}</p>
 					<p class="fmini">注册地址： {{detail.registProvince}}{{detail.registCity}}{{detail.registArea}}{{detail.registAddress}} </p>
 					<p class="fmini">办公地址： {{detail.officeProvince}}{{detail.officeCity}}{{detail.officeArea}}{{detail.officeAddress}} </p>
 					<p class="fmini">企业电话： {{detail.phone}} </p>
@@ -114,28 +114,6 @@
 		methods: {
 			fetchData() {
 				let _this = this;
-				const companyCharacterOptions = [{
-					value: 'state-owned',
-					label: '国有'
-				}, {
-					value: 'cooperation',
-					label: '合作'
-				}, {
-					value: 'joint_venture',
-					label: '合资'
-				}, {
-					value: 'sole_proprietorship',
-					label: '独资'
-				}, {
-					value: 'collective',
-					label: '集体'
-				}, {
-					value: 'private',
-					label: '私营'
-				}, {
-					value: 'individual_business',
-					label: '个体工商户'
-				}];
 				const legalCardOptions = [{
 					value: 'id_card',
 					label: '身份证'
@@ -183,28 +161,6 @@
 					value: 'Freezed',
 					label: '注销冷冻'
 				}];
-				const companyRankOptions = [{
-					value: 'DK_A',
-					label: '大客A'
-				}, {
-					value: 'DK_B',
-					label: '大客B'
-				}, {
-					value: 'DK_C',
-					label: '大客C'
-				}, {
-					value: 'DK_D',
-					label: '大客D'
-				}, {
-					value: 'DK_E',
-					label: '大客E'
-				}, {
-					value: 'SK_A',
-					label: '商客A'
-				}, {
-					value: 'SK_B',
-					label: '商客B'
-				}]
 				this.baseData.username = sessionStorage.getItem("username");
 				this.baseData.roleName = sessionStorage.getItem("roleName");
 				this.loading = true;
@@ -212,19 +168,9 @@
 					this.$ajax.get('/vos/company/getCacheData?flowId=' + this.$route.query.flowId).then(res => {
 						if (res.code == 200) {
 							this.loading = false;
-							for (let item of companyCharacterOptions) {
-								if (item.value == res.data.company.companyCharacter) {
-									res.data.company.companyCharacterStr = item.label;
-								}
-							}
 							for (let item of legalCardOptions) {
 								if (item.value == res.data.company.legalCard) {
 									res.data.company.legalCardStr = item.label;
-								}
-							}
-							for (let item of companyRankOptions) {
-								if (item.value == res.data.company.companyRank) {
-									res.data.company.companyRankStr = item.label;
 								}
 							}
 							this.detail = res.data.company;

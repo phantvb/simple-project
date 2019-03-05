@@ -53,7 +53,7 @@
 			</div>
 			<div class="block" v-if="transferType==0">
 				号码开通时间：
-				<el-date-picker style="margin-right:15px;" v-model="openTime" type="datetime" placeholder="请选择日期" size="small" value-format="yyyy-MM-dd HH:mm:00" :picker-options="pickerOptions">
+				<el-date-picker style="margin-right:15px;" v-model="openTime" type="datetime" placeholder="请选择日期" size="small" value-format="yyyy-MM-dd HH:mm:00" :picker-options="pickerOptions" :default-value='defaultValue'>
 				</el-date-picker>
 			</div>
 			<div class="title" v-if="transferType==1||transferType==2">
@@ -142,12 +142,21 @@
 				recordData: [],
 				shouldReceiveData: [],
 				openTime: null,
+				defaultValue: new Date().getTime() + 10 * 60 * 1000,
 				pickerOptions: {
 					disabledDate: (time) => {
 						var d = new Date();
 						d.setDate(new Date().getDate() - 1);
 						return time.getTime() < d.getTime();
-					}
+					},
+					shortcuts: [{
+						text: '三分钟后',
+						onClick(picker) {
+							const date = new Date();
+							date.setTime(date.getTime() + 3 * 60 * 1000);
+							picker.$emit('pick', date);
+						}
+					}]
 				}
 			}
 		},
@@ -156,18 +165,26 @@
 				this.$emit('close', bol);
 			},
 			submit() {
+				var data = {};
+
 				if (this.transferType == 1) {
 					this.close(false);
 					return;
+				};
+				if (new Date(this.openTime.replace(/-/g, '/')) < new Date()) {
+					// let d = new Date(new Date().getTime() + 1 * 60 * 1000);
+					// this.formatTime(d);
+					// data.openTime =this.openTime;
+					this.$throw('建议在5分钟或者之后开通号码');
+					return;
+				} else {
+					data.openTime = this.openTime;
 				}
-				var data = {};
 				data.realReceives = this.recordData;
-				var d = new Date(new Date().getTime() + 1 * 60 * 1000);
-				data.openTime = new Date(this.openTime.replace(/-/g, '/')) < new Date() ? this.formatTime(d) : this.openTime;
 				data.id = this.data.id;
 				this.$ajax.post('/vos/accountsTotal/addRealReceive', data).then(res => {
 					if (res.code == 200) {
-						this.$message('success');
+						this.$message.success('操作成功');
 						this.close(true);
 					}
 				})
@@ -190,7 +207,7 @@
 								item.amount = item.numOfOne;
 							} else if (item.units == "month") {
 								item.unit = "月";
-								item.amount = item.numOfMonth;
+								item.amount = item.numOfOne;
 							} else if (item.accountsType == "Package") {
 								item.unit = item.units;
 								item.amount = item.numOfOne;

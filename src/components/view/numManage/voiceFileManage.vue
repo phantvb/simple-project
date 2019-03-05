@@ -1,7 +1,7 @@
 <template>
 	<div id="voiceFileManage" class="managerFormTitle" v-loading="loading">
 		<Aplayer name="Aplayer" model="auto" :music_url="$global.serverSrc+voiceSrc" v-if="player" v-show="false"></Aplayer>
-		<div class="search" v-if="permission.indexOf(64)!=-1">
+		<div class="search" v-if="permission.indexOf(64)!=-1" @keyup.enter="fetchData()">
 			<ul>
 				<li>
 					<span class="demonstration">企业名称：</span>

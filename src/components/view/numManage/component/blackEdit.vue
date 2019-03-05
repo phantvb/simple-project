@@ -27,9 +27,9 @@
 					<div class="form_con">{{valueAdded.tariffName}}
 						<div class="search padding">
 							<p>功能资费： {{valueAdded.tariffFee}} 元</p>
-							<p v-if="item.presents==1">是否赠送：赠送</p>
-							<p v-if="item.presents==2">是否赠送：付费</p>
-							<p>功能备注：{{item.remarks}}</p>
+							<p v-if="valueAdded.presents==1">是否赠送：赠送</p>
+							<p v-if="valueAdded.presents==2">是否赠送：付费</p>
+							<p>功能备注：{{valueAdded.remarks}}</p>
 						</div>
 					</div>
 				</div>
@@ -54,7 +54,6 @@
 			show(newV, oldV) {
 				this.dialogVisible = newV;
 				if (this.data.id) {
-					this.getValueAdded();
 					this.number400 = this.data.number400;
 					this.blackList[0].num = this.data.blackNumber;
 				} else {
@@ -76,7 +75,10 @@
 				loading: false,
 			};
 		},
-		mounted() {},
+		mounted() {
+
+			this.getValueAdded();
+		},
 		methods: {
 			submit() {
 				var data = {};

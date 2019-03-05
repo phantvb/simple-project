@@ -24,7 +24,7 @@
 					</el-checkbox-group>
 				</el-form-item>
 				<el-form-item style="margin-left: 15px;">
-					<el-button type="primary" size="mini" class="searchButton" @click="search">搜索</el-button>
+					<el-button type="primary" size="mini" class="searchButton" @click="search()">搜索</el-button>
 					<el-button type="primary" plain size="mini" class="resetButton" @click="reset">重置</el-button>
 				</el-form-item>
 			</el-form>
@@ -106,13 +106,14 @@
 					this.freezingNumForm.number != '' ||
 					this.freezingNumForm.citationNumber != '' ||
 					this.freezingNumForm.companyName != '') {
-					this.search();
+					this.search(val);
 				} else {
 					this.loadData();
 				}
 			},
 
-			search() {
+			search(pageNum) {
+                this.page.currentPage=pageNum||1;
 				if (this.freezingNumForm.date.length == 0) {
 					this.freezingNumForm.date[0] = "";
 					this.freezingNumForm.date[1] = "";

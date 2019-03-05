@@ -81,8 +81,8 @@
 
 					this.$router.push("/Layout/userCenter");
 				}
-
 			});
+			console.log(this, this.$router);
 		},
 		methods: {
 			submitForm() {

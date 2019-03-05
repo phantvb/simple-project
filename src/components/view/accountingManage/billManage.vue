@@ -7,7 +7,7 @@
 				<button :class="billType==0?'active':'plain'" @click="billTypeSel(0)">号码月账单</button>
 				<button :class="billType==1?'active':'plain'" @click="billTypeSel(1)">每月总账单</button>
 			</div>
-			<div class="search" v-if="permission.indexOf(90)!=-1">
+			<div class="search" v-if="permission.indexOf(90)!=-1" @keyup.enter="fetchData()">
 				<ul v-if="billType==0">
 					<li>
 						<span class="demonstration">400号码：</span>

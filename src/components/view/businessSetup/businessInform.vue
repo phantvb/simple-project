@@ -5,7 +5,7 @@
 		</header>
 		<el-tabs v-model="active">
 			<el-tab-pane label="企业流程" name="1">
-				<div class="search" v-if="permission.indexOf(96)!=-1">
+				<div class="search" v-if="permission.indexOf(96)!=-1" @keyup.enter="fetchData()">
 					<ul>
 						<li>
 							<span class="demonstration">企业名称：</span>
@@ -39,7 +39,7 @@
 			</el-tab-pane>
 
 			<el-tab-pane label="全部企业" name="0">
-				<div class="search" v-if="permission.indexOf(96)!=-1">
+				<div class="search" v-if="permission.indexOf(96)!=-1" @keyup.enter="fetchData()">
 					<ul>
 						<li>
 							<span class="demonstration">企业名称：</span>
@@ -406,10 +406,10 @@
 			handleCurrentChange(val) {
 				this.fetchData(val);
 			},
-			fetchData(pageNum) {
+			fetchData(pageNum=1) {
 				var data = {};
 				this.loading = true;
-				this.page.num = pageNum || 1;
+				this.page.num = pageNum;
 				data = this.form;
 				data.dateStart = this.form.time && this.form.time.length > 1 ? this.form.time[0] : '';
 				data.dateEnd = this.form.time && this.form.time.length > 1 ? this.form.time[1] : '';

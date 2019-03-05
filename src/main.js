@@ -50,7 +50,7 @@ axios.interceptors.response.use(res => {
 	let arr = [302, 200];
 	switch (res.data.code) {
 	case 302:
-		location.href = '#/login';
+		router.push('/login');
 		break
 	}
 	if (!arr.includes(res.data.code) && res.data.code !== undefined) {
@@ -63,7 +63,7 @@ axios.interceptors.response.use(res => {
 }, err => {
 	//处理302
 	if (typeof err.response === 'undefined') {
-		location.href = '#/login';
+		router.push('/login');
 	}
 	return err;
 })
@@ -151,6 +151,21 @@ router.beforeEach((to, from, next) => {
 	};
 
 })
+//系统错误捕获
+const errorHandler = (error, vm, life) => {
+	if (typeof (error) == 'string') {
+		Vue.prototype.$message({
+			message: error,
+			type: 'error'
+		});
+	} else {
+		console.log(error, vm, life)
+	}
+}
+
+Vue.config.errorHandler = errorHandler;
+Vue.prototype.$throw = function (error) { errorHandler(error, this) };
+
 /* eslint-disable no-new */
 new Vue({
 	el: '#app',
