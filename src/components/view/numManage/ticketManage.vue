@@ -4,7 +4,7 @@
 		<el-tabs v-model="active">
 			<el-tab-pane label="自助直销" name="self"></el-tab-pane>
 			<el-tab-pane label="渠道" name="channel"></el-tab-pane>
-			<div class="search" v-if="permission.indexOf(61)!=-1">
+			<div class="search" v-if="permission.indexOf(61)!=-1" @keyup.enter="fetchData()">
 				<ul>
 					<li>
 						<span class="demonstration">企业名称：</span>

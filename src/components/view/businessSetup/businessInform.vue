@@ -5,7 +5,7 @@
 		</header>
 		<el-tabs v-model="active">
 			<el-tab-pane label="企业流程" name="1">
-				<div class="search" v-if="permission.indexOf(96)!=-1">
+				<div class="search" v-if="permission.indexOf(96)!=-1" @keyup.enter="fetchData()">
 					<ul>
 						<li>
 							<span class="demonstration">企业名称：</span>
@@ -39,7 +39,7 @@
 			</el-tab-pane>
 
 			<el-tab-pane label="全部企业" name="0">
-				<div class="search" v-if="permission.indexOf(96)!=-1">
+				<div class="search" v-if="permission.indexOf(96)!=-1" @keyup.enter="fetchData()">
 					<ul>
 						<li>
 							<span class="demonstration">企业名称：</span>

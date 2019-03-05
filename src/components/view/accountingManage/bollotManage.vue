@@ -3,7 +3,7 @@
 		<el-tabs v-model="form.channel">
 			<el-tab-pane label="自助直销" name="self"></el-tab-pane>
 			<el-tab-pane label="渠道" name="channel"></el-tab-pane>
-			<div class="search" v-if="permission.indexOf(85)!=-1">
+			<div class="search" v-if="permission.indexOf(85)!=-1" @keyup.enter="fetchData()">
 				<ul>
 					<li>
 						<span class="demonstration">400号码：</span>

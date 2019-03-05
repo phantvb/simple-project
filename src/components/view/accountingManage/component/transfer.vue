@@ -175,7 +175,7 @@
 					// let d = new Date(new Date().getTime() + 1 * 60 * 1000);
 					// this.formatTime(d);
 					// data.openTime =this.openTime;
-					this.$throw('请选择大于当前时间的号码开通时间');
+					this.$throw('建议在5分钟或者之后开通号码');
 					return;
 				} else {
 					data.openTime = this.openTime;
