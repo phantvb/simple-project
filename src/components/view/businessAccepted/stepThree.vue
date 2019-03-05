@@ -832,11 +832,17 @@
                         }
                         item.numOfone = 1;
                         if (item.units == 'perMonth') {
+                            console.log("数量是月单位的");
                             item.cost = "月";
                             item.unitsName = (item.tariffFee / item.numOfMonth) + '元/月';
                             item.tariffFeeCopy = item.numOfMonth * item.tariffFee;
                             item.valueAddedFee = item.tariffFeeCopy;
+                            // console.log("item.tariffFeeCopy",item.tariffFeeCopy);
+                            // console.log("item.numOfMonth",item.numOfMonth);
+                            // console.log("item.tariffFee",item.tariffFee);
+                            // console.log("item.numOfMonth * item.tariffFee",item.numOfMonth * item.tariffFee);
                         } else if (item.units == 'perOne') {
+                            console.log("数量是个单位的");
                             item.cost = "个";
                             item.cost2 = "个";
                             item.unitsName = (item.tariffFee / item.numOfone) + '元/个';
@@ -844,6 +850,7 @@
                             item.valueAddedFee = item.tariffFeeCopy;
                             // console.log();
                         } else if (item.units == 'perMonthOne') {
+                            console.log("数量是月/个单位的");
                             item.cost = "月";
                             item.cost2 = "个";
                             item.unitsName = (item.tariffFee / item.numOfMonth) + '元/月/个';
@@ -861,7 +868,6 @@
                         } else {
                             item.presentsName = "付费";
                         }
-
                     });
                     // console.log('aaa', this.objCodeTable);
                     // console.log('bbb', this.number400ValueAdded);
@@ -874,6 +880,7 @@
                             if (this.number400ValueAdded && this.number400ValueAdded.length > 0) {
                                 this.number400ValueAdded.map((item1) => {  //选中数据数组
                                     if (item1.valueAddedId == item.id) {
+                                        console.log("111111111111111111111111111111111111111111");
                                         //把选中的复选框信息赋值给原数组勾选的选项
                                         item1.tariffFee = item.valueAddedFee;
                                         item1.tariffFeeCopy = item.tariffFeeCopy;
@@ -1032,8 +1039,9 @@
                 let disObj = ll;
                 this.disList = [];
                 disObj.amount = 1;
+                disObj.number400 = this.selectedNum[0].number400;
                 this.disList.push(disObj);
-                this.$set(this.discountsList, dex, ll)
+                this.$set(this.discountsList, dex, ll);
             },
 
             // 经办人证件类型
@@ -1153,6 +1161,16 @@
                     this.stepThreeForm.tariffPackageId = this.selectedNum[0].packgeId;
                     this.stepThreeForm.excessTariff = this.selectedNum[0].excessTariff;
                     this.stepThreeForm.unitPrice = this.selectedNum[0].unitPrice;
+                    // 优惠
+                    this.disList.map((item)=>{
+                        delete item.id;
+                    });
+                    //增值服务删除id
+                    let valueAddDelId = [];
+                    valueAddDelId = this.valueAdd;
+                    valueAddDelId.map((zool)=>{
+                        delete zool.id;
+                    });
                     console.log("this.stepThreeForm.amount",this.stepThreeForm.amount);
                     console.log(this.stepThreeForm);
                     console.log(this.disList);
@@ -1180,7 +1198,7 @@
                         "company": this.company,
                         "business": this.stepThreeForm,
                         "destNumber": this.destNumber,
-                        "number400ValueAdded": this.valueAdd,
+                        "number400ValueAdded": valueAddDelId,
                         "number400Concession": this.number400Concession,
                         "companyFlow": {
                             "flowId": sessionStorage.getItem('businessIn') == 2 || sessionStorage.getItem('businessIn') == 3 ? sessionStorage.getItem('entireFlowId') : this.stepThreeFlowId
