@@ -82,7 +82,7 @@
 					this.$router.push("/Layout/userCenter");
 				}
 			});
-			console.log(this, this.$router);
+			console.log(this, window);
 		},
 		methods: {
 			submitForm() {

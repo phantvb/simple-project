@@ -1,6 +1,6 @@
 <template>
 	<div id="transfer" class="lightblueTable">
-		<el-dialog :title="transferTypeStr" class="left" :visible.sync="dialogVisible" @close="close">
+		<el-dialog :title="transferTypeStr" class="left" :visible.sync="dialogVisible" @close="close" :close-on-click-modal="false">
 			<div class="title">
 				基本信息
 			</div>

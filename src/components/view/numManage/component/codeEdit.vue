@@ -1,6 +1,6 @@
 <template>
 	<div id="codeEdit" class="numDialog">
-		<el-dialog title="新增/编辑目的码" class="left" :visible.sync="dialogVisible" @close="close" v-if="dialogVisible">
+		<el-dialog title="新增/编辑目的码" class="left" :visible.sync="dialogVisible" @close="close" v-if="dialogVisible" :close-on-click-modal="false">
 			<div class="block">
 				<div class="form_item input">
 					<div class="form_title right">400号码：</div>
