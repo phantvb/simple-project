@@ -1,6 +1,6 @@
 <template>
 	<div id="billDetail" class="lightblueTable">
-		<el-dialog title="号码月账单详情" class="left" :visible.sync="dialogVisible" @close="close">
+		<el-dialog title="号码月账单详情" class="left" :visible.sync="dialogVisible" @close="close" :close-on-click-modal="false">
 			<div class="title">基本信息</div>
 			<div class="block">
 				<ul>

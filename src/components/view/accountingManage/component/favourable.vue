@@ -1,6 +1,6 @@
 <template>
 	<div id="favourable">
-		<el-dialog title="添加优惠" class="left" :visible.sync="dialogVisible" @close="close">
+		<el-dialog title="添加优惠" class="left" :visible.sync="dialogVisible" @close="close" :close-on-click-modal="false">
 			<div class="form_item">
 				<div class="form_title right">400号码：</div>
 				<div class="form_con">{{data.number400}}</div>
@@ -55,7 +55,7 @@
 			return {
 				dialogVisible: false,
 				type: '1',
-				favourable: '',
+				favourable: {},
 				favourableId: '',
 				options: [],
 			}
@@ -84,8 +84,8 @@
 			},
 			get400Concession() {
 				this.$ajax.post('/vos/accountsTotal/get400Concession', { accountsTotal: this.data }).then(res => {
-					if (res.code == 200 && res.data.number400Concession) {
-						this.favourable = res.data.number400Concession;
+					if (res.code == 200) {
+						this.favourable = res.data.number400Concession || {};
 					};
 					this.favourableId = res.data.number400Concession ? res.data.number400Concession.id : '';
 				})

@@ -1,6 +1,6 @@
 <template>
 	<div :id="active==2?'company_dialog':''">
-		<el-dialog title="新增企业/编辑/变更企业" class="left" :visible.sync="dialogVisible" @close="close" v-if="dialogVisible">
+		<el-dialog title="新增企业/编辑/变更企业" class="left" :visible.sync="dialogVisible" @close="close" v-if="dialogVisible" :close-on-click-modal="false">
 			<el-steps :active="active" align-center>
 				<el-step title="填写企业基本信息"></el-step>
 				<el-step title="上传企业资料"></el-step>
