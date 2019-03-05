@@ -288,7 +288,7 @@
 				this.page.currentPage = val;
 				if (this.form.accountNumber != '' ||
 					this.form.userName != '' ) {
-					this.searchMess();
+					this.searchMess(val);
 				} else {
 					this.changeTableData();
 				}
@@ -303,7 +303,8 @@
 					.catch(_ => {});
 			},
 
-			searchMess(roleName) {
+			searchMess(roleName,pageNum) {
+                this.page.currentPage=pageNum||1;
 				if (this.accountStatus == "1") {
 					this.$ajax
 						.post("/vos/user/searchUser2", {

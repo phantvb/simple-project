@@ -64,11 +64,11 @@
                 }
             },
             exportNumber400() {
-                const url = 'http://192.168.0.117:5480/vos/excel/number400';
+                const url = this.$global.serverSrc+'/excel/number400';
                 window.open(url, '_blank');
             },
             exportGuideNumber() {
-                const url = 'http://192.168.0.117:5480/vos/excel/guideNumber';
+                const url = this.$global.serverSrc+'/excel/guideNumber';
                 window.open(url, '_blank');
             }
         }

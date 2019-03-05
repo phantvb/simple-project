@@ -406,10 +406,10 @@
 			handleCurrentChange(val) {
 				this.fetchData(val);
 			},
-			fetchData(pageNum) {
+			fetchData(pageNum=1) {
 				var data = {};
 				this.loading = true;
-				this.page.num = pageNum || 1;
+				this.page.num = pageNum;
 				data = this.form;
 				data.dateStart = this.form.time && this.form.time.length > 1 ? this.form.time[0] : '';
 				data.dateEnd = this.form.time && this.form.time.length > 1 ? this.form.time[1] : '';
