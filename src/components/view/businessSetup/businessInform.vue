@@ -116,7 +116,7 @@
 				</el-table-column>
 				<el-table-column prop="name" label="操作" min-width="200">
 					<template slot-scope="scope">
-						<el-button size="small" type="text" @click="checkDetail(scope.row)">详情</el-button>
+
 						<div v-if="active=='1'" style="display:inline-block;">
 							<div class="likeButton" v-if="permission.indexOf(98)!=-1">
 								<el-button size="small" type="text" v-if="scope.row.status=='Wait_To_Audit'&&(scope.row.creator==baseData.username||baseData.roleName=='ROLE_admin')" @click="addCompany(true,scope.row)">编辑送审</el-button>
@@ -131,7 +131,11 @@
 							<div class="likeButton" v-if="permission.indexOf(100)!=-1">
 								<el-button size="small" type="text" v-if="(scope.row.status=='Company_Auditing'||scope.row.status=='Canceling_Auditing'||scope.row.status=='Modify_Auditing')&&(baseData.roleName==scope.row.assigneeRole||baseData.roleName=='ROLE_admin')" @click="backCompany(scope.row)">驳回</el-button>
 							</div>
+							<el-button size="small" type="text" @click="checkDetail(scope.row)">详情</el-button>
 							<el-button size="small" type="text" v-if="scope.row.status=='Wait_To_Audit'&&(scope.row.creator==baseData.username||baseData.roleName=='ROLE_admin')" @click="removeCompany(scope.row)">删除</el-button>
+						</div>
+						<div v-else>
+							<el-button size="small" type="text" @click="checkDetail(scope.row)">详情</el-button>
 						</div>
 					</template>
 				</el-table-column>

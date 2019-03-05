@@ -409,10 +409,10 @@
                                         label='备注'>
                                 </el-table-column>
 
-                                <!--<el-table-column-->
-                                        <!--prop="tariffFeeCopy"-->
-                                        <!--label='费用'>-->
-                                <!--</el-table-column>-->
+                                <el-table-column
+                                        prop="tariffFeeCopy"
+                                        label='费用'>
+                                </el-table-column>
 
                                 <el-table-column
                                         prop="remarks"
@@ -687,15 +687,28 @@
                 console.log(value);
                 console.log(this.objCodeTable);
                 console.log(this.valueAdd);
+
+                //加减计算总价
+                if (value.units == 'perMonth') {
+                    value.tariffFeeCopy = value.numOfMonth * value.tariffFee;
+                    value.valueAddedFee = value.tariffFeeCopy;
+                } else if (value.units == 'perOne') {
+                    value.tariffFeeCopy = value.numOfone * value.tariffFee;
+                    value.valueAddedFee = value.tariffFeeCopy;
+                    // console.log();
+                } else if (value.units == 'perMonthOne') {
+                    value.tariffFeeCopy = value.numOfMonth * value.numOfone * value.tariffFee;
+                    value.valueAddedFee = value.tariffFeeCopy;
+                }
+
+
                 this.$set(this.objCodeTable, index1, value);
                 this.valueAdd.map((item, index) => {
                     if (item.valueAddedId == value.id) {
                         this.valueAdd[index] = this.objCodeTable[index1];
                         console.log("item",item);
-                        // item.tariffFeeCopy = item.numOfMonth * item.tariffFee;
                     }
                 });
-                // this.stepThreeForm.amount = value;
             },
             //增值服务点击数值输入框添加删除回调事件
             lalalal(val) {
@@ -873,7 +886,7 @@
                         this.objCodeTable.map((item, index) => {   //表格数据
                             if (this.number400ValueAdded && this.number400ValueAdded.length > 0) {
                                 this.number400ValueAdded.map((item1) => {  //选中数据数组
-                                    if (item1.valueAddedId == item.id) {
+                                    if (item1.tariffName == item.tariffName) {
                                         console.log("111111111111111111111111111111111111111111");
                                         if (item.units == 'perMonth') {
                                             item.tariffFeeCopy = item1.numOfMonth * item1.tariffFee;
@@ -881,7 +894,6 @@
                                         } else if (item.units == 'perOne') {
                                             item.tariffFeeCopy = item1.numOfone * item1.tariffFee;
                                             item.valueAddedFee = item1.tariffFeeCopy;
-                                            // console.log();
                                         } else if (item.units == 'perMonthOne') {
                                             item.tariffFeeCopy = item1.numOfMonth * item1.numOfone * item1.tariffFee;
                                             item.valueAddedFee = item1.tariffFeeCopy;
