@@ -286,11 +286,6 @@
                                         label='单位'>
                                 </el-table-column>
 
-                                <!--<el-table-column-->
-                                <!--prop="packageContent"-->
-                                <!--label='套餐详情'>-->
-                                <!--</el-table-column>-->
-
                             </el-table>
                         </li>
                     </ul>
@@ -415,7 +410,7 @@
                                 </el-table-column>
 
                                 <el-table-column
-                                        prop="tariffFee"
+                                        prop="tariffFeeCopy"
                                         label='费用'>
                                 </el-table-column>
 
@@ -486,7 +481,7 @@
                     units: '',                 //单位
                     packageContent: '',        //套餐详情
                     type: '',                  //1是月，2是年
-                    amount: 1,                  //数量
+                    amount: 1,                 //数量
 
                     // 归属地入参
                     provinceBelong: '',        //归属地(省)
@@ -594,24 +589,28 @@
                 this.disList = this.number400Concession;
                 // 优惠回显
                 if(this.number400Concession!=null){
+
                     this.number400Concession.map((item) => {
                         this.stepThreeForm.discounts = item.concessionName;
                     });
                 }
 
                 //400号码表格回显
-                let selectedNumCopy = {};
-                selectedNumCopy.units = this.business.units;
-                selectedNumCopy.unitsCopy = this.business.units + '月';
-                selectedNumCopy.number400 = this.business.number400;
-                selectedNumCopy.tariffName = this.business.tariffName;
-                selectedNumCopy.basicFunctionFee = this.business.basicFunctionFee;
-                selectedNumCopy.basicFunctionFeeCopy = this.business.basicFunctionFee + '元';
-                selectedNumCopy.packageContent = this.business.packageContent;
-                selectedNumCopy.durationPresentation = this.business.durationPresentation;
-                selectedNumCopy.durationPresentationCopy = this.business.durationPresentation + '元';
-                selectedNumCopy.durationPresentation = this.business.durationPresentation;
-                this.selectedNum.push(selectedNumCopy);
+                console.log("this.selectedNum",this.selectedNum);
+                if(this.business.units){
+                    let selectedNumCopy = {};
+                    selectedNumCopy.units = this.business.units;
+                    selectedNumCopy.unitsCopy = this.business.units + '月';
+                    selectedNumCopy.number400 = this.business.number400;
+                    selectedNumCopy.tariffName = this.business.tariffName;
+                    selectedNumCopy.basicFunctionFee = this.business.basicFunctionFee;
+                    selectedNumCopy.basicFunctionFeeCopy = this.business.basicFunctionFee + '元';
+                    selectedNumCopy.packageContent = this.business.packageContent;
+                    selectedNumCopy.durationPresentation = this.business.durationPresentation;
+                    selectedNumCopy.durationPresentationCopy = this.business.durationPresentation + '元';
+                    selectedNumCopy.durationPresentation = this.business.durationPresentation;
+                    this.selectedNum.push(selectedNumCopy);
+                }
                 this.getAllProvince();
             } else {
                 this.getAllProvince();
@@ -692,6 +691,8 @@
                 this.valueAdd.map((item, index) => {
                     if (item.valueAddedId == value.id) {
                         this.valueAdd[index] = this.objCodeTable[index1];
+                        console.log("item",item);
+                        // item.tariffFeeCopy = item.numOfMonth * item.tariffFee;
                     }
                 });
                 // this.stepThreeForm.amount = value;
@@ -716,7 +717,6 @@
                     }
                     obj.unitsName = item.unitsName;
                     obj.presentsName = item.presentsName;
-                    // obj.numOfone = item.numOfone;
                     if (item.units == 'perMonthOne' || item.units == 'perOne') {
                         obj.numOfone = item.numOfone;
                     }
@@ -832,20 +832,34 @@
                         }
                         item.numOfone = 1;
                         if (item.units == 'perMonth') {
+                            console.log("数量是月单位的");
                             item.cost = "月";
-                            item.unitsName = (item.tariffFee / item.numOfMonth) + '元/月'
+                            item.unitsName = (item.tariffFee / item.numOfMonth) + '元/月';
+                            item.tariffFeeCopy = item.numOfMonth * item.tariffFee;
+                            item.valueAddedFee = item.tariffFeeCopy;
+                            // console.log("item.tariffFeeCopy",item.tariffFeeCopy);
+                            // console.log("item.numOfMonth",item.numOfMonth);
+                            // console.log("item.tariffFee",item.tariffFee);
+                            // console.log("item.numOfMonth * item.tariffFee",item.numOfMonth * item.tariffFee);
                         } else if (item.units == 'perOne') {
+                            console.log("数量是个单位的");
                             item.cost = "个";
                             item.cost2 = "个";
-                            item.unitsName = (item.tariffFee / item.numOfone) + '元/个'
+                            item.unitsName = (item.tariffFee / item.numOfone) + '元/个';
+                            item.tariffFeeCopy = item.numOfone * item.tariffFee;
+                            item.valueAddedFee = item.tariffFeeCopy;
+                            // console.log();
                         } else if (item.units == 'perMonthOne') {
+                            console.log("数量是月/个单位的");
                             item.cost = "月";
                             item.cost2 = "个";
-                            item.unitsName = (item.tariffFee / item.numOfMonth) + '元/月/个'
+                            item.unitsName = (item.tariffFee / item.numOfMonth) + '元/月/个';
+                            item.tariffFeeCopy = item.numOfMonth * item.numOfone * item.tariffFee;
+                            item.valueAddedFee = item.tariffFeeCopy;
                         }
                         item.valueAddedName = item.tariffName;
                         item.valueAddedId = item.id;
-                        item.valueAddedFee = item.tariffFee;
+                        // item.valueAddedFee = item.tariffFee;
                         if (item.units == 'perMonthOne' || item.units == 'perOne') {
                             item.numOfone = item.numOfone;
                         }
@@ -854,7 +868,6 @@
                         } else {
                             item.presentsName = "付费";
                         }
-
                     });
                     // console.log('aaa', this.objCodeTable);
                     // console.log('bbb', this.number400ValueAdded);
@@ -867,13 +880,15 @@
                             if (this.number400ValueAdded && this.number400ValueAdded.length > 0) {
                                 this.number400ValueAdded.map((item1) => {  //选中数据数组
                                     if (item1.valueAddedId == item.id) {
+                                        console.log("111111111111111111111111111111111111111111");
                                         //把选中的复选框信息赋值给原数组勾选的选项
                                         item1.tariffFee = item.valueAddedFee;
+                                        item1.tariffFeeCopy = item.tariffFeeCopy;
                                         if (item.units != 'perOne') {
                                             item.numOfMonth = item1.numOfMonth;
                                         }
                                         item.numOfone = item1.numOfone;
-                                        // this.$set(this.objCodeTable, index, item1);
+                                        this.$set(this.objCodeTable, index, item1);
                                         //回显勾选的
                                         console.log("回显勾选的");
                                         this.$refs.addValueTable.toggleRowSelection(this.objCodeTable[index], true);
@@ -885,6 +900,7 @@
                                         obj.valueAddedId = item.id;
                                         obj.presents = item.presents;
                                         obj.remarks = item.remarks;
+                                        obj.tariffFeeCopy = item.tariffFeeCopy;
                                         obj.valueAddedFee = item.tariffFee;
                                         obj.units = item.units;
                                         if (item.units != 'perOne') {
@@ -918,6 +934,7 @@
                                     obj.valueAddedId = item.id;
                                     obj.presents = item.presents;
                                     obj.remarks = item.remarks;
+                                    obj.tariffFeeCopy = item.tariffFeeCopy;
                                     obj.valueAddedFee = item.tariffFee;
                                     obj.units = item.units;
                                     obj.numOfMonth = item.numOfMonth;
@@ -1022,8 +1039,9 @@
                 let disObj = ll;
                 this.disList = [];
                 disObj.amount = 1;
+                disObj.number400 = this.selectedNum[0].number400;
                 this.disList.push(disObj);
-                this.$set(this.discountsList, dex, ll)
+                this.$set(this.discountsList, dex, ll);
             },
 
             // 经办人证件类型
@@ -1143,6 +1161,17 @@
                     this.stepThreeForm.tariffPackageId = this.selectedNum[0].packgeId;
                     this.stepThreeForm.excessTariff = this.selectedNum[0].excessTariff;
                     this.stepThreeForm.unitPrice = this.selectedNum[0].unitPrice;
+                    // 优惠
+                    this.disList.map((item)=>{
+                        delete item.id;
+                    });
+                    //增值服务删除id
+                    let valueAddDelId = [];
+                    valueAddDelId = this.valueAdd;
+                    valueAddDelId.map((zool)=>{
+                        delete zool.id;
+                    });
+                    console.log("this.stepThreeForm.amount",this.stepThreeForm.amount);
                     console.log(this.stepThreeForm);
                     console.log(this.disList);
                     this.businessObj = Object.assign(this.business, this.stepThreeForm);
@@ -1169,7 +1198,7 @@
                         "company": this.company,
                         "business": this.stepThreeForm,
                         "destNumber": this.destNumber,
-                        "number400ValueAdded": this.valueAdd,
+                        "number400ValueAdded": valueAddDelId,
                         "number400Concession": this.number400Concession,
                         "companyFlow": {
                             "flowId": sessionStorage.getItem('businessIn') == 2 || sessionStorage.getItem('businessIn') == 3 ? sessionStorage.getItem('entireFlowId') : this.stepThreeFlowId
@@ -1205,9 +1234,10 @@
                         }
                     });
                 }
-
             },
             getAllByPackage(data) {
+                console.log("this.selectedNum.length",this.selectedNum.length);
+                this.stepThreeForm.amount = 1;
                 console.log("itemInfo", data);
                 this.$ajax.post('/vos/number400/searchByPackage', {
                     "num400Package": {
