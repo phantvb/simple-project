@@ -71,10 +71,10 @@ Vue.config.productionTip = false;
 Vue.prototype.$global = {
 	pageSize: [10, 20, 30, 50],
 	uploadUrl: '/vos/common/uploadImg',
-	uploadUrl2: process.env.NODE_ENV == 'development' ? 'http://192.168.0.104:5480/vos/' : 'http://' + location.host + '/vos/',
-	serverSrc: process.env.NODE_ENV == 'development' ? 'http://192.168.0.104:5480/vos/' : 'http://' + location.host + '/vos/',
-    // uploadUrl2: process.env.NODE_ENV == 'development' ? 'http://47.94.168.117:5480/vos/' : 'http://' + location.host + '/vos/',
-    // serverSrc: process.env.NODE_ENV == 'development' ? 'http://47.94.168.117:5480/vos/' : 'http://' + location.host + '/vos/',
+	// uploadUrl2: process.env.NODE_ENV == 'development' ? 'http://192.168.0.104:5480/vos/' : 'http://' + location.host + '/vos/',
+	// serverSrc: process.env.NODE_ENV == 'development' ? 'http://192.168.0.104:5480/vos/' : 'http://' + location.host + '/vos/',
+    uploadUrl2: process.env.NODE_ENV == 'development' ? 'http://47.94.168.117:5480/vos/' : 'http://' + location.host + '/vos/',
+    serverSrc: process.env.NODE_ENV == 'development' ? 'http://47.94.168.117:5480/vos/' : 'http://' + location.host + '/vos/',
 };
 router.beforeEach((to, from, next) => {
 	var allPath = store.getters.getRoute;
