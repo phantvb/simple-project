@@ -409,10 +409,10 @@
                                         label='备注'>
                                 </el-table-column>
 
-                                <el-table-column
-                                        prop="tariffFeeCopy"
-                                        label='费用'>
-                                </el-table-column>
+                                <!--<el-table-column-->
+                                        <!--prop="tariffFeeCopy"-->
+                                        <!--label='费用'>-->
+                                <!--</el-table-column>-->
 
                                 <el-table-column
                                         prop="remarks"
@@ -707,6 +707,7 @@
                     obj.number400 = this.selectedNum && this.selectedNum.length != 0 ? this.selectedNum[0].number400 : null;
                     obj.valueAddedName = item.tariffName;
                     obj.tariffName = item.tariffName;
+                    obj.tariffFee = item.tariffFee;
                     obj.valueAddedId = item.id;
                     obj.presents = item.presents;
                     obj.remarks = item.remarks;
@@ -832,17 +833,13 @@
                         }
                         item.numOfone = 1;
                         if (item.units == 'perMonth') {
-                            console.log("数量是月单位的");
+                            // console.log("数量是月单位的");
                             item.cost = "月";
                             item.unitsName = (item.tariffFee / item.numOfMonth) + '元/月';
                             item.tariffFeeCopy = item.numOfMonth * item.tariffFee;
                             item.valueAddedFee = item.tariffFeeCopy;
-                            // console.log("item.tariffFeeCopy",item.tariffFeeCopy);
-                            // console.log("item.numOfMonth",item.numOfMonth);
-                            // console.log("item.tariffFee",item.tariffFee);
-                            // console.log("item.numOfMonth * item.tariffFee",item.numOfMonth * item.tariffFee);
                         } else if (item.units == 'perOne') {
-                            console.log("数量是个单位的");
+                            // console.log("数量是个单位的");
                             item.cost = "个";
                             item.cost2 = "个";
                             item.unitsName = (item.tariffFee / item.numOfone) + '元/个';
@@ -850,7 +847,7 @@
                             item.valueAddedFee = item.tariffFeeCopy;
                             // console.log();
                         } else if (item.units == 'perMonthOne') {
-                            console.log("数量是月/个单位的");
+                            // console.log("数量是月/个单位的");
                             item.cost = "月";
                             item.cost2 = "个";
                             item.unitsName = (item.tariffFee / item.numOfMonth) + '元/月/个';
@@ -859,7 +856,7 @@
                         }
                         item.valueAddedName = item.tariffName;
                         item.valueAddedId = item.id;
-                        // item.valueAddedFee = item.tariffFee;
+                        item.valueAddedFee = item.tariffFeeCopy;
                         if (item.units == 'perMonthOne' || item.units == 'perOne') {
                             item.numOfone = item.numOfone;
                         }
@@ -869,18 +866,29 @@
                             item.presentsName = "付费";
                         }
                     });
-                    // console.log('aaa', this.objCodeTable);
-                    // console.log('bbb', this.number400ValueAdded);
                     let newValueAdd = [];
                     this.$nextTick(() => {
                         // console.log(this.selectedNum);
                         // console.log('ccc', this.number400ValueAdded);
                         this.objCodeTable.map((item, index) => {   //表格数据
-                            // console.log(1111, this.objCodeTable);
                             if (this.number400ValueAdded && this.number400ValueAdded.length > 0) {
                                 this.number400ValueAdded.map((item1) => {  //选中数据数组
                                     if (item1.valueAddedId == item.id) {
                                         console.log("111111111111111111111111111111111111111111");
+                                        if (item.units == 'perMonth') {
+                                            item.tariffFeeCopy = item1.numOfMonth * item1.tariffFee;
+                                            item.valueAddedFee = item1.tariffFeeCopy;
+                                        } else if (item.units == 'perOne') {
+                                            item.tariffFeeCopy = item1.numOfone * item1.tariffFee;
+                                            item.valueAddedFee = item1.tariffFeeCopy;
+                                            // console.log();
+                                        } else if (item.units == 'perMonthOne') {
+                                            item.tariffFeeCopy = item1.numOfMonth * item1.numOfone * item1.tariffFee;
+                                            item.valueAddedFee = item1.tariffFeeCopy;
+                                        }else{
+
+                                        }
+
                                         //把选中的复选框信息赋值给原数组勾选的选项
                                         item1.tariffFee = item.valueAddedFee;
                                         item1.tariffFeeCopy = item.tariffFeeCopy;
@@ -902,6 +910,7 @@
                                         obj.remarks = item.remarks;
                                         obj.tariffFeeCopy = item.tariffFeeCopy;
                                         obj.valueAddedFee = item.tariffFee;
+                                        obj.tariffFee = item.tariffFee;
                                         obj.units = item.units;
                                         if (item.units != 'perOne') {
                                             obj.numOfMonth = item.numOfMonth;
@@ -934,6 +943,7 @@
                                     obj.valueAddedId = item.id;
                                     obj.presents = item.presents;
                                     obj.remarks = item.remarks;
+                                    obj.tariffFee = item.tariffFee;
                                     obj.tariffFeeCopy = item.tariffFeeCopy;
                                     obj.valueAddedFee = item.tariffFee;
                                     obj.units = item.units;
