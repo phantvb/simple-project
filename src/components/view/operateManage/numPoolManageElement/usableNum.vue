@@ -14,7 +14,7 @@
 					</el-checkbox-group>
 				</el-form-item>
 				<el-form-item style="margin-left: 15px;">
-					<el-button type="primary" size="mini" class="searchButton" @click="loadData">搜索</el-button>
+					<el-button type="primary" size="mini" class="searchButton" @click="loadData(usableNumForm.number)">搜索</el-button>
 					<el-button type="primary" plain size="mini" class="resetButton" @click="reset">重置</el-button>
 				</el-form-item>
 			</el-form>
@@ -190,7 +190,7 @@
 			handleCurrentChange(val) {
                 // console.log(val)
 				this.page.currentPage = val;
-				this.loadData();
+				this.loadData(this.usableNumForm.number,this.page.currentPage);
 			},
 
 			reset() {
@@ -650,7 +650,8 @@
 			},
 
 
-			loadData() {
+			loadData(mess,pageNum=1) {
+                this.page.currentPage=pageNum;
 				this.$ajax
 					.post("/vos/tariffPackage/getTariff", {
 						tariff: {
@@ -696,10 +697,10 @@
 					.post("/vos/number400/getAll", {
 						page: {
 							pageNo: this.page.currentPage || 1,
-							pageSize: this.page.size || 1
+							pageSize: this.page.size
 						},
 						number400: {
-							number400: this.usableNumForm.number,
+							number400: mess,
 							channel: str,
 							status: "CanUse",
 							companyName: "",

@@ -4,7 +4,9 @@ const createActivities = {
 		// 业务受理入参5大模块入参
 		company: {}, //企业信息
 		business: {}, //业务信息
-		destNumber: [], //目的码
+		destNumber: [
+
+		], //目的码
 		number400ValueAdded: [], //增值服务
 		number400Concession: [], //优惠信息
 		msgDisabled: false, //信息输入框禁用

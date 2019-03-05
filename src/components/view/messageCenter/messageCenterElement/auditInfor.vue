@@ -5,7 +5,7 @@
 			</el-table-column>
 			<el-table-column prop="messageTitle" label="标题" min-width="150">
 				<template slot-scope="scope">
-					<div style="cursor:pointer" @click="lcb(scope.row)">{{ scope.row.messageTitle }}</div>
+					<div style="cursor:pointer" @click="detail(scope.row)">{{ scope.row.messageTitle }}</div>
 				</template>
 			</el-table-column>
 			<el-table-column prop="createTime" label="接收日期" min-width="80">
@@ -45,7 +45,7 @@
 			}
 		},
 		methods: {
-			lcb(row) {
+			detail(row) {
 				if (row.messageUrl.indexOf('CPY') != -1) {
 					this.$router.push({ path: '/BusinessInform/businessDetail', query: { flowId: row.messageUrl } });
 				} else if (row.messageUrl.indexOf('VOI') != -1) {
@@ -59,25 +59,18 @@
 			// 修改页面显示数据大小
 			handleSizeChange(val) {
 				this.page.size = val;
-
-				if (this.auditInfoMess != '') {
-					this.search(this.auditInfoMess);
-				} else {
-					this.loadData();
-				}
+				this.search(this.auditInfoMess);
 			},
 
 			// 修改当前显示页面
 			handleCurrentChange(val) {
 				this.page.currentPage = val;
-				if (this.auditInfoMess != '') {
-					this.search(this.auditInfoMess);
-				} else {
-					this.loadData();
-				}
+				this.search(this.auditInfoMess,this.page.currentPage);
 			},
 
-			search(mess) {
+			search(mess,pageNum=1) {
+                this.loading = true;
+                this.page.currentPage=pageNum;
 				this.$ajax.post('/vos/messagecenter/search', {
 					"messagecenter": {
 						"messageTitle": mess
@@ -98,6 +91,7 @@
 								this.tableData[i].messageType = '审核信息';
 							}
 						}
+						this.loading = false;
 					}
 				});
 
@@ -127,7 +121,7 @@
 								message: '删除成功!',
 								type: 'success'
 							});
-							this.loadData();
+							this.search();
 						}
 					});
 				}).catch(() => {
@@ -136,38 +130,10 @@
 						message: '已取消删除'
 					});
 				});
-			},
-
-			loadData() {
-				this.loading = true;
-				this.$ajax.post('/vos/messagecenter/getAll', {
-					"messagecenter": {
-						"messageTitle": ""
-					},
-
-					"page": {
-						"pageNo": this.page.currentPage,
-						"pageSize": this.page.size
-					}
-
-				}).then((res) => {
-					if (res.code == 200) {
-						this.tableData = res.data.messagecenters;
-						this.page.total = res.data.totalCount;
-
-						for (let i = 0; i < this.tableData.length; i++) {
-
-							if (this.tableData[i].messageType == 'audit') {
-								this.tableData[i].messageType = '审核信息';
-							}
-						}
-						this.loading = false;
-					}
-				});
 			}
 		},
 		created() {
-			this.loadData();
+			this.search();
 		}
 	}
 </script>

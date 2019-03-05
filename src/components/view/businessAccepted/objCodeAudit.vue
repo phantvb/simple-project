@@ -43,7 +43,7 @@
 						<el-option v-for="item in statusOptions" :key="item.dicKey" :label="item.dicValue" :value="item.dicKey">
 						</el-option>
 					</el-select>
-					<el-button type="primary" plain size="mini">导出</el-button>
+					<el-button type="primary" plain size="mini" @click="exportList">导出</el-button>
 				</div>
 			</div>
 
@@ -199,6 +199,11 @@
             });
         },
         methods: {
+            // 导出
+            exportList(){
+                const url = '/vos/excel/businessAll';
+                window.open(url, '_blank');
+            },
             // 分页
             handleSizeChange(val) {
                 this.pageObj.pageSize = val;
@@ -545,7 +550,7 @@
                             let param={};
                             param.id=item.id;
                             param.destNumber=item.destNumber;
-                            param.destnumproofpic=this.acceptForm.imageUrl;
+                            param.destnumProofPic=this.acceptForm.imageUrl;
                             param.destnumUsage=this.acceptForm.usage;
                             param.number400=this.acceptForm.fourNum;
                             param.companyid=this.acceptForm.firmId;
@@ -602,7 +607,7 @@
                             let param={};
                             param.id=item.id;
                             param.destNumber=item.destNumber;
-                            param.destnumproofpic=this.acceptForm.imageUrl;
+                            param.destnumProofPic=this.acceptForm.imageUrl;
                             param.destnumUsage=this.acceptForm.usage;
                             param.number400=this.acceptForm.fourNum;
                             param.companyid=this.acceptForm.firmId;

@@ -22,7 +22,7 @@
                     </el-checkbox-group>
                 </el-form-item>
                 <el-form-item style="margin-left: 15px;">
-                    <el-button type="primary" size="mini" class="searchButton" @click="search">搜索</el-button>
+                    <el-button type="primary" size="mini" class="searchButton" @click="search(auditNumForm.number)">搜索</el-button>
                     <el-button type="primary" plain size="mini" class="resetButton" @click="reset">重置</el-button>
                 </el-form-item>
             </el-form>
@@ -116,7 +116,7 @@
                 this.auditNumForm.checkList.length!=0){
                     this.search();
                 }else{
-                    this.loadData();
+                    this.loadData(this.status);
                 }
             },
 
@@ -127,13 +127,14 @@
                 this.auditNumForm.citationNumber!=''||
                 this.auditNumForm.companyName!=''||
                 this.auditNumForm.checkList.length!=0){
-                    this.search();
+                    this.search(this.page.currentPage);
                 }else{
-                    this.loadData();
+                    this.loadData(this.status);
                 }
             },
 
-            search() {
+            search(num,pageNum=1) {
+                this.page.currentPage=pageNum;
                 let str = '';
                 if (this.auditNumForm.checkList.length == 2) {
                     str = "self+channel";
@@ -150,7 +151,7 @@
                         "pageSize": this.page.size
                     },
                     "number400": {
-                        "number400": this.auditNumForm.number,
+                        "number400": num,
                         "channel": str,
                         "status": this.status,
                         "companyName": this.auditNumForm.companyName,
@@ -198,6 +199,7 @@
                 this.loading=true;
                 this.reset();
                 this.status = status;
+                console.log(this.status)
                 this.$ajax.post('/vos/number400/getAll', {
                     "page": {
                         "pageNo": this.page.currentPage,

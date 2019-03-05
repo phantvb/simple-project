@@ -381,7 +381,7 @@
 
                                 <el-table-column
                                         label='数量'
-                                        width="250">
+                                        width="270">
                                     <template slot-scope="scope">
                                         <el-input-number
                                                 v-if="scope.row.units=='perMonthOne' || scope.row.units=='perMonth'"
@@ -526,7 +526,7 @@
                     id: "",
                     destNumber: "",
                     number400: "",
-                    destnumproofpic: "",
+                    destnumProofPic: "",
                     destnumUsage: "",
                     companyid: "",
                     valueAddedId: "",
@@ -570,6 +570,7 @@
                 saveBtnHidden: true,
                 nextDisabled: true,
                 packgeId: '',
+                businessObj:{},
             };
 
         },
@@ -580,7 +581,7 @@
         mounted() {
             if (sessionStorage.getItem('businessIn') == 2 || sessionStorage.getItem('businessIn') == 3) {
                 //详情
-                // console.log(this.business);
+                console.log(this.business);
                 // console.log(this.destNumber);
                 // console.log(this.number400ValueAdded);
                 // console.log(this.number400Concession);
@@ -592,9 +593,12 @@
                 console.log("this.valueAdd", this.valueAdd);
                 this.disList = this.number400Concession;
                 // 优惠回显
-                this.number400Concession.map((item) => {
-                    this.stepThreeForm.discounts = item.concessionName;
-                });
+                if(this.number400Concession!=null){
+                    this.number400Concession.map((item) => {
+                        this.stepThreeForm.discounts = item.concessionName;
+                    });
+                }
+
                 //400号码表格回显
                 let selectedNumCopy = {};
                 selectedNumCopy.units = this.business.units;
@@ -754,6 +758,7 @@
 
             //新增目的码
             addObjCodes() {
+                console.log(this.objCodeList);
                 let unit = {};
                 this.objCodeList.push(unit);
                 this.objCodeTable.map((item, index) => {
@@ -818,7 +823,7 @@
                         "id": '',
                     }
                 }).then((res) => {
-                    // console.log(res.data.valueAddedList);
+                    console.log("增值业务表格",res.data.valueAddedList);
                     this.objCodeTable = res.data.valueAddedList;
                     this.objCodeTable.map((item) => {
                         console.log(item);
@@ -874,7 +879,7 @@
                                         this.$refs.addValueTable.toggleRowSelection(this.objCodeTable[index], true);
                                         let obj = {};
                                         if (this.selectedNum && this.selectedNum.length != 0) {
-                                            obj.number400 = this.selectedNum[0].number400
+                                            obj.number400 = this.selectedNum[0].number400;
                                         }
                                         obj.valueAddedName = item.tariffName;
                                         obj.valueAddedId = item.id;
@@ -1094,7 +1099,8 @@
                                 this.$emit('childNext', val);
                             }
                             console.log(this.disList);
-                            this.ChangeBusinessStatus(this.stepThreeForm);
+                            this.businessObj = Object.assign(this.business, this.stepThreeForm);
+                            this.ChangeBusinessStatus(this.businessObj);
                             this.ChangeDestNumberStatus(this.objCodeList);
                             this.ChangeNumber400ValueAddedStatus(this.valueAdd);
                             this.ChangeNumber400ConcessionStatus(this.disList);
@@ -1133,13 +1139,14 @@
                     this.stepThreeForm.units = this.selectedNum[0].units;
                     this.stepThreeForm.durationPresentation = this.selectedNum[0].durationPresentation;
                     this.stepThreeForm.basicFunctionFee = this.selectedNum[0].basicFunctionFee;
-                    this.stepThreeForm.type = this.selectedNum[0].type;
+                    this.stepThreeForm.type = this.business.type==null?this.selectedNum[0].type:this.business.type;
                     this.stepThreeForm.tariffPackageId = this.selectedNum[0].packgeId;
                     this.stepThreeForm.excessTariff = this.selectedNum[0].excessTariff;
                     this.stepThreeForm.unitPrice = this.selectedNum[0].unitPrice;
                     console.log(this.stepThreeForm);
                     console.log(this.disList);
-                    this.ChangeBusinessStatus(this.stepThreeForm);
+                    this.businessObj = Object.assign(this.business, this.stepThreeForm);
+                    this.ChangeBusinessStatus(this.businessObj);
                     this.ChangeDestNumberStatus(this.objCodeList);
                     this.ChangeNumber400ValueAddedStatus(this.valueAdd);
                     this.ChangeNumber400ConcessionStatus(this.disList);

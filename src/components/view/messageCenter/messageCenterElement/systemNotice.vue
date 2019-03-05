@@ -26,7 +26,7 @@
 
 <script>
 	export default {
-        props:['sysNoticeMess'],
+		props: ['sysNoticeMess'],
 		data() {
 			return {
 				form: {
@@ -46,27 +46,21 @@
 		methods: {
 			// 修改页面显示数据大小
 			handleSizeChange(val) {
-                console.log("sysNoticeMess",this.sysNoticeMess);
 				this.page.size = val;
-				if (this.sysNoticeMess != '') {
-					this.search(this.sysNoticeMess);
-				} else {
-					this.loadData();
-				}
 
+				this.search(this.sysNoticeMess);
 			},
 
 			// 修改当前显示页面
 			handleCurrentChange(val) {
 				this.page.currentPage = val;
-				if (this.sysNoticeMess != '') {
-					this.search(this.sysNoticeMess);
-				} else {
-					this.loadData();
-				}
+
+				this.search(this.sysNoticeMess,this.page.currentPage);
 			},
 
-			search(mess) {
+			search(mess,pageNum=1) {
+                this.loading = true;
+                this.page.currentPage=pageNum;
 				this.$ajax
 					.post("/vos/announcement/search", {
 						page: {
@@ -86,6 +80,7 @@
 						if (res.code == 200) {
 							this.tableData = res.data.announcements;
 							this.page.total = res.data.totalCount;
+							this.loading = false;
 						}
 					});
 			},
@@ -118,7 +113,7 @@
 								if (res.code == 4005) {
 									this.$message.error("您无权操作!");
 								}
-								this.loadData();
+								this.search();
 							});
 					})
 					.catch(() => {
@@ -127,33 +122,10 @@
 							message: "已取消删除"
 						});
 					});
-			},
-
-			loadData() {
-				this.loading = true;
-				this.$ajax
-					.post("/vos/announcement/getAll", {
-						ann: {
-							title: "",
-							publishMan: ""
-						},
-
-						page: {
-							pageNo: this.page.currentPage,
-							pageSize: this.page.size
-						}
-					})
-					.then(res => {
-						if (res.code == 200) {
-							this.tableData = res.data.announcements;
-							this.page.total = res.data.totalCount;
-							this.loading = false;
-						}
-					});
 			}
 		},
 		created() {
-			this.loadData();
+			this.search();
 		}
 	};
 </script>

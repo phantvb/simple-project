@@ -39,8 +39,8 @@
 		},
 		methods: {
 			reset() {
-				this.form.mess = "";
-				this.search();
+                this.form.mess = "";
+                this.search();
 			},
 
 			search() {

@@ -66,7 +66,7 @@
                         <el-option v-for="item in statusOptions" :key="item.dicKey" :label="item.dicValue"
                                    :value="item.dicKey"></el-option>
                     </el-select>
-                    <el-button type="primary" plain size="mini" v-if="authority.indexOf(103)!=-1">导出</el-button>
+                    <el-button type="primary" plain size="mini" v-if="authority.indexOf(103)!=-1" @click="exportList">导出</el-button>
                 </div>
             </div>
 
@@ -191,6 +191,12 @@
         //objCodeIn    1:目的码新增 2:送审   3:变更
         //voiceIn      1:语音新增   2:送审   3:变更
         methods: {
+            // 导出
+            exportList(){
+                const url = '/vos/excel/businessAll';
+                window.open(url, '_blank');
+            },
+            //分页
             handleSizeChange(val) {
                 this.pageObj.pageSize = val;
                 this.entireLists();
@@ -470,35 +476,30 @@
                             message: '已取消注销'
                         });
                     });
-
-
-                } else if (val == '删除') {
-
+                } else if(val == '刪除') {
+                    console.log("进来了");
                     this.$confirm('此操作将永久删除该业务, 是否继续?', '提示', {
                         confirmButtonText: '确定',
                         cancelButtonText: '取消',
                         type: 'warning'
                     }).then(() => {
-                        this.$message({
-                            type: 'success',
-                            message: '删除成功!'
-                        });
-
                         this.$ajax.post('/vos/business/deleteFlow', {
                             "companyFlow": objData
                         }).then((res) => {
                             console.log(res);
                             this.entireLists();
-                        })
+                        });
+                        this.$message({
+                            type: 'success',
+                            message: '删除成功!'
+                        });
                     }).catch(() => {
                         this.$message({
                             type: 'info',
                             message: '已取消删除'
                         });
                     });
-
                 }
-
             },
             //“全部”表格详情
             getCacheData(val) {

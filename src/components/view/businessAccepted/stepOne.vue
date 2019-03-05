@@ -36,7 +36,7 @@
 
                     <el-form-item label="企业等级：" class="identity" prop="companyRank">
                         <el-select v-model="acceptForm.companyRank" placeholder="请选择" size="mini"
-                                   :disabled="msgDisabled">
+                                   :disabled="msgDisabled" @change="rank">
                             <el-option :label="item.dicValue" :value="item.dicValue" v-for="item in companyRankList"
                                        :key="item.dicKey"></el-option>
                         </el-select>
@@ -209,18 +209,18 @@
                     registProvinceId: '',
                     registCityId: '',
                     registaAreaId: '',
-                    registAddress: '',
+                    registProvince: '',         //注册地址 --省名称
+                    registCity: '',             //注册地址 --市名称
+                    registaArea: '',            //注册地址 --区名称
+                    registAddress: '',          //注册详细地址
+
                     officeProvinceId: '',
                     officeCityId: '',
                     officeAreaId: '',
-
-                    registProvince: '',         //注册地址 --省名称
-                    registCity: '',             //注册地址 --市名称
-                    registArea: '',             //注册地址 --区名称
                     officeProvince: '',         //办公地址 --省名称
                     officeCity: '',             //办公地址 --市名称
-                    officeArea: '',         //办公地址 --区名称
-                    officeAddress: '',
+                    officeArea: '',             //办公地址 --区名称
+                    officeAddress: '',          //办公详细地址
 
                     phone: '',
                     legalPerson: '',
@@ -364,8 +364,8 @@
             },
             // 下一步
             next(formName) {
-                this.$refs[formName].validate((valid) => {
-                    if (valid) {
+                // this.$refs[formName].validate((valid) => {
+                //     if (valid) {
                 // 保存companyId到vuex
                 if (this.business != null) {
                     // console.log("this.business",this.business);
@@ -373,14 +373,10 @@
                     let companyIdInfo = {};
                     companyIdInfo.companyId = null;
                     this.ChangeBusinessStatus(companyIdInfo);
-                    // console.log("this.business",this.business);
+                    console.log("this.business",this.business);
                 }
                 this.$emit('childNext', 2);
-                // 改变vuex的值
-                this.ChangeCompanyStatus(this.acceptForm);
-                console.log(this.company);
-                // this.business.companyName = this.acceptForm.companyName;
-                // console.log(this.business);
+
                 if (this.firmNameList.some((item) => {
                     return this.acceptForm.companyName == item.companyName;
                 })) {
@@ -388,11 +384,17 @@
                 } else {
                     this.$root.eventHub.$emit('needCompanySave', true);
                 }
-                } else {
-                    this.$message.warning('请把信息填写完整');
-                    return false;
-                }
-                });
+                // 改变vuex的值
+                this.ChangeCompanyStatus(this.acceptForm);
+                console.log(this.company);
+                // this.business.companyName = this.acceptForm.companyName;
+                // console.log(this.business);
+
+                // } else {
+                //     this.$message.warning('请把信息填写完整');
+                //     return false;
+                // }
+                // });
 
             },
             change123(event) {
@@ -404,7 +406,6 @@
             searchFirm(val) {
                 // console.log(val);
                 this.$ajax.get('/vos/company/fuzzySearch?company=' + this.acceptForm.companyName).then((res) => {
-                    // console.log(res.data);
                     this.firmNameList = res.data;
                     if (this.acceptForm.companyName != '' && this.firmNameList.length != 0) {
                         this.firmNameShow = true;
@@ -416,11 +417,7 @@
                     }
                     this.firmNameList.map((zool, index) => {
                         if (zool.companyName == this.acceptForm.companyName) {
-                            // console.log("zool",zool);
-                            // sessionStorage.setItem("firmNameListItem",JSON.stringify(zool));
                             this.acceptForm = this.firmNameList[index];
-                            this.$root.eventHub.$emit('firmNameListItem', zool);
-                            // sessionStorage.setItem("firmNameList",JSON.stringify(this.firmNameList[index]));
                             this.changeMsgDisabled(true);
                         } else {
                             this.changeMsgDisabled(false);
@@ -429,14 +426,13 @@
                 })
             },
             nameListHidden() {
-                // console.log('asdasdasdasdas');
                 this.firmNameShow = false;
             },
             //企业名称li
             firmNameLi(val) {
                 let companyIdInfo = {};
                 if (val.id != null) {
-                    // console.log('企业信息',val);
+                    console.log('企业信息',val);
                     // console.log(val.id);
                     companyIdInfo.companyId = val.id;
                 }
@@ -446,9 +442,9 @@
                 this.acceptForm.companyName = val.companyName;
                 this.acceptForm = val;
                 this.firmNameShow = false;
-                this.firmNameList.map((zool) => {
+                this.firmNameList.map((zool,index) => {
                     if (this.acceptForm.companyName == zool.companyName) {
-                        this.changeMsgDisabled(true);
+                        this.$root.eventHub.$emit('firmNameListItem', this.firmNameList[index]);
                     }
                 })
             },
@@ -484,6 +480,9 @@
                     // console.log(res.data.dicList);
                     this.companyRankList = res.data.dicList;
                 })
+            },
+            rank(val) {
+                console.log(val);
             },
             //行业类型
             industryTypeLists() {
@@ -550,13 +549,13 @@
             // 区
             getAreasByCityId() {
                 this.$ajax.get('/vos/address/getAreasByCityId?cityId=' + this.cityId).then((res) => {
-                    console.log("registAreaList", res.data);
+                    // console.log("registAreaList", res.data);
                     this.registAreaList = res.data;
                 })
             },
             getAreasByCityIdTwo() {
                 this.$ajax.get('/vos/address/getAreasByCityId?cityId=' + this.busCityId).then((res) => {
-                    console.log("busAreaList", res.data);
+                    // console.log("busAreaList", res.data);
                     this.busAreaList = res.data;
                 })
             },

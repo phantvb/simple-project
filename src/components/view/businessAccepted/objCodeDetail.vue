@@ -47,7 +47,7 @@
                         </div>
                         <ul>
                             <li class="l2">
-                                <img class="examplew" :src="destNumInfo.destnumproofpic" alt="">
+                                <img class="examplew" :src="destNumInfo.destnumProofPic" alt="">
                             </li>
                         </ul>
                     </div>
@@ -152,11 +152,10 @@
                         if(this.destNumInfo.length!=0){
                             objCodeTableObj.number400 = this.destNumInfo[0].number400;
                             this.destNumInfo.destnumUsage = this.destNumInfo[0].destnumUsage;
-                            this.destnumproofpic = this.destNumInfo[0].destnumproofpic;
-                            this.destNumInfo.destnumproofpic = this.destNumInfo[0].destnumproofpic;
+                            this.destnumProofPic = this.destNumInfo[0].destnumProofPic;
+                            this.destNumInfo.destnumProofPic = this.destNumInfo[0].destnumProofPic;
                         }
                         this.objCodeTable.push(objCodeTableObj);
-
                         this.flowRecordList = res.data.flowRecord;
                         this.flowRecordList.map((item) => {
                             if(item.operatorRole=='ROLE_admin'){
