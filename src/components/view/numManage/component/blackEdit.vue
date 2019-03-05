@@ -1,6 +1,6 @@
 <template>
 	<div id="blackEdit" class="numDialog">
-		<el-dialog :title="type=='one'?'新增/编辑企业黑名单':'新增/编辑全局黑名单'" class="left" :visible.sync="dialogVisible" @close="close" v-if="dialogVisible">
+		<el-dialog :title="type=='one'?'新增/编辑企业黑名单':'新增/编辑全局黑名单'" class="left" :visible.sync="dialogVisible" @close="close" v-if="dialogVisible" :close-on-click-modal="false">
 			<div class="block">
 				<div class="form_item" v-if="type=='one'">
 					<div class="form_title right">400号码：</div>

@@ -1,6 +1,6 @@
 <template>
 	<div id="voiceEdit" class="numDialog">
-		<el-dialog title="新增/编辑语音文件" class="left" :visible.sync="dialogVisible" @close="close" v-if="dialogVisible">
+		<el-dialog title="新增/编辑语音文件" class="left" :visible.sync="dialogVisible" @close="close" v-if="dialogVisible" :close-on-click-modal="false">
 			<div class="block">
 				<div class="form_item">
 					<div class="form_title right">企业名称：</div>

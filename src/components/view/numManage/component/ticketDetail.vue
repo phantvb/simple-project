@@ -1,6 +1,6 @@
 <template>
 	<div id="ticketDetail" class="numDialog">
-		<el-dialog title="话单详情" class="left" :visible.sync="dialogVisible" @close="close" v-if="dialogVisible">
+		<el-dialog title="话单详情" class="left" :visible.sync="dialogVisible" @close="close" v-if="dialogVisible" :close-on-click-modal="false">
 			<Aplayer name="Aplayer" model="auto" :music_url="$global.serverSrc+data.recordAddress" v-if="player"></Aplayer>
 			<div class="block">
 				<ul>

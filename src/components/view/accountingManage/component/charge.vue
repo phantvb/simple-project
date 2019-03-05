@@ -1,6 +1,6 @@
 <template>
 	<div id="charge">
-		<el-dialog title="时长包充值" class="left" :visible.sync="dialogVisible" @close="close">
+		<el-dialog title="时长包充值" class="left" :visible.sync="dialogVisible" @close="close" :close-on-click-modal="false">
 			<div class="form_item">
 				<div class="form_title right">400号码：</div>
 				<div class="form_con">

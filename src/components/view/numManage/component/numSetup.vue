@@ -1,6 +1,6 @@
 <template>
 	<div id="numSetup" class="numDialog managerFormTitle">
-		<el-dialog title="编辑号码设置" class="left" :visible.sync="dialogVisible" @close="close" v-if="dialogVisible">
+		<el-dialog title="编辑号码设置" class="left" :visible.sync="dialogVisible" @close="close" v-if="dialogVisible" :close-on-click-modal="false">
 			<div class="block">
 				<ul>
 					<li class="l2">
