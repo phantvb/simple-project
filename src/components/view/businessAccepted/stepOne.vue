@@ -364,8 +364,8 @@
             },
             // 下一步
             next(formName) {
-                // this.$refs[formName].validate((valid) => {
-                //     if (valid) {
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
                 // 保存companyId到vuex
                 if (this.business != null) {
                     // console.log("this.business",this.business);
@@ -390,11 +390,11 @@
                 // this.business.companyName = this.acceptForm.companyName;
                 // console.log(this.business);
 
-                // } else {
-                //     this.$message.warning('请把信息填写完整');
-                //     return false;
-                // }
-                // });
+                } else {
+                    this.$message.warning('请把信息填写完整');
+                    return false;
+                }
+                });
 
             },
             change123(event) {
