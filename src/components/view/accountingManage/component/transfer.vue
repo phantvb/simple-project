@@ -170,14 +170,11 @@
 				if (this.transferType == 1) {
 					this.close(false);
 					return;
-				};
-				if (new Date(this.openTime.replace(/-/g, '/')) < new Date()) {
-					// let d = new Date(new Date().getTime() + 1 * 60 * 1000);
-					// this.formatTime(d);
-					// data.openTime =this.openTime;
+                };
+				if (this.openTime&&new Date(this.openTime.replace(/-/g, '/')) < new Date()) {
 					this.$throw('建议在5分钟或者之后开通号码');
 					return;
-				} else {
+				} else if(this.openTime!=null||this.openTime!='') {
 					data.openTime = this.openTime;
 				}
 				data.realReceives = this.recordData;
