@@ -1,0 +1,3 @@
+[submodule "studyDiary"]
+	path = studyDiary
+	url = https://github.com/phantvb/studyDiary.git
